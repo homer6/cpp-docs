@@ -59,7 +59,23 @@ void print(const T& first, const Rest&... rest) { // peel one off
 }
 ```
 
-Folds replaced most of this, but recursion is still needed when each step does
+## Pack indexing (C++26)
+
+Access a pack element directly by index — no recursion or helper needed:
+
+```cpp
+template<class... Ts>
+void f(Ts... args) {
+    Ts...[0]  first_type_unused{};      // Ts...[0] is the first TYPE in the pack
+    auto x = args...[0];                 // args...[0] is the first VALUE
+    auto y = args...[sizeof...(args)-1]; // the last value
+}
+```
+
+`pack...[i]` indexes the type pack `Ts` or value pack `args`. The index must be a
+constant expression in range `[0, sizeof...(pack))`.
+
+Folds replaced most recursion, but it's still needed when each step does
 something stateful or type-dependent.
 
 ## Gotchas
@@ -72,8 +88,8 @@ something stateful or type-dependent.
   others don't).
 - **Forward packs with `std::forward<Args>(args)...`** to preserve value
   categories — see [value categories](../expressions/value-categories.md).
-- **Prefer fold expressions to recursion** (C++17+) for reductions — far less
-  boilerplate and faster to compile.
+- **Prefer fold expressions to recursion** (C++17+) for reductions, and
+  **pack indexing** (C++26) over recursive "get the Nth element" helpers.
 
 ## See also
 

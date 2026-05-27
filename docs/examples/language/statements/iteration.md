@@ -41,6 +41,25 @@ for (auto& x : xs) {
 (There is no labeled `break`; to exit nested loops, refactor into a function and
 `return`, or use a flag — see Gotchas.)
 
+## `template for` — expansion statements (C++26)
+
+A **compile-time** loop that unrolls over the elements of a tuple-like object, a
+parameter pack, or a [reflection](../expressions/reflection.md) range. The body is
+instantiated once per element, with the loop variable a *constant* each time — so
+each iteration can have a different type:
+
+```cpp
+std::tuple<int, std::string, double> t{1, "two", 3.0};
+
+template for (constexpr auto& elem : t) {     // unrolls: one body per element
+    std::println("{}", elem);                  // elem's type differs each iteration
+}
+```
+
+This is what finally lets you iterate a heterogeneous tuple (or a struct's
+reflected members) without recursion or `std::apply` tricks — see
+[reflection](../expressions/reflection.md).
+
 ## Prefer algorithms over hand loops
 
 Many loops are better expressed as a named [algorithm](../../algorithms/README.md)

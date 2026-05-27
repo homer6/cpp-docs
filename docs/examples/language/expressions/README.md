@@ -11,3 +11,4 @@ compile time). Mirrors
 | [Conversions & casts](conversions.md) | implicit conversions and the four named casts |
 | [Literals](literals.md) | integer/float/string literals and user-defined literals |
 | [Constant expressions](constant-expressions.md) | `constexpr`, `consteval`, `constinit` |
+| [Reflection](reflection.md) | the `^^` operator and splicers (C++26) |
