@@ -74,3 +74,9 @@ Links to the relevant cppreference pages (cppreference.com only).
 - Code blocks use ```cpp.
 - Use `#include` + `std::`-qualified names; avoid `using namespace std`.
 - One concept per snippet; keep examples minimal and illustrative.
+
+## Git / commits
+
+- **Do not add Claude as a commit author or co-author.** Commit messages must not
+  include any `Co-Authored-By: Claude` (or similar) trailer. Commits are authored
+  solely by the repository owner.
