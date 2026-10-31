@@ -99,9 +99,10 @@ Links to the relevant cppreference pages (cppreference.com only).
 
 ## Compile-checked snippets
 
-CI compiles every ```cpp block in `docs/guidelines/` (blocking) and
-`docs/examples/` (report only) with `tools/check_snippets.py`, using
-`-std=c++26 -fsyntax-only -pedantic-errors` on GCC and Clang. Each block is
+There is no CI (GitHub Actions is disabled for this repo); run the checks
+locally. `tools/check_snippets.py` compiles every ```cpp block with
+`-std=c++26 -fsyntax-only -pedantic-errors`; `docs/guidelines/` should pass
+cleanly, while `docs/examples/` still has many known failures. Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
 like `Widget`, `use()`, `process()`). Tag the fence's info string:
 
@@ -110,13 +111,14 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 | ` ```cpp ` | Must compile at namespace scope |
 | ` ```cpp body ` | Statements; checked inside a function body |
 | ` ```cpp nocompile ` | Deliberately wrong (BAD examples) or depends on undeclared context |
-| ` ```cpp needs=reflection ` | Needs a feature not every CI compiler has (`contracts`, `reflection`, `execution`, …) |
+| ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
 
-`needs=` blocks are checked (blocking) in the GCC job with the features GCC 16
-has enabled (`contracts`, `reflection`); the Clang job skips them.
+`needs=` blocks are skipped unless you enable the feature, e.g.
+`--enable contracts --enable reflection --flag=-freflection` with GCC 16.
 
-Prefer making a snippet self-contained over tagging it `nocompile`. Run locally:
-`python3 tools/check_snippets.py docs/guidelines --cxx g++-15`.
+Prefer making a snippet self-contained over tagging it `nocompile`. Run:
+`python3 tools/check_snippets.py docs/guidelines --cxx g++-15` (and with
+`--cxx clang++ --flag=-stdlib=libc++` if you have a recent Clang).
 
 `-fsyntax-only` is more than a parse: on GCC and Clang it catches type errors,
 errors in templates that are instantiated, and failed constant evaluation —

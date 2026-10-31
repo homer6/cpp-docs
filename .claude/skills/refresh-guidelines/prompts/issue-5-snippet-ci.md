@@ -12,14 +12,13 @@ Python checker that extracts each block, prepends a prelude of standard headers
 and placeholder declarations, and runs `g++`/`clang++ -std=c++26 -fsyntax-only
 -pedantic-errors`. Blocks are tagged in the fence info string: `cpp body`
 (wrap in a function), `cpp nocompile` (skip), `cpp needs=<feature>` (skip unless
-enabled). It runs in GitHub Actions. Today's date is {{DATE}}.
+enabled). It runs locally only — there is no CI. Today's date is {{DATE}}.
 
 ## Already covered (verified 2026-10-31 — confirm only if something changed)
 
-- CI uses the official `gcc:16` image (16.2.0 on Docker Hub, 2026-10-25) and
+- Toolchains: GCC 16.2 (official `gcc:16` Docker image, 2026-10-25) and
   Clang 23 + libc++ from apt.llvm.org (`llvm.sh 23`; LLVM 23 stable since
-  2026-08-26, 22 is old-stable). The `ubuntu-24.04` runner image itself ships
-  only Clang 16–18 and GCC 13.2 (runner-images README, image 20261026).
+  2026-08-26, 22 is old-stable).
 - GCC 16: P2900R14 contracts with plain `-std=c++26`; P2996 reflection needs
   `-freflection` (GCC C++ status page, GCC 16 release notes). GCC 13's
   `-fcontracts` was the older P1429R3 extension (`<experimental/contract>`,
@@ -64,26 +63,25 @@ enabled). It runs in GitHub Actions. Today's date is {{DATE}}.
    files, or `compile_fail` tests for BAD examples (asserting a snippet *doesn't*
    compile, and ideally with which diagnostic). Trade-offs for readers vs
    maintainers.
-3. **Toolchains in CI (as of {{DATE}}).** Exact, current ways to get on GitHub
-   Actions: GCC 16 (official `gcc:16` Docker image? PPA?), the latest stable
-   Clang with libc++ (apt.llvm.org), and MSVC (windows runners, latest
-   `/std:c++latest`). Which flags enable C++26 contracts and reflection on each
-   (GCC's `-freflection`, any `-fcontracts`; Clang/EDG reflection forks), and
-   which runner images ship which compiler versions.
+3. **Local toolchains (as of {{DATE}}).** The simplest current ways to get
+   GCC 16 and the latest Clang with libc++ on macOS and Linux (Homebrew,
+   apt.llvm.org, the `gcc:16` Docker image), and MSVC's latest
+   `/std:c++latest`. Which flags enable C++26 contracts and reflection on each
+   (GCC's `-freflection`; Clang/EDG reflection forks).
 4. **`-fsyntax-only` limits.** What does a syntax-only check miss compared with
    full compilation (template instantiation, constexpr evaluation, linking),
    and is `-c` or a full compile-and-run worth it for docs? Any differences
    between GCC and Clang in what `-fsyntax-only` diagnoses.
 5. **Keeping it maintainable.** Practices for incremental rollout over a large
    existing corpus (baseline/ratchet files of known failures, per-directory
-   gates), caching, and running only changed files on PRs.
+   gates), caching, and checking only changed files.
 
 ## Output format
 
-- Headings: **Prior art · Fragment strategies · CI toolchains · Limits ·
+- Headings: **Prior art · Fragment strategies · Toolchains · Limits ·
   Rollout · Recommendations for this repo · Sources**.
 - Each recommendation: **short imperative** → reason → source(s) → effort.
-- Cite primary sources (project docs, repo files, GitHub Actions/runner-image
-  docs, compiler manuals, Docker Hub). Mark each toolchain fact with a
+- Cite primary sources (project docs, repo files, compiler manuals, package
+  repositories, Docker Hub). Mark each toolchain fact with a
   **confidence level** and **source date**; flag anything you couldn't verify.
 - Don't invent tool names, flags, or image tags.
