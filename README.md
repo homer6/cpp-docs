@@ -12,47 +12,86 @@ verified locally (the snippet compiles, and behaves as described when run).
 
 ## Layout
 
-```
-docs/
-  examples/                  # the reference — what each feature is
-    README.md                #   master index and progress
-    containers/              #   sequence, associative, unordered, adaptors, views
-    strings/                 #   string, string_view, char_traits
-    text-processing/         #   format, charconv, regex, localization, C strings, text_encoding
-    algorithms/              #   <algorithm>, <numeric>, parallel and ranges algorithms
-    ranges/                  #   views, adaptors, factories, range concepts
-    iterators/               #   categories, adaptors, operations
-    utilities/               #   optional, variant, tuple, expected, any, bitset, functional
-    memory/                  #   smart pointers, allocators, memory resources
-    metaprogramming/         #   type traits, ratio, integer_sequence, reflection
-    numerics/                #   math, random, complex, bit, cfenv, SIMD, linalg, valarray
-    datetime/                #   chrono durations, clocks, calendars, time zones
-    io/                      #   streams, files, filesystem, print, syncstream
-    concurrency/             #   threads, mutexes, atomics, futures, coordination, safe reclamation
-    execution/               #   senders/receivers (C++26)
-    diagnostics/             #   exceptions, system_error, stacktrace, debugging
-    language-support/        #   numeric_limits, <=>, source_location, typeid, signals, setjmp
-    concepts/                #   the standard concepts library
-    feature-test-macros/     #   detecting what your compiler supports
-    named-requirements/      #   Cpp17* requirements and how concepts relate
-    language/                #   the core language
-      basic-concepts/        #     types, object model, storage, contracts, comments, keywords, freestanding
-      expressions/           #     value categories, operators, conversions, constant expressions
-      statements/            #     selection, iteration, jump statements
-      declarations-initialization/
-      functions/             #     overloading, default and variadic args, lambdas
-      classes/               #     special members, inheritance, operator overloading, deducing this, bit-fields
-      templates/             #     basics, variadics, specialization and CTAD, constraints
-      exceptions/            #     throw/try/catch, noexcept and exception safety
-      coroutines/  modules/  preprocessor/   # preprocessor includes #embed
-  guidelines/                # how to use it well (see below)
-tests/                       # GoogleTest suite checking each page's claims (see below)
-tools/                       # check_snippets.py — compile-checks every ```cpp block; run_tests.sh
-evals/                       # test cases for the cpp-guidelines agent skill
-.claude/skills/              # cpp-guidelines (apply the guidelines), refresh-guidelines (keep them current)
-modules/                     # submodules: C++ Core Guidelines, perf-report
-CMakeLists.txt  CMakePresets.json   # build for tests/ only
-```
+Everything is clickable. The reference lives in
+[`docs/examples/`](docs/examples/README.md) (master index and progress); each
+area has its own README.
+
+### Standard library
+
+- **[Containers](docs/examples/containers/README.md)** — vector, map, span, the lot
+  - adaptors: [std::flat_map / std::flat_multimap](docs/examples/containers/adaptors/flat_map.md) · [std::flat_set / std::flat_multiset](docs/examples/containers/adaptors/flat_set.md) · [std::priority_queue](docs/examples/containers/adaptors/priority_queue.md) · [std::queue](docs/examples/containers/adaptors/queue.md) · [std::stack](docs/examples/containers/adaptors/stack.md)
+  - associative: [std::map](docs/examples/containers/associative/map.md) · [std::multimap](docs/examples/containers/associative/multimap.md) · [std::multiset](docs/examples/containers/associative/multiset.md) · [std::set](docs/examples/containers/associative/set.md)
+  - sequence: [std::array](docs/examples/containers/sequence/array.md) · [std::deque](docs/examples/containers/sequence/deque.md) · [std::forward_list](docs/examples/containers/sequence/forward_list.md) · [std::hive](docs/examples/containers/sequence/hive.md) · [std::inplace_vector](docs/examples/containers/sequence/inplace_vector.md) · [std::list](docs/examples/containers/sequence/list.md) · [std::vector](docs/examples/containers/sequence/vector.md)
+  - unordered: [std::unordered_map](docs/examples/containers/unordered/unordered_map.md) · [std::unordered_multimap](docs/examples/containers/unordered/unordered_multimap.md) · [std::unordered_multiset](docs/examples/containers/unordered/unordered_multiset.md) · [std::unordered_set](docs/examples/containers/unordered/unordered_set.md)
+  - views: [std::mdspan](docs/examples/containers/views/mdspan.md) · [std::span](docs/examples/containers/views/span.md)
+- **[Strings](docs/examples/strings/README.md)** — `string`, `string_view`, char traits
+  - [std::char_traits](docs/examples/strings/char_traits.md) · [std::string (std::basic_string)](docs/examples/strings/string.md) · [std::string_view](docs/examples/strings/string_view.md)
+- **[Text processing](docs/examples/text-processing/README.md)** — `format`/`print`, `charconv`, regex, locales, `text_encoding`, C strings
+  - [std::to_chars / std::from_chars](docs/examples/text-processing/charconv.md) · [std::format and std::print](docs/examples/text-processing/formatting.md) · [std::locale and facets](docs/examples/text-processing/localization.md) · [Null-terminated byte strings](docs/examples/text-processing/null-terminated-byte-strings.md) · [Null-terminated multibyte strings](docs/examples/text-processing/null-terminated-multibyte-strings.md) · [Null-terminated wide strings](docs/examples/text-processing/null-terminated-wide-strings.md) · [std::regex](docs/examples/text-processing/regex.md) · [std::text_encoding](docs/examples/text-processing/text-encoding.md)
+- **[Algorithms](docs/examples/algorithms/README.md)** — `<algorithm>`, `<numeric>`, parallel & ranges algos
+  - [Execution policies & ranges algorithms](docs/examples/algorithms/execution-and-ranges.md) · [Modifying algorithms](docs/examples/algorithms/modifying.md) · [Non-modifying algorithms](docs/examples/algorithms/non-modifying.md) · [Numeric algorithms (`<numeric>`)](docs/examples/algorithms/numeric.md) · [Partition, heap, and min/max](docs/examples/algorithms/partition-heap-minmax.md) · [Sorting & searching](docs/examples/algorithms/sorting-searching.md)
+- **[Ranges](docs/examples/ranges/README.md)** — views, adaptors, factories, pipelines (C++20)
+  - [Range factories & `ranges::to`](docs/examples/ranges/factories.md) · [Range concepts & access](docs/examples/ranges/range-concepts.md) · [Views & pipelines](docs/examples/ranges/views.md)
+- **[Iterators](docs/examples/iterators/README.md)** — categories, adaptors, `iterator_traits`
+  - [Iterator adaptors](docs/examples/iterators/adaptors.md) · [Iterator categories & concepts](docs/examples/iterators/categories.md) · [Iterator operations & traits](docs/examples/iterators/operations.md)
+- **[Utilities](docs/examples/utilities/README.md)** — `optional`, `variant`, `tuple`, `expected`, function objects
+  - [std::any](docs/examples/utilities/any.md) · [std::bitset](docs/examples/utilities/bitset.md) · [std::expected](docs/examples/utilities/expected.md) · [Function objects (`<functional>`)](docs/examples/utilities/functional.md) · [std::optional](docs/examples/utilities/optional.md) · [std::pair](docs/examples/utilities/pair.md) · [std::tuple](docs/examples/utilities/tuple.md) · [`<utility>` helpers](docs/examples/utilities/utility.md) · [std::variant](docs/examples/utilities/variant.md)
+- **[Memory](docs/examples/memory/README.md)** — smart pointers, allocators, memory resources
+  - [Allocators](docs/examples/memory/allocators.md) · [Polymorphic memory resources (PMR)](docs/examples/memory/memory-resources.md) · [Raw memory utilities](docs/examples/memory/raw-memory.md) · [std::shared_ptr](docs/examples/memory/shared_ptr.md) · [std::unique_ptr](docs/examples/memory/unique_ptr.md) · [std::weak_ptr](docs/examples/memory/weak_ptr.md)
+- **[Metaprogramming](docs/examples/metaprogramming/README.md)** — `type_traits`, `ratio`, `integer_sequence`
+  - [std::integer_sequence / index_sequence](docs/examples/metaprogramming/integer-sequence.md) · [std::ratio](docs/examples/metaprogramming/ratio.md) · [Static reflection (`<meta>`)](docs/examples/metaprogramming/reflection.md) · [Type traits](docs/examples/metaprogramming/type-traits.md)
+- **[Numerics](docs/examples/numerics/README.md)** — `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg
+  - [Bit manipulation (`<bit>`)](docs/examples/numerics/bit.md) · [Floating-point environment](docs/examples/numerics/cfenv.md) · [std::complex](docs/examples/numerics/complex.md) · [Basic linear algebra (`<linalg>`)](docs/examples/numerics/linalg.md) · [Math functions & constants](docs/examples/numerics/math.md) · [std::random](docs/examples/numerics/random.md) · [Data-parallel types (SIMD)](docs/examples/numerics/simd.md) · [std::valarray](docs/examples/numerics/valarray.md)
+- **[Date & time](docs/examples/datetime/README.md)** — `<chrono>`: durations, clocks, calendars, time zones
+  - [Calendar & time zones (C++20)](docs/examples/datetime/calendar-timezones.md) · [Clocks & time points](docs/examples/datetime/clocks-timepoints.md) · [std::chrono durations](docs/examples/datetime/durations.md)
+- **[Input/output](docs/examples/io/README.md)** — streams, files, string streams, filesystem, `syncstream`, `print`
+  - [File streams](docs/examples/io/files.md) · [std::filesystem](docs/examples/io/filesystem.md) · [I/O manipulators](docs/examples/io/manipulators.md) · [Print functions (`std::print`, `std::println`)](docs/examples/io/print.md) · [Streams & stream state](docs/examples/io/streams.md) · [String streams](docs/examples/io/string-streams.md) · [std::osyncstream](docs/examples/io/syncstream.md)
+- **[Concurrency](docs/examples/concurrency/README.md)** — threads, mutexes, atomics, futures, RCU & hazard pointers
+  - [std::atomic](docs/examples/concurrency/atomics.md) · [Latches, barriers & semaphores (C++20)](docs/examples/concurrency/coordination.md) · [Futures, promises & async](docs/examples/concurrency/futures.md) · [Mutexes & condition variables](docs/examples/concurrency/mutexes.md) · [Safe reclamation: RCU and hazard pointers](docs/examples/concurrency/safe-reclamation.md) · [std::thread / std::jthread](docs/examples/concurrency/threads.md)
+- **[Execution](docs/examples/execution/README.md)** — senders/receivers (C++26)
+  - [Senders & receivers](docs/examples/execution/senders-receivers.md)
+- **[Diagnostics](docs/examples/diagnostics/README.md)** — exceptions, `system_error`, `stacktrace`, `<debugging>`
+  - [Debugging support (`<debugging>`)](docs/examples/diagnostics/debugging.md) · [The standard exception hierarchy](docs/examples/diagnostics/exception-hierarchy.md) · [std::stacktrace](docs/examples/diagnostics/stacktrace.md) · [std::error_code & std::system_error](docs/examples/diagnostics/system_error.md)
+- **[Language support](docs/examples/language-support/README.md)** — `numeric_limits`, `<=>`, `source_location`, `initializer_list`, `typeid`, signals, `setjmp`
+  - [Three-way comparison (`operator<=>`)](docs/examples/language-support/comparison.md) · [std::initializer_list](docs/examples/language-support/initializer-list.md) · [Non-local jumps](docs/examples/language-support/non-local-jumps.md) · [std::numeric_limits](docs/examples/language-support/numeric-limits.md) · [Signal handling](docs/examples/language-support/signals.md) · [std::source_location](docs/examples/language-support/source-location.md) · [typeid, std::type_info, std::type_index](docs/examples/language-support/type-info.md)
+- **[Concepts](docs/examples/concepts/README.md)** — the standard concepts library (C++20)
+  - [Standard concepts](docs/examples/concepts/standard-concepts.md)
+- **[Feature-test macros](docs/examples/feature-test-macros/README.md)** — detecting what your compiler supports
+- **[Named requirements](docs/examples/named-requirements/README.md)** — *CopyConstructible*, *Compare*, *Hash* … and how concepts relate
+
+### Core language
+
+- **[Basic concepts](docs/examples/language/basic-concepts/README.md)** — comments, keywords, types, names/lookup, storage/linkage, `main`, freestanding
+  - [Comments](docs/examples/language/basic-concepts/comments.md) · [Contracts (C++26)](docs/examples/language/basic-concepts/contracts.md) · [Freestanding and hosted implementations](docs/examples/language/basic-concepts/freestanding.md) · [Fundamental types](docs/examples/language/basic-concepts/fundamental-types.md) · [Keywords and reserved identifiers](docs/examples/language/basic-concepts/keywords.md) · [The object model & `main`](docs/examples/language/basic-concepts/object-model.md) · [Scope, storage duration & linkage](docs/examples/language/basic-concepts/scope-storage-linkage.md)
+- **[Expressions](docs/examples/language/expressions/README.md)** — value categories, operators, conversions, literals, constant exprs
+  - [Constant expressions (`constexpr`, `consteval`, `constinit`)](docs/examples/language/expressions/constant-expressions.md) · [Conversions & casts](docs/examples/language/expressions/conversions.md) · [Literals](docs/examples/language/expressions/literals.md) · [Operators, precedence & evaluation order](docs/examples/language/expressions/operators.md) · [Reflection (C++26)](docs/examples/language/expressions/reflection.md) · [Value categories](docs/examples/language/expressions/value-categories.md)
+- **[Statements](docs/examples/language/statements/README.md)** — `if`/`switch`, loops, range-`for`, `break`/`continue`/`return`/`goto`
+  - [Iteration statements](docs/examples/language/statements/iteration.md) · [Jump statements](docs/examples/language/statements/jump-statements.md) · [Selection statements](docs/examples/language/statements/selection.md)
+- **[Declarations & initialization](docs/examples/language/declarations-initialization/README.md)** — `auto`, `const`/`constexpr`, the many initializations
+  - [Attributes](docs/examples/language/declarations-initialization/attributes.md) · [`const`, `constexpr`, `mutable` & `volatile`](docs/examples/language/declarations-initialization/const-mutable.md) · [Declarations, `auto` & type deduction](docs/examples/language/declarations-initialization/declarations-and-auto.md) · [Enumerations](docs/examples/language/declarations-initialization/enumerations.md) · [Initialization](docs/examples/language/declarations-initialization/initialization.md) · [Namespaces & name lookup](docs/examples/language/declarations-initialization/namespaces.md) · [Pointers, references & arrays](docs/examples/language/declarations-initialization/pointers-references-arrays.md) · [Type aliases (`using` / `typedef`)](docs/examples/language/declarations-initialization/type-aliases.md)
+- **[Functions](docs/examples/language/functions/README.md)** — overloading, default args, lambdas
+  - [Default & variadic arguments](docs/examples/language/functions/default-variadic-args.md) · [Functions & overloading](docs/examples/language/functions/functions-and-overloading.md) · [Lambdas](docs/examples/language/functions/lambdas.md)
+- **[Classes](docs/examples/language/classes/README.md)** — special members, RAII, inheritance, virtual, unions, deducing `this`, bit-fields, operator overloading
+  - [Bit-fields](docs/examples/language/classes/bit-fields.md) · [Explicit object parameters ("deducing `this`")](docs/examples/language/classes/explicit-object-parameter.md) · [Inheritance & polymorphism](docs/examples/language/classes/inheritance-polymorphism.md) · [Members & access control](docs/examples/language/classes/members-access.md) · [Operator overloading](docs/examples/language/classes/operator-overloading.md) · [Special member functions & RAII](docs/examples/language/classes/special-members.md) · [Unions & aggregates](docs/examples/language/classes/unions-aggregates.md)
+- **[Templates](docs/examples/language/templates/README.md)** — function/class templates, variadics, CTAD, constraints & concepts
+  - [Constraints and concepts (the language)](docs/examples/language/templates/constraints.md) · [Specialization & CTAD](docs/examples/language/templates/specialization-ctad.md) · [Template basics](docs/examples/language/templates/templates-basics.md) · [Variadic templates](docs/examples/language/templates/variadic-templates.md)
+- **[Exceptions](docs/examples/language/exceptions/README.md)** — `throw`/`try`/`catch`, `noexcept`, exception safety
+  - [noexcept & exception safety](docs/examples/language/exceptions/noexcept-and-safety.md) · [throw / try / catch](docs/examples/language/exceptions/throw-try-catch.md)
+- **[Coroutines](docs/examples/language/coroutines/README.md)** — `co_await`/`co_yield`/`co_return` (C++20)
+  - [Coroutines](docs/examples/language/coroutines/coroutines.md)
+- **[Modules](docs/examples/language/modules/README.md)** — `import`/`export` (C++20)
+  - [Modules](docs/examples/language/modules/modules.md)
+- **[Preprocessor](docs/examples/language/preprocessor/README.md)** — macros, includes, conditional compilation, `#embed`
+  - [`#embed` — resource inclusion (C++26)](docs/examples/language/preprocessor/embed.md) · [The preprocessor](docs/examples/language/preprocessor/preprocessor.md)
+
+### Everything else
+
+- **[`docs/guidelines/`](docs/guidelines/README.md)** — how to use it well (see [Guidelines](#guidelines))
+- **[`tests/`](tests/CMakeLists.txt)** — GoogleTest suite that checks the pages' claims (see [Running the tests](#running-the-tests))
+- **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) runs the tests
+- **[`evals/`](evals/README.md)** — test cases for the `cpp-guidelines` agent skill
+- **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (apply the guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current)
+- **[`modules/`](modules/)** — submodules: [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines), [perf-report](https://github.com/homer6/perf-report)
 
 Every area on cppreference's main page has pages, and every snippet compiles
 (or is tagged with why it can't). A GoogleTest suite that checks each page's
