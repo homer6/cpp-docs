@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/memory/weak_ptr.md.
 #include <memory>
+#include <version>
 
 #include <gtest/gtest.h>
 
@@ -62,4 +63,55 @@ TEST(WeakPtr, ObjectDestroyedWhileWeakRemains) {
     sp.reset();
     EXPECT_EQ(dtor, 1);
     EXPECT_EQ(wp.use_count(), 0);
+}
+
+// "Declaration": use_count() counts owners; reset() stops observing; the
+// control block outlives the object while a weak_ptr remains.
+TEST(WeakPtr, UseCountAndReset) {
+    auto sp = std::make_shared<int>(1);
+    auto sp2 = sp;
+    std::weak_ptr<int> wp = sp;
+    EXPECT_EQ(wp.use_count(), 2);
+    wp.reset();
+    EXPECT_TRUE(wp.expired());
+    EXPECT_EQ(sp.use_count(), 2);
+}
+
+// "Declaration": owner_before orders by control block; owner_hash/owner_equal
+// are C++26 (GCC 16 has them, GCC 15 and Clang 22 don't).
+TEST(WeakPtr, OwnerBasedComparison) {
+    auto a = std::make_shared<int>(1), b = std::make_shared<int>(1);
+    std::weak_ptr<int> wa = a, wa2 = a, wb = b;
+    EXPECT_FALSE(wa.owner_before(wa2) || wa2.owner_before(wa));
+    EXPECT_TRUE(wa.owner_before(wb) || wb.owner_before(wa));
+#if defined(__cpp_lib_smart_ptr_owner_equality)
+    EXPECT_TRUE(wa.owner_equal(wa2));
+    EXPECT_EQ(wa.owner_hash(), wa2.owner_hash());
+#elif defined(__GNUC__) && !defined(__clang__) && __GNUC__ >= 16
+    FAIL() << "page says GCC 16 has owner_hash/owner_equal";
+#endif
+}
+
+// "A callback that doesn't keep its target alive": weak_from_this; empty when
+// no shared_ptr owns the object.
+TEST(WeakPtr, WeakFromThisCallback) {
+    static int calls = 0;
+    struct Session : std::enable_shared_from_this<Session> {
+        void on_data() { ++calls; }
+        auto callback() {
+            return [self = weak_from_this()] {
+                if (auto s = self.lock()) s->on_data();
+            };
+        }
+    };
+    calls = 0;
+    auto s = std::make_shared<Session>();
+    auto cb = s->callback();
+    cb();
+    EXPECT_EQ(calls, 1);
+    s.reset();
+    cb();  // session gone: nothing happens
+    EXPECT_EQ(calls, 1);
+    Session on_stack;
+    EXPECT_TRUE(on_stack.weak_from_this().expired());
 }

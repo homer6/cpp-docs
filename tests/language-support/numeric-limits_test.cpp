@@ -3,6 +3,9 @@
 #include <climits>
 #include <cmath>
 #include <limits>
+#include <optional>
+#include <sstream>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -47,4 +50,45 @@ TEST(NumericLimits, CommonUses) {
 TEST(NumericLimits, Constexpr) {
     char buf[numeric_limits<unsigned char>::max() + 1];
     EXPECT_EQ(sizeof buf, 256u);
+}
+
+// "Declaration": lowest() equals min() for integers; digits10/max_digits10 values.
+TEST(NumericLimits, DeclarationTable) {
+    static_assert(numeric_limits<int>::lowest() == numeric_limits<int>::min());
+    static_assert(numeric_limits<int>::digits10 == 9);
+    static_assert(numeric_limits<double>::digits10 == 15);
+    static_assert(numeric_limits<double>::max_digits10 == 17);
+    static_assert(numeric_limits<int>::max_digits10 == 0);
+    static_assert(numeric_limits<int>::epsilon() == 0);
+    static_assert(numeric_limits<double>::digits == 53);  // mantissa bits
+    static_assert(numeric_limits<const int>::is_specialized);
+    static_assert(numeric_limits<double>::has_infinity && numeric_limits<double>::has_quiet_NaN);
+}
+
+// "Check before you overflow": checked_add from the page.
+constexpr std::optional<int> checked_add(int a, int b) {
+    if (b > 0 && a > numeric_limits<int>::max() - b) return std::nullopt;
+    if (b < 0 && a < numeric_limits<int>::min() - b) return std::nullopt;
+    return a + b;
+}
+TEST(NumericLimits, CheckedAdd) {
+    static_assert(!checked_add(numeric_limits<int>::max(), 1));
+    static_assert(!checked_add(numeric_limits<int>::min(), -1));
+    static_assert(*checked_add(40, 2) == 42);
+}
+
+// "Gotchas": an unspecialized type compiles silently with is_specialized false.
+TEST(NumericLimits, UnspecializedType) {
+    struct Mine { int v = 0; };
+    static_assert(!numeric_limits<Mine>::is_specialized);
+    static_assert(numeric_limits<Mine>::max().v == 0);  // T()
+}
+
+// "Gotchas": char-sized results print as characters; unary + promotes.
+TEST(NumericLimits, CharSizedPrintsAsChar) {
+    std::ostringstream a, b;
+    a << numeric_limits<unsigned char>::max();
+    b << +numeric_limits<unsigned char>::max();
+    EXPECT_EQ(a.str(), std::string(1, static_cast<char>(255)));
+    EXPECT_EQ(b.str(), "255");
 }

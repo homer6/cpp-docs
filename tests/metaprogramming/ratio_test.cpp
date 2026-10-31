@@ -46,3 +46,20 @@ TEST(Ratio, TypeLevelIntmax) {
     static_assert(std::is_same_v<decltype(std::ratio<1, 2>::num), const std::intmax_t>);
     static_assert(std::is_same_v<std::ratio<2, 4>::type, std::ratio<1, 2>>);
 }
+
+// "A custom unit": 60 fps frames convert to ms with a cast, from seconds exactly.
+TEST(Ratio, CustomUnit) {
+    using frames = std::chrono::duration<long long, std::ratio<1, 60>>;
+    static_assert(std::chrono::duration_cast<std::chrono::milliseconds>(frames{3}).count() == 50);
+    static_assert(frames{std::chrono::seconds{2}}.count() == 120);
+}
+
+// "Gotchas": unreduced ratios are different types; ::type normalizes; the
+// ratio_add family yields reduced types.
+TEST(Ratio, UnreducedIsDifferentType) {
+    static_assert(!std::is_same_v<std::ratio<2, 4>, std::ratio<1, 2>>);
+    static_assert(std::is_same_v<std::ratio<2, 4>::type, std::ratio<1, 2>>);
+    static_assert(std::is_same_v<std::ratio_add<std::ratio<1, 4>, std::ratio<1, 4>>, std::ratio<1, 2>>);
+    static_assert(std::ratio_not_equal_v<std::ratio<1, 3>, std::ratio<1, 2>>);
+    static_assert(std::ratio_greater_equal_v<std::ratio<1, 2>, std::ratio<2, 4>>);
+}

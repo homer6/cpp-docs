@@ -1,6 +1,8 @@
 // Checks claims made by docs/examples/language-support/source-location.md.
 #include <cstdint>
 #include <cstring>
+#include <format>
+#include <utility>
 #include <source_location>
 #include <string>
 #include <string_view>
@@ -53,5 +55,47 @@ TEST(SourceLocation, FunctionNameIsImplementationDefined) {
     EXPECT_EQ(name, "std::source_location {anonymous}::body_current()");
 #else
     GTEST_SKIP() << "spelling recorded only for GCC and Clang";
+#endif
+}
+
+// "Declaration": a default-constructed location is "unknown"; it's trivially copyable.
+TEST(SourceLocation, DefaultIsUnknown) {
+    std::source_location loc;
+    EXPECT_STREQ(loc.file_name(), "");
+    EXPECT_STREQ(loc.function_name(), "");
+    EXPECT_EQ(loc.line(), 0u);
+    EXPECT_EQ(loc.column(), 0u);
+    static_assert(std::is_trivially_copyable_v<std::source_location>);
+}
+
+// "With a variadic function": the fmt_loc wrapper reports the caller's line.
+namespace {
+struct fmt_loc {
+    std::string_view fmt;
+    std::source_location loc;
+    fmt_loc(const char* f, std::source_location l = std::source_location::current()) : fmt{f}, loc{l} {}
+};
+template <class... Args>
+std::pair<std::uint_least32_t, std::string> logf(fmt_loc f, const Args&... args) {
+    return {f.loc.line(), std::vformat(f.fmt, std::make_format_args(args...))};
+}
+}  // namespace
+TEST(SourceLocation, VariadicWrapper) {
+    int line = __LINE__ + 1;
+    auto [l, text] = logf("x = {}", 42);
+    EXPECT_EQ(l, static_cast<std::uint_least32_t>(line));
+    EXPECT_EQ(text, "x = 42");
+}
+
+// "Gotchas": column() differs — GCC reports the '(' of the call, Clang the
+// start of the function name.
+TEST(SourceLocation, ColumnDiffersByCompiler) {
+    auto loc = log_at();  // log_at starts at column 16, '(' at column 22
+#if defined(__clang__)
+    EXPECT_EQ(loc.column(), 16u);
+#elif defined(__GNUC__)
+    EXPECT_EQ(loc.column(), 22u);
+#else
+    GTEST_SKIP() << "column recorded only for GCC and Clang";
 #endif
 }

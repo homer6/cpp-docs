@@ -61,3 +61,37 @@ TEST(Stacktrace, PmrStacktrace) {
     EXPECT_EQ(t.get_allocator().resource(), &arena);
 #endif
 }
+
+// "Declaration": current(skip, max_depth) drops the innermost frames and caps the depth.
+TEST(Stacktrace, SkipAndMaxDepth) {
+    CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
+#ifdef __cpp_lib_stacktrace
+    auto full = std::stacktrace::current();
+    auto capped = std::stacktrace::current(0, 1);
+    EXPECT_EQ(capped.size(), 1u);
+    auto skipped = std::stacktrace::current(1);
+    EXPECT_EQ(skipped.size() + 1, full.size());
+    EXPECT_FALSE(std::to_string(full[0]).empty());
+#endif
+}
+
+// "In error reporting" + "Gotchas": a trace taken in a catch block shows the
+// handler's stack, not the throw site.
+#ifdef __cpp_lib_stacktrace
+namespace {
+[[gnu::noinline]] void thrower_fn() { throw 1; }
+}  // namespace
+#endif
+TEST(Stacktrace, CatchBlockDoesNotShowThrowSite) {
+    CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
+#ifdef __cpp_lib_stacktrace
+    std::string text;
+    try {
+        thrower_fn();
+    } catch (int) {
+        text = std::to_string(std::stacktrace::current());
+    }
+    EXPECT_EQ(text.find("thrower_fn"), std::string::npos);
+    EXPECT_NE(text.find("CatchBlockDoesNotShowThrowSite"), std::string::npos);
+#endif
+}

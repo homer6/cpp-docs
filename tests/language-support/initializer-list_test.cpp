@@ -65,3 +65,31 @@ TEST(InitializerList, Homogeneous) {
     static_assert(std::is_same_v<decltype(il), std::initializer_list<int>>);
     SUCCEED();
 }
+
+// "Declaration": begin()/end() are const E*; free std::begin/end work; copying
+// copies the view, not the elements.
+TEST(InitializerList, DeclarationMembers) {
+    std::initializer_list<int> il{1, 2, 3};
+    static_assert(std::is_same_v<decltype(il.begin()), const int*>);
+    static_assert(noexcept(il.size()));
+    auto copy = il;
+    EXPECT_EQ(copy.begin(), il.begin());  // same backing array
+    EXPECT_EQ(std::end(il) - std::begin(il), 3);
+    EXPECT_EQ(std::initializer_list<int>{}.size(), 0u);
+}
+
+// "What auto deduces": auto a = {…} is an initializer_list; auto b{1} is int (N3922).
+TEST(InitializerList, AutoDeduction) {
+    auto a = {1, 2, 3};
+    auto b{1};
+    static_assert(std::is_same_v<decltype(a), std::initializer_list<int>>);
+    static_assert(std::is_same_v<decltype(b), int>);
+}
+
+// "Gotchas": narrowing is an error inside braces.
+template <class T>
+concept BracesFromDouble = requires(double d) { std::vector<T>{1, d}; };
+TEST(InitializerList, NarrowingRejected) {
+    static_assert(!BracesFromDouble<int>);
+    static_assert(BracesFromDouble<double>);
+}

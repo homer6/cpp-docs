@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/numerics/valarray.md.
 #include <cmath>
+#include <type_traits>
 #include <valarray>
 #include <vector>
 
@@ -31,4 +32,30 @@ TEST(Valarray, SliceAndMask) {
     EXPECT_EQ(vec(evens), (std::vector<int>{0, 2, 4, 6}));
     v[v > 3] = 0;
     EXPECT_EQ(vec(v), (std::vector<int>{0, 1, 2, 3, 0, 0, 0, 0}));
+}
+
+// "Shift, rotate, apply": the values in the comments.
+TEST(Valarray, ShiftRotateApply) {
+    std::valarray<int> v{0, 1, 2, 3, 4, 5, 6, 7};
+    EXPECT_EQ(vec<int>(v.shift(2)), (std::vector<int>{2, 3, 4, 5, 6, 7, 0, 0}));
+    EXPECT_EQ(vec<int>(v.cshift(2)), (std::vector<int>{2, 3, 4, 5, 6, 7, 0, 1}));
+    std::valarray<int> sq = v.apply([](int x) { return x * x; });
+    EXPECT_EQ(sq[7], 49);
+}
+
+// "Declaration": comparisons are element-wise and return valarray<bool>.
+TEST(Valarray, ComparisonsReturnMask) {
+    std::valarray<int> a{1, 5}, b{2, 2};
+    std::valarray<bool> lt = a < b;
+    EXPECT_TRUE(lt[0]);
+    EXPECT_FALSE(lt[1]);
+}
+
+// "Gotchas": auto may not give a valarray — libstdc++ and libc++ return a proxy for a + b.
+TEST(Valarray, AutoGivesProxy) {
+    std::valarray<double> a{1, 2}, b{3, 4};
+    auto c = a + b;
+    static_assert(!std::is_same_v<decltype(c), std::valarray<double>>);
+    std::valarray<double> d = a + b;
+    EXPECT_EQ(d[1], 6.0);
 }

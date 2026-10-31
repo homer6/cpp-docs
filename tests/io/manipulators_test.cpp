@@ -1,6 +1,7 @@
 // Checks claims made by docs/examples/io/manipulators.md.
 #include <iomanip>
 #include <ios>
+#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -15,14 +16,36 @@ std::string fresh(F f) {
 }
 }  // namespace
 
-// "Common manipulators": each line's output, on a fresh stream.
-TEST(Manipulators, CommonOutputs) {
-    EXPECT_EQ(fresh([](auto& os) { os << std::boolalpha << true; }), "true");
-    EXPECT_EQ(fresh([](auto& os) { os << std::hex << 255; }), "ff");
-    EXPECT_EQ(fresh([](auto& os) { os << std::showbase << std::hex << 255; }), "0xff");
-    EXPECT_EQ(fresh([](auto& os) { os << std::setw(8) << 42; }), "      42");
-    EXPECT_EQ(fresh([](auto& os) { os << std::setfill('0') << std::setw(4) << 7; }), "0007");
-    EXPECT_EQ(fresh([](auto& os) { os << std::left << std::setw(8) << "hi"; }), "hi      ");
+// "Mental model": hex stays on, setw applies to the next item only.
+TEST(Manipulators, MentalModelDiagram) {
+    EXPECT_EQ(fresh([](auto& os) { os << std::hex << 255 << ' ' << std::setw(4) << 1 << 2; }), "ff    12");
+}
+
+// "Common manipulators": the lines run in order on one stream, with the
+// page's resets; each comment is the text that line adds.
+TEST(Manipulators, CommonOutputsInSequence) {
+    std::ostringstream os;
+    auto step = [&](auto f) {
+        os.str("");
+        f(os);
+        return os.str();
+    };
+    EXPECT_EQ(step([](auto& s) { s << std::boolalpha << true; }), "true");
+    EXPECT_EQ(step([](auto& s) { s << std::hex << 255; }), "ff");
+    EXPECT_EQ(step([](auto& s) { s << std::showbase << 255; }), "0xff");
+    EXPECT_EQ(step([](auto& s) { s << std::dec << std::noshowbase; }), "");
+    EXPECT_EQ(step([](auto& s) { s << std::setw(8) << 42; }), "      42");
+    EXPECT_EQ(step([](auto& s) { s << std::setfill('0') << std::setw(4) << 7; }), "0007");
+    EXPECT_EQ(step([](auto& s) { s << std::setfill(' '); }), "");
+    EXPECT_EQ(step([](auto& s) { s << std::left << std::setw(8) << "hi"; }), "hi      ");
+}
+
+// "Gotchas": without the resets, setw(8) << 42 prints "    0x2a" and
+// left << setw(8) << "hi" prints "hi000000".
+TEST(Manipulators, WithoutResets) {
+    EXPECT_EQ(fresh([](auto& s) { s << std::hex << std::showbase << std::setw(8) << 42; }), "    0x2a");
+    EXPECT_EQ(fresh([](auto& s) { s << std::setfill('0') << std::left << std::setw(8) << "hi"; }), "hi000000");
+    EXPECT_EQ(fresh([](auto& s) { s << std::setw(2) << "hello"; }), "hello");  // setw never truncates
 }
 
 // "Common manipulators": the pi lines run in sequence on one stream, so the
@@ -49,7 +72,8 @@ TEST(Manipulators, SetwIsNotSticky) {
     EXPECT_EQ(os.fill(), '.');  // still set
 }
 
-// "Gotchas": save and restore the flags to stop sticky state leaking.
+// "Save and restore the state": copyfmt brings back the caller's formatting;
+// "Gotchas": fmtflags save/restore works for the flags.
 TEST(Manipulators, SaveRestoreFlags) {
     std::ostringstream os;
     std::ios::fmtflags saved = os.flags();
@@ -57,6 +81,17 @@ TEST(Manipulators, SaveRestoreFlags) {
     os.flags(saved);
     os << 255;
     EXPECT_EQ(os.str(), "ff 255");
+
+    auto print_hex = [](std::ostream& o, int v) {
+        std::ios saved(nullptr);
+        saved.copyfmt(o);
+        o << std::hex << std::setfill('0') << std::setw(4) << v;
+        o.copyfmt(saved);
+    };
+    std::ostringstream caller;
+    print_hex(caller, 255);
+    caller << ' ' << std::setw(3) << 7;
+    EXPECT_EQ(caller.str(), "00ff   7");  // decimal and ' ' fill again
 }
 
 // "Quoting (C++14)": quoted escapes on output and round-trips on input.
