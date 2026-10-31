@@ -213,6 +213,12 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
   ID, combine them into one row.
 - **If you rebased before merging, comment on the PR** saying what conflicted
   and how it was resolved. No comment is needed for a clean merge.
+- **Never merge a PR without the owner's explicit approval for that PR** — a
+  verdict such as "merge #n", or "merge them all" naming that batch. This
+  includes `CLAUDE.md`/README PRs opened at the owner's request: being asked
+  to make a change means open the PR (and close its issue), not merge it.
+  Approval for one batch doesn't carry over to PRs opened later. Review goes
+  one PR at a time (`/review-prs`).
 - **Merge PRs with a merge commit only** — never squash or rebase-merge — and
   **delete the feature branch** when merging:
   `gh pr merge <n> --merge --delete-branch`. Then remove its worktree
