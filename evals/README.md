@@ -83,7 +83,67 @@ Record per case, then aggregate per rule:
 | **Didn't ask** | `needs-context` case rewritten without stating what's unknown |
 
 Always record: model name and version, agent/client and version, skill commit,
-compiler and version, date, and the exact task prompt.
+compiler and version, date, the exact task prompt, and tokens and wall time
+per run. A skill that helps but triples the cost is a different trade-off from
+one that helps cheaply.
+
+Score detection, rule attribution and fix validity as **separate measures**,
+not one overall grade. ContextCRBench (arXiv 2511.07017, Nov 2025) splits code
+review the same way: hunk-level assessment, line-level defect localization and
+comment generation are three tasks.
+
+### Judging
+
+- Check mechanical items (the fix compiles, the cited rule ID exists) with a
+  script, not a model.
+- If an LLM judges the rest, **have a human review a sample of its verdicts**.
+  Don't count agreement between models as correctness. In a census of 22,854
+  repositories' `AGENTS.md`/`CLAUDE.md` files (arXiv 2610.31715, v2 Oct 26,
+  2026), the annotating models agreed far more with each other than with the
+  human reviewer.
+- To compare two skill versions overall, show a judge both answers without
+  saying which version produced which (blind comparison).
+- Drop measures that pass in both arms; they tell you nothing about the
+  skill.
+
+The [Agent Skills guide to evaluating skills](https://agentskills.io/skill-creation/evaluating-skills)
+describes the same with/without-skill loop. It keeps cases in
+`evals/evals.json` inside the skill directory, but that's a convention, not
+part of the format spec. This suite keeps one `.cpp` + `.json` pair per case
+so every snippet can be compiled.
+
+## clang-tidy checks that cite these rules
+
+A check whose docs cite a rule covers **part** of it at most. Use these as a
+baseline to compare the agent against, not as the expected answer.
+
+| Check (clang-tidy 23.1 docs) | Rules it cites | Limits |
+|---|---|---|
+| `cppcoreguidelines-owning-memory` | I.11, R.3, C.33, GSL.view | Type-based, not flow-sensitive; only knows owners marked `gsl::owner<T*>` |
+| `cppcoreguidelines-no-malloc` | R.10 | `malloc`/`free` family only |
+| `cppcoreguidelines-init-variables` | ES.20, Type.5 | Local variables |
+| `cppcoreguidelines-rvalue-reference-param-not-moved` | F.18 | — |
+| `cppcoreguidelines-missing-std-forward` | F.19 | — |
+| `cppcoreguidelines-special-member-functions` | C.21 | — |
+
+R.1, R.5, R.11, R.20, R.21, C.13 and the Lifetime profile have no check in
+this table. That only means none was found, not that none exists.
+
+## Planned next steps
+
+Design proposals for growing the suite (from the issue #3 research report).
+They're plans, not measured improvements:
+
+- For each `needs-context` case, write down the clarification a good answer
+  should ask for.
+- Add attribution traps: plausible but wrong rule IDs a reviewer might cite.
+- Add cases where a constraint makes the usual rewrite wrong (ABI, externally
+  owned resources).
+- Keep a held-out set that never appears in the skill or its examples.
+- When a case gets near-duplicate variants, report results per case family
+  as well as per case, so variants aren't counted as independent findings.
+- Add arms for the comparison: minimal guidance, and irrelevant guidance of
+  the same length, to check whether extra context alone explains any gain.
 
 ## Checking the suite itself
 

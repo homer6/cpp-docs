@@ -25,7 +25,52 @@ date is {{DATE}}.
   file plus JSON metadata with an outcome: violation / compliant / exception /
   constraint / needs-context.
 
-## Questions to answer
+## Already verified (from the 2026-10-31 report; don't repeat)
+
+- Agent Skills spec (agentskills.io/specification, originally from Anthropic,
+  open standard): required `name` (≤64, lowercase/digits/hyphens, matches the
+  directory) and `description` (≤1024); optional `license`, `compatibility`
+  (≤500), `metadata`, `allowed-tools` (experimental); `scripts/`,
+  `references/`, `assets/`; progressive disclosure (metadata ~100 tokens,
+  body <5000 tokens recommended, under 500 lines); file references relative
+  to the skill root, one level deep; `skills-ref validate`.
+- agentskills.io's evaluating-skills guide: with/without-skill runs,
+  assertions, grading with evidence, tokens and time, blind comparison,
+  human review.
+- ContextCRBench (arXiv 2511.07017): three review tasks (hunk assessment,
+  line localization, comment generation).
+- AGENTS.md/CLAUDE.md census (arXiv 2610.31715): 22,854 repos; models agree
+  more with each other than with the human reviewer.
+- Configuration smells (arXiv 2606.15828): six smells across 100 repos.
+- Instruction categories (arXiv 2610.21421): five categories, 31
+  combinations, Gemma 4 and GPT-5.4, five Python libraries.
+- clang-tidy 23.1 checks whose docs cite rules: `owning-memory` (I.11, R.3,
+  C.33, GSL.view), `no-malloc` (R.10), `init-variables` (ES.20, Type.5),
+  `rvalue-reference-param-not-moved` (F.18), `missing-std-forward` (F.19),
+  `special-member-functions` (C.21).
+
+## Still open (prioritize these)
+
+1. **Client support** — which agents/clients load Agent Skills, since which
+   version, and how each discovers and loads them (the agentskills.io client
+   page didn't render for us). Cite each client's own docs.
+2. **Skills outside the skill directory** — how clients handle a skill whose
+   instructions point at files in the surrounding repo rather than its own
+   `references/`.
+3. **clang-tidy coverage** for R.1, R.5, R.11, R.20, R.21, C.13, ES.65 and
+   the Lifetime profile, from check docs that cite those rules; MSVC Core
+   Check's documented rule mapping.
+4. **Ablation numbers** — published with/without effect sizes for guidance
+   files or skills on coding or review tasks. Quote the paper's own numbers.
+   (2610.21421's abstract says the number of instructions alone didn't
+   determine token usage; it doesn't say more instructions hurt code quality.)
+5. **"Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for
+   Coding Agents?"** and **"Too Noisy To Learn"** — exact arXiv IDs and
+   findings (the last report cited the wrong paper for the second).
+6. **Prior art and licences** — C++ guideline datasets, linters or agent rule
+   packages, with licence and pinned commit.
+
+## Questions to answer (first run; the open list above takes priority)
 
 1. **Agent Skills format** — What is the current state of the open "Agent
    Skills" (`SKILL.md`) format? Who maintains the specification, what fields

@@ -64,8 +64,11 @@ Don't over-apply rules:
 
 - Compile with the project's flags; warnings stay at zero.
 - Run the tests that cover the code.
-- Run clang-tidy if the project has a config (`cppcoreguidelines-*`,
-  `bugprone-*` checks map to many of these rules).
+- Run clang-tidy if the project has a config. A check that names a rule
+  doesn't enforce all of it. For example, `cppcoreguidelines-owning-memory`
+  (I.11, R.3, C.33) is type-based and only sees pointers marked
+  `gsl::owner<T*>`. A clean run doesn't mean the code complies; a finding
+  still needs the rule's exceptions checked.
 - For memory or lifetime fixes, run the ASan/UBSan build if one exists.
 
 Report anything you couldn't validate.
