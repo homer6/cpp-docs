@@ -1,0 +1,23 @@
+{
+  "id": "es20-input-buffer-exception",
+  "outcome": "exception",
+  "rules": [
+    "ES.20"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_not_cite_as_violation": [
+      "ES.20"
+    ],
+    "acceptable": [
+      "mention ES.20's documented exception for buffers filled from input",
+      "note the risk of reading beyond gcount()",
+      "optionally suggest [[indeterminate]] (C++26) to document intent"
+    ]
+  },
+  "notes": "ES.20 has an explicit exception for objects about to be initialized from input. Demanding initialization is acceptable only as a soft note, not a violation.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

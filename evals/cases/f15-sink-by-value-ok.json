@@ -1,0 +1,24 @@
+{
+  "id": "f15-sink-by-value-ok",
+  "outcome": "compliant",
+  "rules": [
+    "F.15",
+    "F.16",
+    "F.18"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_not_flag": [
+      "F.16",
+      "F.15"
+    ],
+    "must_not_change": [
+      "by-value sink + std::move is an accepted convention; don't rewrite to const std::string&"
+    ]
+  },
+  "notes": "Pass-by-value sink is conventional (see F.15 table / F.18 discussion). Accept a mention of F.18 as an alternative, not as a violation.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

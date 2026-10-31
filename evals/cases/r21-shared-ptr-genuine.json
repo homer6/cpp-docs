@@ -1,0 +1,19 @@
+{
+  "id": "r21-shared-ptr-genuine",
+  "outcome": "compliant",
+  "rules": [
+    "R.21"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_not_flag": [
+      "R.21",
+      "R.20"
+    ]
+  },
+  "notes": "Genuinely shared ownership with unknown last owner; shared_ptr is correct.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "r3-nullable-observer-param",
+  "outcome": "compliant",
+  "rules": [
+    "R.3",
+    "F.7"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_not_flag": [
+      "R.3",
+      "R.20",
+      "R.11"
+    ],
+    "must_not_change": [
+      "parameter type must stay a non-owning pointer (or become const Widget&/optional<const Widget&> only if nullability is preserved)"
+    ]
+  },
+  "notes": "Legitimate non-owning, nullable raw pointer (R.3, F.7). Rewriting to a smart pointer is an incorrect edit.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

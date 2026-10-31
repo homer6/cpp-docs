@@ -1,0 +1,21 @@
+{
+  "id": "f16-small-by-value-ok",
+  "outcome": "compliant",
+  "rules": [
+    "F.16"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_not_flag": [
+      "F.16"
+    ],
+    "must_not_change": [
+      "small types stay by value; must not become const&"
+    ]
+  },
+  "notes": "Cheap-to-copy types passed by value are correct; switching to const& is an incorrect edit.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

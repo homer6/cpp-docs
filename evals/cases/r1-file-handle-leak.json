@@ -1,0 +1,25 @@
+{
+  "id": "r1-file-handle-leak",
+  "outcome": "violation",
+  "rules": [
+    "R.1"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_cite_any": [
+      "R.1"
+    ],
+    "fix": {
+      "must_compile": true,
+      "properties": [
+        "FILE* closed on every path (RAII wrapper, e.g. unique_ptr with fclose deleter, or std::ifstream)",
+        "behaviour unchanged"
+      ]
+    }
+  },
+  "notes": "Non-memory resource; checks that the agent applies RAII beyond new/delete.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}
