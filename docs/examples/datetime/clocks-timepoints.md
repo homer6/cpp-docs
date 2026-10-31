@@ -21,13 +21,16 @@ points from different clocks aren't comparable.
 ```cpp
 #include <chrono>
 namespace ch = std::chrono;
+void do_work();
 
+void measure() {
 auto start = ch::steady_clock::now();
 do_work();
 auto elapsed = ch::steady_clock::now() - start;       // a duration
 
 auto ms = ch::duration_cast<ch::milliseconds>(elapsed).count();
 double secs = ch::duration<double>(elapsed).count();
+}
 ```
 
 **Always use `steady_clock` for intervals** — `system_clock` can leap forward or
@@ -36,6 +39,8 @@ backward and produce negative or absurd elapsed times.
 ## Wall-clock time
 
 ```cpp
+namespace ch = std::chrono;
+
 auto now = ch::system_clock::now();                   // a time_point
 std::time_t t = ch::system_clock::to_time_t(now);     // bridge to C time
 
@@ -45,10 +50,15 @@ std::string s = std::format("{:%Y-%m-%d %H:%M:%S}", now);
 
 ## time_point arithmetic
 
-```cpp
+```cpp body
+namespace ch = std::chrono;
+using namespace std::chrono_literals;
+auto tp1 = ch::steady_clock::now();
+
 auto deadline = ch::steady_clock::now() + 5s;          // time_point + duration
 while (ch::steady_clock::now() < deadline) { /* ... */ }
 
+auto tp2  = ch::steady_clock::now();
 auto diff = tp2 - tp1;                                  // time_point - time_point = duration
 ```
 

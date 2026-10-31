@@ -35,11 +35,15 @@ Because the default argument is evaluated at the call site, `loc` reflects
 ### What it exposes
 
 ```cpp
-auto loc = std::source_location::current();
-loc.file_name();        // const char*
-loc.line();             // uint_least32_t
-loc.column();           // uint_least32_t
-loc.function_name();    // const char*
+#include <source_location>
+
+void where() {
+    auto loc = std::source_location::current();
+    loc.file_name();        // const char*
+    loc.line();             // uint_least32_t
+    loc.column();           // uint_least32_t
+    loc.function_name();    // const char*
+}
 ```
 
 ## Gotchas

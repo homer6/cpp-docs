@@ -11,16 +11,17 @@ tick `Period` (a [`std::ratio`](../metaprogramming/ratio.md) of seconds). The
 named aliases cover the usual units:
 
 ```cpp
-std::chrono::nanoseconds, microseconds, milliseconds,
-std::chrono::seconds, minutes, hours,
-std::chrono::days, weeks, months, years          // (C++20)
+using std::chrono::nanoseconds, std::chrono::microseconds, std::chrono::milliseconds,
+      std::chrono::seconds, std::chrono::minutes, std::chrono::hours,
+      std::chrono::days, std::chrono::weeks, std::chrono::months,
+      std::chrono::years;                                          // days..years: C++20
 ```
 
 ## Examples
 
 ### Literals and arithmetic
 
-```cpp
+```cpp body
 #include <chrono>
 using namespace std::chrono_literals;        // 1s, 100ms, 2h, ...
 
@@ -36,7 +37,8 @@ automatically — no silent unit loss.
 
 ### Converting between units
 
-```cpp
+```cpp body
+using namespace std::chrono_literals;
 std::chrono::seconds s = 90s;
 auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(s);   // 90000ms
 
@@ -49,6 +51,7 @@ std::chrono::ceil<std::chrono::seconds>(1ms);        // 1s
 ### Floating-point durations
 
 ```cpp
+using namespace std::chrono_literals;
 std::chrono::duration<double> secs = 1500ms;   // 1.5  (implicit: no precision loss)
 double fractional = secs.count();              // 1.5
 ```

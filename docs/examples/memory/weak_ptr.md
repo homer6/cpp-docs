@@ -15,9 +15,7 @@ To use the object you must `lock()` it, which atomically returns a `shared_ptr`
 
 ### Observe without owning
 
-```cpp
-#include <memory>
-
+```cpp body
 auto sp = std::make_shared<Widget>();
 std::weak_ptr<Widget> wp = sp;          // does NOT bump strong count
 
@@ -45,7 +43,8 @@ This is the canonical cure for the `shared_ptr` cycle leak: make the "back" or
 ### Caches
 
 ```cpp
-std::unordered_map<Key, std::weak_ptr<Value>> cache;
+struct Value {};
+std::unordered_map<std::string, std::weak_ptr<Value>> cache;
 // entries don't keep values alive; lock() to fetch, re-create on miss/expired
 ```
 

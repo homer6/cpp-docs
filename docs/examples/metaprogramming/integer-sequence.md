@@ -12,7 +12,8 @@ you can write `things[Is]...` / `get<Is>(t)...` — turning a count into an
 expandable pack.
 
 ```cpp
-std::make_index_sequence<3>     // → std::index_sequence<0, 1, 2>
+static_assert(std::is_same_v<std::make_index_sequence<3>,
+                             std::index_sequence<0, 1, 2>>);
 ```
 
 ## The canonical pattern: call a function with tuple elements
@@ -35,7 +36,7 @@ auto my_apply(F&& f, Tuple&& t) {
                       std::make_index_sequence<n>{});
 }
 
-my_apply([](int a, int b, int c){ return a+b+c; }, std::tuple{1,2,3});  // 6
+int six = my_apply([](int a, int b, int c){ return a+b+c; }, std::tuple{1,2,3});  // 6
 ```
 
 The `std::get<Is>(t)...` expansion is the whole point: `Is` becomes `0,1,2`, so

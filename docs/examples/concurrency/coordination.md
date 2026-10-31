@@ -11,13 +11,17 @@ use** — once it reaches zero it stays there.
 ```cpp
 #include <latch>
 
-std::latch done{3};                  // expect 3 arrivals
+void do_work();
 
-for (int i = 0; i < 3; ++i)
-    std::jthread{[&done]{ do_work(); done.count_down(); }};
+void run() {
+    std::latch done{3};                  // expect 3 arrivals
+    std::vector<std::jthread> workers;
+    for (int i = 0; i < 3; ++i)
+        workers.emplace_back([&done]{ do_work(); done.count_down(); });
 
-done.wait();                         // blocks until all 3 counted down
-// also: done.arrive_and_wait();  (count down, then wait)
+    done.wait();                         // blocks until all 3 counted down
+    // also: done.arrive_and_wait();  (count down, then wait)
+}
 ```
 
 Great for "wait until N workers have finished startup / a phase."
@@ -30,6 +34,9 @@ for the next phase.
 
 ```cpp
 #include <barrier>
+
+constexpr int N = 10;                    // number of phases
+void compute_phase();
 
 std::barrier sync{4, []{ /* runs once per phase when all 4 arrive */ }};
 
@@ -59,9 +66,9 @@ void use_resource() {
     slots.release();                     // give it back
 }
 
-std::binary_semaphore signal{0};         // like a lightweight one-shot event
-signal.release();                         // from one thread
-signal.acquire();                         // wakes another
+std::binary_semaphore event{0};          // like a lightweight one-shot event
+void notifier() { event.release(); }     // from one thread
+void waiter()   { event.acquire(); }     // wakes once released
 ```
 
 ## Gotchas

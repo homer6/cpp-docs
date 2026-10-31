@@ -33,8 +33,10 @@ struct Point {
     bool operator==(const Point&) const = default;     // (also defaulted)
 };
 
-Point{1,2} < Point{1,3};      // true — all six operators now work
-std::sort(points.begin(), points.end());               // sortable for free
+void demo(std::vector<Point>& points) {
+    bool lt = Point{1,2} < Point{1,3};                  // true — all six operators now work
+    std::sort(points.begin(), points.end());            // sortable for free
+}
 ```
 
 ### Custom ordering
@@ -53,8 +55,9 @@ struct Version {
 
 ### Using the result
 
-```cpp
-auto c = a <=> b;
+```cpp body
+int a = 1, b = 2;
+auto c = a <=> b;                     // std::strong_ordering for ints
 if (c < 0)      { /* a < b */ }
 else if (c > 0) { /* a > b */ }
 else            { /* equal/equivalent */ }

@@ -12,7 +12,7 @@ or stream the whole thing.
 
 ## Examples
 
-```cpp
+```cpp needs=stacktrace
 #include <stacktrace>
 #include <iostream>
 
@@ -22,20 +22,28 @@ void inner() {
 }
 
 // inspect frames individually:
-for (const std::stacktrace_entry& f : std::stacktrace::current()) {
-    f.description();                    // function name
-    f.source_file();                    // file
-    f.source_line();                    // line
+void frames() {
+    for (const std::stacktrace_entry& f : std::stacktrace::current()) {
+        f.description();                // function name
+        f.source_file();                // file
+        f.source_line();                // line
+    }
 }
 ```
 
 ### In error reporting
 
-```cpp
-try {
-    risky();
-} catch (const std::exception& e) {
-    std::cerr << e.what() << "\n at:\n" << std::stacktrace::current();
+```cpp needs=stacktrace
+#include <stacktrace>
+
+void risky();
+
+void report() {
+    try {
+        risky();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << "\n at:\n" << std::stacktrace::current();
+    }
 }
 ```
 
@@ -48,7 +56,10 @@ try {
 - **Capturing a trace is relatively expensive.** Don't grab one on a hot path;
   reserve it for error/diagnostic paths.
 - **Support and quality vary.** It's C++23 and depends on a platform backend; some
-  toolchains need a linker flag or a backtrace library to populate symbols.
+  toolchains need a linker flag or a backtrace library to populate symbols
+  (GCC 14+ on Linux: link with `-lstdc++exp`). Homebrew GCC 15 on macOS ships
+  without it (`__cpp_lib_stacktrace` undefined); the examples here were checked
+  with GCC 16.
 - **`std::pmr::stacktrace`** exists if you want to control the allocation of the
   frame storage.
 

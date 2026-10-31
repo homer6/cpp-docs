@@ -19,7 +19,7 @@ bool valid = ymd.ok();                        // is it a real date?
 // fluent construction with operator/ :
 year_month_day d1 = 2026y / May / 26d;
 year_month_day d2 = May / 26d / 2026y;        // any sensible field order
-year_month_day last = 2026y / February / last;// last day of Feb (the 28th/29th)
+year_month_day eom = 2026y / February / last; // last day of Feb (the 28th/29th)
 ```
 
 ## Converting to/from a time point
@@ -28,10 +28,12 @@ year_month_day last = 2026y / February / last;// last day of Feb (the 28th/29th)
 calendar and clock:
 
 ```cpp
+using namespace std::chrono;
+
 sys_days tp = 2026y / May / 26d;             // midnight UTC on that date
 year_month_day back = year_month_day{tp};     // time point → calendar
 
-auto days_between = sys_days{2026y/May/26d} - sys_days{2026y/Jan/1d};   // a duration in days
+auto days_between = sys_days{2026y/May/26d} - sys_days{2026y/January/1d}; // a duration in days
 
 weekday wd{tp};                               // Tuesday — day of week
 ```
@@ -39,6 +41,8 @@ weekday wd{tp};                               // Tuesday — day of week
 ## Time zones
 
 ```cpp
+using namespace std::chrono;
+
 auto now = system_clock::now();
 zoned_time local{current_zone(), now};                 // system's zone
 zoned_time ny{"America/New_York", now};                 // a named zone
@@ -52,13 +56,16 @@ host's zone; `locate_zone("...")` looks one up by IANA name.
 
 ## Formatting (and parsing)
 
-```cpp
+```cpp body
+using namespace std::chrono;
+zoned_time ny{"America/New_York", system_clock::now()};
+
 std::format("{:%Y-%m-%d}", 2026y/May/26d);             // "2026-05-26"
 std::format("{:%Y-%m-%d %H:%M:%S %Z}", ny);             // with zone abbreviation
 
 // parse text back into chrono types:
 std::chrono::sys_seconds tp;
-std::istringstream in{"2026-05-26 12:00:00"};
+std::istringstream in{"2026-05-26 12:00:00"};   // needs <sstream>
 in >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
 ```
 

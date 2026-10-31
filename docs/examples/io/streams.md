@@ -12,7 +12,7 @@ telling you whether the last operation worked.
 
 ## The basics
 
-```cpp
+```cpp body
 #include <iostream>
 
 std::cout << "x = " << 42 << '\n';        // chained output
@@ -22,12 +22,13 @@ int n;
 std::cin >> n;                             // parse an int (skips whitespace)
 std::string word;
 std::cin >> word;                          // one whitespace-delimited token
+std::string line;
 std::getline(std::cin, line);              // a whole line (into std::string)
 ```
 
 ## Stream state — always check reads
 
-```cpp
+```cpp body
 int n;
 if (std::cin >> n) {                        // the stream is truthy iff the read succeeded
     // use n
@@ -44,14 +45,14 @@ std::cin.clear();  // reset the flags (after handling a failed read)
 
 The idiom for reading many values:
 
-```cpp
+```cpp body
 int x;
 while (std::cin >> x) { /* process x until EOF or bad input */ }
 ```
 
 ## Newlines and flushing
 
-```cpp
+```cpp body
 std::cout << "line\n";           // newline, NO flush — prefer this in loops
 std::cout << "line" << std::endl;// newline AND flush — slower; use sparingly
 std::cout << std::flush;         // explicit flush without a newline

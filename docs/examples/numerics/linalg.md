@@ -19,30 +19,40 @@ functions. Operations come in the three classic BLAS levels:
 
 ## Example
 
-```cpp
+```cpp needs=linalg
 #include <linalg>
 #include <mdspan>
 #include <vector>
 #include <execution>
 
-std::vector<double> data(42);
-std::ranges::iota(data, 0.0);
-std::mdspan x{data.data(), data.size()};       // a length-42 vector view
+void demo() {
+    std::vector<double> data(42);
+    std::ranges::iota(data, 0.0);
+    std::mdspan x{data.data(), data.size()};    // a length-42 vector view
 
-std::linalg::scale(2.0, x);                     // x[i] *= 2   (in place)
-std::linalg::scale(std::execution::par_unseq, 3.0, x);   // same, parallel
+    std::linalg::scale(2.0, x);                 // x[i] *= 2   (in place)
+    std::linalg::scale(std::execution::par_unseq, 3.0, x);   // same, parallel
+}
 ```
 
 ### Vector & matrix ops
 
-```cpp
-double d = std::linalg::dot(x, y);              // dot product
-std::linalg::add(x, y, z);                       // z = x + y (elementwise)
-double n = std::linalg::vector_two_norm(x);      // Euclidean norm
+```cpp needs=linalg
+#include <linalg>
+#include <mdspan>
 
-// matrix-vector and matrix-matrix products take mdspan matrices:
-std::linalg::matrix_vector_product(A, v, out);   // out = A·v
-std::linalg::matrix_product(A, B, C);            // C = A·B
+using Vec = std::mdspan<double, std::dextents<std::size_t, 1>>;
+using Mat = std::mdspan<double, std::dextents<std::size_t, 2>>;
+
+void ops(Vec x, Vec y, Vec z, Vec v, Vec out, Mat A, Mat B, Mat C) {
+    double d = std::linalg::dot(x, y);              // dot product
+    std::linalg::add(x, y, z);                      // z = x + y (elementwise)
+    double n = std::linalg::vector_two_norm(x);     // Euclidean norm
+
+    // matrix-vector and matrix-matrix products take mdspan matrices:
+    std::linalg::matrix_vector_product(A, v, out);  // out = A·v
+    std::linalg::matrix_product(A, B, C);           // C = A·B
+}
 ```
 
 ### Views without copying
@@ -50,9 +60,16 @@ std::linalg::matrix_product(A, B, C);            // C = A·B
 `transposed(A)`, `scaled(alpha, A)`, and `conjugated(A)` return *new mdspans* (via
 accessor/layout policies) — no data is copied; they re-describe the same storage:
 
-```cpp
-auto At = std::linalg::transposed(A);            // view of Aᵀ, shares A's memory
-std::linalg::matrix_product(At, B, C);           // C = Aᵀ·B
+```cpp needs=linalg
+#include <linalg>
+#include <mdspan>
+
+using Mat = std::mdspan<double, std::dextents<std::size_t, 2>>;
+
+void at_b(Mat A, Mat B, Mat C) {
+    auto At = std::linalg::transposed(A);           // view of Aᵀ, shares A's memory
+    std::linalg::matrix_product(At, B, C);          // C = Aᵀ·B
+}
 ```
 
 ## Gotchas

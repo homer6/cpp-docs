@@ -7,22 +7,26 @@
 
 ```cpp
 #include <cmath>
+#include <numeric>   // std::midpoint
 
-std::sqrt(2.0);  std::cbrt(27.0);                 // roots
-std::pow(2.0, 10);  std::exp(x);  std::log(x);  std::log2(x);  std::log10(x);
-std::sin(x); std::cos(x); std::tan(x);  std::atan2(y, x);       // trig
-std::floor(x); std::ceil(x); std::round(x); std::trunc(x);
-std::fmod(a, b);  std::remainder(a, b);
-std::abs(x);                                       // fabs for floats
-std::hypot(x, y);                                  // sqrt(x²+y²) without overflow
-std::fma(a, b, c);                                 // a*b + c, single rounding
-std::lerp(a, b, t);                                // (C++20) linear interpolation
-std::midpoint(a, b);                               // (C++20) overflow-safe average
+void demo(double x, double y, double a, double b, double c, double t) {
+    std::sqrt(2.0);  std::cbrt(27.0);              // roots
+    std::pow(2.0, 10);  std::exp(x);  std::log(x);  std::log2(x);  std::log10(x);
+    std::sin(x); std::cos(x); std::tan(x);  std::atan2(y, x);    // trig
+    std::floor(x); std::ceil(x); std::round(x); std::trunc(x);
+    std::fmod(a, b);  std::remainder(a, b);
+    std::abs(x);                                    // fabs for floats
+    std::hypot(x, y);                               // sqrt(x²+y²) without overflow
+    std::fma(a, b, c);                              // a*b + c, single rounding
+    std::lerp(a, b, t);                             // (C++20) linear interpolation
+    std::midpoint(a, b);                            // (C++20, <numeric>) overflow-safe average
+}
 ```
 
 ### Classification
 
-```cpp
+```cpp body
+double x = std::sqrt(-1.0);    // NaN
 std::isnan(x);  std::isinf(x);  std::isfinite(x);  std::isnormal(x);
 std::signbit(x);
 ```
@@ -32,10 +36,13 @@ std::signbit(x);
 `<cmath>` gained the mathematical special functions in C++17:
 
 ```cpp
-std::assoc_legendre, std::beta, std::comp_ellint_1/2/3,
-std::cyl_bessel_i/j/k, std::cyl_neumann, std::expint,
-std::hermite, std::laguerre, std::legendre, std::riemann_zeta, std::sph_bessel, ...
+using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,
+      std::comp_ellint_3, std::cyl_bessel_i, std::cyl_bessel_j, std::cyl_bessel_k,
+      std::cyl_neumann, std::expint, std::hermite, std::laguerre, std::legendre,
+      std::riemann_zeta, std::sph_bessel;   // ... and more
 ```
+
+(libstdc++ has all of them; libc++ as of Clang 22 provides only `std::hermite`.)
 
 ## `<numbers>` — math constants (C++20)
 
@@ -45,14 +52,16 @@ Type-safe, no more `#define M_PI` or hand-typed digits:
 #include <numbers>
 namespace nb = std::numbers;
 
-nb::pi;          // π as double      (also pi_v<float>, pi_v<long double>)
-nb::e;           // Euler's number
-nb::sqrt2;       // √2
-nb::ln2;         // ln 2
-nb::phi;         // golden ratio
-nb::inv_pi;      // 1/π
-double area = nb::pi * r * r;
-float  c    = nb::pi_v<float> * d;     // pick the precision explicitly
+void demo(double r, float d) {
+    nb::pi;          // π as double      (also pi_v<float>, pi_v<long double>)
+    nb::e;           // Euler's number
+    nb::sqrt2;       // √2
+    nb::ln2;         // ln 2
+    nb::phi;         // golden ratio
+    nb::inv_pi;      // 1/π
+    double area = nb::pi * r * r;
+    float  c    = nb::pi_v<float> * d;     // pick the precision explicitly
+}
 ```
 
 ## Gotchas

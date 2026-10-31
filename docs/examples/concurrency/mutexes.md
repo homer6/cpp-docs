@@ -31,7 +31,11 @@ void increment() {
 | `std::shared_lock` (C++14) | shared (reader) lock for `std::shared_mutex` |
 
 ```cpp
-std::scoped_lock lk{m1, m2};                  // locks both, avoids deadlock (C++17)
+std::mutex m1, m2;
+
+void transfer() {
+    std::scoped_lock lk{m1, m2};              // locks both, avoids deadlock (C++17)
+}
 ```
 
 ## Mutex flavors
@@ -42,14 +46,15 @@ one writer):
 
 ```cpp
 std::shared_mutex sm;
-std::shared_lock read{sm};        // multiple readers concurrently
-std::unique_lock write{sm};       // exclusive writer
+void reader() { std::shared_lock lk{sm}; /* read  */ }   // multiple readers concurrently
+void writer() { std::unique_lock lk{sm}; /* write */ }   // exclusive writer
 ```
 
 ## Condition variables — wait for a state change
 
 ```cpp
 #include <condition_variable>
+#include <queue>
 
 std::mutex m;
 std::condition_variable cv;

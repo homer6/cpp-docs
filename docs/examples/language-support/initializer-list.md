@@ -26,12 +26,15 @@ void take(std::initializer_list<int> il) {
     for (int x : il) { /* ... */ }      // iterate with begin()/end()
     il.size();                           // count
 }
-take({1, 2, 3, 4});
+void demo() {
+    take({1, 2, 3, 4});
+    Bag b{1, 2, 3};
+}
 ```
 
 ### Why containers feel built-in
 
-```cpp
+```cpp body
 std::vector<int>  v{1, 2, 3};        // calls vector(initializer_list<int>)
 std::map<int,int> m{{1,10}, {2,20}};
 auto sum = [](std::initializer_list<int> xs){ return std::accumulate(xs.begin(), xs.end(), 0); };

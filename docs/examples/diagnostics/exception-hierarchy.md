@@ -34,20 +34,26 @@
 ```cpp
 #include <stdexcept>
 
-try {
-    risky();
-} catch (const std::out_of_range& e) {     // most-derived first
-    std::cerr << e.what() << '\n';
-} catch (const std::exception& e) {         // catch-all for std exceptions
-    std::cerr << "error: " << e.what() << '\n';
+void risky();
+
+void run() {
+    try {
+        risky();
+    } catch (const std::out_of_range& e) {     // most-derived first
+        std::cerr << e.what() << '\n';
+    } catch (const std::exception& e) {         // catch-all for std exceptions
+        std::cerr << "error: " << e.what() << '\n';
+    }
 }
 ```
 
 ### Throwing
 
 ```cpp
-if (index >= size)
-    throw std::out_of_range{"index " + std::to_string(index) + " out of range"};
+void check_index(std::size_t index, std::size_t size) {
+    if (index >= size)
+        throw std::out_of_range{"index " + std::to_string(index) + " out of range"};
+}
 ```
 
 ### Custom exceptions — derive from a standard base

@@ -12,47 +12,64 @@ composes with `/`:
 #include <filesystem>
 namespace fs = std::filesystem;
 
-fs::path p = "dir/sub/file.txt";
-p / "more";                      // append a component with operator/
-p.filename();                    // "file.txt"
-p.stem();                        // "file"
-p.extension();                   // ".txt"
-p.parent_path();                 // "dir/sub"
-p.is_absolute();
+void paths() {
+    fs::path p = "dir/sub/file.txt";
+    p / "more";                  // append a component with operator/
+    p.filename();                // "file.txt"
+    p.stem();                    // "file"
+    p.extension();               // ".txt"
+    p.parent_path();             // "dir/sub"
+    p.is_absolute();
+}
 ```
 
 ## Querying the filesystem
 
 ```cpp
-fs::exists(p);
-fs::is_directory(p);  fs::is_regular_file(p);
-fs::file_size(p);                            // bytes (regular files)
-fs::last_write_time(p);                       // a chrono file_time_point
-fs::current_path();                           // CWD
-fs::absolute(p);  fs::canonical(p);            // resolve to absolute/real path
+#include <filesystem>
+namespace fs = std::filesystem;
+
+void query(const fs::path& p) {
+    fs::exists(p);
+    fs::is_directory(p);  fs::is_regular_file(p);
+    fs::file_size(p);                         // bytes (regular files)
+    fs::last_write_time(p);                   // an fs::file_time_type (a chrono time_point)
+    fs::current_path();                       // CWD
+    fs::absolute(p);  fs::canonical(p);       // resolve to absolute/real path
+}
 ```
 
 ## Directory iteration
 
 ```cpp
-for (const fs::directory_entry& e : fs::directory_iterator{"some/dir"})
-    if (e.is_regular_file())
-        /* e.path(), e.file_size() */;
+#include <filesystem>
+namespace fs = std::filesystem;
 
-for (const auto& e : fs::recursive_directory_iterator{"some/dir"})
-    /* walks subdirectories too */;
+void list_dir() {
+    for (const fs::directory_entry& e : fs::directory_iterator{"some/dir"})
+        if (e.is_regular_file())
+            use(e.path(), e.file_size());
+
+    for (const auto& e : fs::recursive_directory_iterator{"some/dir"})
+        use(e.path());                        // walks subdirectories too
+}
 ```
 
 ## Modifying operations
 
 ```cpp
-fs::create_directory("out");
-fs::create_directories("a/b/c");              // makes intermediate dirs
-fs::copy("src.txt", "dst.txt");
-fs::copy("dir", "backup", fs::copy_options::recursive);
-fs::rename("old", "new");
-fs::remove("file.txt");                        // returns false if it didn't exist
-fs::remove_all("dir");                         // recursive delete; returns count
+#include <filesystem>
+namespace fs = std::filesystem;
+
+void modify() {
+    fs::create_directory("out");
+    fs::create_directories("a/b/c");          // makes intermediate dirs
+    fs::copy("src.txt", "dst.txt");
+    fs::copy("dir", "backup", fs::copy_options::recursive);
+    fs::rename("old", "new");
+    fs::remove("file.txt");                   // returns false if it didn't exist
+    fs::remove_all("dir");                    // recursive delete; returns count
+}
 ```
 
 ## Error handling — two flavors
@@ -60,13 +77,18 @@ fs::remove_all("dir");                         // recursive delete; returns coun
 Every operation has a throwing form and a non-throwing `error_code` overload:
 
 ```cpp
-try {
-    fs::create_directory("out");              // throws fs::filesystem_error on failure
-} catch (const fs::filesystem_error& e) { /* e.path1(), e.code() */ }
+#include <filesystem>
+namespace fs = std::filesystem;
 
-std::error_code ec;
-fs::create_directory("out", ec);              // no throw; check ec
-if (ec) { /* handle */ }
+void make_out_dir() {
+    try {
+        fs::create_directory("out");          // throws fs::filesystem_error on failure
+    } catch (const fs::filesystem_error& e) { /* e.path1(), e.code() */ }
+
+    std::error_code ec;
+    fs::create_directory("out", ec);          // no throw; check ec
+    if (ec) { /* handle */ }
+}
 ```
 
 ## Gotchas
