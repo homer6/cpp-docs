@@ -67,8 +67,9 @@ char dec = std::use_facet<std::numpunct<char>>(loc).decimal_point();
   (locale-independent by default) for files, protocols, and logs; reserve
   locales for human-facing display.
 - **`std::wstring_convert` / `<codecvt>` are deprecated.** Don't build new
-  encoding conversion on them; prefer a dedicated Unicode library (and watch for
-  C++26's `<text_encoding>` for encoding *identification*).
+  encoding conversion on them; prefer a dedicated Unicode library. To
+  *identify* an encoding, C++26 adds [`std::text_encoding`](text-encoding.md)
+  (and `std::locale::encoding()`).
 - **Locales are immutable and reference-counted** — cheap to copy, but you build
   a modified one by combining facets, not by mutating.
 
@@ -77,3 +78,4 @@ char dec = std::use_facet<std::numpunct<char>>(loc).decimal_point();
 - [std::locale — cppreference](https://en.cppreference.com/w/cpp/locale/locale)
 - [std::numpunct — cppreference](https://en.cppreference.com/w/cpp/locale/numpunct)
 - [std::use_facet — cppreference](https://en.cppreference.com/w/cpp/locale/use_facet)
+- [`std::text_encoding`](text-encoding.md) — naming encodings (C++26)
