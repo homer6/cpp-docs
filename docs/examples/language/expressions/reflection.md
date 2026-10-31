@@ -25,15 +25,18 @@ whose `consteval` functions query and transform `info` values.
 
 ## Reflecting and splicing
 
-```cpp
+```cpp needs=reflection
 #include <meta>
+
+int twice(int);
 
 constexpr std::meta::info r = ^^int;     // reflect the type int
 using T = [: r :];                        // splice it back → T is int
 T x = 0;                                  // x is an int
 
 constexpr auto rv = ^^std::vector;        // reflect a template
-constexpr auto fn = ^^std::sqrt;          // reflect a function
+constexpr auto fn = ^^twice;              // reflect a function (not an overload set:
+                                          // ^^std::sqrt is ill-formed)
 constexpr auto ns = ^^::;                 // reflect the global namespace
 ```
 
@@ -42,22 +45,28 @@ required, `template[: r :]` for a template name.
 
 ## The classic example: iterate a struct's members
 
-```cpp
+```cpp needs=reflection
 #include <meta>
+#include <print>
 
 struct Point { int x; int y; int z; };
 
 template<class T>
-constexpr void dump(const T& obj) {
-    // expand over the reflected non-static data members (with `template for`, C++26):
+void dump(const T& obj) {
+    // expand over the reflected non-static data members (with `template for`, C++26).
+    // nonstatic_data_members_of returns a std::vector, which can't outlive constant
+    // evaluation; std::define_static_array turns it into a static array to iterate.
     template for (constexpr auto member :
-                  std::meta::nonstatic_data_members_of(^^T, std::meta::access_context::current())) {
+                  std::define_static_array(
+                      std::meta::nonstatic_data_members_of(^^T, std::meta::access_context::current()))) {
         std::println("{} = {}", std::meta::identifier_of(member), obj.[:member:]);
         //                       └ the member's name        └ splice to access obj.<member>
     }
 }
 
-dump(Point{1, 2, 3});      // x = 1 / y = 2 / z = 3 — generated at compile time
+int main() {
+    dump(Point{1, 2, 3});  // x = 1 / y = 2 / z = 3 — the loop is expanded at compile time
+}
 ```
 
 This is what previously required macros or external code generators: enumerate
@@ -82,7 +91,8 @@ members, get their names, access them — all in the language.
   value/expression contexts.
 - **Brand-new (C++26), very limited support.** Feature-test with the library
   facilities; early compilers shipped it experimentally (often via a `-freflection`
-  flag and the P2996 reference implementation).
+  flag and the P2996 reference implementation). The examples here were checked
+  with GCC 16 (`-std=c++26 -freflection`); Clang 22 doesn't implement it yet.
 - The reflection *functions* live in the library — see
   [`<meta>`](../../metaprogramming/reflection.md).
 

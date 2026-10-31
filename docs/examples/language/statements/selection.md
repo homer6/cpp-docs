@@ -8,11 +8,15 @@ Declare a variable scoped to the `if`/`else`, keeping it out of the surrounding
 scope:
 
 ```cpp
-if (auto it = m.find(key); it != m.end()) {
-    use(it->second);          // `it` visible in both branches...
-} else {
-    insert(key);
-}                             // ...and gone after the if
+void insert(const std::string& key);
+
+void lookup(const std::map<std::string, int>& m, const std::string& key) {
+    if (auto it = m.find(key); it != m.end()) {
+        use(it->second);          // `it` visible in both branches...
+    } else {
+        insert(key);
+    }                             // ...and gone after the if
+}
 ```
 
 This is the idiomatic way to handle "look something up, then branch on it."
@@ -32,13 +36,18 @@ template<class T> void f(T v) {
 ## switch
 
 ```cpp
-switch (auto code = classify(x); code) {     // init-statement here too (C++17)
-    case 1:
-    case 2:  handle_low(); break;            // fallthrough between 1 and 2 (no code between)
-    case 3:  handle3();
-             [[fallthrough]];                 // intentional fallthrough — silences warnings (C++17)
-    case 4:  handle4(); break;
-    default: handle_default();
+int classify(int x);
+void handle_low(); void handle3(); void handle4(); void handle_default();
+
+void dispatch(int x) {
+    switch (auto code = classify(x); code) {     // init-statement here too (C++17)
+        case 1:
+        case 2:  handle_low(); break;            // fallthrough between 1 and 2 (no code between)
+        case 3:  handle3();
+                 [[fallthrough]];                 // intentional fallthrough — silences warnings (C++17)
+        case 4:  handle4(); break;
+        default: handle_default();
+    }
 }
 ```
 

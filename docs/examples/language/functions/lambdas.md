@@ -6,7 +6,8 @@
 
 ## Anatomy
 
-```cpp
+```cpp body
+int factor = 3;           // a local: only automatic variables can be captured
 //      captures   params      -> ret    body
 auto f = [factor]  (int x)     -> int   { return x * factor; };
 //       └ capture clause: what state the lambda holds
@@ -17,7 +18,8 @@ clause becomes its members.
 
 ## Captures
 
-```cpp
+```cpp body
+auto ptr = std::make_unique<int>(7);
 int a = 1, b = 2;
 [a]        { return a; };        // capture a by value (copy)
 [&a]       { a = 5; };           // capture a by reference (can mutate caller's a)
@@ -46,9 +48,13 @@ constexpr auto square = [](int x) { return x * x; };    // usable at compile tim
 ## Where they shine
 
 ```cpp
-std::sort(v.begin(), v.end(), [](auto& a, auto& b){ return a.score > b.score; });
-std::ranges::for_each(v, [total = 0](int x) mutable { total += x; });
-std::erase_if(m, [](const auto& kv){ return kv.second == 0; });
+struct Player { std::string name; int score; };
+
+void examples(std::vector<Player>& players, std::vector<int>& v, std::map<std::string, int>& m) {
+    std::sort(players.begin(), players.end(), [](auto& a, auto& b){ return a.score > b.score; });
+    std::ranges::for_each(v, [total = 0](int x) mutable { total += x; });
+    std::erase_if(m, [](const auto& kv){ return kv.second == 0; });
+}
 ```
 
 Store one in [`std::function`](../../utilities/functional.md) (type-erased) or

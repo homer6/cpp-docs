@@ -9,10 +9,10 @@ template<class... Ts>            // Ts is a template type parameter pack
 struct Tuple;                    // (this is roughly how std::tuple is declared)
 
 template<class... Args>
-void call_all(Args&&... args);   // args is a function parameter pack
-
-sizeof...(Args);                 // number of types in the pack
-sizeof...(args);                 // number of arguments
+void call_all(Args&&... args) {  // args is a function parameter pack
+    constexpr auto n_types = sizeof...(Args);   // number of types in the pack
+    constexpr auto n_args  = sizeof...(args);   // number of arguments
+}
 ```
 
 ## Expansion

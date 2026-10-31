@@ -12,7 +12,7 @@ get only what's `export`ed, and macros don't leak across the boundary.
 
 ## A module interface unit
 
-```cpp
+```cpp needs=modules
 // math.ixx  (or math.cppm — extension is toolchain-specific)
 export module math;                  // declares the module `math`
 
@@ -27,7 +27,7 @@ export namespace geo {                 // export a whole namespace
 
 ## Using it
 
-```cpp
+```cpp needs=modules
 import math;                          // no #include, no header
 
 int main() {
@@ -41,7 +41,7 @@ int main() {
 The standard library itself is available as a module — one import instead of
 dozens of headers:
 
-```cpp
+```cpp needs=modules
 import std;                          // the entire standard library (C++23)
 
 int main() {
@@ -56,9 +56,14 @@ int main() {
 
 Large modules can be split into partitions that combine into one logical module:
 
-```cpp
+```cpp needs=modules
+// math-trig.cppm
 export module math:trig;             // a partition
-// in the primary interface:
+export double sine(double);
+```
+
+```cpp needs=modules
+// math.cppm — in the primary interface:
 export module math;
 export import :trig;                  // re-export the partition
 ```
@@ -68,7 +73,10 @@ export import :trig;                  // re-export the partition
 - **Tooling is the hard part.** Build-system and compiler support for modules
   (especially `import std;`) is still maturing and varies — file extensions, flags,
   and BMI (binary module interface) handling differ across GCC/Clang/MSVC and
-  CMake versions. Check what your toolchain supports before committing.
+  CMake versions. Check what your toolchain supports before committing. With
+  GCC 15 the examples above build with `-fmodules`, one unit at a time
+  (partition, then interface, then importer); `import std;` first needs the std
+  module compiled: `g++ -std=c++26 -fmodules -fsearch-include-path -c bits/std.cc`.
 - **Import order doesn't matter and macros don't leak** — a feature vs headers,
   but it also means a module can't *receive* macros from importers (no
   configuration via `#define` before include).

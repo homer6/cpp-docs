@@ -7,7 +7,7 @@
 
 A pointer holds an address (or `nullptr`). It's nullable and rebindable.
 
-```cpp
+```cpp body
 int x = 10;
 int* p = &x;          // points at x
 *p = 20;              // dereference to read/write
@@ -26,13 +26,17 @@ An alias for an existing object — **not nullable, not rebindable** (it always
 refers to whatever it was bound to).
 
 ```cpp
-int& r = x;           // r is another name for x
-r = 30;               // changes x
-
 void inc(int& n) { ++n; }          // pass by reference: modify the caller's object
 void read(const std::string& s);   // const ref: no copy, no mutation
 
-int&& rr = 5;          // rvalue reference — binds to temporaries (move semantics)
+void demo() {
+    int x = 10;
+    int& r = x;        // r is another name for x
+    r = 30;            // changes x
+    inc(x);            // x is now 31
+
+    int&& rr = 5;      // rvalue reference — binds to temporaries (move semantics)
+}
 ```
 
 References vs pointers: use a **reference** when it must always refer to a valid

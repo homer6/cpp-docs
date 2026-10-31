@@ -4,7 +4,11 @@
 
 ## range-for — prefer this
 
-```cpp
+```cpp body
+std::vector<int> container{1, 2, 3}, small_trivials{4, 5, 6};
+std::map<std::string, int> m{{"one", 1}, {"two", 2}};
+auto make = [] { return std::vector<int>{1, 2, 3}; };
+
 for (const auto& x : container) { /* read */ }     // by const ref: no copies
 for (auto& x : container) x *= 2;                   // by ref: mutate in place
 for (auto x : small_trivials) { /* copy is fine for ints etc. */ }
@@ -21,7 +25,10 @@ ranges). It expresses "visit each element" without index bookkeeping.
 
 ## Classic for / while / do-while
 
-```cpp
+```cpp body
+int n = 3;
+bool cond = false;
+
 for (int i = 0; i < n; ++i) { /* when you need the index */ }
 
 while (cond) { /* zero or more times */ }
@@ -31,7 +38,11 @@ do { /* at least once */ } while (cond);
 
 ## break / continue and loop control
 
-```cpp
+```cpp body
+std::vector<int> xs{1, -2, 3, 500, 4};
+auto skip = [](int x) { return x < 0; };
+auto done = [](int x) { return x > 100; };
+
 for (auto& x : xs) {
     if (skip(x)) continue;     // next iteration
     if (done(x)) break;        // exit loop
@@ -48,13 +59,18 @@ parameter pack, or a [reflection](../expressions/reflection.md) range. The body 
 instantiated once per element, with the loop variable a *constant* each time — so
 each iteration can have a different type:
 
-```cpp
+```cpp body needs=expansion-statements
 std::tuple<int, std::string, double> t{1, "two", 3.0};
 
-template for (constexpr auto& elem : t) {     // unrolls: one body per element
+template for (const auto& elem : t) {         // unrolls: one body per element
     std::println("{}", elem);                  // elem's type differs each iteration
 }
 ```
+
+The loop variable is `constexpr` only when the range itself is a constant
+expression; over a runtime tuple like `t`, declare it `auto&`/`const auto&`.
+GCC 16 implements expansion statements with plain `-std=c++26`; GCC 15 and
+Clang 22 don't yet.
 
 This is what finally lets you iterate a heterogeneous tuple (or a struct's
 reflected members) without recursion or `std::apply` tricks — see
@@ -65,7 +81,10 @@ reflected members) without recursion or `std::apply` tricks — see
 Many loops are better expressed as a named [algorithm](../../algorithms/README.md)
 or a [ranges](../../ranges/README.md) pipeline:
 
-```cpp
+```cpp body
+std::vector<int> xs{1, 2, 3, 4};
+auto is_bad = [](int n) { return n < 0; };
+
 // instead of a loop with a flag:
 if (std::ranges::any_of(xs, is_bad)) { /* ... */ }
 auto evens = xs | std::views::filter([](int n){ return n % 2 == 0; });

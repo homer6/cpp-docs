@@ -6,6 +6,8 @@
 ## The standard attributes
 
 ```cpp
+enum class Status { ok, failed };
+
 [[nodiscard]] int compute();              // warn if the return value is ignored
 [[nodiscard("check the status")]]         //   with a reason (C++20)
 Status run();
@@ -17,10 +19,19 @@ void f(int x [[maybe_unused]]);
 
 [[deprecated]] void old_api();             // warn on use
 [[deprecated("use new_api()")]] void g();
+```
 
-[[fallthrough]];                           // intentional switch fallthrough (C++17)
+The rest attach to statements, so they live inside a function body:
 
-[[likely]]   / [[unlikely]]                // branch-probability hints (C++20)
+```cpp body
+int x = 1;
+switch (x) {
+    case 1: ++x; [[fallthrough]];          // intentional switch fallthrough (C++17)
+    case 2: break;
+}
+
+if (x > 0) [[likely]] { /* ... */ }        // branch-probability hints (C++20)
+else       [[unlikely]] { /* ... */ }
 
 [[assume(x > 0)]];                         // tell the optimizer to assume a condition (C++23)
 ```
@@ -28,17 +39,22 @@ void f(int x [[maybe_unused]]);
 ## Common uses
 
 ```cpp
+struct Error { std::string message; };
+void hot_path(); void rare_path(); void setup(); void run();
+
 [[nodiscard]] std::expected<int, Error> parse(std::string_view);   // don't drop the result
 
-if (ptr) [[likely]] { hot_path(); }        // hint the common branch
-else      [[unlikely]] { rare_path(); }
+[[noreturn]] void terminate_now();          // callers know control never returns
 
-switch (n) {
-    case 1: setup(); [[fallthrough]];      // silences the fallthrough warning
-    case 2: run(); break;
+void dispatch(const int* ptr, int n) {
+    if (ptr) [[likely]] { hot_path(); }    // hint the common branch
+    else     [[unlikely]] { rare_path(); }
+
+    switch (n) {
+        case 1: setup(); [[fallthrough]];  // silences the fallthrough warning
+        case 2: run(); break;
+    }
 }
-
-void terminate_now() [[noreturn]];          // callers know control never returns
 ```
 
 ## Gotchas

@@ -44,10 +44,10 @@ automatically.
   (`std::string`, `std::vector`, `unique_ptr`), write **none** of the special
   members — the defaults compose correctly.
   ```cpp
-  struct Widget {                    // no special members needed
+  struct Gadget {                    // no special members needed
       std::string name;
       std::vector<int> data;
-      std::unique_ptr<Impl> impl;     // move-only, handled automatically
+      std::unique_ptr<Widget> part;   // move-only, handled automatically
   };
   ```
 - **Rule of Five:** if you manually manage a resource (raw pointer, handle) and

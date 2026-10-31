@@ -4,7 +4,11 @@
 
 ## auto — deduce the type from the initializer
 
-```cpp
+```cpp body
+using namespace std::string_literals;    // for the ""s suffix
+int x = 0;
+std::map<std::string, int> m;
+
 auto i = 42;                 // int
 auto d = 3.14;               // double
 auto s = "hi"s;              // std::string
@@ -46,9 +50,12 @@ auto sum(T t, U u) -> decltype(t + u);   // return type depends on params
 Decompose a tuple/pair/array/aggregate into named pieces:
 
 ```cpp
+struct Point { int x, y; };
+Point pt{1, 2};
+
 std::pair<int, std::string> p{1, "one"};
 auto [id, name] = p;                       // id=1, name="one"
-auto& [a, b] = some_struct;                 // bind by reference to mutate
+auto& [a, b] = pt;                         // bind by reference to mutate
 auto [x, y, z] = std::array{1, 2, 3};
 ```
 

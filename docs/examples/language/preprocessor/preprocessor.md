@@ -5,7 +5,7 @@
 
 ## #include
 
-```cpp
+```cpp nocompile
 #include <vector>        // angle brackets: standard/system headers
 #include "myheader.h"    // quotes: project headers (searched locally first)
 ```
@@ -55,11 +55,12 @@ detection (see [feature-test macros](../../feature-test-macros/README.md)).
 
 ## Useful predefined macros
 
-```cpp
-__FILE__   __LINE__              // prefer std::source_location (C++20)
-__func__                        // current function name
-__cplusplus                     // language version (e.g. 202302L)
-assert(cond)                    // from <cassert>; compiled out when NDEBUG is defined
+```cpp body
+const char* file = __FILE__;    // current file and line —
+long line        = __LINE__;    //   prefer std::source_location (C++20)
+const char* fn   = __func__;    // current function name (strictly a predefined variable, not a macro)
+long version     = __cplusplus; // language version (e.g. 202302L)
+assert(line > 0);               // from <cassert>; compiled out when NDEBUG is defined
 ```
 
 ## Prefer language features over macros

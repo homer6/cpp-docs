@@ -8,23 +8,28 @@
 The compiler inserts these automatically — sometimes helpfully, sometimes
 dangerously:
 
-```cpp
+```cpp body
+struct Base {};
+struct Derived : Base {};
+Derived obj;
+int* ptr = nullptr;
+
 int i = 3.9;          // double → int: TRUNCATES to 3 (narrowing)
 double d = i;         // int → double: safe (widening)
-long L = i;           // integral promotion
+long L = i;           // int → long: integral conversion (widening, value-preserving)
 if (ptr) {}           // pointer → bool
-Derived* p; Base* b = p;   // derived → base pointer (upcast): safe
+Derived* p = &obj; Base* b = p;   // derived → base pointer (upcast): safe
 ```
 
 Use **brace-init to ban narrowing**:
 
-```cpp
+```cpp compile-fail="narrowing conversion|cannot be narrowed"
 int x{3.9};           // ERROR: narrowing conversion not allowed in {}
 ```
 
 ## The four named casts
 
-```cpp
+```cpp nocompile
 static_cast<T>(x)        // well-defined conversions: numeric, up/down-cast (no runtime check),
                          // void* → T*, enum ↔ int, explicit-constructor conversions
 dynamic_cast<T>(x)       // safe down-cast in a polymorphic hierarchy; checks at RUNTIME
@@ -34,8 +39,13 @@ reinterpret_cast<T>(x)   // bit-level reinterpretation; almost always UB to then
 ```
 
 ```cpp
-double d = static_cast<double>(a) / b;        // force floating division
-if (auto* dog = dynamic_cast<Dog*>(animal)) { /* it really is a Dog */ }
+struct Animal { virtual ~Animal() = default; };   // polymorphic: dynamic_cast needs a virtual
+struct Dog : Animal {};
+
+void demo(int a, int b, Animal* animal) {
+    double d = static_cast<double>(a) / b;        // force floating division
+    if (auto* dog = dynamic_cast<Dog*>(animal)) { /* it really is a Dog */ }
+}
 ```
 
 ## Explicit constructors & conversion operators

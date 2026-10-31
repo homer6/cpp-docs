@@ -9,7 +9,7 @@ when construction completes and ends when the destructor runs (or, for trivial
 types, when storage is reused/released). Using an object outside its lifetime is
 undefined behavior.
 
-```cpp
+```cpp body
 {
     std::string s = "hi";    // lifetime begins (constructor)
     use(s);
@@ -33,6 +33,11 @@ std::string_view sv = make();    // NOT extended — dangles immediately (view, 
 
 ```cpp
 int main() { /* ... */ }                      // implicit `return 0;` if you fall off the end
+```
+
+or, to receive the command-line arguments:
+
+```cpp
 int main(int argc, char* argv[]) { /* ... */ }// command-line args
 ```
 

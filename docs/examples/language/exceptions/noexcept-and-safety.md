@@ -24,9 +24,9 @@ move constructor is `noexcept` — otherwise it **copies** (to preserve the stro
 guarantee). So a non-`noexcept` move can silently make `vector` growth far slower.
 
 ```cpp
-struct Widget {
-    Widget(Widget&&) noexcept;            // mark moves noexcept → vector moves, not copies
-    Widget& operator=(Widget&&) noexcept;
+struct Gadget {
+    Gadget(Gadget&&) noexcept;            // mark moves noexcept → vector moves, not copies
+    Gadget& operator=(Gadget&&) noexcept;
 };
 ```
 
@@ -50,14 +50,26 @@ transactional.
 
 ```cpp
 // RAII makes the basic guarantee almost free — resources release on unwind:
-std::lock_guard lk{m};
-auto buf = std::make_unique<char[]>(n);   // no leak if the next line throws
+void fill(std::mutex& m, std::size_t n) {
+    std::lock_guard lk{m};
+    auto buf = std::make_unique<char[]>(n);   // no leak if the next line throws
+    // ...
+}
 
 // copy-and-swap gives the strong guarantee for assignment:
-Widget& operator=(Widget other) {          // copy made before touching *this
-    swap(*this, other);                     // swap is noexcept → commit can't fail
-    return *this;
-}                                           // old state destroyed via `other`
+class Buffer {
+    std::vector<int> data_;
+public:
+    Buffer() = default;
+    Buffer(const Buffer&) = default;
+    Buffer(Buffer&&) noexcept = default;
+    friend void swap(Buffer& a, Buffer& b) noexcept { a.data_.swap(b.data_); }
+
+    Buffer& operator=(Buffer other) noexcept {  // copy made before touching *this
+        swap(*this, other);                     // swap is noexcept → commit can't fail
+        return *this;
+    }                                           // old state destroyed via `other`
+};
 ```
 
 ## Gotchas

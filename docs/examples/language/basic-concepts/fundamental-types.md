@@ -43,7 +43,7 @@ auto big = 5'000'000;   // digit separators (C++14)
 
 ## Type sizes and properties at compile time
 
-```cpp
+```cpp body
 sizeof(int);                         // bytes
 alignof(double);                     // alignment
 std::numeric_limits<int>::max();     // see Language support → numeric_limits
