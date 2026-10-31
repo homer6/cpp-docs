@@ -31,12 +31,14 @@ Goal: never treat a `T` as a `U` through casts, unions, or varargs.
 | **Type.7** | Avoid naked `union` (use `std::variant`) |
 | **Type.8** | Avoid varargs (use variadic templates) |
 
-```cpp nocompile
+```cpp body
+std::size_t n = 10;
+
 // BAD — C-style cast, manual memory
 int* p = (int*)malloc(sizeof(int) * n);
 
 // BETTER — named cast shows intent
-auto p = static_cast<int*>(malloc(sizeof(int) * n));
+auto p2 = static_cast<int*>(malloc(sizeof(int) * n));
 
 // BEST — no cast, no manual memory
 auto v = std::vector<int>(n);
@@ -93,14 +95,14 @@ if (auto locked = weak.lock()) {
 
 **Mistakes:**
 
-```cpp nocompile
+```cpp body
 // BAD — two owners of one raw pointer → double delete
 Widget* raw = new Widget{};
 std::unique_ptr<Widget> a{raw};
 std::unique_ptr<Widget> b{raw};
 
 // BAD — shared_ptr cycle never frees
-struct Node { std::shared_ptr<Node> next; std::shared_ptr<Node> prev; };
+struct BadNode { std::shared_ptr<BadNode> next; std::shared_ptr<BadNode> prev; };
 
 // GOOD — break the cycle: children own, parents observe
 struct Node { std::shared_ptr<Node> child; std::weak_ptr<Node> parent; };
@@ -136,7 +138,9 @@ std::string good() {
 `std::string_view` and `std::span` don't own anything. Never let one outlive the
 data it points at.
 
-```cpp nocompile
+```cpp
+std::string load();
+
 std::string_view name() {
     std::string s = load();
     return s;                      // dangling view
@@ -192,14 +196,16 @@ invalidation" table.
 A moved-from standard library object is valid but unspecified. Don't read it
 until you've assigned it a new value.
 
-```cpp nocompile
+```cpp body
+std::vector<int> v{1, 2, 3};
 auto v2 = std::move(v);
 v.clear();                         // OK: puts v back into a known state
 ```
 
 ## Null safety
 
-```cpp nocompile
+```cpp
+struct Key {};
 void process(const Widget& w);       // can't be null — prefer this
 void process(const Widget* w);       // may be null — check before use
 std::optional<Widget> find(Key k);   // absence is a normal outcome

@@ -11,7 +11,11 @@ newest idiom your compiler supports — check with the
 
 ### Structured bindings
 
-```cpp nocompile
+```cpp body
+std::map<std::string, int> scores, map;
+std::string key = "ada";
+int value = 1;
+
 for (const auto& [name, score] : scores) {
     std::println("{}: {}", name, score);
 }
@@ -23,7 +27,10 @@ auto [it, inserted] = map.try_emplace(key, value);
 
 Keeps the helper variable scoped to the branch.
 
-```cpp nocompile
+```cpp body
+std::map<std::string, int> map;
+std::string key = "ada";
+
 if (auto it = map.find(key); it != map.end()) {
     use(it->second);
 }
@@ -42,7 +49,8 @@ Reference: [optional](../examples/utilities/optional.md)
 
 ### `std::variant` — one of a fixed set of types
 
-```cpp nocompile
+```cpp
+struct Circle { double r; }; struct Square { double side; }; struct Triangle { double base, height; };
 using Shape = std::variant<Circle, Square, Triangle>;
 
 template <class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
@@ -100,7 +108,11 @@ Reference: [standard concepts](../examples/concepts/standard-concepts.md)
 
 ### Ranges
 
-```cpp nocompile
+```cpp body
+std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8};
+struct Person { std::string name; int age; };
+std::vector<Person> people;
+
 auto squares_of_evens = v
     | std::views::filter([](int x) { return x % 2 == 0; })
     | std::views::transform([](int x) { return x * x; })
@@ -161,7 +173,11 @@ Reference: [comparison](../examples/language-support/comparison.md)
 
 ### Designated initializers and `using enum`
 
-```cpp nocompile
+```cpp body
+struct Config { int width, height; bool fullscreen; };
+enum class Color { red, green, blue };
+Color color = Color::red;
+
 Config cfg{ .width = 1920, .height = 1080, .fullscreen = true };
 
 switch (color) {
@@ -201,8 +217,10 @@ Reference: [coroutines](../examples/language/coroutines/coroutines.md) ·
 
 ### `std::expected` — a value or an error
 
-```cpp nocompile
+```cpp
+struct ParseError {};
 std::expected<int, ParseError> parse_int(std::string_view s);
+std::string_view text = "21";
 
 auto doubled = parse_int(text)
     .transform([](int x) { return x * 2; })
@@ -213,7 +231,10 @@ Reference: [expected](../examples/utilities/expected.md)
 
 ### `std::print` / `std::println`
 
-```cpp nocompile
+```cpp body
+std::string name = "pen", msg = "out of ink";
+double price = 1.5;
+
 std::println("{} is {:>8.2f}", name, price);
 std::println(stderr, "error: {}", msg);
 ```
@@ -222,18 +243,27 @@ Reference: [formatting](../examples/text-processing/formatting.md)
 
 ### `std::generator`
 
-```cpp nocompile
+```cpp needs=generator
 std::generator<int> fibonacci() {
     for (int a = 0, b = 1;; std::tie(a, b) = std::pair{b, a + b})
         co_yield a;
 }
 
-for (int x : fibonacci() | std::views::take(10)) std::print("{} ", x);
+void print_fibonacci() {
+    for (int x : fibonacci() | std::views::take(10)) std::print("{} ", x);
+}
 ```
 
 ### Ranges, finished
 
-```cpp nocompile
+```cpp body needs=enumerate
+struct Person { std::string name; };
+enum class Role { user, admin };
+std::vector<Person> people;
+std::vector<double> prices;
+std::vector<Role> roles;
+std::vector<int> v, xs, ys;
+
 auto names = people
     | std::views::transform(&Person::name)
     | std::ranges::to<std::vector>();            // materialize a pipeline
