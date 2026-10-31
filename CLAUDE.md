@@ -1,13 +1,13 @@
 # Working in cpp-docs
 
 This repo is a learning reference for **all of modern C++** — the language and
-the standard library — written as example-driven Markdown. There is **no build
-system and no compiler step**; the deliverable is documentation, not a program.
+the standard library — written as example-driven Markdown. The deliverable is documentation; every
+C++ snippet in it is compile-checked locally (`tools/check_snippets.py`).
 
-We mirror how cppreference organizes the reference and fill it in topic by topic.
-**Containers are the current starting point, not the whole scope.** Expect to
-grow into strings, algorithms, ranges, utilities, numerics, concurrency, and the
-core language over time.
+We mirror how cppreference organizes the reference. Every library area and
+language area on cppreference's main page now has pages (see
+`docs/examples/README.md`); new work fills in detail, fixes mistakes, and keeps
+up with new standards.
 
 ## Source of truth
 
@@ -53,9 +53,14 @@ Each cppreference area is a subfolder under `docs/examples/`:
 
 ```
 docs/examples/
+  README.md            # master index + progress table
   containers/{sequence,associative,unordered,adaptors,views}/
-  strings/  algorithms/  ranges/  utilities/  language/  ...   (added as we go)
-  README.md   # master index + progress table
+  strings/  text-processing/  algorithms/  ranges/  iterators/  utilities/
+  memory/  metaprogramming/  numerics/  datetime/  io/  concurrency/
+  execution/  diagnostics/  language-support/  concepts/
+  feature-test-macros/  named-requirements/
+  language/{basic-concepts,expressions,statements,declarations-initialization,
+            functions,classes,templates,exceptions,coroutines,modules,preprocessor}/
 ```
 
 Keep `docs/examples/README.md` updated whenever a page is added or finished.
@@ -107,9 +112,9 @@ Links to the relevant cppreference pages (cppreference.com only).
 
 There is no CI (GitHub Actions is disabled for this repo); run the checks
 locally. `tools/check_snippets.py` compiles every ```cpp block with
-`-std=c++26 -fsyntax-only -pedantic-errors`. `docs/guidelines/` must pass
-cleanly; `docs/examples/` is checked against a list of known failures (see
-below). Each block is
+`-std=c++26 -fsyntax-only -pedantic-errors`. **Both `docs/guidelines/` and
+`docs/examples/` must pass cleanly** — every block compiles, or carries an
+honest `nocompile` / `compile-fail` / `needs=` tag. Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
 like `Widget`, `use()`, `process()`). Tag the fence's info string:
 
@@ -134,11 +139,10 @@ python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
 ```
 
 Each block has a stable ID, `<file>#<heading-slug>/<n>`, shown next to every
-failure. `tools/snippet_baseline/gcc.txt` lists the `docs/examples/` blocks
-known to fail on GCC; the run fails on a **new** failure, and on a listed
-block that now compiles or no longer exists — so when you fix a snippet,
-delete its line (or rerun with `--update-baseline`). The list should only
-shrink (#20 drives it to empty).
+failure. `tools/snippet_baseline/gcc.txt` (the list of known failures) is
+**empty** and must stay that way: fix a failing block or tag it honestly —
+never add it to the baseline. The `--baseline` run still guards against stale
+entries if one is ever added.
 
 `-fsyntax-only` is more than a parse: on GCC and Clang it catches type errors,
 errors in templates that are instantiated, and failed constant evaluation —
