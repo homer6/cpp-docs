@@ -179,8 +179,9 @@ constexpr unsigned char nope[] = {
 - **The elements are `int` literals, not bytes.** Into `unsigned char` they
   always fit. Into a plain `char` (signed on x86 and ARM64 macOS), a byte ≥ 0x80
   is a narrowing conversion: GCC 15/16 reject it (`narrowing conversion of '255'
-  from 'int' to 'char'`), Clang 22 accepts it silently. Use `unsigned char` or
-  `std::uint8_t` for binary data.
+  from 'int' to 'char'`); Clang 22 accepts it silently when the resource has two
+  or more bytes (a one-byte resource still gets the narrowing error). Use
+  `unsigned char` or `std::uint8_t` for binary data.
 - **No terminator unless you ask.** A text file embedded into `char[]` has no
   `'\0'`; add `suffix(, 0)` (and for an empty file, `if_empty(0)`).
 - **`prefix`/`suffix` vanish on empty input.** If the code after `#embed`

@@ -62,3 +62,35 @@ TEST(Selection, IfConstexprDiscardsBranch) {
     EXPECT_EQ(kind(x), "value:7");
     EXPECT_EQ(kind(&x), "pointer:7");
 }
+
+namespace {
+enum class Color { red, green, blue };
+int classify(int x) { return x % 5; }
+
+std::string dispatch_with_init(int x) {
+    switch (auto code = classify(x); code) {  // init-statement in a switch (C++17)
+        case 1:  return "low " + std::to_string(code);
+        default: return "other " + std::to_string(code);
+    }
+}
+
+std::string describe(Color c) {
+    switch (c) {  // enum cases
+        case Color::red: {
+            std::string s = "warm";  // declaration in a braced case body
+            return s;
+        }
+        case Color::green:
+        case Color::blue: return "cool";
+    }
+    return "?";
+}
+}  // namespace
+
+// "switch": init-statement, enum cases, and a braced case body that declares a variable.
+TEST(Selection, SwitchInitEnumAndBracedCase) {
+    EXPECT_EQ(dispatch_with_init(6), "low 1");
+    EXPECT_EQ(dispatch_with_init(8), "other 3");
+    EXPECT_EQ(describe(Color::red), "warm");
+    EXPECT_EQ(describe(Color::blue), "cool");
+}

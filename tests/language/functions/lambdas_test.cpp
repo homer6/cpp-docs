@@ -1,10 +1,17 @@
 // Checks claims made by docs/examples/language/functions/lambdas.md.
+#include <algorithm>
+#include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <type_traits>
 #include <utility>
+#include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "Anatomy" and "Captures": by-value captures copy, by-reference captures alias.
 TEST(Lambdas, CaptureByValueVersusReference) {
@@ -91,4 +98,51 @@ TEST(Lambdas, Cxx20CaptureForms) {
     auto bump = [] { return ++global_hits; };
     bump();
     EXPECT_EQ(global_hits, 1);
+}
+
+// "Captures": [a, &b], [=], [&] and [=, &b] defaults.
+TEST(Lambdas, DefaultAndMixedCaptures) {
+    int a = 1, b = 2;
+    [a, &b] { b = a + 10; }();
+    EXPECT_EQ(b, 11);
+    EXPECT_EQ([=] { return a + b; }(), 12);
+    [&] { a = b; }();
+    EXPECT_EQ(a, 11);
+    auto f = [=, &b] { b = 0; return a; };
+    a = 99;
+    EXPECT_EQ(f(), 11);  // a was copied, b aliased
+    EXPECT_EQ(b, 0);
+}
+
+// "Generic, mutable, constexpr": explicit template parameters (C++20).
+TEST(Lambdas, ExplicitTemplateParameters) {
+    auto g = []<class T>(T x) { return x; };
+    static_assert(std::is_same_v<decltype(g(1)), int>);
+    static_assert(std::is_same_v<decltype(g(1.5)), double>);
+    EXPECT_EQ(g(std::string("s")), "s");
+}
+
+// "Where they shine": sort with a comparator, erase_if with a predicate.
+TEST(Lambdas, WhereTheyShine) {
+    struct Player { std::string name; int score; };
+    std::vector<Player> players{{"a", 1}, {"b", 3}, {"c", 2}};
+    std::sort(players.begin(), players.end(), [](auto& x, auto& y) { return x.score > y.score; });
+    EXPECT_EQ(players[0].name + players[1].name + players[2].name, "bca");
+
+    std::map<std::string, int> m{{"x", 0}, {"y", 1}};
+    std::erase_if(m, [](const auto& kv) { return kv.second == 0; });
+    EXPECT_EQ(m.size(), 1u);
+    EXPECT_TRUE(m.contains("y"));
+}
+
+// "Where they shine": std::function / std::move_only_function give a uniform type.
+TEST(Lambdas, StoredInTypeErasedWrappers) {
+    std::vector<std::function<int(int)>> fs{[](int x) { return x + 1; }, [k = 2](int x) { return x * k; }};
+    EXPECT_EQ(fs[0](5), 6);
+    EXPECT_EQ(fs[1](5), 10);
+    CPPDOCS_REQUIRE(__cpp_lib_move_only_function);
+#ifdef __cpp_lib_move_only_function
+    std::move_only_function<int()> mo = [p = std::make_unique<int>(7)] { return *p; };  // move-only capture
+    EXPECT_EQ(mo(), 7);
+#endif
 }

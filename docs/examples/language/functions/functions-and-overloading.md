@@ -54,7 +54,7 @@ struct S {
     S() = default;                     // ask for the compiler-generated one
     S(const S&) = delete;              // forbid copying (deleted function)
 };
-void f(double) = delete;               // ban a specific overload (e.g. block implicit int→double)
+void f(double) = delete;               // ban an overload: beside f(int), f(2.5) no longer converts to int
 ```
 
 ## Gotchas

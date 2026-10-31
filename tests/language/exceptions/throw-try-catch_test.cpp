@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/language/exceptions/throw-try-catch.md.
 #include <exception>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -24,6 +25,31 @@ struct Guard {
 };
 void risky() { Guard g{'b'}; throw std::runtime_error{"boom"}; }
 void outer() { Guard g{'a'}; risky(); }
+
+std::mutex unwind_mutex;
+void locked_risky() {
+    std::lock_guard lk{unwind_mutex};
+    risky();
+}
+
+struct ThrowingDtor {
+    ~ThrowingDtor() noexcept(false) { throw std::runtime_error{"from destructor"}; }
+};
+void throw_during_unwinding() {
+    ThrowingDtor d;
+    throw std::runtime_error{"first"};  // d's destructor throws a second exception while unwinding
+}
+
+// Catching by value is the point here.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wcatch-value"
+#endif
+std::string catch_by_value() {
+    try { throw MyError{"msg"}; }
+    catch (std::runtime_error e) {  // by value: copies, slicing to the base
+        try { throw e; } catch (const MyError&) { return "MyError"; } catch (...) { return "sliced"; }
+    }
+}
 }  // namespace
 
 // "The basics": parse("") throws std::invalid_argument; the most-derived handler wins.
@@ -93,4 +119,32 @@ TEST(ThrowTryCatch, NestedExceptionsPreserveCause) {
 TEST(ThrowTryCatch, DestructorsAreNoexceptByDefault) {
     static_assert(std::is_nothrow_destructible_v<Guard>);
     static_assert(noexcept(std::declval<Guard&>().~Guard()));
+}
+
+// "The basics": catch (...) catches anything, including non-std::exception types.
+TEST(ThrowTryCatch, CatchAllCatchesAnything) {
+    std::string which;
+    try { throw 42; } catch (const std::exception&) { which = "exception"; } catch (...) { which = "..."; }
+    EXPECT_EQ(which, "...");
+}
+
+// "Stack unwinding": the lock_guard's destructor releases the mutex when risky() throws.
+TEST(ThrowTryCatch, UnwindingReleasesLock) {
+    EXPECT_THROW(locked_risky(), std::runtime_error);
+    EXPECT_TRUE(unwind_mutex.try_lock());
+    unwind_mutex.unlock();
+}
+
+// "Gotchas": catching by value slices a derived exception to the base.
+TEST(ThrowTryCatch, CatchByValueSlices) {
+    EXPECT_EQ(catch_by_value(), "sliced");
+}
+
+// "Gotchas": a second exception escaping a destructor during unwinding calls std::terminate.
+TEST(ThrowTryCatchDeathTest, ThrowDuringUnwindingTerminates) {
+    EXPECT_DEATH(
+        {
+            try { throw_during_unwinding(); } catch (...) {}
+        },
+        "");
 }

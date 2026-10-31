@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/language/preprocessor/preprocessor.md.
 #include <cstring>
+#include <string>
 #include <string_view>
 #include <version>
 
@@ -49,4 +50,65 @@ TEST(Preprocessor, FeatureTestMacroGatesInclude) {
 #else
     GTEST_SKIP() << "needs __cpp_lib_format >= 201907L";
 #endif
+}
+
+// "#include": the classic include guard skips the body the second time.
+TEST(Preprocessor, IncludeGuard) {
+    int bodies = 0;
+#ifndef PREPROCESSOR_TEST_GUARD_H
+#define PREPROCESSOR_TEST_GUARD_H
+    ++bodies;
+#endif
+#ifndef PREPROCESSOR_TEST_GUARD_H  // the same guarded text pasted again
+#define PREPROCESSOR_TEST_GUARD_H
+    ++bodies;
+#endif
+    EXPECT_EQ(bodies, 1);
+}
+
+namespace preprocessor_test_scope {
+#define PREPROCESSOR_TEST_NO_SCOPE 7  // "defined" inside a namespace...
+}  // namespace preprocessor_test_scope
+
+// "Macros": no scope — a macro defined inside a namespace is visible everywhere after it.
+TEST(Preprocessor, MacrosIgnoreScope) {
+    EXPECT_EQ(PREPROCESSOR_TEST_NO_SCOPE, 7);
+#undef PREPROCESSOR_TEST_NO_SCOPE
+}
+
+// "Conditional compilation": exactly one platform branch (or none) is kept.
+TEST(Preprocessor, PlatformBranches) {
+    std::string_view path = "other";
+#if defined(_WIN32)
+    path = "windows";
+#elif defined(__linux__)
+    path = "linux";
+#endif
+#if defined(__linux__)
+    EXPECT_EQ(path, "linux");
+#elif defined(__APPLE__)
+    EXPECT_EQ(path, "other");  // neither _WIN32 nor __linux__ on macOS
+#endif
+#ifdef DEBUG
+    GTEST_SKIP() << "DEBUG is defined by this build";
+#endif
+}
+
+#define NDEBUG
+#include <cassert>  // <cassert> is re-includable: assert now follows NDEBUG
+namespace {
+int assert_with_ndebug() {
+    int evaluated = 0;
+    assert(++evaluated == 100);  // expands to nothing: no evaluation, no abort
+    return evaluated;
+}
+}  // namespace
+#undef NDEBUG
+#include <cassert>
+
+// "Useful predefined macros": assert is compiled out when NDEBUG is defined.
+TEST(Preprocessor, AssertAndNdebug) {
+    EXPECT_EQ(assert_with_ndebug(), 0);
+    int x = 0;
+    EXPECT_DEATH(assert(x == 1), "");
 }

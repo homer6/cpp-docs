@@ -1,4 +1,5 @@
 // Checks claims made by docs/examples/language/declarations-initialization/initialization.md.
+#include <initializer_list>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -10,9 +11,51 @@ struct Config { int width = 80; int height = 25; bool wrap = false; };
 
 struct Explicit { explicit Explicit(int) {} };
 
+struct Defaulted { int n = 7; };  // default-initialization runs the default constructor
+
+struct Picky {  // list-init prefers the initializer_list constructor
+    std::string which;
+    Picky(int, int) : which("(int, int)") {}
+    Picky(std::initializer_list<int>) : which("initializer_list") {}
+};
+
 template <class T>
 concept BraceFromDouble = requires(double d) { T{d}; };
 }  // namespace
+
+// "The forms": every spelling of an int initializer gives the same value; the rest as commented.
+TEST(Initialization, TheForms) {
+    int a = 5;
+    int b(5);
+    int c{5};
+    int d = {5};
+    int e{};
+    EXPECT_EQ(a + b + c + d, 20);
+    EXPECT_EQ(e, 0);  // value initialization → 0
+
+    std::string s{"hi"};
+    std::vector<int> v{1, 2, 3};
+    auto w = std::vector<int>(5, 0);
+    EXPECT_EQ(s, "hi");
+    EXPECT_EQ(v, (std::vector<int>{1, 2, 3}));
+    EXPECT_EQ(w, (std::vector<int>(5, 0)));
+    EXPECT_EQ(w.size(), 5u);
+}
+
+// "What the categories mean": default-init of a class runs its constructor; {} prefers initializer_list.
+TEST(Initialization, CategoryMeanings) {
+    Defaulted x;
+    EXPECT_EQ(x.n, 7);
+    std::string str;  // default-constructed, not garbage
+    EXPECT_TRUE(str.empty());
+
+    EXPECT_EQ(Picky(1, 2).which, "(int, int)");
+    EXPECT_EQ((Picky{1, 2}).which, "initializer_list");
+
+    int arr[3]{1};  // aggregate init of an array: the rest are zero
+    EXPECT_EQ(arr[1] + arr[2], 0);
+    static_assert(std::is_aggregate_v<Config>);
+}
 
 // "The () vs {} trap": (5, 0) is five zeros; {5, 0} is two elements.
 TEST(Initialization, ParenVersusBraceForVector) {
