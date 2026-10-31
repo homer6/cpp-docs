@@ -33,9 +33,9 @@ its own index. We're working through them roughly in order of everyday usefulnes
 
 | Area | Status | What's in it |
 |---|---|---|
-| [Basic concepts](language/basic-concepts/README.md) | ✅ | types, names/lookup, storage/linkage, `main` |
+| [Basic concepts](language/basic-concepts/README.md) | ✅ | comments, keywords, types, names/lookup, storage/linkage, `main`, freestanding |
 | [Expressions](language/expressions/README.md) | ✅ | value categories, operators, conversions, literals, constant exprs |
-| [Statements](language/statements/README.md) | ✅ | `if`/`switch`, loops, range-`for` |
+| [Statements](language/statements/README.md) | ✅ | `if`/`switch`, loops, range-`for`, `break`/`continue`/`return`/`goto` |
 | [Declarations & initialization](language/declarations-initialization/README.md) | ✅ | `auto`, `const`/`constexpr`, the many initializations |
 | [Functions](language/functions/README.md) | ✅ | overloading, default args, lambdas |
 | [Classes](language/classes/README.md) | ✅ | special members, RAII, inheritance, virtual, unions, deducing `this`, bit-fields, operator overloading |
@@ -43,7 +43,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Exceptions](language/exceptions/README.md) | ✅ | `throw`/`try`/`catch`, `noexcept`, exception safety |
 | [Coroutines](language/coroutines/README.md) | ✅ | `co_await`/`co_yield`/`co_return` (C++20) |
 | [Modules](language/modules/README.md) | ✅ | `import`/`export` (C++20) |
-| [Preprocessor](language/preprocessor/README.md) | ✅ | macros, includes, conditional compilation |
+| [Preprocessor](language/preprocessor/README.md) | ✅ | macros, includes, conditional compilation, `#embed` |
 
 ---
 

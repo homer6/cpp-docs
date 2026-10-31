@@ -5,9 +5,9 @@ column of [cppreference](https://cppreference.com/).
 
 | Area | What |
 |---|---|
-| [Basic concepts](basic-concepts/README.md) | fundamental types, scope/storage/linkage, `main`, the object model |
+| [Basic concepts](basic-concepts/README.md) | comments, keywords, fundamental types, scope/storage/linkage, `main`, the object model, freestanding |
 | [Expressions](expressions/README.md) | value categories, operators, conversions, literals, constant expressions |
-| [Statements](statements/README.md) | `if`/`switch`, the loops, range-`for` |
+| [Statements](statements/README.md) | `if`/`switch`, the loops, range-`for`, jump statements |
 | [Declarations & initialization](declarations-initialization/README.md) | `auto`, `const`/`constexpr`, the forms of initialization |
 | [Functions](functions/README.md) | overloading, default/variadic args, lambdas |
 | [Classes](classes/README.md) | special members & RAII, inheritance/virtual, access, unions, deducing `this`, bit-fields, operator overloading |
@@ -15,7 +15,7 @@ column of [cppreference](https://cppreference.com/).
 | [Exceptions](exceptions/README.md) | `throw`/`try`/`catch`, `noexcept`, exception safety |
 | [Coroutines](coroutines/README.md) | `co_await`/`co_yield`/`co_return` (C++20) |
 | [Modules](modules/README.md) | `import`/`export` (C++20) |
-| [Preprocessor](preprocessor/README.md) | macros, includes, conditional compilation |
+| [Preprocessor](preprocessor/README.md) | macros, includes, conditional compilation, `#embed` |
 
 > The *standard concepts* live with the [Concepts library](../concepts/README.md);
 > the standard *exception types* with [Diagnostics](../diagnostics/README.md).
