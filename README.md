@@ -18,6 +18,7 @@ area has its own README.
 
 ### Standard library
 
+<!-- index:library:start -->
 - **[Containers](docs/examples/containers/README.md)** — vector, map, span, the lot
   - adaptors: [std::flat_map / std::flat_multimap](docs/examples/containers/adaptors/flat_map.md) · [std::flat_set / std::flat_multiset](docs/examples/containers/adaptors/flat_set.md) · [std::priority_queue](docs/examples/containers/adaptors/priority_queue.md) · [std::queue](docs/examples/containers/adaptors/queue.md) · [std::stack](docs/examples/containers/adaptors/stack.md)
   - associative: [std::map](docs/examples/containers/associative/map.md) · [std::multimap](docs/examples/containers/associative/multimap.md) · [std::multiset](docs/examples/containers/associative/multiset.md) · [std::set](docs/examples/containers/associative/set.md)
@@ -58,13 +59,15 @@ area has its own README.
   - [Standard concepts](docs/examples/concepts/standard-concepts.md)
 - **[Feature-test macros](docs/examples/feature-test-macros/README.md)** — detecting what your compiler supports
 - **[Named requirements](docs/examples/named-requirements/README.md)** — *CopyConstructible*, *Compare*, *Hash* … and how concepts relate
+<!-- index:library:end -->
 
 ### Core language
 
+<!-- index:language:start -->
 - **[Basic concepts](docs/examples/language/basic-concepts/README.md)** — comments, keywords, types, names/lookup, storage/linkage, `main`, freestanding
   - [Comments](docs/examples/language/basic-concepts/comments.md) · [Contracts (C++26)](docs/examples/language/basic-concepts/contracts.md) · [Freestanding and hosted implementations](docs/examples/language/basic-concepts/freestanding.md) · [Fundamental types](docs/examples/language/basic-concepts/fundamental-types.md) · [Keywords and reserved identifiers](docs/examples/language/basic-concepts/keywords.md) · [The object model & `main`](docs/examples/language/basic-concepts/object-model.md) · [Scope, storage duration & linkage](docs/examples/language/basic-concepts/scope-storage-linkage.md)
 - **[Expressions](docs/examples/language/expressions/README.md)** — value categories, operators, conversions, literals, constant exprs
-  - [Constant expressions (`constexpr`, `consteval`, `constinit`)](docs/examples/language/expressions/constant-expressions.md) · [Conversions & casts](docs/examples/language/expressions/conversions.md) · [Literals](docs/examples/language/expressions/literals.md) · [Operators, precedence & evaluation order](docs/examples/language/expressions/operators.md) · [Operator overloading](docs/examples/language/expressions/operator-overloading.md) · [Reflection (C++26)](docs/examples/language/expressions/reflection.md) · [Value categories](docs/examples/language/expressions/value-categories.md)
+  - [Constant expressions (`constexpr`, `consteval`, `constinit`)](docs/examples/language/expressions/constant-expressions.md) · [Conversions & casts](docs/examples/language/expressions/conversions.md) · [Literals](docs/examples/language/expressions/literals.md) · [Operator overloading](docs/examples/language/expressions/operator-overloading.md) · [Operators, precedence & evaluation order](docs/examples/language/expressions/operators.md) · [Reflection (C++26)](docs/examples/language/expressions/reflection.md) · [Value categories](docs/examples/language/expressions/value-categories.md)
 - **[Statements](docs/examples/language/statements/README.md)** — `if`/`switch`, loops, range-`for`, `break`/`continue`/`return`/`goto`
   - [Iteration statements](docs/examples/language/statements/iteration.md) · [Jump statements](docs/examples/language/statements/jump-statements.md) · [Selection statements](docs/examples/language/statements/selection.md)
 - **[Declarations & initialization](docs/examples/language/declarations-initialization/README.md)** — `auto`, `const`/`constexpr`, the many initializations
@@ -83,6 +86,7 @@ area has its own README.
   - [Modules](docs/examples/language/modules/modules.md)
 - **[Preprocessor](docs/examples/language/preprocessor/README.md)** — macros, includes, conditional compilation, `#embed`
   - [`#embed` — resource inclusion (C++26)](docs/examples/language/preprocessor/embed.md) · [The preprocessor](docs/examples/language/preprocessor/preprocessor.md)
+<!-- index:language:end -->
 
 ### Everything else
 
