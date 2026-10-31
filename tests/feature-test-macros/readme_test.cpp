@@ -20,6 +20,36 @@ TEST(FeatureTestMacros, LanguageMacrosAreDates) {
 #endif
 }
 
+// "Two families": a language macro is defined only while its feature is on —
+// GCC defines __cpp_modules only with -fmodules (not passed here); Clang 22
+// defines it as 1.
+TEST(FeatureTestMacros, ModulesMacroDependsOnToolchain) {
+#if defined(__clang__)
+#ifdef __cpp_modules
+    EXPECT_EQ(__cpp_modules, 1);
+#else
+    FAIL() << "Clang 22 defines __cpp_modules in C++26 mode";
+#endif
+#elif defined(__GNUC__)
+#ifdef __cpp_modules
+    FAIL() << "GCC should define __cpp_modules only with -fmodules";
+#endif
+#else
+    GTEST_SKIP() << "expectation recorded only for GCC and Clang";
+#endif
+}
+
+// "Mental model": the std::format gate from the page takes the format branch.
+#if defined(__cpp_lib_format) && __cpp_lib_format >= 201907L
+#include <format>
+#endif
+TEST(FeatureTestMacros, FormatGate) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_format, 201907L);
+#if defined(__cpp_lib_format) && __cpp_lib_format >= 201907L
+    EXPECT_EQ(std::format("{}-{}", 1, 2), "1-2");
+#endif
+}
+
 // "Examples": the __cpp_lib_expected-gated branch picks std::expected when available.
 #if __cpp_lib_expected >= 202202L
 #include <expected>

@@ -41,3 +41,14 @@ TEST(Durations, LossyImplicitConversionRejected) {
     static_assert(std::is_convertible_v<chr::seconds, chr::milliseconds>);
     static_assert(std::is_convertible_v<chr::milliseconds, chr::duration<double>>);
 }
+
+// "Mental model": duration = Rep count × Period ratio; days..years are C++20 aliases.
+TEST(Durations, AliasPeriods) {
+    static_assert(std::is_same_v<chr::milliseconds::period, std::milli>);
+    static_assert(chr::hours::period::num == 3600);
+    static_assert(chr::days::period::num == 86400);
+    static_assert(chr::weeks::period::num == 7 * 86400);
+    static_assert(chr::years::period::num == 31556952);  // average Gregorian year
+    static_assert(chr::months::period::num * 12 == chr::years::period::num);
+    EXPECT_EQ(chr::duration_cast<chr::hours>(chr::days{2}).count(), 48);
+}

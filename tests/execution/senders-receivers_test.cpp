@@ -4,7 +4,9 @@
 // Clang 22 + libc++), so these tests skip with that reason until one does.
 #include <exception>
 #include <stdexcept>
+#include <optional>
 #include <string>
+#include <thread>
 #include <utility>
 #include <version>
 
@@ -48,5 +50,39 @@ TEST(SendersReceivers, SyncWaitRethrowsError) {
     namespace ex = std::execution;
     auto err = std::make_exception_ptr(std::runtime_error{"boom"});
     EXPECT_THROW(std::this_thread::sync_wait(ex::just_error(err)), std::runtime_error);
+#endif
+}
+
+// "Sender factories": just_stopped completes as cancelled, so sync_wait returns
+// an empty optional; upon_error turns the error channel back into a value.
+TEST(SendersReceivers, StoppedAndUponError) {
+    CPPDOCS_REQUIRE(__cpp_lib_senders);
+#ifdef __cpp_lib_senders
+    namespace ex = std::execution;
+    EXPECT_FALSE(std::this_thread::sync_wait(ex::just_stopped()).has_value());
+    auto err = std::make_exception_ptr(std::runtime_error{"boom"});
+    auto handled = ex::just_error(err) | ex::upon_error([](std::exception_ptr) { return 7; });
+    auto [v] = std::this_thread::sync_wait(std::move(handled)).value();
+    EXPECT_EQ(v, 7);
+#endif
+}
+
+// "Worked example": on(run_loop scheduler, ...) runs the work on the loop's thread.
+TEST(SendersReceivers, OnRunLoopRunsOnWorker) {
+    CPPDOCS_REQUIRE(__cpp_lib_senders);
+#ifdef __cpp_lib_senders
+    namespace ex = std::execution;
+    ex::run_loop loop;
+    std::jthread worker([&](std::stop_token st) {
+        std::stop_callback cb{st, [&] { loop.finish(); }};
+        loop.run();
+    });
+    auto work = ex::on(loop.get_scheduler(),
+                       ex::just(std::string{"hi"}) | ex::then([](std::string m) {
+                           return std::pair{m.size(), std::this_thread::get_id()};
+                       }));
+    auto [r] = std::this_thread::sync_wait(std::move(work)).value();
+    EXPECT_EQ(r.first, 2u);
+    EXPECT_EQ(r.second, worker.get_id());
 #endif
 }

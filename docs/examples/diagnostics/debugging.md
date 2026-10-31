@@ -114,7 +114,12 @@ bool std::is_debugger_present() noexcept {
 ```
 
 With this in the program, GCC 16.2 prints `false` for a plain run and `true`
-under `FORCE_DEBUGGER=1` — and `breakpoint_if_debugging()` follows suit.
+under `FORCE_DEBUGGER=1`. But on GCC 16.2 the replacement only links while the
+program calls nothing else from `<debugging>`: `breakpoint()`,
+`breakpoint_if_debugging()` and `is_debugger_present()` share one object file in
+`libstdc++exp.a`, so calling either breakpoint function pulls in the library's
+`is_debugger_present` too and the link fails with
+`multiple definition of 'std::is_debugger_present()'`.
 
 ## Gotchas
 
@@ -127,6 +132,8 @@ under `FORCE_DEBUGGER=1` — and `breakpoint_if_debugging()` follows suit.
   debuggers.
 - **Link with `-lstdc++exp` on GCC 16.** The header compiles fine without it;
   the failure only shows at link time.
+- **Replacing `is_debugger_present` doesn't work yet on GCC 16.2** if the
+  program also calls `breakpoint()` or `breakpoint_if_debugging()` (see above).
 
 ## See also
 

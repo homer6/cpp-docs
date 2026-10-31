@@ -60,3 +60,17 @@ endforeach()
 if(TARGET examples_language_tests)
   include(language/modules/modules.cmake)
 endif()
+
+# <meta> (P2996) needs -freflection on GCC 16; enable it only for the file that
+# tests docs/examples/metaprogramming/reflection.md (#46).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+  set_source_files_properties(metaprogramming/reflection_test.cpp
+                              PROPERTIES COMPILE_OPTIONS -freflection)
+endif()
+
+# <stacktrace> and <debugging> live in libstdc++'s experimental library on
+# GCC 16; link it into the diagnostics tests (#46).
+if(TARGET examples_diagnostics_tests AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+  target_link_libraries(examples_diagnostics_tests PRIVATE stdc++exp)
+endif()

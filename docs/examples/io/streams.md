@@ -66,8 +66,9 @@ std::cout << std::flush;         // explicit flush without a newline
 - **`>>` leaves the newline in the buffer.** Mixing `cin >> n` then
   `std::getline` reads an empty line — consume the leftover with
   `std::cin.ignore(...)` or `std::ws`.
-- **A failed `>>` leaves the variable unchanged and sets `failbit`.** Subsequent
-  reads no-op until you `clear()` (and usually `ignore()` the bad input).
+- **A failed `>>` sets `failbit` and stores `0`** (since C++11; an out-of-range
+  number stores the type's max or min). Subsequent reads no-op until you
+  `clear()` (and usually `ignore()` the bad input).
 - **Sync with C stdio costs speed.** `std::ios_base::sync_with_stdio(false);` (and
   not mixing `printf`/`cout`) speeds up heavy I/O — but then don't interleave C
   and C++ I/O.

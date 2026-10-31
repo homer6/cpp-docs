@@ -1,6 +1,7 @@
 // Checks claims made by docs/examples/metaprogramming/integer-sequence.md.
 #include <array>
 #include <cstddef>
+#include <sstream>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -49,4 +50,31 @@ TEST(IntegerSequence, SquaresArray) {
     constexpr auto squares = squares_impl(std::make_index_sequence<5>{});
     static_assert(squares == std::array<std::size_t, 5>{0, 1, 4, 9, 16});
     EXPECT_EQ(squares.back(), 16u);
+}
+
+// "Gotchas": std::make_from_tuple constructs an object from a tuple's elements.
+TEST(IntegerSequence, MakeFromTupleConstructs) {
+    struct P {
+        int x, y;
+        P(int a, int b) : x(a), y(b) {}
+    };
+    auto p = std::make_from_tuple<P>(std::tuple{3, 4});
+    EXPECT_EQ(p.x, 3);
+    EXPECT_EQ(p.y, 4);
+}
+
+// "Declaration": index_sequence_for gives one index per type.
+TEST(IntegerSequence, IndexSequenceFor) {
+    static_assert(std::is_same_v<std::index_sequence_for<int, char, double>, std::index_sequence<0, 1, 2>>);
+    static_assert(std::is_empty_v<std::index_sequence<0, 1>>);
+}
+
+// "Inline, with a templated lambda (C++20)": prints 1, a, 2.5.
+TEST(IntegerSequence, TemplatedLambdaPrints) {
+    auto t = std::tuple{1, 'a', 2.5};
+    std::ostringstream os;
+    [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+        ((os << (Is ? ", " : "") << std::get<Is>(t)), ...);
+    }(std::make_index_sequence<std::tuple_size_v<decltype(t)>>{});
+    EXPECT_EQ(os.str(), "1, a, 2.5");
 }

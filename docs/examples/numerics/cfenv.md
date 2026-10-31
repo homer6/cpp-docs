@@ -17,8 +17,9 @@ interface to that state.
 ```
 
 Flags stay raised until you clear them, so the pattern is always
-*clear → compute → test*. The environment is per thread; a new thread starts
-with the environment its creator had at the time.
+*clear → compute → test*. The environment is per thread. C says a new thread
+starts with its creator's environment; glibc does that for `std::thread`, but
+on macOS a new thread starts in the default environment (round-to-nearest).
 
 ## Declaration
 
@@ -120,6 +121,11 @@ FE_DOWNWARD    rint(2.5)= 2.0 rint(-2.5)=-3.0 1/3=0.33333333333333331482
 FE_TOWARDZERO  rint(2.5)= 2.0 rint(-2.5)=-2.0 1/3=0.33333333333333331482
 ```
 
+`printf` also rounds its decimal conversion in the current mode, so the last
+digit of the `1/3` column is partly printf's: `FE_TONEAREST`, `FE_DOWNWARD`
+and `FE_TOWARDZERO` compute the same `double` (the nearest one is below 1/3),
+and only `FE_UPWARD` produces a different one.
+
 `std::rint` and `std::nearbyint` follow the current mode (`nearbyint` never
 raises `FE_INEXACT`); `std::round` always rounds halves away from zero and
 `std::lround` ignores the mode too.
@@ -209,7 +215,8 @@ after `std::log(0.0)` is therefore not portable.
 - **Restore the rounding mode.** Other code, including the C library's
   `printf`, assumes round-to-nearest.
 - **The environment is per thread.** Setting the mode in one thread does not
-  affect a pool of workers already running.
+  affect a pool of workers already running, and a new thread may not inherit
+  it (it doesn't on macOS) — set the mode inside the thread that computes.
 
 ## See also
 

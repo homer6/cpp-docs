@@ -1,6 +1,8 @@
 // Checks claims made by docs/examples/concurrency/futures.md.
 #include <chrono>
+#include <atomic>
 #include <future>
+#include <latch>
 #include <stdexcept>
 #include <thread>
 #include <utility>
@@ -65,4 +67,47 @@ TEST(Futures, BrokenPromise) {
     } catch (const std::future_error& e) {
         EXPECT_EQ(e.code(), std::future_errc::broken_promise);
     }
+}
+
+// "std::async": launch::async runs the task on another thread.
+TEST(Futures, LaunchAsyncUsesAnotherThread) {
+    auto f = std::async(std::launch::async, [] { return std::this_thread::get_id(); });
+    EXPECT_NE(f.get(), std::this_thread::get_id());
+}
+
+// "Checking without blocking": wait_for(0s) reports ready once the value is set.
+TEST(Futures, WaitForZeroPolls) {
+    using namespace std::chrono_literals;
+    std::promise<int> p;
+    auto f = p.get_future();
+    EXPECT_EQ(f.wait_for(0s), std::future_status::timeout);
+    p.set_value(1);
+    EXPECT_EQ(f.wait_for(0s), std::future_status::ready);
+    f.wait();
+    EXPECT_EQ(f.get(), 1);
+}
+
+// "Gotchas": shared_future allows several waiters.
+TEST(Futures, SharedFutureManyWaiters) {
+    std::promise<int> p;
+    std::shared_future<int> sf = p.get_future().share();
+    std::latch both_waiting{2};
+    int a = 0, b = 0;
+    std::thread t1{[&, sf] { both_waiting.count_down(); a = sf.get(); }};
+    std::thread t2{[&, sf] { both_waiting.count_down(); b = sf.get(); }};
+    both_waiting.wait();
+    p.set_value(5);
+    t1.join();
+    t2.join();
+    EXPECT_EQ(a + b, 10);
+    EXPECT_EQ(sf.get(), 5);  // still valid
+}
+
+// "Gotchas": the destructor of an async-launched future blocks until the task is done.
+TEST(Futures, AsyncFutureDestructorBlocks) {
+    std::atomic<bool> done{false};
+    {
+        auto f = std::async(std::launch::async, [&] { done = true; });
+    }
+    EXPECT_TRUE(done);
 }
