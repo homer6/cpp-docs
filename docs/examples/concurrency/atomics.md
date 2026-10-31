@@ -68,6 +68,9 @@ ar.fetch_add(1);
 std::atomic<std::shared_ptr<Node>> head;   // lock-free-ish atomic smart pointer (C++20)
 ```
 
+libc++ (Clang 22) doesn't provide `std::atomic<std::shared_ptr>` yet
+(`__cpp_lib_atomic_shared_ptr` undefined); libstdc++ has it since GCC 12.
+
 ## Gotchas
 
 - **Start with the default `seq_cst`** (or just a mutex). Hand-tuning to
