@@ -41,8 +41,11 @@ allocation, and without templating the function on the string type.
 std::size_t count_spaces(std::string_view s) {
     return std::ranges::count(s, ' ');
 }
-count_spaces("a b c");                 // const char* → view, no allocation
-count_spaces(std::string{"x y"});      // std::string → view, no copy
+
+int main() {
+    count_spaces("a b c");                 // const char* → view, no allocation
+    count_spaces(std::string{"x y"});      // std::string → view, no copy
+}
 ```
 
 ## Examples
@@ -52,16 +55,19 @@ count_spaces(std::string{"x y"});      // std::string → view, no copy
 ```cpp
 #include <string_view>
 
-std::string_view sv = "key=value";
-auto eq = sv.find('=');
-std::string_view key = sv.substr(0, eq);   // "key"  — no allocation
-std::string_view val = sv.substr(eq + 1);  // "value"— no allocation
-sv.remove_prefix(4);                        // now "value" (just moves the ptr)
+int main() {
+    std::string_view sv = "key=value";
+    auto eq = sv.find('=');
+    std::string_view key = sv.substr(0, eq);   // "key"  — no allocation
+    std::string_view val = sv.substr(eq + 1);  // "value"— no allocation
+    sv.remove_prefix(4);                        // now "value" (just moves the ptr)
+}
 ```
 
 ### Same read API as string
 
-```cpp
+```cpp body
+std::string_view sv = "value";
 sv.size(); sv.empty(); sv[0]; sv.front(); sv.back();
 sv.starts_with("val"); sv.ends_with("ue");        // C++20
 sv.contains("alu");                                // C++23

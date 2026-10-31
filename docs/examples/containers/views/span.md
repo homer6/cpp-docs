@@ -74,7 +74,8 @@ std::span<int> s4{vec.data(), 2};       // first 2 elements (ptr + count)
 
 ### Subviews (no copying)
 
-```cpp
+```cpp body
+std::vector<int> vec{1, 2, 3, 4};
 std::span<int> s = vec;                 // {1,2,3,4}
 auto head = s.first(2);                 // view of {1,2}
 auto tail = s.last(2);                  // view of {3,4}
@@ -93,7 +94,8 @@ void print(std::span<const int> xs) {   // callers can't mutate through this
 
 ### As bytes (C++20)
 
-```cpp
+```cpp body
+std::vector<int> vec{1, 2, 3, 4};
 std::span<const std::byte> raw = std::as_bytes(std::span{vec});
 ```
 

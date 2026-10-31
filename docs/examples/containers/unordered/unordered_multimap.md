@@ -43,20 +43,22 @@ by rehash.** Erasing affects only the erased element.
 ```cpp
 #include <unordered_map>
 
-std::unordered_multimap<std::string, int> m;
-m.emplace("a", 1);
-m.emplace("a", 2);          // both kept
-m.emplace("b", 3);
+int main() {
+    std::unordered_multimap<std::string, int> m;
+    m.emplace("a", 1);
+    m.emplace("a", 2);          // both kept
+    m.emplace("b", 3);
 
-m.count("a");               // 2
+    m.count("a");               // 2
 
-auto [lo, hi] = m.equal_range("a");
-for (auto it = lo; it != hi; ++it) { /* it->second: 1 and 2 */ }
+    auto [lo, hi] = m.equal_range("a");
+    for (auto it = lo; it != hi; ++it) { /* it->second: 1 and 2 */ }
 
-// Remove one specific pairing vs. all:
-auto it = m.find("a");
-if (it != m.end()) m.erase(it);   // one
-m.erase("a");                     // all remaining "a"
+    // Remove one specific pairing vs. all:
+    auto it = m.find("a");
+    if (it != m.end()) m.erase(it);   // one
+    m.erase("a");                     // all remaining "a"
+}
 ```
 
 ## Gotchas

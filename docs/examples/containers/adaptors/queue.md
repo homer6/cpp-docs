@@ -19,6 +19,8 @@ enter at the back and leave from the front, in order. Defaults to a
 ## Declaration
 
 ```cpp
+#include <deque>
+
 template<
     class T,
     class Container = std::deque<T>
@@ -49,18 +51,20 @@ No iterators — you can't traverse a `queue`.
 ```cpp
 #include <queue>
 
-std::queue<int> q;
-q.push(1);
-q.push(2);
-q.emplace(3);          // {1,2,3}, 1 at front
+int main() {
+    std::queue<int> q;
+    q.push(1);
+    q.push(2);
+    q.emplace(3);          // {1,2,3}, 1 at front
 
-q.front();             // 1  (next to be served)
-q.back();              // 3  (most recently added)
-q.pop();               // removes 1 (front), returns void
+    q.front();             // 1  (next to be served)
+    q.back();              // 3  (most recently added)
+    q.pop();               // removes 1 (front), returns void
 
-while (!q.empty()) {
-    int x = q.front();
-    q.pop();           // read front, then remove
+    while (!q.empty()) {
+        int x = q.front();
+        q.pop();           // read front, then remove
+    }
 }
 ```
 

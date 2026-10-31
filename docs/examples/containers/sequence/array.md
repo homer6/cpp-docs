@@ -72,7 +72,8 @@ CTAD deduces both `T` and `N` from the initializer, so `b` is
 
 ### Access and iteration
 
-```cpp
+```cpp body
+std::array<int, 3> a{1, 2, 3};
 a[0];                 // unchecked
 a.at(0);              // bounds-checked → std::out_of_range
 a.front(); a.back();

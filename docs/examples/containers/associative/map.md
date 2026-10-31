@@ -57,13 +57,15 @@ element.** References to a *value* stay valid until that element is erased.
 ```cpp
 #include <map>
 
-std::map<std::string, int> m;
+int main() {
+    std::map<std::string, int> m;
 
-m["alice"] = 30;                 // operator[]: inserts default (0) then assigns
-m.insert({"bob", 25});           // no-op if "bob" exists
-m.emplace("carol", 40);          // construct in place; no-op if exists
-m.try_emplace("alice", 99);      // C++17: does NOT touch the value if key exists
-m.insert_or_assign("alice", 31); // C++17: insert, or overwrite if present
+    m["alice"] = 30;                 // operator[]: inserts default (0) then assigns
+    m.insert({"bob", 25});           // no-op if "bob" exists
+    m.emplace("carol", 40);          // construct in place; no-op if exists
+    m.try_emplace("alice", 99);      // C++17: does NOT touch the value if key exists
+    m.insert_or_assign("alice", 31); // C++17: insert, or overwrite if present
+}
 ```
 
 `try_emplace` and `insert_or_assign` exist precisely to fix `operator[]`'s and
@@ -71,7 +73,8 @@ m.insert_or_assign("alice", 31); // C++17: insert, or overwrite if present
 
 ### Lookup
 
-```cpp
+```cpp body
+std::map<std::string, int> m{{"alice", 30}, {"bob", 25}};
 m.at("alice");          // bounds-checked → throws std::out_of_range if missing
 m["alice"];             // inserts a default-constructed value if missing (!)
 m.contains("alice");    // C++20, no insertion, no throw
@@ -81,7 +84,8 @@ if (it != m.end()) { /* it->first, it->second */ }
 
 ### Iterating (sorted by key) with structured bindings
 
-```cpp
+```cpp body
+std::map<std::string, int> m{{"alice", 30}, {"bob", 25}};
 for (const auto& [key, value] : m) {        // C++17 structured bindings
     // visited in ascending key order
 }
@@ -90,14 +94,16 @@ for (auto& [key, value] : m) value += 1;     // mutate values, keys are const
 
 ### Counting words — the idiomatic snippet
 
-```cpp
+```cpp body
+std::vector<std::string> words{"a", "b", "a"};
 std::map<std::string, int> freq;
 for (const auto& w : words) ++freq[w];        // operator[] default-inits to 0
 ```
 
 ### C++20 uniform erase
 
-```cpp
+```cpp body
+std::map<std::string, int> m{{"alice", 30}, {"bob", 25}};
 std::erase_if(m, [](const auto& kv){ return kv.second == 0; });
 ```
 

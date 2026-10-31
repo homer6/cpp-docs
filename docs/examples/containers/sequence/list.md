@@ -59,34 +59,47 @@ pointing at the same node, now in the other list.
 ```cpp
 #include <list>
 
-std::list<int> a{1, 2, 3};
-a.push_front(0);          // {0,1,2,3}
-a.push_back(4);           // {0,1,2,3,4}
+int main() {
+    std::list<int> a{1, 2, 3};
+    a.push_front(0);          // {0,1,2,3}
+    a.push_back(4);           // {0,1,2,3,4}
 
-auto it = std::next(a.begin(), 2);   // no a[2]; step manually
-a.insert(it, 99);                    // O(1) given the iterator
-a.erase(it);                         // O(1)
+    auto it = std::next(a.begin(), 2);   // no a[2]; step manually
+    a.insert(it, 99);                    // O(1) given the iterator
+    a.erase(it);                         // O(1)
+}
 ```
 
 ### Member operations that algorithms can't do as well
 
 ```cpp
-std::list<int> x{1, 2, 3}, y{4, 5, 6};
+#include <list>
 
-x.splice(x.end(), y);     // move all of y onto the end of x in O(1); y now empty
-x.sort();                 // list's own sort (std::sort needs random access)
-x.merge(/* another sorted list */);
-x.remove(2);              // remove all elements == 2
-x.remove_if([](int n){ return n % 2 == 0; });
-x.unique();               // collapse consecutive duplicates
-x.reverse();
+int main() {
+    std::list<int> x{1, 2, 3}, y{4, 5, 6};
+
+    x.splice(x.end(), y);     // move all of y onto the end of x in O(1); y now empty
+    x.sort();                 // list's own sort (std::sort needs random access)
+    std::list<int> z{0, 7};
+    x.merge(z);               // merge another sorted list → {0,1,...,6,7}; z now empty
+    x.remove(2);              // remove all elements == 2
+    x.remove_if([](int n){ return n % 2 == 0; });
+    x.unique();               // collapse consecutive duplicates
+    x.reverse();
+}
 ```
 
 ### C++20 uniform erase
 
 ```cpp
-std::erase(x, 3);                                  // by value
-std::erase_if(x, [](int n){ return n > 4; });      // by predicate
+#include <list>
+
+int main() {
+    std::list<int> x{1, 2, 3, 4, 5, 6};
+
+    std::erase(x, 3);                                  // by value
+    std::erase_if(x, [](int n){ return n > 4; });      // by predicate
+}
 ```
 
 ## Gotchas

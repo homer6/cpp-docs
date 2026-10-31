@@ -30,7 +30,10 @@ blocks. New active blocks grow by an **implementation-defined factor**.
 
 ## Declaration
 
-```cpp
+```cpp needs=hive
+#include <hive>
+#include <memory_resource>
+
 template<
     class T,
     class Allocator = std::allocator<T>
@@ -84,46 +87,64 @@ storage, not one-node-per-allocation) and without `list`'s ordering.
 
 ## Examples
 
-```cpp
+```cpp needs=hive
 #include <hive>
 
-std::hive<int> h;
-auto it = h.insert(42);     // returns an iterator to the new element
-h.insert(7);
-h.emplace(99);
+int main() {
+    std::hive<int> h;
+    auto it = h.insert(42);     // returns an iterator to the new element
+    h.insert(7);
+    h.emplace(99);
 
-// `it` (and every other live iterator/pointer) stays valid across inserts:
-*it;                        // still 42
+    // `it` (and every other live iterator/pointer) stays valid across inserts:
+    *it;                        // still 42
 
-h.erase(it);                // O(1); only `it` is invalidated, others survive
+    h.erase(it);                // O(1); only `it` is invalidated, others survive
 
-for (int x : h) { /* survivors, in container-chosen order */ }
-h.size();                   // number of live elements
+    for (int x : h) { /* survivors, in container-chosen order */ }
+    h.size();                   // number of live elements
+}
 ```
 
 ### Pre-reserve and tune block sizes
 
-```cpp
-std::hive<int> g;
-g.reserve(10'000);                          // pre-create reserved capacity
+```cpp needs=hive
+#include <hive>
 
-// Constrain element-block capacities (min, max):
-std::hive<int> limited{std::hive_limits{/*min*/ 64, /*max*/ 1024}};
+int main() {
+    std::hive<int> g;
+    g.reserve(10'000);                          // pre-create reserved capacity
+
+    // Constrain element-block capacities (min, max):
+    std::hive<int> limited{std::hive_limits{/*min*/ 64, /*max*/ 1024}};
+}
 ```
 
 ### Member operations (like list, since order isn't positional)
 
-```cpp
-h.sort();          // sort in place
-h.unique();        // remove consecutive duplicates (after sorting)
-// splice elements between hives, trim_capacity(), reshape(), etc. are also provided
+```cpp needs=hive
+#include <hive>
+
+int main() {
+    std::hive<int> h{3, 1, 3, 2};
+
+    h.sort();          // sort in place
+    h.unique();        // remove consecutive duplicates (after sorting)
+    // splice elements between hives, trim_capacity(), reshape(), etc. are also provided
+}
 ```
 
 ### C++20-style uniform erase
 
-```cpp
-std::erase(h, 7);
-std::erase_if(h, [](int x){ return x < 0; });
+```cpp needs=hive
+#include <hive>
+
+int main() {
+    std::hive<int> h{7, -1, 3, 7};
+
+    std::erase(h, 7);
+    std::erase_if(h, [](int x){ return x < 0; });
+}
 ```
 
 ## Gotchas
@@ -138,7 +159,10 @@ std::erase_if(h, [](int x){ return x < 0; });
 - **`reserve` reserves *blocks*, not a flat element array** — memory stays
   block-structured; you won't get a contiguous buffer or `data()`.
 - Brand-new in C++26; cppreference's own page still marks parts "incomplete," and
-  library/compiler support is early. Check your toolchain.
+  library/compiler support is early. Check your toolchain. None of the local
+  toolchains this page was checked with (GCC 15.2, GCC 16.2, Clang 22 with
+  libc++) ships `<hive>` yet, so the examples are tagged `needs=hive` and have
+  not been compiled.
 
 ## See also
 

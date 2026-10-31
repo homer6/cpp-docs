@@ -49,23 +49,25 @@ Equivalent keys preserve insertion order among themselves (since C++11).
 ```cpp
 #include <map>
 
-std::multimap<std::string, std::string> m;
-m.emplace("fruit", "apple");
-m.emplace("fruit", "cherry");
-m.emplace("veg",   "carrot");
+int main() {
+    std::multimap<std::string, std::string> m;
+    m.emplace("fruit", "apple");
+    m.emplace("fruit", "cherry");
+    m.emplace("veg",   "carrot");
 
-m.count("fruit");                 // 2
+    m.count("fruit");                 // 2
 
-// Iterate all values for one key:
-auto [lo, hi] = m.equal_range("fruit");
-for (auto it = lo; it != hi; ++it)
-    /* it->first == "fruit", it->second == apple / cherry */;
+    // Iterate all values for one key:
+    auto [lo, hi] = m.equal_range("fruit");
+    for (auto it = lo; it != hi; ++it)
+        /* it->first == "fruit", it->second == apple / cherry */;
 
-// Remove a single specific pairing:
-auto it = m.find("fruit");        // some entry with key "fruit"
-if (it != m.end()) m.erase(it);
+    // Remove a single specific pairing:
+    auto it = m.find("fruit");        // some entry with key "fruit"
+    if (it != m.end()) m.erase(it);
 
-m.erase("fruit");                 // removes ALL remaining "fruit" entries
+    m.erase("fruit");                 // removes ALL remaining "fruit" entries
+}
 ```
 
 ## Gotchas

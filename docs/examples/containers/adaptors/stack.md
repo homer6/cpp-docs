@@ -20,6 +20,8 @@ a `std::deque`.
 ## Declaration
 
 ```cpp
+#include <deque>
+
 template<
     class T,
     class Container = std::deque<T>
@@ -50,26 +52,32 @@ There are **no iterators** — you can't traverse a `stack`. That's the point.
 ```cpp
 #include <stack>
 
-std::stack<int> s;
-s.push(1);
-s.push(2);
-s.emplace(3);          // construct in place at the top
+int main() {
+    std::stack<int> s;
+    s.push(1);
+    s.push(2);
+    s.emplace(3);          // construct in place at the top
 
-s.top();               // 3   (does NOT remove)
-s.pop();               // removes 3, returns void
-s.size();              // 2
+    s.top();               // 3   (does NOT remove)
+    s.pop();               // removes 3, returns void
+    s.size();              // 2
 
-while (!s.empty()) {
-    int x = s.top();   // read top
-    s.pop();           // then remove — two steps, always
+    while (!s.empty()) {
+        int x = s.top();   // read top
+        s.pop();           // then remove — two steps, always
+    }
 }
 ```
 
 ### Choosing a different backing container
 
 ```cpp
+#include <stack>
 #include <vector>
-std::stack<int, std::vector<int>> vs;   // back it with a vector instead of deque
+
+int main() {
+    std::stack<int, std::vector<int>> vs;   // back it with a vector instead of deque
+}
 ```
 
 ## Gotchas

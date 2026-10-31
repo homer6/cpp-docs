@@ -52,14 +52,16 @@ Same split as `unordered_map`: **references/pointers to elements stay valid**
 ```cpp
 #include <unordered_set>
 
-std::unordered_set<std::string> seen{"a", "b", "c"};
+int main() {
+    std::unordered_set<std::string> seen{"a", "b", "c"};
 
-auto [it, inserted] = seen.insert("b");   // inserted == false (already present)
-seen.contains("a");                       // C++20
-seen.count("z");                          // 0 or 1
-seen.erase("b");
+    auto [it, inserted] = seen.insert("b");   // inserted == false (already present)
+    seen.contains("a");                       // C++20
+    seen.count("z");                          // 0 or 1
+    seen.erase("b");
 
-for (const auto& s : seen) { /* arbitrary order */ }
+    for (const auto& s : seen) { /* arbitrary order */ }
+}
 ```
 
 ### Dedup a vector in O(n) average
@@ -71,7 +73,7 @@ std::unordered_set<int> uniq(v.begin(), v.end());   // {1,2,3} in some order
 
 ### Reserve for known size
 
-```cpp
+```cpp body
 std::unordered_set<int> s;
 s.reserve(1'000'000);            // avoid repeated rehashing while filling
 ```
@@ -88,7 +90,8 @@ std::unordered_set<Id> ids;
 
 ### C++20 uniform erase
 
-```cpp
+```cpp body
+std::unordered_set<std::string> seen{"a", "", "c"};
 std::erase_if(seen, [](const std::string& s){ return s.empty(); });
 ```
 

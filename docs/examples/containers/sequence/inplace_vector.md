@@ -81,38 +81,45 @@ Like `vector`'s rules but **without the reallocation case** (it can't realloc):
 
 ## Examples
 
-```cpp
+```cpp needs=inplace_vector
+#include <new>
 #include <inplace_vector>
 
-std::inplace_vector<int, 4> v;     // capacity 4, size 0, no heap
-v.push_back(1);
-v.push_back(2);                    // size 2
-v.capacity();                      // == 4 (constexpr)
+int main() {
+    std::inplace_vector<int, 4> v;     // capacity 4, size 0, no heap
+    v.push_back(1);
+    v.push_back(2);                    // size 2
+    v.capacity();                      // == 4 (constexpr)
 
-// Overflow handling without exceptions:
-std::inplace_vector<int, 2> small;
-small.push_back(1);
-small.push_back(2);
-if (int* p = small.try_push_back(3)) {   // returns nullptr — it's full
-    // not taken
-} else {
-    // handle "buffer full" without an exception
+    // Overflow handling without exceptions:
+    std::inplace_vector<int, 2> small;
+    small.push_back(1);
+    small.push_back(2);
+    if (int* p = small.try_push_back(3)) {   // returns nullptr — it's full
+        // not taken
+    } else {
+        // handle "buffer full" without an exception
+    }
+
+    // push_back would throw here:
+    try { small.push_back(3); }
+    catch (const std::bad_alloc&) { /* size() == capacity() */ }
 }
-
-// push_back would throw here:
-try { small.push_back(3); }
-catch (const std::bad_alloc&) { /* size() == capacity() */ }
 ```
 
 ### constexpr use
 
-```cpp
-constexpr auto build = []{
-    std::inplace_vector<int, 8> r;
-    for (int i = 0; i < 5; ++i) r.push_back(i * i);
-    return r;
-}();
-static_assert(build.size() == 5 && build[4] == 16);   // computed at compile time
+```cpp needs=inplace_vector
+#include <inplace_vector>
+
+int main() {
+    constexpr auto build = []{
+        std::inplace_vector<int, 8> r;
+        for (int i = 0; i < 5; ++i) r.push_back(i * i);
+        return r;
+    }();
+    static_assert(build.size() == 5 && build[4] == 16);   // computed at compile time
+}
 ```
 
 ## Gotchas
@@ -125,6 +132,10 @@ static_assert(build.size() == 5 && build[4] == 16);   // computed at compile tim
   `n > N` (it can't grow past `N`). `shrink_to_fit` is a no-op.
 - **Moves are not cheap like `vector`'s.** A `vector` move just steals a pointer;
   `inplace_vector` must move each element, because storage is inline.
+- **Toolchain support is still arriving.** None of the local toolchains this
+  page was checked with (GCC 15.2, GCC 16.2, Clang 22 with libc++) ships
+  `<inplace_vector>` yet, so the examples are tagged `needs=inplace_vector` and
+  have not been compiled.
 
 ## See also
 

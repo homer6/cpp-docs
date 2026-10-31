@@ -70,19 +70,21 @@ Two separate rules — this trips people up:
 ```cpp
 #include <unordered_map>
 
-std::unordered_map<std::string, int> m;
-m["alice"] = 30;                 // operator[] inserts then assigns
-m.try_emplace("bob", 25);        // C++17: skip if present (no value overwrite)
-m.insert_or_assign("alice", 31); // C++17: insert or overwrite
+int main() {
+    std::unordered_map<std::string, int> m;
+    m["alice"] = 30;                 // operator[] inserts then assigns
+    m.try_emplace("bob", 25);        // C++17: skip if present (no value overwrite)
+    m.insert_or_assign("alice", 31); // C++17: insert or overwrite
 
-m.contains("bob");               // C++20
-m.at("alice");                   // throws std::out_of_range if missing
-for (const auto& [k, v] : m) { /* arbitrary order */ }
+    m.contains("bob");               // C++20
+    m.at("alice");                   // throws std::out_of_range if missing
+    for (const auto& [k, v] : m) { /* arbitrary order */ }
+}
 ```
 
 ### Reserve to avoid rehashing
 
-```cpp
+```cpp body
 std::unordered_map<int, int> m;
 m.reserve(10'000);               // pre-size buckets for ~10k elements
 m.max_load_factor(0.5f);         // trade memory for fewer collisions
@@ -104,7 +106,8 @@ std::unordered_map<Point, std::string> grid;   // now works
 
 ### C++20 uniform erase
 
-```cpp
+```cpp body
+std::unordered_map<std::string, int> m{{"alice", 30}, {"bob", 0}};
 std::erase_if(m, [](const auto& kv){ return kv.second == 0; });
 ```
 
