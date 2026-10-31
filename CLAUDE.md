@@ -165,3 +165,19 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
   that report (with the `refresh-guidelines` skill) is a follow-up — on the
   same branch if the PR is still open, otherwise a new PR.
 - No AI attribution in issues or PR descriptions either.
+
+## Syncing and merging
+
+- **Sync a feature branch with `main` by rebasing**, never by merging `main`
+  into it: `git fetch && git rebase origin/main`, resolve, then
+  `git push --force-with-lease`. Shared index files (`docs/guidelines/README.md`,
+  `sources.md`): keep every row from both sides; if two PRs add the same source
+  ID, combine them into one row.
+- **If you rebased before merging, comment on the PR** saying what conflicted
+  and how it was resolved. No comment is needed for a clean merge.
+- **Merge PRs with a merge commit only** — never squash or rebase-merge — and
+  **delete the feature branch** when merging:
+  `gh pr merge <n> --merge --delete-branch`. Then remove its worktree
+  (`git worktree remove <path>`) and the local branch.
+- Merge several PRs one at a time: merge one, rebase the next onto the new
+  `main`, check, merge, repeat.
