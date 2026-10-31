@@ -11,17 +11,23 @@ core language over time.
 
 ## Source of truth
 
-- The authoritative reference is **cppreference.com**. Follow its facts:
-  signatures, complexity, since-version, and section organization.
-- **Only cite cppreference.com** in "See also" sections for now. No blogs,
-  Stack Overflow, isocpp, etc.
-- cppreference blocks automated fetches (HTTP 403 from WebFetch). To verify
-  facts, use the `perplexity` MCP tools with
-  `search_domain_filter: ["cppreference.com"]`.
-- **Exception: `docs/guidelines/`** (opinionated guidance, not reference) may
-  cite its own sources — the C++ Core Guidelines, conference talks, style
-  guides. Each page's sources are recorded in `docs/guidelines/sources.md`.
-  Language/library facts on those pages still follow cppreference.
+- **Use any good source** — cppreference.com, the standard draft
+  (eel.is/c++draft), WG21 papers, compiler and standard-library docs and
+  status pages, books, talks — **as long as the claim is verified locally**:
+  the snippet compiles with a local toolchain, and where behaviour matters, it
+  runs and does what the page says.
+- Local toolchains: `g++-15` (Homebrew GCC 15.2),
+  `/opt/homebrew/opt/llvm/bin/clang++` (Homebrew Clang 22, use
+  `-stdlib=libc++`), and Docker (`docker run --rm -v "$PWD":/w -w /w gcc:16 …`)
+  for GCC 16 features such as contracts and reflection.
+- If something can't be verified locally (no local compiler implements it
+  yet), say so on the page and tag the snippet `needs=<feature>`.
+- **See also** links to what you used: cppreference first, then papers or
+  vendor docs where they add something. No unsourced blogs or AI summaries.
+- cppreference blocks automated fetches (HTTP 403 from WebFetch); query it with
+  the `perplexity` MCP tools (`search_domain_filter: ["cppreference.com"]`) or
+  read other sources with Firecrawl.
+- `docs/guidelines/` records each page's sources in `docs/guidelines/sources.md`.
 
 ## Guidelines section
 
