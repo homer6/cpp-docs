@@ -97,6 +97,35 @@ Links to the relevant cppreference pages (cppreference.com only).
 - Use `#include` + `std::`-qualified names; avoid `using namespace std`.
 - One concept per snippet; keep examples minimal and illustrative.
 
+## Compile-checked snippets
+
+There is no CI (GitHub Actions is disabled for this repo); run the checks
+locally. `tools/check_snippets.py` compiles every ```cpp block with
+`-std=c++26 -fsyntax-only -pedantic-errors`; `docs/guidelines/` should pass
+cleanly, while `docs/examples/` still has many known failures. Each block is
+compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
+like `Widget`, `use()`, `process()`). Tag the fence's info string:
+
+| Fence | Meaning |
+|---|---|
+| ` ```cpp ` | Must compile at namespace scope |
+| ` ```cpp body ` | Statements; checked inside a function body |
+| ` ```cpp nocompile ` | Deliberately wrong (BAD examples) or depends on undeclared context |
+| ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
+
+`needs=` blocks are skipped unless you enable the feature, e.g.
+`--enable contracts --enable reflection --flag=-freflection` with GCC 16.
+
+Prefer making a snippet self-contained over tagging it `nocompile`. Run:
+`python3 tools/check_snippets.py docs/guidelines --cxx g++-15` (and with
+`--cxx clang++ --flag=-stdlib=libc++` if you have a recent Clang).
+
+`-fsyntax-only` is more than a parse: on GCC and Clang it catches type errors,
+errors in templates that are instantiated, and failed constant evaluation —
+the same as `-c`. It misses templates that are never instantiated, link errors
+(a declared but undefined function), and anything at run time. The summary
+counts skipped blocks by reason; keep the `nocompile` count falling.
+
 ## Git / commits
 
 - **Do not add Claude as a commit author or co-author.** Commit messages must not

@@ -28,7 +28,7 @@ All three integrate with CTest (`gtest_discover_tests`, `catch_discover_tests`,
 default when you need death tests (see [contracts](#testing-contracts)) or
 mocks.
 
-```cpp
+```cpp nocompile
 #include <gtest/gtest.h>
 
 TEST(ActorId, ordering_is_lexicographic_on_bytes) {
@@ -48,7 +48,7 @@ They're the natural way to [test the laws](design-principles.md#7-test-the-laws)
 if `merge` is supposed to be commutative, say so and let the library hunt for
 a counterexample.
 
-```cpp
+```cpp nocompile
 #include <rapidcheck.h>
 #include <rapidcheck/gtest.h>
 
@@ -83,7 +83,7 @@ handlers.
 
 A libFuzzer harness is one function:
 
-```cpp
+```cpp nocompile
 #include <cstddef>
 #include <cstdint>
 #include <span>
@@ -128,7 +128,7 @@ function's interface, so test them:
 - **Test that a precondition fires** with a death test: under `enforce`, a
   violation calls the handler and then terminates the program.
 
-```cpp
+```cpp needs=contracts
 int pop(std::vector<int>& v) pre(!v.empty());
 
 TEST(PopDeathTest, empty_vector_violates_precondition) {
@@ -148,7 +148,7 @@ The handler is a global function you define yourself; the standard library
 declares none, so you choose its exception specification (P2900R14
 [basic.contract.handler]):
 
-```cpp
+```cpp needs=contracts
 void handle_contract_violation(const std::contracts::contract_violation& v) {
     throw contract_failed{v.location()};   // your own exception type
 }
@@ -212,7 +212,7 @@ compile. Test that promise.
 
 **`static_assert` for compile-time facts:**
 
-```cpp
+```cpp nocompile
 static_assert(std::is_nothrow_move_constructible_v<Document>);
 static_assert(std::regular<OpId>);
 static_assert(sizeof(ActorId) == 16);
@@ -220,7 +220,7 @@ static_assert(sizeof(ActorId) == 16);
 
 **Requires-expressions to check that misuse is rejected:**
 
-```cpp
+```cpp nocompile
 // ActorId and ObjId must not convert into each other
 static_assert(!std::convertible_to<ActorId, ObjId>);
 
@@ -235,7 +235,7 @@ static_assert(!requires(const Document& d) { d.put(root, "k", 1); });
 true when the expression is wrong for an unrelated reason — a typo, a renamed
 function, a missing include — so the test can pass while checking nothing.
 
-```cpp
+```cpp nocompile
 static_assert( requires(Transaction& tx) { tx.put(root, "k", 1); });   // the right way compiles
 static_assert(!requires(const Document& d) { d.put(root, "k", 1); });  // the wrong way doesn't
 ```

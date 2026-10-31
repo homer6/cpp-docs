@@ -1,0 +1,87 @@
+# Deep research prompt — compile-checking C++ snippets in docs (issue #5)
+
+Paste everything below the line into Perplexity Deep Research. Save the report
+as `.firecrawl/deep-research-issue-5-<YYYY-MM-DD>.md`, then ask Claude to
+import it into the `ci/5-compile-snippets` PR (https://github.com/homer6/cpp-docs/issues/5).
+
+---
+
+I maintain a Markdown documentation repo of modern C++ examples (C++20/23/26),
+hundreds of ```cpp blocks, many of them fragments. I've built a stdlib-only
+Python checker that extracts each block, prepends a prelude of standard headers
+and placeholder declarations, and runs `g++`/`clang++ -std=c++26 -fsyntax-only
+-pedantic-errors`. Blocks are tagged in the fence info string: `cpp body`
+(wrap in a function), `cpp nocompile` (skip), `cpp needs=<feature>` (skip unless
+enabled). It runs locally only — there is no CI. Today's date is {{DATE}}.
+
+## Already covered (verified 2026-10-31 — confirm only if something changed)
+
+- Toolchains: GCC 16.2 (official `gcc:16` Docker image, 2026-10-25) and
+  Clang 23 + libc++ from apt.llvm.org (`llvm.sh 23`; LLVM 23 stable since
+  2026-08-26, 22 is old-stable).
+- GCC 16: P2900R14 contracts with plain `-std=c++26`; P2996 reflection needs
+  `-freflection` (GCC C++ status page, GCC 16 release notes). GCC 13's
+  `-fcontracts` was the older P1429R3 extension (`<experimental/contract>`,
+  libstdc++exp), not P2900.
+- `-fsyntax-only` (tested on GCC 15.2 and Apple Clang 15 with canaries)
+  catches type errors, errors in instantiated templates and failed constant
+  evaluation, the same as `-c`; it misses uninstantiated templates, link
+  errors and run-time behaviour. GCC's manual still describes it as "check
+  for syntax errors"; Clang's says "preprocessor, parser and semantic analysis".
+- The checker reports skips by reason (`nocompile` vs `needs=<feature>`) and
+  prints the compiler version.
+
+## Still open from the last run (prioritize these)
+
+- The prior-art audit was not done: mdsnippets/MarkdownSnippets markers and
+  CI behaviour, Doxygen `\snippet`, Boost and {fmt} doc pipelines,
+  cppreference "Run this code", Microsoft Learn's pipeline (don't claim it
+  compiles examples without evidence), rustdoc hidden lines and
+  `ignore`/`no_run`/`compile_fail` semantics.
+- MSVC on `windows-latest`: version shipped, `/std:c++latest` C++26 coverage,
+  any contracts/reflection support.
+- Clang reflection status: upstream Clang vs the Bloomberg `clang-p2996`
+  fork, and the flags each needs.
+- Any GCC vs Clang differences in what `-fsyntax-only` diagnoses beyond the
+  canaries above (e.g. warnings only emitted by the middle end).
+- Real-world examples of baseline/ratchet files for doc snippets, and of
+  `compile_fail` tests that assert the diagnostic.
+
+## Questions to answer
+
+1. **Prior art.** How do established projects compile-test C++ code in
+   documentation? Cover at least: mdsnippets / MarkdownSnippets (code pulled
+   from compiled source files into docs), Doxygen `\snippet`, the Boost and
+   {fmt} docs, cppreference's "Run this code" (Compiler Explorer / Coliru)
+   integration, Microsoft Learn's C++ docs pipeline, and Rust's `rustdoc`
+   doctests (`ignore`, `no_run`, `compile_fail`, hidden `#` lines) as a design
+   comparison. For each: mechanism, how fragments and intentionally-wrong
+   examples are handled, and what breaks in practice.
+2. **Fragment handling.** Which approaches work best for fragments that use
+   undeclared context (`v`, `people`, `Widget`)? Hidden setup lines (Rust's `#`
+   prefix), per-file preludes, named snippets extracted from real `.cpp`
+   files, or `compile_fail` tests for BAD examples (asserting a snippet *doesn't*
+   compile, and ideally with which diagnostic). Trade-offs for readers vs
+   maintainers.
+3. **Local toolchains (as of {{DATE}}).** The simplest current ways to get
+   GCC 16 and the latest Clang with libc++ on macOS and Linux (Homebrew,
+   apt.llvm.org, the `gcc:16` Docker image), and MSVC's latest
+   `/std:c++latest`. Which flags enable C++26 contracts and reflection on each
+   (GCC's `-freflection`; Clang/EDG reflection forks).
+4. **`-fsyntax-only` limits.** What does a syntax-only check miss compared with
+   full compilation (template instantiation, constexpr evaluation, linking),
+   and is `-c` or a full compile-and-run worth it for docs? Any differences
+   between GCC and Clang in what `-fsyntax-only` diagnoses.
+5. **Keeping it maintainable.** Practices for incremental rollout over a large
+   existing corpus (baseline/ratchet files of known failures, per-directory
+   gates), caching, and checking only changed files.
+
+## Output format
+
+- Headings: **Prior art · Fragment strategies · Toolchains · Limits ·
+  Rollout · Recommendations for this repo · Sources**.
+- Each recommendation: **short imperative** → reason → source(s) → effort.
+- Cite primary sources (project docs, repo files, compiler manuals, package
+  repositories, Docker Hub). Mark each toolchain fact with a
+  **confidence level** and **source date**; flag anything you couldn't verify.
+- Don't invent tool names, flags, or image tags.

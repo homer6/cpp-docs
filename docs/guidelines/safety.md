@@ -31,7 +31,7 @@ Goal: never treat a `T` as a `U` through casts, unions, or varargs.
 | **Type.7** | Avoid naked `union` (use `std::variant`) |
 | **Type.8** | Avoid varargs (use variadic templates) |
 
-```cpp
+```cpp nocompile
 // BAD — C-style cast, manual memory
 int* p = (int*)malloc(sizeof(int) * n);
 
@@ -77,7 +77,7 @@ The patterns below are the common ways to break it.
 
 ## Ownership with smart pointers
 
-```cpp
+```cpp body
 // unique_ptr — one owner
 auto p  = std::make_unique<Widget>();
 auto p2 = std::move(p);          // p is now null
@@ -93,7 +93,7 @@ if (auto locked = weak.lock()) {
 
 **Mistakes:**
 
-```cpp
+```cpp nocompile
 // BAD — two owners of one raw pointer → double delete
 Widget* raw = new Widget{};
 std::unique_ptr<Widget> a{raw};
@@ -110,7 +110,7 @@ struct Node { std::shared_ptr<Node> child; std::weak_ptr<Node> parent; };
 
 ### Returning references to locals or temporaries
 
-```cpp
+```cpp nocompile
 std::string& bad() {
     std::string local = "hello";
     return local;                  // dangling
@@ -131,7 +131,7 @@ std::string good() {
 `std::string_view` and `std::span` don't own anything. Never let one outlive the
 data it points at.
 
-```cpp
+```cpp nocompile
 std::string_view name() {
     std::string s = load();
     return s;                      // dangling view
@@ -162,7 +162,7 @@ must be declared after it — see
 
 ### Iterator and reference invalidation
 
-```cpp
+```cpp body
 std::vector<int> v{1, 2, 3, 4, 5};
 
 // BAD — erase invalidates `it`
@@ -187,14 +187,14 @@ invalidation" table.
 A moved-from standard library object is valid but unspecified. Don't read it
 until you've assigned it a new value.
 
-```cpp
+```cpp nocompile
 auto v2 = std::move(v);
 v.clear();                         // OK: puts v back into a known state
 ```
 
 ## Null safety
 
-```cpp
+```cpp nocompile
 void process(const Widget& w);       // can't be null — prefer this
 void process(const Widget* w);       // may be null — check before use
 std::optional<Widget> find(Key k);   // absence is a normal outcome
@@ -276,7 +276,7 @@ In C++26 it's **erroneous behaviour**: the variable holds some unspecified
 value, the program is still wrong, and the implementation is encouraged to
 diagnose it — but the optimizer may no longer assume it can't happen.
 
-```cpp
+```cpp body
 int x;              // C++26: has an erroneous value, not an indeterminate one
 use(x);             // erroneous behaviour — still a bug (ES.20)
 
