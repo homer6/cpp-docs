@@ -34,6 +34,42 @@ report that verifies and extends my draft. Today's date is {{DATE}}.
 - Valgrind Memcheck for binaries you can't rebuild
 - Committed `.clang-tidy` / `.clang-format`, include-what-you-use,
   `CMAKE_CXX_CLANG_TIDY`, `CMAKE_CXX_INCLUDE_WHAT_YOU_USE`
+- Verified 2026-10-31 (don't repeat): GCC's `-fsanitize=address` enables
+  `-fsanitize-address-use-after-scope`; GCC rejects ASan+TSan, ASan+HWASan,
+  TSan+LSan; Clang rejects ASan+TSan, ASan+MSan, TSan+MSan; ASan+UBSan and
+  TSan+UBSan work in both; GCC 8 `-fsanitize=pointer-compare/-subtract` need
+  `detect_invalid_pointer_pairs`; UBSan `-fsanitize-minimal-runtime` (no
+  `vptr`) and the full runtime's production warning; TSan 64-bit platforms;
+  MSan Linux/NetBSD/FreeBSD only; libstdc++ `_GLIBCXX_ASSERTIONS` on at `-O0`
+  since GCC 15; MSVC `_MSVC_STL_HARDENING=1` (VS 2022 17.14, partial P3471R4,
+  off by default, `__fastfail`); MSVC `/fsanitize=address` since VS 2019 16.9
+  (x86/x64; no `/RTC`, incremental linking, `/ZI`, OpenMP, coroutines);
+  `std::stacktrace` needs `-lstdc++_libbacktrace` on GCC 13 and `-lstdc++exp`
+  on GCC 14+; Memcheck ~20–30× slower
+
+## Still open from the last run (prioritize these)
+
+- MSVC `/fsanitize=address`: does it support container-overflow annotations
+  today? (Microsoft Learn's ASan page lists container overflow as a possible
+  future feature, but the STL annotates `vector`/`string` for ASan.) Leak
+  detection on Windows?
+- Current default for `detect_container_overflow`, `strict_string_checks`,
+  `check_initialization_order` (and on which platforms init-order works)
+- Sanitizers with `-static`, static sanitizer runtimes
+  (`-static-libasan`, `-static-libsan`), and `_FORTIFY_SOURCE` — exact
+  documented interactions
+- Clang TSan/MSan/LSan/HWASan and GCC LSan/HWASan platform matrix with
+  first-supported versions (not "available by" a later manual)
+- Whether the VS 2026 release enabled `_MSVC_STL_HARDENING` by default
+- libc++ and MSVC STL `std::stacktrace` status and link requirements;
+  Homebrew GCC 15 on macOS didn't provide `std::stacktrace` in our test — is
+  that expected?
+- Distro defaults for libc++ hardening mode and `_GLIBCXX_ASSERTIONS`
+- Production crash setup: debuginfod, build IDs, symbol servers,
+  Crashpad/Breakpad, rr, Windows time-travel debugging
+- IWYU maintenance status vs `misc-include-cleaner` / clangd include cleaner;
+  a version-pinned bug-finding clang-tidy check set
+- Valgrind on current macOS / Apple Silicon; AVX-512 support
 
 ## Questions to answer
 

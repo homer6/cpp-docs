@@ -20,7 +20,13 @@ it accurate.
 | `abseil-totw` | Abseil Tips of the Week | https://abseil.io/tips/ | index checked; #163, #177, #197, #224 read in full | 2026-10-30 |
 | `google-hardening` | Google Security Blog, *Retrofitting spatial safety to hundreds of millions of lines of C++* | https://security.googleblog.com/2024/11/retrofitting-spatial-safety-to-hundreds.html | Nov 15, 2024 | 2026-10-30 |
 | `impl-status` | GCC C++ status; libc++ C++26 status | https://gcc.gnu.org/projects/cxx-status.html · https://libcxx.llvm.org/Status/Cxx26.html | live pages | 2026-10-30 |
-| `clang-sanitizers` | Clang docs: AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer, MemorySanitizer | https://clang.llvm.org/docs/AddressSanitizer.html (and siblings) | live pages | 2026-10-30 |
+| `clang-sanitizers` | Clang docs: AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer, MemorySanitizer | https://clang.llvm.org/docs/AddressSanitizer.html (and siblings) | live pages | 2026-10-31 |
+| `gcc-instrumentation` | GCC manual, Program Instrumentation Options (sanitizer flags and conflicts) | https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html | live page | 2026-10-31 |
+| `libstdcxx-manual` | libstdc++ manual: macros, linking (`-lstdc++exp`), debug mode | https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_macros.html (and siblings) | live pages; GCC 13/14/15 editions compared | 2026-10-31 |
+| `libcxx-hardening` | libc++ hardening modes | https://libcxx.llvm.org/Hardening.html | live page | 2026-10-31 |
+| `msvc-stl-hardening` | Microsoft STL hardening wiki and VS 2022 17.14 STL release notes | https://github.com/microsoft/STL/wiki/STL-Hardening · https://github.com/microsoft/STL/releases/tag/vs-2022-17.14 | wiki (2025) · 17.14 release | 2026-10-31 |
+| `msvc-asan` | Microsoft Learn, AddressSanitizer and known issues | https://learn.microsoft.com/en-us/cpp/sanitizers/asan | ms.date 2026-05-28 | 2026-10-31 |
+| `valgrind` | Valgrind quick start and project info | https://valgrind.org/docs/manual/quick-start.html · https://valgrind.org/info/ | live pages | 2026-10-31 |
 
 ## Page → sources
 
@@ -32,7 +38,7 @@ it accurate.
 | [design-principles.md](design-principles.md) | `deane-*`, `automerge-style`, `abseil-totw`, `chromium` |
 | [project-conventions.md](project-conventions.md) | `automerge-style`, `ccg` (F.16, NL), `google-style`, `chromium` |
 | [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `abseil-totw` |
-| [tooling.md](tooling.md) | `clang-sanitizers`, `impl-status` |
+| [tooling.md](tooling.md) | `clang-sanitizers`, `gcc-instrumentation`, `libstdcxx-manual`, `libcxx-hardening`, `msvc-stl-hardening`, `msvc-asan`, `valgrind`, `impl-status` |
 
 ## Candidate sources (not yet imported)
 
@@ -58,3 +64,4 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-30 | Full catch-up check. The original notes' copy of the Guidelines is upstream commit `cb798c4` (Dec 3, 2025; its header still says Jul 8, 2025). Reviewed all 16 commits `cb798c4..d1dda82`: C.13, T.46, F.16 and ES.23 were already covered; added the SL.regex performance note plus a short SL section. The rest were typo, CI or example-only fixes (C.48, ES.49, T.21, an added `const`, the GSL link). automerge-cpp `docs/style.md` and `docs/plans/architecture.md` are unchanged since import. |
 | 2026-10-30 | Imported a Perplexity deep-research report (`.firecrawl/deep-research-2026-10-30.md`, used as a map only). Verified against primary sources before importing: libc++ status confirms `std::execution::task` (P3552, Sofia 2025) is C++26 and trivial relocation (P2786) was reverted by P3920 (Kona 2025); GCC 16 support for contracts, reflection (`-freflection`), expansion statements, erroneous behaviour; Google's 0.30% hardening overhead; Google/Chromium/LLVM policies; all 25 Abseil tip titles. Added `industry-practice.md`; hardening-in-practice and build configurations (safety); C++26 adoption section, `task`, relocation note (modern idioms); `const` data members, pipeline caveats, optional parameters, failure kinds (design principles); feature matrix, warnings, clang-tidy, modules (project conventions). Left out as unverified: Mozilla/BDE/CERT positions, Clang/MSVC support, the talk catalogue. |
 | 2026-10-30 | Added `tooling.md` (issue #1): symptom→tool table, ASan/UBSan/TSan/MSan with flags and slowdowns from the Clang docs, hardened library in debug, gdb/lldb and core dumps, `std::stacktrace`, Valgrind, clang-tidy/clang-format/IWYU. Deep-research prompt: `.claude/skills/refresh-guidelines/prompts/issue-1-tooling.md`. |
+| 2026-10-31 | Imported the issue #1 deep-research report into `tooling.md` (only claims verified against primary sources): sanitizer combination table (GCC manual + Clang/GCC driver tests), GCC ASan enables use-after-scope, GCC pointer-pair checks, UBSan minimal runtime and the full runtime's production warning, TSan/MSan platforms, libstdc++ assertions on at `-O0` since GCC 15, MSVC STL hardening (17.14), MSVC `/fsanitize=address`, `std::stacktrace` link flags by GCC version, Memcheck 20–30×. Report: `.firecrawl/reports/issue-1-2026-10-31.md`. |
