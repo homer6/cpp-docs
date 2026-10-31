@@ -15,11 +15,15 @@ works.
 ```cpp
 #include <future>
 
-std::future<int> f = std::async(std::launch::async, []{
-    return expensive_computation();
-});
-// ... do other work ...
-int result = f.get();            // blocks until ready; re-throws if it threw
+int expensive_computation();
+
+void demo() {
+    std::future<int> f = std::async(std::launch::async, []{
+        return expensive_computation();
+    });
+    // ... do other work ...
+    int result = f.get();            // blocks until ready; re-throws if it threw
+}
 ```
 
 `std::launch::async` forces a new thread; the default policy *may* defer to run
@@ -28,29 +32,41 @@ lazily at `get()` — pass `async` explicitly when you want real concurrency.
 ## promise / future — hand-built channel
 
 ```cpp
-std::promise<int> p;
-std::future<int> f = p.get_future();
+#include <future>
 
-std::thread t{[&p]{ p.set_value(42); }};   // producer sets the value (or set_exception)
-int v = f.get();                            // consumer receives it
-t.join();
+void demo() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+
+    std::thread t{[&p]{ p.set_value(42); }};   // producer sets the value (or set_exception)
+    int v = f.get();                            // consumer receives it
+    t.join();
+}
 ```
 
 ## packaged_task — wrap a callable as a future
 
 ```cpp
-std::packaged_task<int(int)> task{[](int x){ return x * x; }};
-std::future<int> f = task.get_future();
-std::thread{std::move(task), 7}.detach();   // run it somewhere
-int r = f.get();                             // 49
+#include <future>
+
+void demo() {
+    std::packaged_task<int(int)> task{[](int x){ return x * x; }};
+    std::future<int> f = task.get_future();
+    std::thread{std::move(task), 7}.detach();   // run it somewhere
+    int r = f.get();                             // 49
+}
 ```
 
 ## Checking without blocking
 
 ```cpp
+#include <future>
 using namespace std::chrono_literals;
-if (f.wait_for(0s) == std::future_status::ready) { /* done */ }
-f.wait();                                    // block until ready (no get)
+
+void poll(std::future<int>& f) {
+    if (f.wait_for(0s) == std::future_status::ready) { /* done */ }
+    f.wait();                                    // block until ready (no get)
+}
 ```
 
 ## Gotchas

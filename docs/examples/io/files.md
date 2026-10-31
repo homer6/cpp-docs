@@ -21,32 +21,41 @@ manual `close()` needed (though you can). That's RAII for files.
 ```cpp
 #include <fstream>
 
-std::ofstream out{"data.txt"};            // opens (truncates) on construction
-if (!out) { /* failed to open */ }
-out << "line 1\n" << 42 << '\n';
-// closed automatically when `out` goes out of scope
+void write_file() {
+    std::ofstream out{"data.txt"};        // opens (truncates) on construction
+    if (!out) { /* failed to open */ }
+    out << "line 1\n" << 42 << '\n';
+}                                         // closed automatically: `out` goes out of scope
 ```
 
 ### Read a file
 
 ```cpp
-std::ifstream in{"data.txt"};
-if (!in) { /* handle open failure */ }
+#include <fstream>
 
-std::string line;
-while (std::getline(in, line)) { /* process each line */ }
+void read_file() {
+    std::ifstream in{"data.txt"};
+    if (!in) { /* handle open failure */ }
 
-// or token by token:
-int n;
-while (in >> n) { /* each int */ }
+    std::string line;
+    while (std::getline(in, line)) { /* process each line */ }
+
+    // or token by token:
+    int n;
+    while (in >> n) { /* each int */ }
+}
 ```
 
 ### Read an entire file into a string
 
 ```cpp
-std::ifstream in{"data.txt", std::ios::binary};
-std::string contents{std::istreambuf_iterator<char>{in},
-                     std::istreambuf_iterator<char>{}};
+#include <fstream>
+
+std::string read_all(const char* filename) {
+    std::ifstream in{filename, std::ios::binary};
+    return std::string{std::istreambuf_iterator<char>{in},
+                       std::istreambuf_iterator<char>{}};
+}
 ```
 
 ## Open modes
@@ -54,9 +63,13 @@ std::string contents{std::istreambuf_iterator<char>{in},
 Combine with `|`:
 
 ```cpp
-std::ofstream{"log.txt", std::ios::app};                 // append, don't truncate
-std::fstream {"f.bin",  std::ios::in | std::ios::out | std::ios::binary};
-std::ofstream{"f.bin",  std::ios::binary};               // no text/newline translation
+#include <fstream>
+
+void open_modes() {
+    std::ofstream log{"log.txt", std::ios::app};             // append, don't truncate
+    std::fstream  io {"f.bin",  std::ios::in | std::ios::out | std::ios::binary};
+    std::ofstream bin{"g.bin",  std::ios::binary};           // no text/newline translation
+}
 ```
 
 | Flag | Meaning |
@@ -70,10 +83,15 @@ std::ofstream{"f.bin",  std::ios::binary};               // no text/newline tran
 ## Binary I/O & positioning
 
 ```cpp
-out.write(reinterpret_cast<const char*>(&value), sizeof value);   // raw bytes
-in.read (reinterpret_cast<char*>(&value), sizeof value);
-in.seekg(0, std::ios::end);   auto size = in.tellg();              // size via seek
-in.seekg(0);                                                        // back to start
+#include <fstream>
+
+void binary_io(std::ofstream& out, std::ifstream& in) {   // both opened with ios::binary
+    int value = 42;
+    out.write(reinterpret_cast<const char*>(&value), sizeof value);   // raw bytes
+    in.read (reinterpret_cast<char*>(&value), sizeof value);
+    in.seekg(0, std::ios::end);   auto size = in.tellg();              // size via seek
+    in.seekg(0);                                                        // back to start
+}
 ```
 
 ## Gotchas

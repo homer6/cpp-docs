@@ -18,14 +18,16 @@ using namespace std::complex_literals;        // the i / if / il literals (C++14
 std::complex<double> a{3.0, 4.0};             // 3 + 4i
 std::complex<double> b = 1.0 + 2.0i;          // via literal
 
-a.real();  a.imag();                          // 3.0, 4.0
-std::abs(a);                                  // 5.0  (magnitude)
-std::arg(a);                                  // phase angle (radians)
-std::conj(a);                                 // 3 - 4i
-std::norm(a);                                 // 25.0 (magnitude squared — cheap)
+void demo() {
+    a.real();  a.imag();                      // 3.0, 4.0
+    std::abs(a);                              // 5.0  (magnitude)
+    std::arg(a);                              // phase angle (radians)
+    std::conj(a);                             // 3 - 4i
+    std::norm(a);                             // 25.0 (magnitude squared — cheap)
 
-auto c = a * b + std::exp(1.0i);              // operators + transcendental fns
-auto p = std::polar(2.0, 3.14159);            // from magnitude & angle
+    auto c = a * b + std::exp(1.0i);          // operators + transcendental fns
+    auto p = std::polar(2.0, 3.14159);        // from magnitude & angle
+}
 ```
 
 Functions available: `exp`, `log`, `pow`, `sqrt`, `sin`/`cos`/`tan` and their

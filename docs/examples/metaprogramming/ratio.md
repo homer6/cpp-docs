@@ -14,11 +14,11 @@ milliseconds vs. frames).
 #include <ratio>
 
 using half  = std::ratio<1, 2>;
-half::num;                       // 1   (static constexpr)
-half::den;                       // 2
+static_assert(half::num == 1);   // static constexpr members
+static_assert(half::den == 2);
 
 using r = std::ratio<4, 8>;      // auto-reduced
-r::num; r::den;                  // 1, 2
+static_assert(r::num == 1 && r::den == 2);
 ```
 
 ## Arithmetic on types
@@ -38,10 +38,12 @@ constexpr bool lt = std::ratio_less_v<std::ratio<1,3>, std::ratio<1,2>>;    // t
 The header predefines the standard prefixes as ratios:
 
 ```cpp
-std::milli   // ratio<1, 1000>
-std::micro   // ratio<1, 1'000'000>
-std::kilo    // ratio<1000, 1>
-std::mega, std::giga, std::nano, std::pico, ...
+#include <ratio>
+
+static_assert(std::is_same_v<std::milli, std::ratio<1, 1000>>);
+static_assert(std::is_same_v<std::micro, std::ratio<1, 1'000'000>>);
+static_assert(std::is_same_v<std::kilo,  std::ratio<1000, 1>>);
+// also std::mega, std::giga, std::nano, std::pico, ...
 ```
 
 These are exactly what `std::chrono` uses:

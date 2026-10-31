@@ -24,7 +24,7 @@ the standard version — because compilers ship features incrementally.
 ## Two families
 
 - **Language** macros: `__cpp_concepts`, `__cpp_constexpr`, `__cpp_modules`,
-  `__cpp_consteval`, `__cpp_if_constexpr`, `__cpp_lib_…` … (always available, from
+  `__cpp_consteval`, `__cpp_if_constexpr` … (always available, from
   the compiler).
 - **Library** macros: `__cpp_lib_*`, exposed via `<version>` (or the specific
   feature's own header): `__cpp_lib_ranges`, `__cpp_lib_expected`,
@@ -35,15 +35,19 @@ the standard version — because compilers ship features incrementally.
 ```cpp
 #include <version>
 
+struct Error { int code; };
+
 #if __cpp_lib_expected >= 202202L
     #include <expected>
     using Result = std::expected<int, Error>;
 #else
+    template<class T, class E> class MyExpectedPolyfill { /* ... */ };
     using Result = MyExpectedPolyfill<int, Error>;
 #endif
 
 #if __cpp_lib_ranges >= 201911L
-    auto v = data | std::views::filter(pred);
+    std::vector<int> data{1, 2, 3, 4};
+    auto v = data | std::views::filter([](int x) { return x % 2 == 0; });
 #endif
 ```
 

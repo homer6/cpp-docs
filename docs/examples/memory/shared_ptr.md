@@ -25,17 +25,21 @@ that makes copies more expensive than a `unique_ptr` move.
 ```cpp
 #include <memory>
 
-auto p = std::make_shared<Widget>(args...);   // one allocation for object + control block
-std::shared_ptr<Widget> q = p;                 // strong count → 2
-p.use_count();                                  // 2 (approximate; for debugging)
+void demo() {
+    auto p = std::make_shared<Widget>(42);         // one allocation for object + control block
+    std::shared_ptr<Widget> q = p;                 // strong count → 2
+    p.use_count();                                 // 2 (approximate; for debugging)
 
-p->method();
-q.reset();                                      // count → 1; object still alive via p
+    p->use();
+    q.reset();                                     // count → 1; object still alive via p
+}
 ```
 
 ### Sharing into structures/threads
 
-```cpp
+```cpp body
+struct Node {};
+
 std::vector<std::shared_ptr<Node>> graph;
 auto n = std::make_shared<Node>();
 graph.push_back(n);              // both `n` and the vector co-own the node
@@ -44,10 +48,18 @@ graph.push_back(n);              // both `n` and the vector co-own the node
 
 ### Custom deleter / aliasing
 
-```cpp
-std::shared_ptr<FILE> f{std::fopen("x","r"), &std::fclose};   // deleter stored in control block
+```cpp body
+struct Field {};
+struct Parent { Field field; };
+
+// deleter stored in control block — and it runs even on a null pointer,
+// so check fopen's result first: fclose(nullptr) is undefined
+if (FILE* raw = std::fopen("x", "r")) {
+    std::shared_ptr<FILE> f{raw, &std::fclose};
+}
 
 // aliasing constructor: share ownership of `parent`, but point at a sub-object
+auto parent = std::make_shared<Parent>();
 std::shared_ptr<Field> fld{parent, &parent->field};
 ```
 

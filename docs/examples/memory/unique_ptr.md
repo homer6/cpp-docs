@@ -17,44 +17,58 @@ pointer and just as fast — RAII for free.
 ```cpp
 #include <memory>
 
-auto p = std::make_unique<Widget>(args...);   // preferred: exception-safe, no naked new
-std::unique_ptr<Widget> q{new Widget};        // works, but prefer make_unique
+void demo() {
+    auto p = std::make_unique<Widget>(42);        // preferred: exception-safe, no naked new
+    std::unique_ptr<Widget> q{new Widget};        // works, but prefer make_unique
 
-p->method();                     // use like a pointer
-*p;                              // deref
-Widget* raw = p.get();           // borrow without transferring ownership
+    p->use();                        // use like a pointer
+    Widget& w = *p;                  // deref
+    Widget* raw = p.get();           // borrow without transferring ownership
+}
 ```
 
 ### Ownership transfer (move-only)
 
 ```cpp
-std::unique_ptr<Widget> a = std::make_unique<Widget>();
-// std::unique_ptr<Widget> b = a;          // ERROR: not copyable
-std::unique_ptr<Widget> b = std::move(a);  // OK: a is now null, b owns it
+void sink(std::unique_ptr<Widget> w);      // takes ownership
 
-sink(std::move(b));              // pass ownership into a function
-return p;                        // returning by value moves out (no std::move needed)
+std::unique_ptr<Widget> transfer() {
+    std::unique_ptr<Widget> a = std::make_unique<Widget>();
+    // std::unique_ptr<Widget> b = a;          // ERROR: not copyable
+    std::unique_ptr<Widget> b = std::move(a);  // OK: a is now null, b owns it
+
+    sink(std::move(b));              // pass ownership into a function
+
+    auto p = std::make_unique<Widget>();
+    return p;                        // returning by value moves out (no std::move needed)
+}
 ```
 
 ### As a class member = automatic cleanup
 
 ```cpp
+struct Impl { std::vector<int> data; };
+
 class Owner {
     std::unique_ptr<Impl> impl_;     // freed automatically when Owner is destroyed
 public:
     Owner() : impl_(std::make_unique<Impl>()) {}
-    // no destructor, no delete, no leak — the pImpl idiom
+    // no destructor, no delete, no leak
 };
 ```
 
+For the pImpl idiom proper, `Impl` is only forward-declared in the header, so
+declare `~Owner();` there and define it (`Owner::~Owner() = default;`) in the
+`.cpp` where `Impl` is complete — `unique_ptr`'s deleter needs the full type.
+
 ### Arrays and custom deleters
 
-```cpp
+```cpp body
 auto arr = std::make_unique<int[]>(100);     // unique_ptr<int[]>: uses delete[]
 arr[0] = 1;
 
 std::unique_ptr<FILE, decltype(&std::fclose)> f{std::fopen("x","r"), &std::fclose};
-// custom deleter → RAII for C resources
+// custom deleter → RAII for C resources (not called if fopen returned null)
 ```
 
 ## Gotchas

@@ -15,6 +15,7 @@ item only).
 #include <iostream>
 #include <iomanip>
 
+void demo() {
 std::cout << std::boolalpha << true;          // "true" instead of "1"  (sticky)
 std::cout << std::hex << 255;                  // "ff"   (sticky: dec/oct/hex)
 std::cout << std::showbase << std::hex << 255; // "0xff"
@@ -26,14 +27,20 @@ double pi = 3.14159265;
 std::cout << std::fixed << std::setprecision(2) << pi; // "3.14"
 std::cout << std::scientific << pi;                     // "3.141593e+00"
 std::cout << std::setprecision(10) << pi;               // more digits
+}
 ```
 
 ## Quoting (C++14)
 
 ```cpp
+#include <iomanip>
+#include <sstream>
+
+void demo() {
 std::cout << std::quoted("he said \"hi\"");    // writes: "he said \"hi\""
 std::string s;
 std::istringstream{"\"a b c\""} >> std::quoted(s);   // s == "a b c"  (round-trips)
+}
 ```
 
 `std::quoted` round-trips strings containing spaces/quotes through streams — handy

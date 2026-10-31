@@ -32,9 +32,13 @@ double biggest = a.max();
 masks, and indirect arrays:
 
 ```cpp
-std::valarray<int> v{0,1,2,3,4,5,6,7};
-auto evens = v[std::slice(0, 4, 2)];     // start 0, count 4, stride 2 → {0,2,4,6}
-v[v > 3] = 0;                             // mask assignment: zero elements > 3
+#include <valarray>
+
+void demo() {
+    std::valarray<int> v{0,1,2,3,4,5,6,7};
+    std::valarray<int> evens = v[std::slice(0, 4, 2)];  // start 0, count 4, stride 2 → {0,2,4,6}
+    v[v > 3] = 0;                            // mask assignment: zero elements > 3
+}
 ```
 
 ## Gotchas

@@ -12,7 +12,10 @@
 Returns an object's true address even if it overloaded `operator&`.
 
 ```cpp
-T* p = std::addressof(obj);     // safe even when &obj is hijacked
+template<class T>
+T* real_address(T& obj) {
+    return std::addressof(obj);     // safe even when &obj is hijacked
+}
 ```
 
 ## Constructing into raw storage
@@ -22,12 +25,15 @@ destroy a single object — and unlike a bare `new (p) T{...}`, `construct_at` i
 usable in `constexpr`.
 
 ```cpp
-alignas(T) std::byte buf[sizeof(T)];
-T* p = reinterpret_cast<T*>(buf);
+template<class T, class... Args>
+void in_place(Args&&... args) {
+    alignas(T) std::byte buf[sizeof(T)];
 
-std::construct_at(p, args...);   // like placement new, constexpr-friendly
-p->use();
-std::destroy_at(p);              // run the destructor (does not free buf)
+    // like placement new, constexpr-friendly; use the returned pointer
+    T* p = std::construct_at(reinterpret_cast<T*>(buf), std::forward<Args>(args)...);
+    p->use();
+    std::destroy_at(p);              // run the destructor (does not free buf)
+}
 ```
 
 ## Bulk uninitialized algorithms
@@ -36,11 +42,14 @@ Construct/move/copy ranges into raw memory, with proper cleanup if an element's
 constructor throws:
 
 ```cpp
-std::uninitialized_copy(first, last, raw_out);     // copy-construct into raw region
-std::uninitialized_move(first, last, raw_out);     // move-construct (C++17)
-std::uninitialized_fill(raw_first, raw_last, val);
-std::uninitialized_default_construct(raw_first, raw_last);  // C++17
-std::destroy(first, last);                          // destroy a range (C++17)
+template<class It, class T>
+void bulk(It first, It last, T* raw_out, T* raw_first, T* raw_last, const T& val) {
+    std::uninitialized_copy(first, last, raw_out);     // copy-construct into raw region
+    std::uninitialized_move(first, last, raw_out);     // move-construct (C++17)
+    std::uninitialized_fill(raw_first, raw_last, val);
+    std::uninitialized_default_construct(raw_first, raw_last);  // C++17
+    std::destroy(first, last);                          // destroy a range (C++17)
+}
 ```
 
 These are exactly what a `vector` uses when it grows and relocates elements.
@@ -51,8 +60,11 @@ Begins an object's lifetime in existing suitably-aligned storage *without*
 running a constructor — the well-defined way to interpret a byte buffer (e.g.
 from I/O) as a trivially-copyable type, replacing UB-prone `reinterpret_cast`.
 
-```cpp
-auto* hdr = std::start_lifetime_as<PacketHeader>(buffer);   // no ctor, defined behavior
+```cpp needs=start_lifetime_as
+struct PacketHeader { std::uint16_t type, length; };     // trivially copyable
+alignas(PacketHeader) std::byte buffer[512];              // filled by I/O
+
+auto* hdr = std::start_lifetime_as<PacketHeader>(buffer); // no ctor, defined behavior
 ```
 
 ## Gotchas

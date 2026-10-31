@@ -30,24 +30,26 @@ width, `vec<T, W>` requests a specific width.
 
 ## Examples
 
-```cpp
+```cpp needs=simd
 #include <simd>
 namespace simd = std::simd;
 
-simd::vec<int> a = 1;                                   // broadcast: {1,1,1,1,...}
-simd::vec<int> b([](int i){ return i - 2; });            // generator: {-2,-1,0,1,...}
-auto c = a + b;                                          // element-wise add
+void demo() {
+    simd::vec<int> a = 1;                                // broadcast: {1,1,1,1,...}
+    simd::vec<int> b([](int i){ return i - 2; });         // generator: {-2,-1,0,1,...}
+    auto c = a + b;                                       // element-wise add
 
-// branch per lane with select + mask:
-auto abs = simd::select(c < 0, -c, c);                   // where c<0 use -c, else c
+    // branch per lane with select + mask:
+    auto abs = simd::select(c < 0, -c, c);                // where c<0 use -c, else c
 
-// horizontal reductions (the marked exceptions to element-wise):
-int total = simd::reduce(abs);                           // sum across lanes
-bool any  = simd::any_of(c < 0);
+    // horizontal reductions (the marked exceptions to element-wise):
+    int total = simd::reduce(abs);                        // sum across lanes
+    bool any  = simd::any_of(c < 0);
 
-// math functions from <cmath> are overloaded for vec:
-simd::vec<double, 16> x([](int i){ return i; });
-auto one = std::pow(std::cos(x), 2) + std::pow(std::sin(x), 2);   // ≈ 1 per lane
+    // math functions from <cmath> are overloaded for vec:
+    simd::vec<double, 16> x([](int i){ return i; });
+    auto one = std::pow(std::cos(x), 2) + std::pow(std::sin(x), 2);   // ≈ 1 per lane
+}
 ```
 
 Loads/stores move between contiguous memory and `vec` (`unchecked_load`,

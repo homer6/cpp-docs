@@ -13,20 +13,23 @@ representation — the portable replacement for C's `INT_MAX`, `DBL_EPSILON`, et
 ```cpp
 #include <limits>
 
-std::numeric_limits<int>::max();          // largest int
-std::numeric_limits<int>::min();          // most negative int
-std::numeric_limits<unsigned>::max();     // all bits set
+template<class T>
+void limits_tour() {
+    std::numeric_limits<int>::max();          // largest int
+    std::numeric_limits<int>::min();          // most negative int
+    std::numeric_limits<unsigned>::max();     // all bits set
 
-std::numeric_limits<double>::max();
-std::numeric_limits<double>::lowest();    // most negative finite (NOT min!)
-std::numeric_limits<double>::min();       // smallest POSITIVE normal value
-std::numeric_limits<double>::epsilon();   // 1 ulp at 1.0 — precision yardstick
-std::numeric_limits<double>::infinity();
-std::numeric_limits<double>::quiet_NaN();
+    std::numeric_limits<double>::max();
+    std::numeric_limits<double>::lowest();    // most negative finite (NOT min!)
+    std::numeric_limits<double>::min();       // smallest POSITIVE normal value
+    std::numeric_limits<double>::epsilon();   // 1 ulp at 1.0 — precision yardstick
+    std::numeric_limits<double>::infinity();
+    std::numeric_limits<double>::quiet_NaN();
 
-std::numeric_limits<int>::digits;         // value bits (31 for int)
-std::numeric_limits<T>::is_signed;
-std::numeric_limits<T>::is_integer;
+    std::numeric_limits<int>::digits;         // value bits (31 for 32-bit int)
+    std::numeric_limits<T>::is_signed;
+    std::numeric_limits<T>::is_integer;
+}
 ```
 
 ### Common uses
@@ -36,7 +39,9 @@ std::numeric_limits<T>::is_integer;
 double best = std::numeric_limits<double>::lowest();
 
 // float comparison with a tolerance:
-bool close = std::abs(a - b) <= std::numeric_limits<double>::epsilon() * scale;
+bool nearly_equal(double a, double b, double scale) {
+    return std::abs(a - b) <= std::numeric_limits<double>::epsilon() * scale;
+}
 ```
 
 ## Gotchas

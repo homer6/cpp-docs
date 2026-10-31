@@ -11,10 +11,8 @@
 specify how operations on *other* memory are ordered relative to the atomic op
 (the memory order).
 
-```cpp
-#include <atomic>
-
-std::atomic<int> counter{0};
+```cpp body
+std::atomic<int> counter{0};     // #include <atomic>
 counter.fetch_add(1);            // atomic ++, returns old value
 ++counter;                       // also atomic
 int v = counter.load();          // atomic read
@@ -23,7 +21,7 @@ counter.store(5);                // atomic write
 
 ## Read-modify-write & CAS
 
-```cpp
+```cpp body
 std::atomic<int> x{0};
 x.fetch_add(3);  x.fetch_sub(1);  x.fetch_or(0b10);     // atomic arithmetic/bitwise
 
@@ -45,16 +43,24 @@ Each atomic op takes an optional `std::memory_order`. Default is
 | `relaxed` | atomicity only, **no** ordering of surrounding memory |
 
 ```cpp
+int produce();
+int data = 0;                                            // plain, non-atomic
 std::atomic<bool> ready{false};
-data = produce();
-ready.store(true, std::memory_order_release);            // publish
-// other thread:
-if (ready.load(std::memory_order_acquire)) use(data);    // sees `data`
+
+void producer() {                                        // one thread
+    data = produce();
+    ready.store(true, std::memory_order_release);        // publish
+}
+void consumer() {                                        // other thread
+    if (ready.load(std::memory_order_acquire)) use(data); // sees `data`
+}
 ```
 
 ## atomic_ref and atomic<shared_ptr> (C++20)
 
-```cpp
+```cpp body
+struct Node { int value; };
+
 int plain = 0;
 std::atomic_ref<int> ar{plain};      // atomic ops on a non-atomic object (e.g. an array slot)
 ar.fetch_add(1);

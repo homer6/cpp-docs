@@ -38,10 +38,12 @@ parameter.
 std::byte buffer[4096];
 std::pmr::monotonic_buffer_resource arena{buffer, sizeof buffer};
 
-std::pmr::vector<int> v{&arena};      // allocates out of `buffer` — no heap, no per-element free
-for (int i = 0; i < 100; ++i) v.push_back(i);
+void demo() {
+    std::pmr::vector<int> v{&arena};      // allocates out of `buffer` — no heap, no per-element free
+    for (int i = 0; i < 100; ++i) v.push_back(i);
 
-std::pmr::string s{"hello", &arena};  // same arena; all reclaimed when `arena` dies
+    std::pmr::string s{"hello", &arena};  // same arena; all reclaimed when `arena` dies
+}
 ```
 
 When `arena` is destroyed, every allocation it made is released in one shot — no

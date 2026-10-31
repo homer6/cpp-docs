@@ -11,11 +11,17 @@ Starts running immediately on construction; you **must** `join()` (wait for it) 
 ```cpp
 #include <thread>
 
-std::thread t{[]{ do_work(); }};
-std::thread t2{worker_fn, arg1, arg2};      // args are copied into the thread
-// ... 
-t.join();                                    // wait for it to finish
-// (or t.detach() to let it run independently — rarely what you want)
+void do_work();
+void worker_fn(int a, std::string b);
+
+void demo() {
+    std::thread t{[]{ do_work(); }};
+    std::thread t2{worker_fn, 1, std::string{"x"}};  // args are copied into the thread
+    // ...
+    t.join();                                    // wait for it to finish
+    t2.join();
+    // (or t.detach() to let it run independently — rarely what you want)
+}
 ```
 
 ## std::jthread — prefer this (C++20)
@@ -30,21 +36,21 @@ void worker(std::stop_token st) {
     while (!st.stop_requested()) { /* do a chunk of work */ }
 }
 
-std::jthread jt{worker};          // a stop_token is passed in automatically
-// ...
-jt.request_stop();                // ask it to stop
-// no explicit join needed — destructor requests stop AND joins
+void demo() {
+    std::jthread jt{worker};          // a stop_token is passed in automatically
+    // ...
+    jt.request_stop();                // ask it to stop
+}   // no explicit join needed — destructor requests stop AND joins
 ```
 
 If your callable's first parameter is a `std::stop_token`, `jthread` supplies one.
 
 ## this_thread
 
-```cpp
-#include <thread>
-#include <chrono>
-using namespace std::chrono_literals;
+```cpp body
+using namespace std::chrono_literals;        // #include <thread>, <chrono>
 
+auto deadline = std::chrono::steady_clock::now() + 1s;
 std::this_thread::sleep_for(100ms);
 std::this_thread::sleep_until(deadline);
 std::this_thread::yield();                   // hint: let others run

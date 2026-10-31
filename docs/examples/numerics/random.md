@@ -40,6 +40,8 @@ Reuse `gen` and the distribution; don't recreate them per call.
 
 **Distributions:**
 ```cpp
+#include <random>
+
 std::uniform_int_distribution<int>    d1{0, 9};      // ints, inclusive
 std::uniform_real_distribution<double> d2{0.0, 1.0}; // reals, [lo, hi)
 std::normal_distribution<double>      d3{0.0, 1.0};  // mean, stddev
@@ -52,14 +54,21 @@ std::bernoulli_distribution           d4{0.25};      // bool, P(true)=0.25
 ### Shuffle and sample
 
 ```cpp
-std::mt19937 gen{std::random_device{}()};
-std::shuffle(v.begin(), v.end(), gen);                       // random permutation
-std::sample(in.begin(), in.end(), std::back_inserter(out), 5, gen);  // pick 5
+#include <algorithm>
+#include <random>
+
+void demo(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& out) {
+    std::mt19937 gen{std::random_device{}()};
+    std::shuffle(v.begin(), v.end(), gen);                       // random permutation
+    std::sample(in.begin(), in.end(), std::back_inserter(out), 5, gen);  // pick 5
+}
 ```
 
 ### Reproducible runs
 
 ```cpp
+#include <random>
+
 std::mt19937 gen{12345};      // fixed seed → same sequence every run (tests/debug)
 ```
 

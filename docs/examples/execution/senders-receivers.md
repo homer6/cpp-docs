@@ -18,25 +18,31 @@ it eventually calls one of the receiver's three completion channels.
 
 ## Sender factories — make work from nothing
 
-```cpp
-namespace ex = std::execution;
+```cpp body needs=execution
+namespace ex = std::execution;      // #include <execution>
+ex::run_loop loop;
+auto sched = loop.get_scheduler();
+auto err   = std::make_exception_ptr(std::runtime_error{"boom"});
 
-ex::just(42)                 // a sender that completes with the value 42
-ex::just_error(err)          // completes on the error channel
-ex::just_stopped()           // completes as cancelled
-ex::schedule(sched)          // a sender that runs on scheduler `sched`
+auto a = ex::just(42);              // a sender that completes with the value 42
+auto b = ex::just_error(err);       // completes on the error channel
+auto c = ex::just_stopped();        // completes as cancelled
+auto d = ex::schedule(sched);       // a sender that runs on scheduler `sched`
 ```
 
 ## Sender adaptors — compose with `|`
 
-```cpp
+```cpp needs=execution
+#include <execution>
+namespace ex = std::execution;
+
 auto work = ex::just(21)
           | ex::then([](int x){ return x * 2; })       // transform the value (→ 42)
           | ex::then([](int x){ return x + 1; });        // chain another step (→ 43)
 ```
 
-Key adaptors:
-```cpp
+Key adaptors (a signature cheat-sheet, not compilable code):
+```cpp nocompile
 ex::then(fn)             // map the value channel
 ex::upon_error(fn)       // handle the error channel
 ex::upon_stopped(fn)     // handle cancellation
@@ -49,7 +55,9 @@ ex::continues_on(sched)  // continue subsequent work on `sched`
 
 ## Running it — sender consumers
 
-```cpp
+```cpp body needs=execution
+namespace ex = std::execution;      // #include <execution>
+auto work = ex::just(21) | ex::then([](int x){ return x * 2 + 1; });
 // block until done and retrieve the result:
 auto [result] = std::this_thread::sync_wait(std::move(work)).value();   // 43
 ```
@@ -59,22 +67,26 @@ the calling thread and returns the value (or rethrows the error).
 
 ## Worked example (from cppreference)
 
-```cpp
+```cpp needs=execution
 #include <execution>
 namespace ex = std::execution;
+using namespace std::literals;
 
-ex::run_loop loop;                                   // a simple execution resource
-std::jthread worker([&](std::stop_token st){
-    std::stop_callback cb{st, [&]{ loop.finish(); }};
-    loop.run();
-});
+int main() {
+    ex::run_loop loop;                                   // a simple execution resource
+    std::jthread worker([&](std::stop_token st){
+        std::stop_callback cb{st, [&]{ loop.finish(); }};
+        loop.run();
+    });
 
-ex::scheduler auto io = loop.get_scheduler();
-ex::sender auto work =
-    ex::on(io, ex::just("hello world"s)
-             | ex::then([](std::string m){ return std::puts(m.c_str()); }));
+    ex::scheduler auto io = loop.get_scheduler();
+    ex::sender auto work =
+        ex::on(io, ex::just("hello world"s)
+                 | ex::then([](std::string m){ return std::puts(m.c_str()); }));
 
-auto [rc] = std::this_thread::sync_wait(std::move(work)).value();
+    auto [rc] = std::this_thread::sync_wait(std::move(work)).value();
+    return rc;
+}
 ```
 
 ## Gotchas

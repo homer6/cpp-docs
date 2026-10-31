@@ -12,43 +12,50 @@ Each trait is a template that yields a compile-time **value** or **type**:
 - Type traits expose `::type` (and a `_t` shortcut): `std::remove_const_t<T>`.
 
 ```cpp
-std::is_integral<int>::value      // true   (verbose)
-std::is_integral_v<int>           // true   (C++17 _v helper — prefer this)
-std::remove_const<const int>::type// int    (verbose)
-std::remove_const_t<const int>    // int    (C++14 _t helper — prefer this)
+static_assert(std::is_integral<int>::value);   // true   (verbose)
+static_assert(std::is_integral_v<int>);        // true   (C++17 _v helper — prefer this)
+static_assert(std::is_same_v<std::remove_const<const int>::type, int>);  // int (verbose)
+static_assert(std::is_same_v<std::remove_const_t<const int>, int>);      // int (C++14 _t helper — prefer this)
 ```
 
 ## The main families
 
 **Type categories** — what kind of type is it:
 ```cpp
-is_void, is_integral, is_floating_point, is_array, is_pointer,
-is_enum, is_class, is_function, is_reference, is_arithmetic, is_fundamental
+using std::is_void, std::is_integral, std::is_floating_point, std::is_array,
+      std::is_pointer, std::is_enum, std::is_class, std::is_function,
+      std::is_reference, std::is_arithmetic, std::is_fundamental;
 ```
 
 **Type properties** — qualifiers and capabilities:
 ```cpp
-is_const, is_volatile, is_signed, is_unsigned,
-is_trivially_copyable, is_standard_layout, is_empty, is_polymorphic,
-is_default_constructible, is_copy_constructible, is_move_constructible,
-is_nothrow_move_constructible, is_destructible, has_virtual_destructor
+using std::is_const, std::is_volatile, std::is_signed, std::is_unsigned,
+      std::is_trivially_copyable, std::is_standard_layout, std::is_empty,
+      std::is_polymorphic, std::is_default_constructible,
+      std::is_copy_constructible, std::is_move_constructible,
+      std::is_nothrow_move_constructible, std::is_destructible,
+      std::has_virtual_destructor;
 ```
 
 **Type relationships**:
 ```cpp
-is_same<A, B>, is_base_of<Base, Derived>, is_convertible<From, To>,
-is_invocable<F, Args...>, is_invocable_r<R, F, Args...>
+using std::is_same;          // is_same<A, B>
+using std::is_base_of;       // is_base_of<Base, Derived>
+using std::is_convertible;   // is_convertible<From, To>
+using std::is_invocable;     // is_invocable<F, Args...>
+using std::is_invocable_r;   // is_invocable_r<R, F, Args...>
 ```
 
 **Transformations** — produce a new type:
 ```cpp
-remove_const, remove_reference, remove_cv, add_pointer, add_lvalue_reference,
-decay,                  // array→ptr, function→ptr, strips cv/ref (as by-value pass)
-remove_cvref,           // strip cv AND reference (C++20) — very common
-conditional<B, T, F>,   // B ? T : F at type level
-common_type<Ts...>,     // the type a set of types converts to
-underlying_type,        // an enum's integer type
-enable_if<B, T>         // present only if B is true (SFINAE)
+using std::remove_const, std::remove_reference, std::remove_cv,
+      std::add_pointer, std::add_lvalue_reference;
+using std::decay;            // array→ptr, function→ptr, strips cv/ref (as by-value pass)
+using std::remove_cvref;     // strip cv AND reference (C++20) — very common
+using std::conditional;      // conditional<B, T, F>: B ? T : F at type level
+using std::common_type;      // common_type<Ts...>: the type a set of types converts to
+using std::underlying_type;  // an enum's integer type
+using std::enable_if;        // enable_if<B, T>: present only if B is true (SFINAE)
 ```
 
 ## Examples

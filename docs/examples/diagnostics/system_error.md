@@ -20,11 +20,13 @@ networking-style code) take an `error_code&` out-parameter.
 #include <filesystem>
 namespace fs = std::filesystem;
 
-std::error_code ec;
-fs::create_directory("out", ec);        // non-throwing overload
-if (ec) {                                // error_code is truthy iff an error occurred
-    std::cerr << ec.message()            // human-readable text
-              << " (" << ec.value() << ", " << ec.category().name() << ")\n";
+void make_out_dir() {
+    std::error_code ec;
+    fs::create_directory("out", ec);        // non-throwing overload
+    if (ec) {                                // error_code is truthy iff an error occurred
+        std::cerr << ec.message()            // human-readable text
+                  << " (" << ec.value() << ", " << ec.category().name() << ")\n";
+    }
 }
 ```
 
@@ -34,16 +36,24 @@ if (ec) {                                // error_code is truthy iff an error oc
 it without caring about the platform's raw numbers:
 
 ```cpp
-if (ec == std::errc::no_such_file_or_directory) { /* handle missing file */ }
-if (ec == std::errc::permission_denied)         { /* ... */ }
+void handle(std::error_code ec) {
+    if (ec == std::errc::no_such_file_or_directory) { /* handle missing file */ }
+    if (ec == std::errc::permission_denied)         { /* ... */ }
+}
 ```
 
 ### Throwing form: std::system_error
 
 ```cpp
-throw std::system_error{ec, "while opening config"};   // wraps an error_code as an exception
-// or from errno:
-throw std::system_error{errno, std::generic_category(), "open failed"};
+#include <cerrno>
+#include <system_error>
+
+void fail(std::error_code ec) {
+    throw std::system_error{ec, "while opening config"};   // wraps an error_code as an exception
+}
+void fail_from_errno() {
+    throw std::system_error{errno, std::generic_category(), "open failed"};
+}
 ```
 
 ## error_code vs error_condition

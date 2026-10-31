@@ -26,11 +26,14 @@ Containers never call an allocator directly; they go through
 for everything else (`construct`, `max_size`, rebind, propagation flags).
 
 ```cpp
-using Tr = std::allocator_traits<A>;
-T* p = Tr::allocate(a, 1);
-Tr::construct(a, p, args...);    // placement-construct
-Tr::destroy(a, p);
-Tr::deallocate(a, p, 1);
+template<class A, class... Args>
+void make_one(A& a, Args&&... args) {
+    using Tr = std::allocator_traits<A>;
+    auto p = Tr::allocate(a, 1);                       // Tr::pointer (T* for std::allocator)
+    Tr::construct(a, p, std::forward<Args>(args)...);  // placement-construct
+    Tr::destroy(a, p);
+    Tr::deallocate(a, p, 1);
+}
 ```
 
 ## A minimal C++11+ allocator

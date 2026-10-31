@@ -16,9 +16,11 @@
 ```cpp
 #include <sstream>
 
-std::ostringstream oss;
-oss << "x=" << 42 << ", y=" << 3.14;
-std::string s = oss.str();                 // "x=42, y=3.14"
+std::string build() {
+    std::ostringstream oss;
+    oss << "x=" << 42 << ", y=" << 3.14;
+    return oss.str();                      // "x=42, y=3.14"
+}
 ```
 
 > In modern C++, [`std::format`](../text-processing/formatting.md) usually does
@@ -29,24 +31,28 @@ std::string s = oss.str();                 // "x=42, y=3.14"
 ## Parsing / tokenizing
 
 ```cpp
-std::istringstream iss{"10 20 30"};
-int a, b, c;
-iss >> a >> b >> c;                        // 10, 20, 30
+#include <sstream>
 
-// split a line into words:
-std::istringstream line{"the quick brown fox"};
-std::vector<std::string> words{std::istream_iterator<std::string>{line},
-                               std::istream_iterator<std::string>{}};
+void parse(const std::string& userInput) {
+    std::istringstream iss{"10 20 30"};
+    int a, b, c;
+    iss >> a >> b >> c;                    // 10, 20, 30
 
-// parse with the same failure-checking as any stream:
-std::istringstream in{userInput};
-int value;
-if (in >> value) { /* parsed */ }
+    // split a line into words:
+    std::istringstream line{"the quick brown fox"};
+    std::vector<std::string> words{std::istream_iterator<std::string>{line},
+                                   std::istream_iterator<std::string>{}};
+
+    // parse with the same failure-checking as any stream:
+    std::istringstream in{userInput};
+    int value;
+    if (in >> value) { /* parsed */ }
+}
 ```
 
 ## Type conversion via streams (legacy)
 
-```cpp
+```cpp body
 int n;
 std::istringstream{"123"} >> n;            // string → int (pre-C++17 idiom)
 ```
