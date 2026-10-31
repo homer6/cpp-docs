@@ -142,10 +142,13 @@ There's no CI; run the checker locally:
 python3 tools/check_snippets.py docs/guidelines --cxx g++-15
 python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
   --baseline tools/snippet_baseline/gcc.txt
+python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
+  --flag=-stdlib=libc++ -q --baseline tools/snippet_baseline/clang.txt
 ```
 
-Both must pass cleanly; the list of known failures
-(`tools/snippet_baseline/gcc.txt`) is empty and stays that way. Fence tags (`body`,
+All three must pass cleanly. The GCC list of known failures
+(`tools/snippet_baseline/gcc.txt`) is empty and stays that way; the Clang one
+(`tools/snippet_baseline/clang.txt`) lists only libc++ gaps and only shrinks. Fence tags (`body`,
 `nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](CLAUDE.md).
 
 ## Running the tests

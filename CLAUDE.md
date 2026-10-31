@@ -143,7 +143,14 @@ Prefer making a snippet self-contained over tagging it `nocompile`, and
 python3 tools/check_snippets.py docs/guidelines --cxx g++-15
 python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
   --baseline tools/snippet_baseline/gcc.txt
+python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
+  --flag=-stdlib=libc++ -q --baseline tools/snippet_baseline/clang.txt
 ```
+
+The Clang 22 + libc++ run must pass too. `tools/snippet_baseline/clang.txt`
+lists only genuine libc++ gaps (a header or feature libc++ doesn't ship yet):
+a snippet that fails on Clang because it's wrong or uses a GCC extension gets
+fixed so it compiles on both. Delete a line when libc++ catches up.
 
 Each block has a stable ID, `<file>#<heading-slug>/<n>`, shown next to every
 failure. `tools/snippet_baseline/gcc.txt` (the list of known failures) is
