@@ -70,3 +70,31 @@ TEST(Comparison, EqualityIsNotSynthesizedFromCustomSpaceship) {
     EXPECT_TRUE((OnlyCustomSpaceship{1} < OnlyCustomSpaceship{2}));
     EXPECT_TRUE((OnlyDefaultedSpaceship{1} == OnlyDefaultedSpaceship{1}));
 }
+
+// "The three ordering types": weak_ordering for equivalent-but-not-identical
+// values, e.g. a case-insensitive comparison.
+struct CiChar {
+    char c;
+    std::weak_ordering operator<=>(const CiChar& o) const {
+        auto lower = [](char ch) { return ch >= 'A' && ch <= 'Z' ? char(ch - 'A' + 'a') : ch; };
+        return lower(c) <=> lower(o.c);
+    }
+};
+TEST(Comparison, WeakOrderingEquivalence) {
+    EXPECT_EQ((CiChar{'a'} <=> CiChar{'A'}), std::weak_ordering::equivalent);
+    EXPECT_EQ((CiChar{'b'} <=> CiChar{'A'}), std::weak_ordering::greater);
+}
+
+// "Gotchas": a defaulted <=> compares bases first, then members in declaration order.
+struct Base {
+    int b;
+    auto operator<=>(const Base&) const = default;
+};
+struct Derived : Base {
+    int d;
+    auto operator<=>(const Derived&) const = default;
+};
+TEST(Comparison, BasesBeforeMembers) {
+    EXPECT_TRUE((Derived{{1}, 9} < Derived{{2}, 0}));  // base decides first
+    EXPECT_TRUE((Derived{{1}, 0} < Derived{{1}, 1}));
+}
