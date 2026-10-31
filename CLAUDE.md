@@ -154,6 +154,11 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 
 ## Issues and pull requests
 
+- **Create a GitHub issue first, for all work** — before starting, however
+  small: pages, fixes, tooling, `CLAUDE.md`/README edits, and changes pushed
+  directly to `main` at the owner's request. Nothing lands without an issue
+  reference (`Closes #n` in the PR, or `Closes #n` in a direct commit). Create
+  issues with `gh issue create -R homer6/cpp-docs --assignee @me`.
 - Work each issue on its own feature branch (e.g. `docs/<issue>-<slug>`) and
   open a PR that references the issue.
 - **Open PRs ready for review, never as drafts.**
