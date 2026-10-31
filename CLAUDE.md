@@ -157,8 +157,17 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 - Work each issue on its own feature branch (e.g. `docs/<issue>-<slug>`) and
   open a PR that references the issue.
 - **Open PRs ready for review, never as drafts.**
-- **Close the issue as soon as its PR is opened.** Don't wait for the merge,
-  and close it even if the PR says "Part of #n".
+- **Close the issue as soon as its PR is opened — automatically, as part of
+  shipping the PR.** Opening the PR *is* the signal that the feature is done;
+  don't wait for the merge, close it even if the PR says "Part of #n", and
+  **never ask the owner whether to close it or leave it for them to close.**
+  An epic/tracker issue stays open until all its sub-issues are closed.
+- **Subagents delivering an issue:** if the agent couldn't close the issue
+  (e.g. a permission check blocked `gh issue close`), the orchestrating
+  session closes it with the comment straight away when the agent reports
+  back — the owner has authorized closing issues on PR-open for this repo.
+  Agents write the closing comment to a file and report its path, so it
+  isn't lost.
 - **The closing comment explains the change**, not just the link:
 
   ```markdown
