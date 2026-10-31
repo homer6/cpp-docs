@@ -82,8 +82,8 @@ area has its own README.
   - [noexcept & exception safety](docs/examples/language/exceptions/noexcept-and-safety.md) · [throw / try / catch](docs/examples/language/exceptions/throw-try-catch.md)
 - **[Coroutines](docs/examples/language/coroutines/README.md)** — `co_await`/`co_yield`/`co_return` (C++20)
   - [Coroutines](docs/examples/language/coroutines/coroutines.md)
-- **[Modules](docs/examples/language/modules/README.md)** — `import`/`export` (C++20)
-  - [Modules](docs/examples/language/modules/modules.md)
+- **[Modules](docs/examples/language/modules/README.md)** — `import`/`export`, partitions, `import std;`, building with GCC/Clang/CMake (C++20)
+  - [Building modules](docs/examples/language/modules/building.md) · [Modules](docs/examples/language/modules/modules.md)
 - **[Preprocessor](docs/examples/language/preprocessor/README.md)** — macros, includes, conditional compilation, `#embed`
   - [`#embed` — resource inclusion (C++26)](docs/examples/language/preprocessor/embed.md) · [The preprocessor](docs/examples/language/preprocessor/preprocessor.md)
 <!-- index:language:end -->
@@ -175,7 +175,9 @@ workflow directly: `cmake --workflow --preset gcc-15`.
   with `-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind
   -lunwind` plus matching `-rpath`s, so the binaries use Homebrew's libc++
   (whose headers they were compiled against) rather than the older system one
-  in `/usr/lib`.
+  in `/usr/lib`. It also sets `CMAKE_CXX_STDLIB_MODULES_JSON` to Homebrew's
+  `libc++.modules.json`, which `clang++ -print-file-name` doesn't find, so
+  CMake can build the `std` module.
 - **gcc-16** — runs inside Docker. The `gcc:16` image (arm64-native, Debian
   trixie) has `g++` 16.2 and git but no CMake or Ninja, so the script installs
   them from Debian (CMake 3.31) before running the workflow:
@@ -193,6 +195,14 @@ executable (`examples_containers_tests`, `examples_text_processing_tests`, …;
 `capture.hpp` captures what `std::cout`, `printf` and `std::print` write, and
 `feature.hpp` provides `CPPDOCS_REQUIRE(__cpp_lib_x)`, which skips a test with
 the missing feature's name when a toolchain doesn't define the macro.
+
+Named modules: [`tests/language/modules/modules.cmake`](tests/language/modules/modules.cmake)
+builds the module units in `tests/language/modules/units/` with
+`FILE_SET CXX_MODULES` (CMake 3.28+ and Ninja) and scans the tests that import
+them. `import std` is used where CMake provides it: CMake 4.3 and 4.4 with the
+experimental gate the top-level `CMakeLists.txt` sets, or 4.5+ without one.
+Elsewhere — the gcc-16 image's CMake 3.31, GCC 15 with CMake 4.5 on macOS —
+those tests skip and say why.
 
 ## Conventions
 

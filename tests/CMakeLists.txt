@@ -55,3 +55,8 @@ foreach(area IN LISTS area_dirs)
     PROPERTIES LABELS ${area}
     DISCOVERY_TIMEOUT 60)
 endforeach()
+
+# Named modules (FILE_SET CXX_MODULES) for tests/language/modules/.
+if(TARGET examples_language_tests)
+  include(language/modules/modules.cmake)
+endif()

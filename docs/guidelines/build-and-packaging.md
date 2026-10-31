@@ -3,7 +3,8 @@
 > How to build a modern C++ project so every configuration in
 > [safety](safety.md#build-configurations) is one command away, dependencies are
 > pinned, and builds stay fast. **Sources:** CMake documentation (4.3.4 bundled
-> help; versioned 3.30 and 4.4 manuals; 4.5.0-rc2 online manual) · **Status:**
+> help; versioned 3.30 and 4.4 manuals; 4.5.0-rc2 online manual; `Help/` at
+> the CMake 4.4.5 and 4.5.0-rc2 tags for §3) · **Status:**
 > draft — see [sources](sources.md) for what's still being verified
 
 **Which CMake is current (checked 2026-10-31):** the latest stable release is
@@ -161,49 +162,65 @@ and pass with CMake 4.3.4, Ninja, and Apple Clang 15 on macOS.
 
 ## 3. Modules
 
-CMake scans sources for named modules since **3.28**. Module sources are
-listed in a `CXX_MODULES` file set:
+CMake supports C++20 named modules since **3.28**. It asks the compiler to
+scan each source for imports during the build and compiles module providers
+before their importers. Put every unit that *provides* a module (interface
+units and partitions) in a `CXX_MODULES` file set; implementation units and
+importers are ordinary sources:
 
 ```cmake
+cmake_minimum_required(VERSION 3.28)      # CMP0155 NEW: C++20 sources are scanned
 add_library(geo)
 target_sources(geo
-    PUBLIC FILE_SET CXX_MODULES FILES src/geo.cppm)
+    PRIVATE src/geo.cpp                   # module geo;
+    PUBLIC FILE_SET CXX_MODULES BASE_DIRS src FILES src/geo.cppm src/geo-types.cppm)
 target_compile_features(geo PUBLIC cxx_std_20)
 ```
 
-**Toolchain floor for module scanning** (from the CMake manual): Ninja 1.11+ or
-Visual Studio 2022 17.4+ generators; MSVC toolset 14.34+, Clang 16+, GCC 14+.
-Header units aren't supported.
+**Toolchain floor** (`cmake-cxxmodules(7)`): Ninja 1.11+ or Visual Studio 2022+
+generators (not Makefiles, not Xcode); MSVC toolset 14.34+, Clang 16+, GCC 14+
+(`clang-cl` 19.1+ since 4.4). Header units aren't supported. With
+`cmake_minimum_required` below 3.28 (CMP0155 OLD), importers aren't scanned:
+set `CXX_SCAN_FOR_MODULES ON` on them. A C++20 project without modules can turn
+scanning off with `set(CMAKE_CXX_SCAN_FOR_MODULES 0)` (a normal variable, not a
+cache entry).
+
+**Install and export** the interface sources with the module metadata —
+`install(TARGETS geo EXPORT GeoTargets FILE_SET CXX_MODULES DESTINATION …)` and
+`install(EXPORT GeoTargets … CXX_MODULES_DIRECTORY cxx-modules)`; without
+`CXX_MODULES_DIRECTORY` consumers can't import the modules. Consumers build
+their own BMIs from the installed sources (CMake doesn't use installed BMIs).
 
 ### `import std;`
 
-```cmake
-add_executable(app src/main.cpp)
-target_compile_features(app PRIVATE cxx_std_23)
-set_target_properties(app PROPERTIES CXX_MODULE_STD ON)
-```
+| CMake | `import std` |
+|---|---|
+| **4.4.x** (current stable, 4.4.5) | Experimental: set `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` to the UUID in that release's `Help/dev/experimental.rst` before `project()`, then `CXX_MODULE_STD ON` on the target. `CMAKE_CXX_COMPILER_IMPORT_STD` lists the supported standards (`23;26` here — not 20) |
+| **4.5** (release candidate 4.5.0-rc2 as of 2026-10-31) | Automatic for every scanned C++20-or-later source; no gate. `CXX_MODULE_STD`, `CMAKE_CXX_MODULE_STD` and `CMAKE_CXX_COMPILER_IMPORT_STD` are removed |
 
-`import std` support is separate from named-module support: it has its own
-section and toolchain list in the CMake manual, and it's still experimental in
-every stable release.
+Toolchains (4.5 manual): GCC 15+ (GCC 16+ on macOS), Clang 18.1.2+ with libc++
+or libstdc++, MSVC 14.36+; **Ninja generators only**. Re-check when 4.5.0 final
+ships.
 
-| CMake | Status | Toolchains the manual lists |
-|---|---|---|
-| 3.30 | Experimental (gate required) | Clang 18.1.2+ with `-stdlib=libc++`; MSVC toolset 14.36+ |
-| 4.4 (current stable) | Experimental (gate required) | Clang 18.1.2+ with libc++ or libstdc++; MSVC 14.36+ (VS 17.6+); GCC 15+ |
-| 4.5.0-rc2 (release candidate) | "Added in version 4.5": no gate, for all C++20-and-later code with module scanning on | as 4.4, but GCC 15+ except on macOS, GCC 16+ on macOS |
+### Known issues
 
-- **Up to and including 4.4:** set `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` to the
-  gate UUID for *your exact CMake version* (listed in CMake's
-  `Help/dev/experimental.rst`) before `project()`. The UUID changes between
-  releases — don't copy one from a blog post.
-- **4.5:** the release candidate's manual and release notes drop the gate.
-  Treat that as the plan until 4.5.0 final ships, and re-check then.
-- **Ninja generators only** — Visual Studio generators can't build BMIs for
-  `IMPORTED` targets, which the `std` module is.
-- **Ubuntu releases before 26.04** ship a broken `libstdc++.modules.json`
+Checked locally on macOS with CMake 3.28.6, 4.3.4, 4.4.5 and 4.5.0-rc2, GCC 15.2
+and Clang 22 + libc++:
+
+- **Before 4.4, consumers must match the library's dialect.** Installed modules
+  were rebuilt with the library's settings: a library exporting `cxx_std_20`
+  used from C++23 fails ("language dialect differs" on GCC, "configuration
+  mismatch" on Clang), and so does a `CXX_EXTENSIONS` mismatch on Clang. 4.4
+  takes the consumer's compile features and options.
+- **Homebrew LLVM 22:** CMake can't find `libc++.modules.json`; pass
+  `-DCMAKE_CXX_STDLIB_MODULES_JSON=/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json`.
+  Ubuntu releases before 26.04 ship a broken `libstdc++.modules.json`
   ([Ubuntu bug 2141579](https://bugs.launchpad.net/ubuntu/+source/gcc-15/+bug/2141579)).
-  4.5 adds `CMAKE_CXX_STDLIB_MODULES_JSON` to point CMake at a fixed copy.
+- **GCC 15 + CMake 4.5.0-rc2 on macOS** fails to link `import std` (undefined
+  "initializer for module std"); GCC 15 with 4.4.5's gate works.
+- **4.5.0-rc2 provides `std` only to targets with scanning on**: a module
+  library under CMP0155 OLD needed `CXX_SCAN_FOR_MODULES ON`.
+- **ccache doesn't cache C++20 modules** (ccache manual).
 
 ### Pilot before adopting
 
@@ -323,4 +340,5 @@ install(PACKAGE_INFO geo EXPORT geo-targets)                      # geo.cps, 4.3
   [MSVC STL hardening](https://github.com/microsoft/STL/wiki/STL-Hardening)
 - [Memory & safety — build configurations](safety.md#build-configurations) ·
   [Project conventions](project-conventions.md) ·
-  [modules (reference)](../examples/language/modules/modules.md)
+  [modules (reference)](../examples/language/modules/modules.md) ·
+  [building modules](../examples/language/modules/building.md)

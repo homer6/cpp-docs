@@ -43,7 +43,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Templates](language/templates/README.md) | ✅ | function/class templates, variadics, CTAD, constraints & concepts |
 | [Exceptions](language/exceptions/README.md) | ✅ | `throw`/`try`/`catch`, `noexcept`, exception safety |
 | [Coroutines](language/coroutines/README.md) | ✅ | `co_await`/`co_yield`/`co_return` (C++20) |
-| [Modules](language/modules/README.md) | ✅ | `import`/`export` (C++20) |
+| [Modules](language/modules/README.md) | ✅ | `import`/`export`, partitions, `import std;`, building with GCC/Clang/CMake (C++20) |
 | [Preprocessor](language/preprocessor/README.md) | ✅ | macros, includes, conditional compilation, `#embed` |
 
 ---

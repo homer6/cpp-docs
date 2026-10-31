@@ -132,9 +132,20 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 | ` ```cpp nocompile ` | Depends on undeclared context, third-party headers, or is wrong but still compiles (UB, dangling) |
 | ` ```cpp compile-fail="regex" ` | A BAD example that must **not** compile; the diagnostics must match the regex (plain `compile-fail` accepts any error) |
 | ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
+| ` ```cpp module ` | A C++20 module unit, or a file that imports modules (`import std;`, `import <vector>;`). Compiled **without** the prelude, with `-c` and modules enabled for the compiler |
+| ` ```cpp module=geo ` | One unit of a multi-file module example. All blocks in the same file with the same group name compile in document order in one directory, so later blocks import the BMIs of earlier ones: write the interface (and partitions) first, then implementation units and importers |
 
 `needs=` blocks are skipped unless you enable the feature, e.g.
 `--enable contracts --enable reflection --flag=-freflection` with GCC 16.
+
+Module blocks combine with `compile-fail` (that block must fail, so make it an
+importer) and `needs=` (a gated block skips its group). The checker enables
+modules per compiler (GCC `-fmodules`; Clang `.cppm` + `-fmodule-output`),
+builds `std`/`std.compat` once for `import std;`, and builds header units for
+`import <header>;`. The private module fragment is
+`needs=private-module-fragment` (GCC 15/16 lack it); check module pages with
+Clang too: `--cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++
+--enable private-module-fragment`.
 
 Prefer making a snippet self-contained over tagging it `nocompile`, and
 `compile-fail` over `nocompile` for type errors. Run:
@@ -205,6 +216,12 @@ Writing tests:
   `GTEST_SKIP() << "reason"` or a per-toolchain expectation.
 - **A failing test means the page is wrong:** fix the page in the same PR and
   list it in the PR description.
+- **Module tests:** module units live in `tests/language/modules/units/` and
+  are listed in `tests/language/modules/modules.cmake` (providers in the
+  `FILE_SET CXX_MODULES`, implementation units as ordinary sources); a test
+  file that imports them goes in that file's `_mod_tests` list so CMake scans
+  it. Guard imports with `#ifdef CPPDOCS_NAMED_MODULES` and start each test
+  with `CPPDOCS_REQUIRE_NAMED_MODULES()` (`language/modules/named_modules.hpp`).
 - `gcc-15` and `clang-22` must both pass (or skip with a reason) before a PR.
 
 ## Git / commits
