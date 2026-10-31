@@ -1,3 +1,5 @@
 .firecrawl/
 .DS_Store
 __pycache__/
+build/
+out/

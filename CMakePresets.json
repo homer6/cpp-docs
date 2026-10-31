@@ -1,0 +1,141 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "gcc-15",
+      "displayName": "GCC 15 (Homebrew g++-15, libstdc++)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++-15"
+      }
+    },
+    {
+      "name": "clang-22",
+      "displayName": "Clang 22 (Homebrew LLVM, libc++)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++ -L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/unwind"
+      }
+    },
+    {
+      "name": "gcc-16",
+      "displayName": "GCC 16 (run inside the gcc:16 Docker image; see README)",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "gcc-15",
+      "configurePreset": "gcc-15"
+    },
+    {
+      "name": "clang-22",
+      "configurePreset": "clang-22"
+    },
+    {
+      "name": "gcc-16",
+      "configurePreset": "gcc-16"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "jobs": 8
+      }
+    },
+    {
+      "name": "gcc-15",
+      "inherits": "base",
+      "configurePreset": "gcc-15"
+    },
+    {
+      "name": "clang-22",
+      "inherits": "base",
+      "configurePreset": "clang-22"
+    },
+    {
+      "name": "gcc-16",
+      "inherits": "base",
+      "configurePreset": "gcc-16"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "gcc-15",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-15"
+        },
+        {
+          "type": "build",
+          "name": "gcc-15"
+        },
+        {
+          "type": "test",
+          "name": "gcc-15"
+        }
+      ]
+    },
+    {
+      "name": "clang-22",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-22"
+        },
+        {
+          "type": "build",
+          "name": "clang-22"
+        },
+        {
+          "type": "test",
+          "name": "clang-22"
+        }
+      ]
+    },
+    {
+      "name": "gcc-16",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-16"
+        },
+        {
+          "type": "build",
+          "name": "gcc-16"
+        },
+        {
+          "type": "test",
+          "name": "gcc-16"
+        }
+      ]
+    }
+  ]
+}

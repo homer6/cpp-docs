@@ -35,7 +35,7 @@ class vector;
 Special case: `std::vector<bool>` is a **space-optimized bit-packed
 specialization**, not a real container of `bool`. Its `operator[]` returns a
 proxy, not `bool&`. Avoid it when you want normal container semantics — use
-`std::vector<char>`, `std::array<bool>`, or (C++20) `std::bitset`.
+`std::vector<char>`, `std::array<bool>`, or `std::bitset` (C++98).
 
 ## Complexity
 
