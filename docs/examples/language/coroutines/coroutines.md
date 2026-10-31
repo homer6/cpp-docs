@@ -44,7 +44,7 @@ std::generator<int> fibonacci() {
 }
 
 void print_first_ten() {
-    for (int x : fibonacci() | std::views::take(10))   // lazy: only 10 values computed
+    for (int x : fibonacci() | std::views::take(10))   // lazy: computed on demand, stops after 10
         std::print("{} ", x);                          // 0 1 1 2 3 5 8 13 21 34
 }
 ```

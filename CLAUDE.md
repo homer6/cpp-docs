@@ -1,8 +1,10 @@
 # Working in cpp-docs
 
 This repo is a learning reference for **all of modern C++** — the language and
-the standard library — written as example-driven Markdown. The deliverable is documentation; every
-C++ snippet in it is compile-checked locally (`tools/check_snippets.py`).
+the standard library — written as example-driven Markdown. The deliverable is
+documentation, not a program: every C++ snippet is compile-checked locally
+(`tools/check_snippets.py`), and the test suite under `tests/` checks the
+pages' claims at run time (see "Running the tests").
 
 We mirror how cppreference organizes the reference. Every library area and
 language area on cppreference's main page now has pages (see
@@ -149,6 +151,49 @@ errors in templates that are instantiated, and failed constant evaluation —
 the same as `-c`. It misses templates that are never instantiated, link errors
 (a declared but undefined function), and anything at run time. The summary
 counts skipped blocks by reason; keep the `nocompile` count falling.
+
+## Running the tests
+
+`tests/` is a GoogleTest suite that turns each page's claims into assertions
+(#41). It's the only thing CMake builds. There's no CI; run it locally:
+
+```bash
+tools/run_tests.sh              # gcc-15 (default)
+tools/run_tests.sh clang-22     # Homebrew Clang 22 + libc++
+tools/run_tests.sh gcc-16       # GCC 16 via the gcc:16 Docker image
+tools/run_tests.sh gcc-15 -L containers   # one area; args after the preset go to ctest
+```
+
+The script runs `cmake --workflow --preset <preset>` (configure, build and
+test into `build/<preset>/`) and then prints every skipped test with its
+reason. The presets live in `CMakePresets.json`; README.md explains each one
+and the Docker recipe (the `gcc:16` image needs `apt-get install cmake
+ninja-build`, which the script does for you).
+
+Writing tests:
+
+- **One file per page, mirroring the path:**
+  `docs/examples/containers/sequence/vector.md` →
+  `tests/containers/sequence/vector_test.cpp`. A folder whose only page is its
+  `README.md` uses `readme_test.cpp`. Every `*_test.cpp` under `tests/<area>/`
+  is picked up automatically into that area's executable
+  (`examples_<area>_tests`, hyphens become underscores); re-run the configure
+  step after adding a file. Suite names must be unique within an area.
+- Start the file with `// Checks claims made by docs/examples/<path>.md.` and
+  put a one-line comment above each `TEST` naming the section it checks.
+- **Assert the claim, not just that it runs:** `EXPECT_EQ` on printed output
+  (`cppdocs::capture_stdout([]{ ... })` from `support/capture.hpp` captures
+  `std::cout`, `printf` and `std::print`), values the page states in comments,
+  `static_assert` for type and trait claims, `EXPECT_THROW` for documented
+  exceptions.
+- **Missing features skip, never vanish:** include `<version>` and
+  `support/feature.hpp`, call `CPPDOCS_REQUIRE(__cpp_lib_x)` (or
+  `CPPDOCS_REQUIRE_VERSION(__cpp_lib_x, 202306L)`) first, and wrap the code that
+  needs the feature in `#ifdef __cpp_lib_x`. Implementation-defined results get
+  `GTEST_SKIP() << "reason"` or a per-toolchain expectation.
+- **A failing test means the page is wrong:** fix the page in the same PR and
+  list it in the PR description.
+- `gcc-15` and `clang-22` must both pass (or skip with a reason) before a PR.
 
 ## Git / commits
 
