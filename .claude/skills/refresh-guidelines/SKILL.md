@@ -45,30 +45,45 @@ wrong about which papers made it into a standard.
 1. **Read `docs/guidelines/sources.md`.** Note each tracked source's edition and
    "last checked" date, and which pages depend on it.
 
-2. **C++ Core Guidelines (`ccg`)** — use the submodule at
-   `modules/CppCoreGuidelines`, not scraping. It's pinned to the commit the
-   pages track (see `sources.md`).
+2. **C++ Core Guidelines (`ccg`)** — pull the submodule at
+   `modules/CppCoreGuidelines` (it tracks upstream `master`, see
+   `.gitmodules`), then update the docs for everything that changed since the
+   previous pin. The previous pin is the commit the pages describe.
 
    ```bash
-   git submodule update --init modules/CppCoreGuidelines   # if not checked out
-   git -C modules/CppCoreGuidelines fetch -q origin
-   git -C modules/CppCoreGuidelines log --oneline HEAD..origin/master
-   git -C modules/CppCoreGuidelines diff HEAD origin/master -- CppCoreGuidelines.md \
-     | grep -E '^[+-](### |[A-Z][a-z]{2} [0-9]+, 20[0-9]{2}$)'
+   S=modules/CppCoreGuidelines
+   git submodule update --init "$S"                 # make sure it's checked out
+   OLD=$(git -C "$S" rev-parse HEAD)                # the edition the docs describe
+   git submodule update --remote "$S"               # fetch + check out latest master
+   NEW=$(git -C "$S" rev-parse HEAD)
+
+   git -C "$S" log --oneline "$OLD..$NEW"           # what changed upstream
+   git -C "$S" diff "$OLD" "$NEW" -- CppCoreGuidelines.md \
+     | grep -E '^[+-](### |[A-Z][a-z]{2} [0-9]+, 20[0-9]{2}$)'   # rule + edition changes
    ```
 
-   The edition date is the first line matching `Mon D, YYYY` near the top of
-   `CppCoreGuidelines.md`. Look for added, removed and renamed rules
-   (`### <a name=...>` headings), changed enforcement thresholds, and changed
-   examples for rules the digest quotes.
+   - **`OLD == NEW`:** nothing new upstream. Say so, update only the "last
+     checked" date in `sources.md`, and move on.
+   - **Otherwise,** read the full diff (`git -C "$S" diff "$OLD" "$NEW" --
+     CppCoreGuidelines.md`) and go through each change:
+     - added, removed or renamed rules (`### <a name=...>` headings)
+     - changed enforcement thresholds and rule wording
+     - changed examples for rules the pages quote
+     - the edition date (first line matching `Mon D, YYYY` near the top)
 
-   After the pages are updated, move the pin forward so the submodule matches
-   the edition the pages now describe:
+     For each one that touches a rule the pages cover — or is important enough
+     to add — edit `core-guidelines.md` / `safety.md` (step 5). Skip pure
+     typo, CI, and formatting commits, but list them in your report.
+
+   Leave the submodule at `NEW` and stage it with the doc changes, so the pin
+   and the pages always describe the same edition:
 
    ```bash
-   git -C modules/CppCoreGuidelines checkout origin/master
-   git add modules/CppCoreGuidelines
+   git add "$S" docs/guidelines/
    ```
+
+   If you have to stop before the docs are updated, put the pin back
+   (`git -C "$S" checkout "$OLD"`) so it never runs ahead of the pages.
 
 3. **cppreference / the standard (`cppref`)** — ask what changed since the last
    check:

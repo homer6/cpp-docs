@@ -44,3 +44,4 @@ Notable references worth considering for a future import. Move a row up to
 | Date | Change |
 |---|---|
 | 2026-10-30 | Section created. Imported the `cpp-modern` skill (clustera-bridge, Dec 2025; CCG Jul 8 2025) and the automerge-cpp style guide. Updated to CCG Jun 14 2026 (new C.13, removed T.46, F.16 threshold 4 words, ES.23 slicing note) and C++26 (contracts, reflection, hardening, erroneous behaviour, `optional<T&>`, …). Fixed errors in the originals: invented `std::lazy`, invalid "defaulted lambda" example, `if consteval` labelled C++20 (it's C++23), wrong profile rule names (Type.2, Lifetime.2–4), backwards F.15 comment, `constexpr std::vector` overreach, and `std::reduce` needing commutativity. |
+| 2026-10-30 | Core Guidelines added as a submodule at `modules/CppCoreGuidelines`, tracking `master`. Pulled upstream: still at `d1dda82` (Jun 14, 2026 edition), so no page changes. |
