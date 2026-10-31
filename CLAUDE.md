@@ -155,7 +155,8 @@ python3 tools/check_snippets.py docs/guidelines --cxx g++-15
 python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
   --baseline tools/snippet_baseline/gcc.txt
 python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
-  --flag=-stdlib=libc++ -q --baseline tools/snippet_baseline/clang.txt
+  --flag=-stdlib=libc++ --flag=-fexperimental-library -q \
+  --baseline tools/snippet_baseline/clang.txt
 ```
 
 The Clang 22 + libc++ run must pass too. `tools/snippet_baseline/clang.txt`
