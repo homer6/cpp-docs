@@ -129,7 +129,10 @@ Links to the relevant cppreference pages (cppreference.com only).
   Post it with `gh issue close <n> -c "$(cat comment.md)"` (or
   `gh issue comment <n> -F comment.md` then close).
 - Guidelines issues get their own deep-research prompt in
-  `.claude/skills/refresh-guidelines/prompts/issue-<n>-<slug>.md`. Importing
+  `.claude/skills/refresh-guidelines/prompts/issue-<n>-<slug>.md`. **Hand each
+  prompt to the user as soon as it's written** (collect them with
+  `.claude/skills/refresh-guidelines/scripts/collect_prompts.py`, which fills
+  in the date) — never leave a prompt only in a branch. Importing
   that report (with the `refresh-guidelines` skill) is a follow-up — on the
   same branch if the PR is still open, otherwise a new PR.
 - No AI attribution in issues or PR descriptions either.
