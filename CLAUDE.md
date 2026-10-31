@@ -102,3 +102,37 @@ Links to the relevant cppreference pages (cppreference.com only).
 - **Do not add Claude as a commit author or co-author.** Commit messages must not
   include any `Co-Authored-By: Claude` (or similar) trailer. Commits are authored
   solely by the repository owner.
+
+## Issues and pull requests
+
+- Work each issue on its own feature branch (e.g. `docs/<issue>-<slug>`) and
+  open a PR that references the issue.
+- **Open PRs ready for review, never as drafts.**
+- **Close the issue as soon as its PR is opened.** Don't wait for the merge,
+  and close it even if the PR says "Part of #n".
+- **The closing comment explains the change**, not just the link:
+
+  ```markdown
+  Delivered in <PR URL>.
+
+  **What changed**
+  - each file/page and what it now says or does
+
+  **Why**
+  - which part of the issue each change addresses, and what was verified
+    against which primary source (or tested how)
+
+  **Still open**
+  - what waits on the deep-research report or a follow-up
+  ```
+
+  Post it with `gh issue close <n> -c "$(cat comment.md)"` (or
+  `gh issue comment <n> -F comment.md` then close).
+- Guidelines issues get their own deep-research prompt in
+  `.claude/skills/refresh-guidelines/prompts/issue-<n>-<slug>.md`. **Hand each
+  prompt to the user as soon as it's written** (collect them with
+  `.claude/skills/refresh-guidelines/scripts/collect_prompts.py`, which fills
+  in the date) — never leave a prompt only in a branch. Importing
+  that report (with the `refresh-guidelines` skill) is a follow-up — on the
+  same branch if the PR is still open, otherwise a new PR.
+- No AI attribution in issues or PR descriptions either.
