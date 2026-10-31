@@ -8,6 +8,7 @@ compile time). Mirrors
 |---|---|
 | [Value categories](value-categories.md) | lvalue / prvalue / xvalue — the basis of move semantics |
 | [Operators & precedence](operators.md) | the operators, precedence, overloading, order of evaluation |
+| [Operator overloading](operator-overloading.md) | member vs hidden-friend operators, `++`, `[]` (multi-arg, C++23), `()`, `explicit operator bool`, `->` |
 | [Conversions & casts](conversions.md) | implicit conversions and the four named casts |
 | [Literals](literals.md) | integer/float/string literals and user-defined literals |
 | [Constant expressions](constant-expressions.md) | `constexpr`, `consteval`, `constinit` |

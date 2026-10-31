@@ -5,7 +5,7 @@
 > and `static operator()` / `operator[]` since C++23
 
 Precedence, associativity and evaluation order are the built-in operators' and
-can't be changed — they're on [Operators](../expressions/operators.md).
+can't be changed — they're on [Operators](operators.md).
 Comparisons (`==`, `<=>`, defaulted or custom) have their own page:
 [Three-way comparison](../../language-support/comparison.md). This page covers
 the rest of the mechanics.
@@ -45,7 +45,7 @@ explicit T::operator U() const;     // conversion function, no return type writt
 | `static` | `operator()` and `operator[]` may be `static` (C++23) |
 | Also overloadable | `new`/`delete` (allocation functions), `co_await`, user-defined literals `operator""_x` |
 
-User-defined literals are covered on [Literals](../expressions/literals.md).
+User-defined literals are covered on [Literals](literals.md).
 
 ## When to use it
 
@@ -148,7 +148,7 @@ int main() {
 
 Before C++23, `m[1, 2]` was the comma operator (deprecated in C++20) and you'd
 write `m(1, 2)` instead. The const/non-const pair collapses into one function
-with an [explicit object parameter](explicit-object-parameter.md).
+with an [explicit object parameter](../classes/explicit-object-parameter.md).
 
 ### Function call and `static operator()` (C++23)
 
@@ -241,7 +241,7 @@ reached ("drill-down"), which is how proxies and iterators chain.
   `T&` (`*this`) so `a = b = c` works; arithmetic returns a new `T` by value;
   returning a reference to a local from `operator+` dangles.
 - **Self-assignment.** A hand-written `operator=` must handle `a = a`; copy-and-swap
-  or the rule of zero sidesteps it (see [Special members](special-members.md)).
+  or the rule of zero sidesteps it (see [Special members](../classes/special-members.md)).
 - **Operator lookup is ADL-driven.** An operator declared in a different namespace
   from its operand type is only found if that namespace is open at the call site
   — a classic "no match for `operator<<`" in templates. Keep operators next to
@@ -261,7 +261,7 @@ reached ("drill-down"), which is how proxies and iterators chain.
 - [P2128R6 — Multidimensional subscript operator](https://wg21.link/p2128r6),
   [P1169R4 — static operator()](https://wg21.link/p1169r4),
   [P2589R1 — static operator[]](https://wg21.link/p2589r1)
-- In this repo: [Operators](../expressions/operators.md),
+- In this repo: [Operators](operators.md),
   [Three-way comparison](../../language-support/comparison.md),
-  [Literals](../expressions/literals.md),
-  [Explicit object parameters](explicit-object-parameter.md)
+  [Literals](literals.md),
+  [Explicit object parameters](../classes/explicit-object-parameter.md)

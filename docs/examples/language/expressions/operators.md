@@ -44,7 +44,7 @@ Conventions: return `*this` from compound assignment; implement `+` in terms of
 `+=`; make comparisons `= default` when memberwise is right (see
 [`operator<=>`](../../language-support/comparison.md)). The full mechanics —
 which operators must be members, `++`/`--`, `[]`, `()`, conversions, `->` — are
-on [Operator overloading](../classes/operator-overloading.md).
+on [Operator overloading](operator-overloading.md).
 
 ## Evaluation order
 
