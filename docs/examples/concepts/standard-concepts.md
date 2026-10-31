@@ -106,7 +106,9 @@ void process(std::floating_point auto x);  // chosen for floats
 ```
 
 The compiler picks the **most constrained** viable overload — cleaner than tag
-dispatch or `enable_if`.
+dispatch or `enable_if`. How "most constrained" is decided (subsumption, and why
+type traits don't take part) is on
+[Constraints and concepts](../language/templates/constraints.md).
 
 ## Gotchas
 

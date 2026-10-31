@@ -42,7 +42,9 @@ Vec2 operator+(Vec2 a, const Vec2& b) { return a += b; }   // free function, sym
 
 Conventions: return `*this` from compound assignment; implement `+` in terms of
 `+=`; make comparisons `= default` when memberwise is right (see
-[`operator<=>`](../../language-support/comparison.md)).
+[`operator<=>`](../../language-support/comparison.md)). The full mechanics —
+which operators must be members, `++`/`--`, `[]`, `()`, conversions, `->` — are
+on [Operator overloading](../classes/operator-overloading.md).
 
 ## Evaluation order
 

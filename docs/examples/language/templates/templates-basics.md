@@ -62,6 +62,9 @@ template<class T> requires std::floating_point<T>
 T half(T x) { return x / 2; }
 ```
 
+The rules behind this — requires-clauses and -expressions, abbreviated
+templates, subsumption — are on [Constraints and concepts](constraints.md).
+
 ## Templates live in headers
 
 Because the compiler needs the full definition to instantiate, template
