@@ -86,7 +86,7 @@ computation becomes visible (which is what makes it parallelizable).
 
 ### Prefer named algorithms
 
-```cpp
+```cpp nocompile
 // BAD — you have to read the body to learn it's a search
 bool found = false;
 for (const auto& item : items) {
@@ -101,7 +101,7 @@ bool found2 = std::ranges::contains(items, target, &Item::id);   // C++23
 
 ### Pipelines for composition
 
-```cpp
+```cpp nocompile
 // BAD
 std::vector<std::string> result;
 for (const auto& e : entries)
@@ -120,7 +120,7 @@ Recognize when an operation is a **fold**. If the binary operation is
 **associative** and has an **identity** element, it's a **monoid** — and a monoid
 can be split into chunks, folded in parallel, and the partial results combined.
 
-```cpp
+```cpp nocompile
 // a fold, in order
 auto total = std::ranges::fold_left(values, 0, std::plus{});
 
@@ -138,7 +138,7 @@ merging two CRDT documents is associative, commutative, and idempotent, with the
 empty document as identity — so merging many replicas is a reduction, and
 "merge is a monoid" becomes a set of laws to test:
 
-```cpp
+```cpp nocompile
 auto merged = std::reduce(docs.begin(), docs.end(), Document{},
     [](Document a, const Document& b) { a.merge(b); return a; });
 ```
@@ -174,7 +174,7 @@ operator over build time, run-time cost, and design concerns (see
 | Not an error, just absent (lookup miss) | return `std::optional<T>` |
 | Programmer error (violated precondition, broken invariant) | contract / assertion |
 
-```cpp
+```cpp nocompile
 auto load(std::span<const std::byte> data) -> std::expected<Document, Error>;
 
 auto doc = load(bytes);
@@ -185,7 +185,7 @@ if (!doc) {
 use(*doc);
 ```
 
-```cpp
+```cpp needs=contracts
 void set(ObjId obj, std::size_t index, ScalarValue v)
     pre(index < length(obj));          // C++26; use assert() before that
 ```
@@ -210,7 +210,7 @@ Types should be copyable, movable, and comparable — they behave like `int`.
 If copying is expensive, make the type cheap to move (`noexcept` move
 operations) and document it.
 
-```cpp
+```cpp nocompile
 struct OpId {
     std::uint64_t counter;
     ActorId actor;
@@ -220,7 +220,7 @@ struct OpId {
 
 ### `const` by default
 
-```cpp
+```cpp nocompile
 const auto result = compute();          // can't be accidentally reassigned
 
 const auto config = [&] {               // complex init, still const
@@ -235,7 +235,7 @@ sorted in a vector, or moved-from efficiently. Make *locals* and *member
 functions* `const`; keep data members non-`const` and protect invariants with
 `private` (Abseil [#177](https://abseil.io/tips/177)).
 
-```cpp
+```cpp nocompile
 struct Point { const int x, y; };   // BAD: Point can't be assigned
 struct Point { int x, y; };         // GOOD: a regular value type
 ```
@@ -246,7 +246,7 @@ Make mutation a visible, scoped event. One pattern: an object exposes only
 read operations, and all writes go through a function that hands a mutable
 handle to a callable.
 
-```cpp
+```cpp nocompile
 auto doc = Document{};
 doc.transact([](Transaction& tx) {
     tx.put(root, "name", "Alice");
@@ -262,7 +262,7 @@ or nothing.
 - **No deep hierarchies for data.** A struct *contains* parts; a variant *is
   one of* alternatives. Neither needs virtual dispatch.
 
-  ```cpp
+  ```cpp nocompile
   // BAD — polymorphism used to model data
   class Value { public: virtual ~Value() = default; };
   class IntValue : public Value { int v; };
@@ -275,7 +275,7 @@ or nothing.
 - **Concepts for generic interfaces.** When several types share an interface,
   a concept gives compile-time checking with no virtual call.
 
-  ```cpp
+  ```cpp nocompile
   template <typename T>
   concept Readable = requires(const T& doc, ObjId obj, Prop key) {
       { doc.get(obj, key) } -> std::same_as<std::optional<Value>>;
@@ -303,7 +303,7 @@ or nothing.
   is 5 the position or the count? Use strong types, a parameter struct with
   designated initializers, or split the function.
 
-  ```cpp
+  ```cpp nocompile
   struct Splice { std::size_t pos; std::size_t del = 0; std::string_view text; };
   doc.splice(text_obj, {.pos = 5, .text = "hello"});
   ```

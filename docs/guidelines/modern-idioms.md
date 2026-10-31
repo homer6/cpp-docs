@@ -11,7 +11,7 @@ newest idiom your compiler supports — check with the
 
 ### Structured bindings
 
-```cpp
+```cpp nocompile
 for (const auto& [name, score] : scores) {
     std::println("{}: {}", name, score);
 }
@@ -23,7 +23,7 @@ auto [it, inserted] = map.try_emplace(key, value);
 
 Keeps the helper variable scoped to the branch.
 
-```cpp
+```cpp nocompile
 if (auto it = map.find(key); it != map.end()) {
     use(it->second);
 }
@@ -31,7 +31,7 @@ if (auto it = map.find(key); it != map.end()) {
 
 ### `std::optional` — a value that may be absent
 
-```cpp
+```cpp body
 std::optional<int> find_port(std::string_view name);
 
 int port = find_port("http").value_or(80);
@@ -42,7 +42,7 @@ Reference: [optional](../examples/utilities/optional.md)
 
 ### `std::variant` — one of a fixed set of types
 
-```cpp
+```cpp nocompile
 using Shape = std::variant<Circle, Square, Triangle>;
 
 template <class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
@@ -100,7 +100,7 @@ Reference: [standard concepts](../examples/concepts/standard-concepts.md)
 
 ### Ranges
 
-```cpp
+```cpp nocompile
 auto squares_of_evens = v
     | std::views::filter([](int x) { return x % 2 == 0; })
     | std::views::transform([](int x) { return x * x; })
@@ -114,7 +114,7 @@ Reference: [views](../examples/ranges/views.md) ·
 
 ### `std::span` — a view of contiguous elements
 
-```cpp
+```cpp body
 void scale(std::span<double> xs, double k);
 
 std::vector<double> v{1, 2, 3};
@@ -127,7 +127,7 @@ Reference: [span](../examples/containers/views/span.md)
 
 ### `consteval` and `constexpr` everywhere
 
-```cpp
+```cpp nocompile
 consteval int square(int n) { return n * n; }   // must run at compile time
 
 constexpr int s = square(5);    // OK
@@ -161,7 +161,7 @@ Reference: [comparison](../examples/language-support/comparison.md)
 
 ### Designated initializers and `using enum`
 
-```cpp
+```cpp nocompile
 Config cfg{ .width = 1920, .height = 1080, .fullscreen = true };
 
 switch (color) {
@@ -201,7 +201,7 @@ Reference: [coroutines](../examples/language/coroutines/coroutines.md) ·
 
 ### `std::expected` — a value or an error
 
-```cpp
+```cpp nocompile
 std::expected<int, ParseError> parse_int(std::string_view s);
 
 auto doubled = parse_int(text)
@@ -213,7 +213,7 @@ Reference: [expected](../examples/utilities/expected.md)
 
 ### `std::print` / `std::println`
 
-```cpp
+```cpp nocompile
 std::println("{} is {:>8.2f}", name, price);
 std::println(stderr, "error: {}", msg);
 ```
@@ -222,7 +222,7 @@ Reference: [formatting](../examples/text-processing/formatting.md)
 
 ### `std::generator`
 
-```cpp
+```cpp nocompile
 std::generator<int> fibonacci() {
     for (int a = 0, b = 1;; std::tie(a, b) = std::pair{b, a + b})
         co_yield a;
@@ -233,7 +233,7 @@ for (int x : fibonacci() | std::views::take(10)) std::print("{} ", x);
 
 ### Ranges, finished
 
-```cpp
+```cpp nocompile
 auto names = people
     | std::views::transform(&Person::name)
     | std::ranges::to<std::vector>();            // materialize a pipeline
@@ -269,7 +269,7 @@ auto fact = [](this auto self, int n) -> int { return n <= 1 ? 1 : n * self(n - 
 
 ### Contracts
 
-```cpp
+```cpp needs=contracts
 double sqrt_checked(double x)
     pre(x >= 0)
     post(r: r >= 0);
@@ -284,7 +284,7 @@ Reference: [contracts](../examples/language/basic-concepts/contracts.md)
 
 ### Reflection
 
-```cpp
+```cpp needs=reflection
 template <typename E>
     requires std::is_enum_v<E>
 constexpr std::string_view to_string(E value) {
@@ -310,7 +310,7 @@ composable senders, run it on a scheduler. C++26 also adds
 you can write async code with `co_await` and still compose it with other
 senders.
 
-```cpp
+```cpp needs=execution
 std::execution::task<int> fetch_and_parse(Url url) {
     auto body = co_await http_get(url);   // any sender can be awaited
     co_return parse(body);
@@ -352,7 +352,7 @@ Reference: [senders/receivers](../examples/execution/senders-receivers.md)
 
 ### Smaller language features
 
-```cpp
+```cpp nocompile
 auto [_, inserted] = set.insert(x);          // `_` placeholder, reusable
 void f(int) = delete("use f(long) instead"); // reason in the error message
 template <typename... Ts> using First = Ts...[0];   // pack indexing

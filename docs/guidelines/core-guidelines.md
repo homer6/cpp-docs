@@ -23,7 +23,7 @@ mention, it's noted.
 
 **R.1: Manage resources automatically using RAII**
 
-```cpp
+```cpp nocompile
 // BAD — leaks if anything in the middle throws
 void f() {
     int* p = new int[100];
@@ -77,7 +77,7 @@ tools should warn when a by-value parameter is larger than `4 * sizeof(void*)`
 - **F.21: To return several values, return a struct** (or tuple), and unpack
   with structured bindings.
 
-```cpp
+```cpp nocompile
 struct Parsed { int id; std::string name; };
 Parsed parse(std::string_view line);
 
@@ -87,7 +87,7 @@ auto [id, name] = parse(line);
 **I.6 / I.8 → contracts (C++26).** The Guidelines express preconditions with
 GSL's `Expects()` / `Ensures()`. C++26 has them in the language:
 
-```cpp
+```cpp needs=contracts
 int pop(std::vector<int>& v)
     pre(!v.empty())
     post(r: r >= 0);
@@ -108,7 +108,7 @@ Members are constructed in declaration order and destroyed in reverse. Declare
 them the other way round and `B` touches `A` before it exists and after it's
 gone.
 
-```cpp
+```cpp nocompile
 // BAD — the thread starts before data exists, and outlives it on destruction
 class Job {
     std::jthread worker;                 // constructed first, destroyed last
@@ -124,7 +124,7 @@ class Job {
 
 **C.20: Avoid defining default operations if you can (Rule of Zero)**
 
-```cpp
+```cpp body
 class Widget {
     std::string name;
     std::vector<int> data;
@@ -166,7 +166,7 @@ Reference: [special members](../examples/language/classes/special-members.md)
 
 **ES.23: Prefer `{}` initialization** — it rejects narrowing.
 
-```cpp
+```cpp nocompile
 double d = 7.9;
 int a = d;       // compiles, silently truncates
 int b{d};        // error: narrowing
@@ -178,7 +178,7 @@ so tools shouldn't warn about it.
 **ES.28: Use an immediately-invoked lambda for complex `const`
 initialization**
 
-```cpp
+```cpp nocompile
 const auto config = [&] {
     if (use_defaults) return Config::defaults();
     return Config::from_file(path);
@@ -222,7 +222,7 @@ Where exceptions aren't wanted (or failure is routine), return
 
 **CP.20: Use RAII, never plain `lock()`/`unlock()`**
 
-```cpp
+```cpp nocompile
 {
     std::scoped_lock lock{m};   // C++17; also locks several mutexes deadlock-free
     // ...

@@ -1,0 +1,45 @@
+name: Compile-check snippets
+
+on:
+  pull_request:
+    paths: ["docs/**", "tools/**", ".github/workflows/snippets.yml"]
+  push:
+    branches: [main]
+    paths: ["docs/**", "tools/**", ".github/workflows/snippets.yml"]
+
+jobs:
+  gcc:
+    runs-on: ubuntu-24.04
+    container: gcc:16          # official image; GCC 16 has contracts and -freflection
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guidelines (blocking)
+        run: python3 tools/check_snippets.py docs/guidelines --cxx g++
+      - name: C++26 feature blocks (report only)
+        continue-on-error: true
+        run: >
+          python3 tools/check_snippets.py docs/guidelines --cxx g++
+          --enable contracts --enable reflection --flag=-freflection
+      - name: Reference examples (report only)
+        continue-on-error: true
+        run: python3 tools/check_snippets.py docs/examples --cxx g++ -q --report-only
+
+  clang:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install latest stable Clang and libc++
+        run: |
+          wget -qO llvm.sh https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 22
+          sudo apt-get install -y libc++-22-dev libc++abi-22-dev
+      - name: Guidelines (blocking)
+        run: >
+          python3 tools/check_snippets.py docs/guidelines --cxx clang++-22
+          --flag=-stdlib=libc++
+      - name: Reference examples (report only)
+        continue-on-error: true
+        run: >
+          python3 tools/check_snippets.py docs/examples --cxx clang++-22
+          --flag=-stdlib=libc++ -q --report-only

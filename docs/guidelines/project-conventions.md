@@ -33,7 +33,7 @@ Principles:
 Public symbols live in one project namespace; implementation details in
 `project::detail`. Users alias the namespace rather than `using` it:
 
-```cpp
+```cpp nocompile
 namespace am = automerge_cpp;
 auto doc = am::Document{};
 ```
@@ -56,7 +56,7 @@ auto doc = am::Document{};
 
 ### Header shape and include order
 
-```cpp
+```cpp nocompile
 #pragma once
 
 #include <project/error.hpp>     // 1. project headers (alphabetical)

@@ -97,6 +97,24 @@ Links to the relevant cppreference pages (cppreference.com only).
 - Use `#include` + `std::`-qualified names; avoid `using namespace std`.
 - One concept per snippet; keep examples minimal and illustrative.
 
+## Compile-checked snippets
+
+CI compiles every ```cpp block in `docs/guidelines/` (blocking) and
+`docs/examples/` (report only) with `tools/check_snippets.py`, using
+`-std=c++26 -fsyntax-only -pedantic-errors` on GCC and Clang. Each block is
+compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
+like `Widget`, `use()`, `process()`). Tag the fence's info string:
+
+| Fence | Meaning |
+|---|---|
+| ` ```cpp ` | Must compile at namespace scope |
+| ` ```cpp body ` | Statements; checked inside a function body |
+| ` ```cpp nocompile ` | Deliberately wrong (BAD examples) or depends on undeclared context |
+| ` ```cpp needs=reflection ` | Needs a feature not every CI compiler has (`contracts`, `reflection`, `execution`, …) |
+
+Prefer making a snippet self-contained over tagging it `nocompile`. Run locally:
+`python3 tools/check_snippets.py docs/guidelines --cxx g++-15`.
+
 ## Git / commits
 
 - **Do not add Claude as a commit author or co-author.** Commit messages must not
