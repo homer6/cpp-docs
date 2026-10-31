@@ -10,6 +10,7 @@ Threads, the tools to coordinate them safely, and lock-free atomics. Mirrors
 | [Atomics](atomics.md) | `<atomic>` | C++11 / C++20 | lock-free ops, memory order, `atomic_ref` |
 | [Futures](futures.md) | `<future>` | C++11 | `async`, `promise`/`future`, `packaged_task` |
 | [Latches, barriers, semaphores](coordination.md) | `<latch>`, `<barrier>`, `<semaphore>` | C++20 | thread coordination primitives |
+| [Safe reclamation](safe-reclamation.md) | `<rcu>`, `<hazard_pointer>` | C++26 | RCU and hazard pointers for lock-free memory reclamation |
 
 ## The mental hierarchy (high → low level)
 
