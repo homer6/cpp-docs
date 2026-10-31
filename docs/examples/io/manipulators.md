@@ -45,8 +45,8 @@ Manipulators are functions (or objects returned by functions) that
 
 ### Common manipulators
 
-Each comment shows the output on a freshly constructed stream; on one shared
-stream the sticky settings accumulate (see Gotchas).
+The lines run in order on one stream, so sticky settings carry over; the
+snippet resets them where that would hide the point.
 
 ```cpp
 #include <iostream>
@@ -55,15 +55,17 @@ stream the sticky settings accumulate (see Gotchas).
 void demo() {
 std::cout << std::boolalpha << true;          // "true" instead of "1"  (sticky)
 std::cout << std::hex << 255;                  // "ff"   (sticky: dec/oct/hex)
-std::cout << std::showbase << std::hex << 255; // "0xff"
+std::cout << std::showbase << 255;             // "0xff" (still hex)
+std::cout << std::dec << std::noshowbase;      // back to decimal, no prefix
 std::cout << std::setw(8) << 42;               // "      42" — width 8, NEXT item only
-std::cout << std::setfill('0') << std::setw(4) << 7;   // "0007"
+std::cout << std::setfill('0') << std::setw(4) << 7;   // "0007"  (fill is sticky)
+std::cout << std::setfill(' ');                         // reset the fill
 std::cout << std::left << std::setw(8) << "hi";        // "hi      " (left-justified)
 
 double pi = 3.14159265;
 std::cout << std::fixed << std::setprecision(2) << pi; // "3.14"
-std::cout << std::scientific << pi;                     // "3.141593e+00"
-std::cout << std::setprecision(10) << pi;               // more digits
+std::cout << std::scientific << pi;                     // "3.14e+00" (precision 2 is sticky)
+std::cout << std::setprecision(10) << pi;               // "3.1415926500e+00"
 }
 ```
 
@@ -105,10 +107,9 @@ void print_hex(std::ostream& os, int v) {
 - **Sticky state leaks.** Setting `std::hex` or `std::setprecision` on `std::cout`
   affects every later use. Save/restore with `std::ios::fmtflags` or a guard, or
   avoid the problem entirely by using [`std::format`](../text-processing/formatting.md),
-  where each `{}` spec is local. Run the "Common manipulators" lines one after
-  another on one stream and the later ones come out as `"    0x2a"`, `"00x7"`
-  and `"3.14e+00"`: the earlier `hex`, `showbase` and `setprecision(2)` are still
-  in effect.
+  where each `{}` spec is local. Without the resets in "Common manipulators",
+  `setw(8) << 42` would print `"    0x2a"` (hex and `showbase` still on) and
+  `left << setw(8) << "hi"` would print `"hi000000"` (the `'0'` fill is still on).
 - **`std::fixed`/`std::scientific` change what `setprecision` means** (decimal
   places vs. significant digits) — set them together intentionally.
 - **`setw` never truncates.** `std::setw(2) << "hello"` still prints `hello`.
