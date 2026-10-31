@@ -9,6 +9,30 @@ A struct with exactly two public members, `first` and `second`. It's the
 2-element case of [`tuple`](tuple.md), and it's what `map`/`unordered_map`
 iteration yields (`pair<const Key, T>`).
 
+## Declaration
+
+```cpp
+template<class T1, class T2> struct pair;   // { T1 first; T2 second; }
+```
+
+| Piece | Meaning |
+|---|---|
+| `first`, `second` | The two public data members |
+| `pair(a, b)`, `pair(piecewise_construct, tuple, tuple)` | Construct from values, or build each member in place from argument tuples |
+| `make_pair(a, b)` | Factory; decays argument types (and unwraps `std::ref`) |
+| `== <=>` | Lexicographic comparison, `first` then `second` (`<=>` since C++20) |
+| `swap`, `std::get<0>`/`get<1>`/`get<T>` | Swap; tuple-style access |
+| `tuple_size`, `tuple_element` | Make it work with structured bindings and `std::apply` |
+
+## When to use it
+
+- **Fits:** generic code and library interop — map elements, `insert`
+  results, `std::minmax`, `std::equal_range`, two values returned from a
+  template.
+- **Anti-fits:** domain data whose members have meaning — a named `struct`
+  documents itself and still supports structured bindings. More than two values
+  → [`tuple`](tuple.md) (or, again, a struct).
+
 ## Examples
 
 ```cpp body
@@ -44,6 +68,14 @@ the box.
 std::pair{1, 2} < std::pair{1, 3};       // true
 ```
 
+### Library algorithms that return one
+
+```cpp body
+#include <algorithm>
+
+auto [lo, hi] = std::minmax({4, 1, 7});  // pair<int, int>{1, 7}
+```
+
 ## Gotchas
 
 - **Prefer a named `struct` when the members mean something.** `first`/`second`
@@ -60,3 +92,4 @@ std::pair{1, 2} < std::pair{1, 3};       // true
 
 - [std::pair — cppreference](https://en.cppreference.com/w/cpp/utility/pair)
 - [std::tuple — cppreference](https://en.cppreference.com/w/cpp/utility/tuple)
+- [std::make_pair — cppreference](https://en.cppreference.com/w/cpp/utility/pair/make_pair)
