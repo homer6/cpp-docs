@@ -322,6 +322,30 @@ libraries approved by project leads, and Chromium bans them for now (see
 [industry practice](industry-practice.md)). Choose one async framework for a
 codebase before using `task` and senders widely.
 
+The design is still being argued over. Papers from the C++ Alliance (Vinnie
+Falco et al.) — written to inform the committee, not to remove `task` — make
+these points:
+
+- **Some problems can be fixed later; some can't.**
+  [P4007R3](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4007r3.pdf)
+  (May 2026) sorts open issues by whether they can be fixed after C++26 ships.
+  The Croydon meeting (Mar 2026) resolved several allocator and stop-token
+  issues. It argues that allocator timing and propagation (for the coroutine
+  frame), error return (errors need `co_yield with_error(e)` because
+  `co_return` can't carry one), and symmetric transfer (synchronous completions
+  can grow the stack) are locked in once `task` ships.
+- **The environment parameter limits interoperability.**
+  [P4089R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4089r0)
+  (Apr 2026) argues that `task<T, Environment>` makes tasks from different
+  libraries hard to combine unless every query is known by name.
+- **Senders cost more than coroutine-native I/O.**
+  [P4123R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4123r0)
+  (May 2026) argues that each task-to-task `co_await` must set up per-child
+  state through the sender protocol, an overhead the specification mandates.
+
+Practical upshot: `task` is standard, but for performance-critical coroutine
+I/O, measure it against a coroutine-native library before standardizing on it.
+
 Reference: [senders/receivers](../examples/execution/senders-receivers.md)
 
 ### Smaller language features
@@ -360,24 +384,42 @@ A compiler's `-std=c++26` switch doesn't mean every C++26 feature works.
 Language support and library support move separately, and a feature can be
 present but experimental.
 
-**Compiler support as of 2026-10-30** (GCC from its
-[status page](https://gcc.gnu.org/projects/cxx-status.html)):
+**Compiler support as of 2026-10-30**, from each vendor's status page
+([GCC](https://gcc.gnu.org/projects/cxx-status.html),
+[Clang](https://clang.llvm.org/cxx_status.html),
+[MSVC](https://learn.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance),
+last updated 2026-10-16):
 
-| Feature | GCC | Notes |
-|---|---|---|
-| Contracts (P2900) | 16 | `__cpp_contracts` |
-| Reflection (P2996) | 16 | needs `-freflection` |
-| Expansion statements, `template for` (P1306) | 16 | |
-| Erroneous behaviour (P2795) | 16 | |
+| Feature | GCC | Clang | MSVC |
+|---|---|---|---|
+| Contracts (P2900) | 16 (`__cpp_contracts`) | No | not listed |
+| Reflection (P2996) | 16, needs `-freflection` | No | not listed |
+| Expansion statements, `template for` (P1306) | 16 | 23, partial (iterating expansion statements not yet supported) | not listed |
+| Erroneous behaviour (P2795) | 16 | No | not listed |
 
-GCC still labels its C++26 support experimental. Clang and MSVC weren't
-checked for this table — see their status pages before relying on a feature.
+GCC still labels its C++26 support experimental, and Clang's overall C++2c
+status is "Partial" (`-std=c++2c`). Microsoft's conformance page has no C++26
+core-language rows yet — its tables stop at C++23 (enabled with
+`/std:c++latest`) — so "not listed" means no published support, not a
+confirmed "no".
 
-**Library support** moves more slowly. libc++'s
-[C++26 status page](https://libcxx.llvm.org/Status/Cxx26.html) lists
-`std::optional<T&>` and `std::function_ref` as complete, while contracts
-support, reflection's `<meta>`, hardening (P3471), `indirect`/`polymorphic`,
-and `std::execution::task` were not yet marked complete.
+**Library support:**
+
+| Facility | libstdc++ (GCC 16) | libc++ | MSVC STL |
+|---|---|---|---|
+| `std::optional<T&>` | yes (experimental) | complete | not checked |
+| `std::function_ref`, `std::copyable_function` | yes (experimental) | `function_ref` complete | not checked |
+| `std::inplace_vector` | yes (experimental) | not checked | not checked |
+| `std::indirect` / `std::polymorphic` | yes (experimental) | not marked complete | not checked |
+| `std::simd` | yes (experimental) | not checked | not checked |
+| Reflection `<meta>`, hardening (P3471), `std::execution::task` | not listed | not marked complete | not checked |
+
+Sources: [GCC 16 release notes](https://gcc.gnu.org/gcc-16/changes.html)
+("improved experimental support for C++26"),
+[libc++ C++26 status](https://libcxx.llvm.org/Status/Cxx26.html). Microsoft
+tracks its C++26 library work on the
+[STL C++26 Features project board](https://github.com/orgs/microsoft/projects/1143/views/2),
+not on the conformance page.
 
 **A sensible adoption order:**
 
