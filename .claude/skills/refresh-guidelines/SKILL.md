@@ -265,6 +265,12 @@ Delivered in <PR URL>.
 gh issue close <n> -R homer6/cpp-docs -c "$(cat close.md)"
 ```
 
+**Merge** (when the user asks): sync by rebasing (`git rebase origin/main`,
+`git push --force-with-lease`; comment on the PR if you rebased), then
+`gh pr merge <n> -R homer6/cpp-docs --merge --delete-branch` — merge commits
+only, never squash. Remove the worktree and local branch afterwards. See
+`CLAUDE.md` → "Syncing and merging".
+
 **Report** to the user: PR link, what changed, what's unverified, and the
 prompt hand-over (file path + table).
 
