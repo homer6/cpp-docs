@@ -115,6 +115,12 @@ wrong about which papers made it into a standard.
 
 ## Mode 2: Import a new source
 
+**Starting from a deep research report:** `deep-research-prompt.md` (next to
+this file) is a reusable Perplexity Deep Research prompt on modern C++ best
+practices. The user runs it by hand and saves the report in `.firecrawl/`.
+Treat the report as a *map*, not a source: follow its citations, verify each
+claim against the primary source it names, and import from those sources.
+
 1. **Identify the source.** Get the canonical URL and edition/date. If the user
    gave a name only, find it with `firecrawl search` or `perplexity_ask`. Check
    the "Candidate sources" table in `sources.md` for suggestions.
