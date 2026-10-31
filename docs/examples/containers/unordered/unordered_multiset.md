@@ -42,15 +42,17 @@ by rehash, erasure affects only the erased element.
 ```cpp
 #include <unordered_set>
 
-std::unordered_multiset<int> bag{1, 1, 2, 3, 3, 3};
-bag.insert(3);              // now four 3s; always inserts
-bag.count(3);               // 4
+int main() {
+    std::unordered_multiset<int> bag{1, 1, 2, 3, 3, 3};
+    bag.insert(3);              // now four 3s; always inserts
+    bag.count(3);               // 4
 
-// Erase just one occurrence:
-auto it = bag.find(3);
-if (it != bag.end()) bag.erase(it);
+    // Erase just one occurrence:
+    auto it = bag.find(3);
+    if (it != bag.end()) bag.erase(it);
 
-bag.erase(3);               // erase ALL remaining 3s, returns count
+    bag.erase(3);               // erase ALL remaining 3s, returns count
+}
 ```
 
 ## Gotchas

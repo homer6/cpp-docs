@@ -67,40 +67,59 @@ node-based `map`. Don't cache references across modifications.
 ```cpp
 #include <flat_map>
 
-std::flat_map<std::string, int> m{{"banana", 7}, {"apple", 3}};
-m["cherry"] = 2;                 // O(n) insert, keeps keys sorted
-m.at("apple");                   // bounds-checked lookup
-m.contains("banana");            // true
+int main() {
+    std::flat_map<std::string, int> m{{"banana", 7}, {"apple", 3}};
+    m["cherry"] = 2;                 // O(n) insert, keeps keys sorted
+    m.at("apple");                   // bounds-checked lookup
+    m.contains("banana");            // true
 
-for (const auto& [k, v] : m) {   // ascending key order; structured bindings
-    // k, v are references into the parallel arrays
+    for (const auto& [k, v] : m) {   // ascending key order; structured bindings
+        // k, v are references into the parallel arrays
+    }
 }
 ```
 
 ### Access the underlying arrays directly
 
 ```cpp
-const auto& ks = m.keys();       // const std::vector<std::string>&
-const auto& vs = m.values();     // const std::vector<int>&
-// e.g. hand `vs` to a numeric routine, or `ks` to a span — contiguous.
+#include <flat_map>
+#include <string>
+
+int main() {
+    std::flat_map<std::string, int> m{{"banana", 7}, {"apple", 3}};
+    const auto& ks = m.keys();       // const std::vector<std::string>&
+    const auto& vs = m.values();     // const std::vector<int>&
+    // e.g. hand `vs` to a numeric routine, or `ks` to a span — contiguous.
+}
 ```
 
 ### Build fast from sorted input
 
 ```cpp
-std::vector<std::string> keys{"apple", "banana", "cherry"};   // sorted, unique
-std::vector<int>         vals{3, 7, 2};
-std::flat_map<std::string, int> fm(std::sorted_unique,
-                                   std::move(keys), std::move(vals));
+#include <flat_map>
+#include <string>
+#include <vector>
+
+int main() {
+    std::vector<std::string> keys{"apple", "banana", "cherry"};   // sorted, unique
+    std::vector<int>         vals{3, 7, 2};
+    std::flat_map<std::string, int> fm(std::sorted_unique,
+                                       std::move(keys), std::move(vals));
+}
 ```
 
 ### flat_multimap allows repeats; no operator[]
 
 ```cpp
-std::flat_multimap<std::string, int> mm;
-mm.emplace("x", 1);
-mm.emplace("x", 2);              // both kept
-auto [lo, hi] = mm.equal_range("x");   // iterate both
+#include <flat_map>
+#include <string>
+
+int main() {
+    std::flat_multimap<std::string, int> mm;
+    mm.emplace("x", 1);
+    mm.emplace("x", 2);              // both kept
+    auto [lo, hi] = mm.equal_range("x");   // iterate both
+}
 ```
 
 ## Gotchas

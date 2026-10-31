@@ -66,27 +66,35 @@ don't.
 ```cpp
 #include <deque>
 
-std::deque<int> d{1, 2, 3};
+int main() {
+    std::deque<int> d{1, 2, 3};
 
-d.push_front(0);     // {0,1,2,3}   — cheap, unlike vector
-d.push_back(4);      // {0,1,2,3,4}
-d.pop_front();       // {1,2,3,4}
+    d.push_front(0);     // {0,1,2,3}   — cheap, unlike vector
+    d.push_back(4);      // {0,1,2,3,4}
+    d.pop_front();       // {1,2,3,4}
 
-d[2];                // O(1) random access
-d.at(2);             // bounds-checked
-d.front(); d.back();
+    d[2];                // O(1) random access
+    d.at(2);             // bounds-checked
+    d.front(); d.back();
 
-for (int x : d) { /* ... */ }
+    for (int x : d) { /* ... */ }
+}
 ```
 
 ### Using it as a sliding window
 
 ```cpp
-std::deque<int> window;
-auto push = [&](int x, std::size_t cap) {
-    window.push_back(x);
-    if (window.size() > cap) window.pop_front();   // both ends, both O(1)
-};
+#include <cstddef>
+#include <deque>
+
+int main() {
+    std::deque<int> window;
+    auto push = [&](int x, std::size_t cap) {
+        window.push_back(x);
+        if (window.size() > cap) window.pop_front();   // both ends, both O(1)
+    };
+    push(1, 3);
+}
 ```
 
 ## Gotchas

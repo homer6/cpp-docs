@@ -62,25 +62,28 @@ element**. (Same guarantee across `set`/`map`/`multiset`/`multimap`.)
 ```cpp
 #include <set>
 
-std::set<int> s{3, 1, 4, 1, 5};      // duplicates dropped → {1,3,4,5}, sorted
-s.insert(2);                         // {1,2,3,4,5}
-s.erase(3);                          // {1,2,4,5}
+int main() {
+    std::set<int> s{3, 1, 4, 1, 5};      // duplicates dropped → {1,3,4,5}, sorted
+    s.insert(2);                         // {1,2,3,4,5}
+    s.erase(3);                          // {1,2,4,5}
 
-s.contains(4);                       // true   (C++20)
-s.count(4);                          // 0 or 1 (pre-C++20 membership idiom)
-s.find(4) != s.end();                // iterator-based membership
+    s.contains(4);                       // true   (C++20)
+    s.count(4);                          // 0 or 1 (pre-C++20 membership idiom)
+    s.find(4) != s.end();                // iterator-based membership
+}
 ```
 
 ### insert returns whether it happened
 
-```cpp
+```cpp body
+std::set<int> s{1, 2, 3};
 auto [it, inserted] = s.insert(2);   // structured bindings (C++17)
 // `inserted` is false if 2 was already present; `it` points at the element
 ```
 
 ### Ordered queries
 
-```cpp
+```cpp body
 std::set<int> t{10, 20, 30, 40};
 auto lo = t.lower_bound(20);   // first element >= 20  → 20
 auto hi = t.upper_bound(30);   // first element  > 30  → 40
@@ -89,7 +92,7 @@ for (auto it = lo; it != hi; ++it) { /* 20, 30 */ }
 
 ### Custom ordering & transparent comparators
 
-```cpp
+```cpp body
 std::set<std::string, std::greater<>> desc{"a", "c", "b"};  // c, b, a
 
 // Heterogeneous lookup: search by string_view without building a std::string.
@@ -101,7 +104,7 @@ names.find(std::string_view{"bob"});   // no temporary std::string constructed
 
 ### Node extraction & merge (C++17)
 
-```cpp
+```cpp body
 std::set<int> a{1, 2, 3}, b{3, 4, 5};
 a.merge(b);                  // moves nodes from b into a; b keeps only dups → {3}
                              // a == {1,2,3,4,5}
@@ -113,7 +116,8 @@ a.insert(std::move(node));   // reinsert
 
 ### C++20 uniform erase
 
-```cpp
+```cpp body
+std::set<int> s{1, 2, 3, 4, 5};
 std::erase_if(s, [](int x){ return x % 2 == 0; });   // remove evens
 ```
 

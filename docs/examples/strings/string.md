@@ -58,19 +58,22 @@ copied, and found.
 #include <string>
 using namespace std::string_literals;        // the ""s literal
 
-std::string a = "hello";
-std::string b(5, '*');                        // "*****"
-std::string c = "x"s + "y";                    // ""s forces std::string, not const char*
-std::string d{a.begin(), a.begin() + 3};       // "hel"
+int main() {
+    std::string a = "hello";
+    std::string b(5, '*');                        // "*****"
+    std::string c = "x"s + "y";                    // ""s forces std::string, not const char*
+    std::string d{a.begin(), a.begin() + 3};       // "hel"
 
-a += " world";                                 // append
-a.append(3, '!');                              // "hello world!!!"
-a.push_back('?');
+    a += " world";                                 // append
+    a.append(3, '!');                              // "hello world!!!"
+    a.push_back('?');
+}
 ```
 
 ### Access & C interop
 
-```cpp
+```cpp body
+std::string a = "hello";
 a[0];                  // unchecked
 a.at(0);               // bounds-checked → std::out_of_range
 const char* p = a.c_str();    // null-terminated, for C APIs
@@ -79,7 +82,7 @@ char* raw = a.data();         // contiguous; non-const since C++17
 
 ### Searching & substrings
 
-```cpp
+```cpp body
 std::string s = "key=value";
 auto eq = s.find('=');                 // index, or std::string::npos if absent
 if (eq != std::string::npos) {

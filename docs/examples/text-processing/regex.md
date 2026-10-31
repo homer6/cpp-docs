@@ -21,50 +21,71 @@ Capture groups land in a `std::smatch` (for `std::string`) / `std::cmatch` (for
 ```cpp
 #include <regex>
 
-std::regex date{R"(\d{4}-\d{2}-\d{2})"};         // raw string → no \\ escaping
+int main() {
+    std::regex date{R"(\d{4}-\d{2}-\d{2})"};         // raw string → no \\ escaping
 
-std::regex_match("2026-05-26", date);             // true  (entire string)
-std::regex_match("on 2026-05-26", date);          // false (not the whole string)
-std::regex_search("on 2026-05-26", date);         // true  (found within)
+    std::regex_match("2026-05-26", date);             // true  (entire string)
+    std::regex_match("on 2026-05-26", date);          // false (not the whole string)
+    std::regex_search("on 2026-05-26", date);         // true  (found within)
+}
 ```
 
 ### Capture groups
 
 ```cpp
-std::string s = "key=value";
-std::smatch m;
-std::regex kv{R"((\w+)=(\w+))"};
-if (std::regex_search(s, m, kv)) {
-    m[0];   // "key=value"  (whole match)
-    m[1];   // "key"        (group 1)
-    m[2];   // "value"      (group 2)
-    m.position(1); m.length(1);   // where/how long
+#include <regex>
+#include <string>
+
+int main() {
+    std::string s = "key=value";
+    std::smatch m;
+    std::regex kv{R"((\w+)=(\w+))"};
+    if (std::regex_search(s, m, kv)) {
+        m[0];   // "key=value"  (whole match)
+        m[1];   // "key"        (group 1)
+        m[2];   // "value"      (group 2)
+        m.position(1); m.length(1);   // where/how long
+    }
 }
 ```
 
 ### Iterate every match
 
 ```cpp
-std::string text = "a1 b2 c3";
-std::regex token{R"([a-z]\d)"};
-for (std::sregex_iterator it{text.begin(), text.end(), token}, end; it != end; ++it)
-    /* (*it)[0] → "a1", "b2", "c3" */;
+#include <regex>
+#include <string>
+
+int main() {
+    std::string text = "a1 b2 c3";
+    std::regex token{R"([a-z]\d)"};
+    for (std::sregex_iterator it{text.begin(), text.end(), token}, end; it != end; ++it)
+        /* (*it)[0] → "a1", "b2", "c3" */;
+}
 ```
 
 ### Replace (with backreferences)
 
 ```cpp
-std::string out = std::regex_replace("John Smith",
-                                     std::regex{R"((\w+)\s+(\w+))"},
-                                     "$2, $1");        // "Smith, John"
+#include <regex>
+#include <string>
+
+int main() {
+    std::string out = std::regex_replace("John Smith",
+                                         std::regex{R"((\w+)\s+(\w+))"},
+                                         "$2, $1");        // "Smith, John"
+}
 ```
 
 ### Grammar & flags
 
 ```cpp
-std::regex ci{"hello", std::regex::icase};            // case-insensitive
-std::regex ecma{R"(\d+)", std::regex::ECMAScript};    // default grammar
-// other grammars: basic, extended, awk, grep, egrep
+#include <regex>
+
+int main() {
+    std::regex ci{"hello", std::regex::icase};            // case-insensitive
+    std::regex ecma{R"(\d+)", std::regex::ECMAScript};    // default grammar
+    // other grammars: basic, extended, awk, grep, egrep
+}
 ```
 
 ## Gotchas

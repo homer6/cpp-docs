@@ -90,7 +90,7 @@ std::vector<int> f(d.begin(), d.end());  // from a range
 
 ### Growth and the reserve idiom
 
-```cpp
+```cpp body
 std::vector<int> v;
 v.reserve(1000);                 // one allocation; no reallocations below 1000
 for (int i = 0; i < 1000; ++i)
@@ -101,7 +101,8 @@ v.emplace_back(42);              // constructs in place (no temporary)
 
 ### Access
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 3};
 v.front(); v.back();
 v[0];                            // no bounds check (UB if out of range)
 v.at(0);                         // bounds-checked → throws std::out_of_range
@@ -112,17 +113,23 @@ int* raw = v.data();             // contiguous block, for C APIs / spans
 
 ```cpp
 #include <algorithm>
-// pre-C++20: erase–remove idiom
-v.erase(std::remove(v.begin(), v.end(), 7), v.end());
 
-// C++20: one call, returns count removed
-std::erase(v, 7);                       // remove all 7s
-std::erase_if(v, [](int x){ return x % 2 == 0; });  // remove evens
+int main() {
+    std::vector<int> v{7, 1, 7, 2, 3};
+
+    // pre-C++20: erase–remove idiom
+    v.erase(std::remove(v.begin(), v.end(), 7), v.end());
+
+    // C++20: one call, returns count removed
+    std::erase(v, 7);                       // remove all 7s
+    std::erase_if(v, [](int x){ return x % 2 == 0; });  // remove evens
+}
 ```
 
 ### Iterating
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 3};
 for (int x : v) { /* ... */ }                 // range-for
 for (auto& x : v) x *= 2;                      // mutate in place
 for (auto it = v.begin(); it != v.end(); ++it) {}

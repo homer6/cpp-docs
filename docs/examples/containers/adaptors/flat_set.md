@@ -69,12 +69,14 @@ across modifications.
 ```cpp
 #include <flat_set>
 
-std::flat_set<int> s{5, 1, 3, 2};   // sorted into [1,2,3,5]
-s.insert(4);                        // [1,2,3,4,5]  (O(n) shift)
-s.contains(3);                      // true
-s.erase(2);                         // [1,3,4,5]
+int main() {
+    std::flat_set<int> s{5, 1, 3, 2};   // sorted into [1,2,3,5]
+    s.insert(4);                        // [1,2,3,4,5]  (O(n) shift)
+    s.contains(3);                      // true
+    s.erase(2);                         // [1,3,4,5]
 
-for (int x : s) { /* ascending; contiguous walk */ }
+    for (int x : s) { /* ascending; contiguous walk */ }
+}
 ```
 
 ### Skip the sort when input is already ordered
@@ -92,9 +94,13 @@ std::flat_set<int> s2(std::sorted_unique, sorted.begin(), sorted.end());
 ### flat_multiset keeps duplicates
 
 ```cpp
-std::flat_multiset<int> ms{3, 1, 3, 2, 3};   // [1,2,3,3,3]
-ms.count(3);                                 // 3
-auto [lo, hi] = ms.equal_range(3);           // the run of 3s
+#include <flat_set>
+
+int main() {
+    std::flat_multiset<int> ms{3, 1, 3, 2, 3};   // [1,2,3,3,3]
+    ms.count(3);                                 // 3
+    auto [lo, hi] = ms.equal_range(3);           // the run of 3s
+}
 ```
 
 ## Gotchas

@@ -60,14 +60,16 @@ No iteration; only the top is reachable.
 ```cpp
 #include <queue>
 
-std::priority_queue<int> pq;
-pq.push(3);
-pq.push(9);
-pq.push(5);
+int main() {
+    std::priority_queue<int> pq;
+    pq.push(3);
+    pq.push(9);
+    pq.push(5);
 
-pq.top();              // 9  (largest)
-pq.pop();              // removes 9
-pq.top();              // 5
+    pq.top();              // 9  (largest)
+    pq.pop();              // removes 9
+    pq.top();              // 5
+}
 ```
 
 ### Min-heap with std::greater
@@ -76,28 +78,41 @@ pq.top();              // 5
 #include <queue>
 #include <vector>
 
-std::priority_queue<int, std::vector<int>, std::greater<int>> minpq;
-minpq.push(3); minpq.push(9); minpq.push(5);
-minpq.top();           // 3  (smallest)
+int main() {
+    std::priority_queue<int, std::vector<int>, std::greater<int>> minpq;
+    minpq.push(3); minpq.push(9); minpq.push(5);
+    minpq.top();           // 3  (smallest)
+}
 ```
 
 ### Custom priority (e.g. by a field)
 
 ```cpp
-struct Task { int priority; std::string name; };
-auto cmp = [](const Task& a, const Task& b){ return a.priority < b.priority; };
+#include <queue>
+#include <string>
+#include <vector>
 
-std::priority_queue<Task, std::vector<Task>, decltype(cmp)> jobs(cmp);
-jobs.push({5, "build"});
-jobs.push({9, "deploy"});
-jobs.top();            // {9, "deploy"} — highest priority first
+int main() {
+    struct Task { int priority; std::string name; };
+    auto cmp = [](const Task& a, const Task& b){ return a.priority < b.priority; };
+
+    std::priority_queue<Task, std::vector<Task>, decltype(cmp)> jobs(cmp);
+    jobs.push({5, "build"});
+    jobs.push({9, "deploy"});
+    jobs.top();            // {9, "deploy"} — highest priority first
+}
 ```
 
 ### Build from existing data in O(n)
 
 ```cpp
-std::vector<int> data{4, 1, 7, 3};
-std::priority_queue<int> pq(data.begin(), data.end());   // heapify, O(n)
+#include <queue>
+#include <vector>
+
+int main() {
+    std::vector<int> data{4, 1, 7, 3};
+    std::priority_queue<int> pq(data.begin(), data.end());   // heapify, O(n)
+}
 ```
 
 ## Gotchas

@@ -36,7 +36,7 @@ a malformed string or wrong arg count is a compile error. Use `std::vformat`
 
 Inside `{}`: `{[index][:[[fill]align][sign][#][0][width][.precision][type]]}`
 
-```cpp
+```cpp body
 std::format("{:>8}", "hi");     // "      hi"  right-align, width 8
 std::format("{:*<8}", "hi");    // "hi******"  left-align, fill '*'
 std::format("{:^8}", "hi");     // "   hi   "  center
@@ -51,22 +51,29 @@ std::format("{:{}}", "x", 5);   // width taken from a nested argument
 ## Examples
 
 ```cpp
+#include <iterator>
+#include <string>
 #include <format>
 #include <print>
 
-std::string s = std::format("{} items, {:.1f}% done", 3, 66.6);
+int main() {
+    std::string s = std::format("{} items, {:.1f}% done", 3, 66.6);
 
-std::print("Hello, {}!\n", "world");      // C++23, no trailing newline added
-std::println("x = {}, y = {}", 1, 2);      // C++23, newline added
+    std::print("Hello, {}!\n", "world");      // C++23, no trailing newline added
+    std::println("x = {}, y = {}", 1, 2);      // C++23, newline added
 
-// Format into an existing buffer / container:
-std::string buf;
-std::format_to(std::back_inserter(buf), "[{}]", 42);
+    // Format into an existing buffer / container:
+    std::string buf;
+    std::format_to(std::back_inserter(buf), "[{}]", 42);
+}
 ```
 
 ### Making your own type formattable
 
 ```cpp
+#include <format>
+#include <print>
+
 struct Point { int x, y; };
 
 template<>
@@ -77,7 +84,9 @@ struct std::formatter<Point> {
     }
 };
 
-std::print("{}\n", Point{3, 4});           // (3, 4)
+int main() {
+    std::print("{}\n", Point{3, 4});           // (3, 4)
+}
 ```
 
 To also accept a nested format spec, parse it in `parse()` and forward it — or

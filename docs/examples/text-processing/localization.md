@@ -23,16 +23,20 @@ You `imbue` a stream with a locale, and the stream's `<<`/`>>` start obeying it.
 ### The classic vs. the user's locale
 
 ```cpp
-#include <locale>
+#include <iomanip>
 #include <iostream>
+#include <locale>
 
-std::locale::global(std::locale{""});       // "" = the user's environment locale
-std::cout.imbue(std::locale{""});
-std::cout << 1234567.89;                      // e.g. "1,234,567.89" (en_US) or
-                                              //      "1.234.567,89" (de_DE)
+int main() {
+    std::locale::global(std::locale{""});       // "" = the user's environment locale
+    std::cout.imbue(std::locale{""});
+    std::cout << std::fixed << std::setprecision(2);   // grouping needs fixed notation
+    std::cout << 1234567.89 << '\n';             // e.g. "1,234,567.89" (en_US) or
+                                                  //      "1.234.567,89" (de_DE)
 
-std::cout.imbue(std::locale::classic());      // the "C" locale: no grouping
-std::cout << 1234567.89;                       // "1.23457e+06"-style default
+    std::cout.imbue(std::locale::classic());      // the "C" locale: no grouping
+    std::cout << 1234567.89 << '\n';             // "1234567.89"
+}
 ```
 
 ### Locale-aware comparison
@@ -56,6 +60,8 @@ char dec = std::use_facet<std::numpunct<char>>(loc).decimal_point();
 - **`std::locale{""}` reads the environment; `std::locale{"de_DE.UTF-8"}` names
   one explicitly** — and the named one throws `std::runtime_error` if the OS
   doesn't have it installed.
+  GCC's libstdc++ on macOS supports only the `"C"`/`"POSIX"` locales, so even
+  `std::locale{""}` throws there; libc++ (Clang) and glibc-based Linux work.
 - **For data interchange, do NOT use locales.** Locale-formatted numbers aren't
   round-trippable (`,` vs `.`). Use [`charconv`](charconv.md) or `std::format`
   (locale-independent by default) for files, protocols, and logs; reserve

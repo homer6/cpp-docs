@@ -24,7 +24,9 @@ multidimensional indices to a flat offset using a **layout policy**.
 
 ## Declaration
 
-```cpp
+```cpp needs=mdspan
+#include <mdspan>
+
 template<
     class T,
     class Extents,
@@ -44,47 +46,64 @@ template<
 
 ### Extents helpers
 
-```cpp
-std::extents<int, 2, 3>                 e1;        // both dims fixed at compile time
-std::extents<int, 2, std::dynamic_extent> e2{3};   // 2 × (runtime 3)
-std::dextents<int, 2>                   e3{2, 3};  // all dims dynamic (rank 2)
+```cpp needs=mdspan
+#include <mdspan>
+
+int main() {
+    std::extents<int, 2, 3>                 e1;        // both dims fixed at compile time
+    std::extents<int, 2, std::dynamic_extent> e2{3};   // 2 × (runtime 3)
+    std::dextents<int, 2>                   e3{2, 3};  // all dims dynamic (rank 2)
+}
 ```
 
 ## Examples
 
 ### View a vector as a matrix
 
-```cpp
+```cpp needs=mdspan
+#include <numeric>
 #include <mdspan>
 #include <vector>
 
-std::vector<int> buf(6);
-std::iota(buf.begin(), buf.end(), 0);          // 0,1,2,3,4,5
+int main() {
+    std::vector<int> buf(6);
+    std::iota(buf.begin(), buf.end(), 0);          // 0,1,2,3,4,5
 
-std::mdspan m{buf.data(), 2, 3};               // CTAD → 2×3, layout_right
-// Multidimensional subscript (C++23):
-m[1, 2] = 99;                                  // writes buf[5]
-auto rows = m.extent(0);                       // 2
-auto cols = m.extent(1);                        // 3
+    std::mdspan m{buf.data(), 2, 3};               // CTAD → 2×3, layout_right
+    // Multidimensional subscript (C++23):
+    m[1, 2] = 99;                                  // writes buf[5]
+    auto rows = m.extent(0);                       // 2
+    auto cols = m.extent(1);                        // 3
 
-for (std::size_t i = 0; i < m.extent(0); ++i)
-    for (std::size_t j = 0; j < m.extent(1); ++j)
-        /* use m[i, j] */;
+    for (std::size_t i = 0; i < m.extent(0); ++i)
+        for (std::size_t j = 0; j < m.extent(1); ++j)
+            /* use m[i, j] */;
+}
 ```
 
 ### Compile-time shape
 
-```cpp
-double data[12];
-std::mdspan<double, std::extents<std::size_t, 3, 4>> mat{data};   // fixed 3×4
-mat[2, 3] = 1.0;
+```cpp needs=mdspan
+#include <mdspan>
+
+int main() {
+    double data[12];
+    std::mdspan<double, std::extents<std::size_t, 3, 4>> mat{data};   // fixed 3×4
+    mat[2, 3] = 1.0;
+}
 ```
 
 ### Column-major view of the same buffer
 
-```cpp
-std::mdspan<int, std::dextents<int, 2>, std::layout_left> col{buf.data(), 2, 3};
-// now col[i, j] maps with the first index varying fastest
+```cpp needs=mdspan
+#include <mdspan>
+#include <vector>
+
+int main() {
+    std::vector<int> buf(6);
+    std::mdspan<int, std::dextents<int, 2>, std::layout_left> col{buf.data(), 2, 3};
+    // now col[i, j] maps with the first index varying fastest
+}
 ```
 
 ## Gotchas
@@ -99,6 +118,10 @@ std::mdspan<int, std::dextents<int, 2>, std::layout_left> col{buf.data(), 2, 3};
   efficiency; `layout_right` ⇒ last index innermost.
 - **`mdspan` is the view; `std::mdarray` (a separate, later proposal) owns.** If
   you need ownership, manage the buffer yourself (e.g. a `vector`) and view it.
+- **Library support.** GCC 15.2's libstdc++ has no `<mdspan>`; GCC 16 and
+  Clang 22 with libc++ do. The examples are tagged `needs=mdspan` so the
+  GCC 15 snippet check skips them; they compile and run with GCC 16.2 and
+  Clang 22 (libc++).
 
 ## See also
 

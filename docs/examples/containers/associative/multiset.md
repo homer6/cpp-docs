@@ -48,21 +48,23 @@ to each other (stable).
 ```cpp
 #include <set>
 
-std::multiset<int> ms{1, 3, 3, 3, 5};
-ms.insert(3);                 // now four 3s; always inserts
+int main() {
+    std::multiset<int> ms{1, 3, 3, 3, 5};
+    ms.insert(3);                 // now four 3s; always inserts
 
-ms.count(3);                  // 4
-ms.contains(3);               // true (C++20)
+    ms.count(3);                  // 4
+    ms.contains(3);               // true (C++20)
 
-// Erase exactly one 3 (not all of them):
-auto it = ms.find(3);
-if (it != ms.end()) ms.erase(it);   // removes a single node
+    // Erase exactly one 3 (not all of them):
+    auto it = ms.find(3);
+    if (it != ms.end()) ms.erase(it);   // removes a single node
 
-ms.erase(3);                  // removes ALL remaining 3s, returns the count
+    ms.erase(3);                  // removes ALL remaining 3s, returns the count
 
-// Iterate over all elements equal to a key:
-auto [lo, hi] = ms.equal_range(3);
-for (auto i = lo; i != hi; ++i) { /* each 3 */ }
+    // Iterate over all elements equal to a key:
+    auto [lo, hi] = ms.equal_range(3);
+    for (auto i = lo; i != hi; ++i) { /* each 3 */ }
+}
 ```
 
 ## Gotchas

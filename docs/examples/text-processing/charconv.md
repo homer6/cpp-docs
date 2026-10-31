@@ -18,11 +18,15 @@ parsers.
 ## Signatures
 
 ```cpp
+#include <charconv>
+
 struct to_chars_result   { char* ptr;       std::errc ec; };
 struct from_chars_result { const char* ptr; std::errc ec; };
 
-std::to_chars  (char* first, char* last, T value, ...);          // number → text
-std::from_chars(const char* first, const char* last, T& value, ...); // text → number
+template<class T>   // number → text; optional base (integers) or format/precision (floats)
+to_chars_result   to_chars  (char* first, char* last, T value);
+template<class T>   // text → number; optional base (integers) or format (floats)
+from_chars_result from_chars(const char* first, const char* last, T& value);
 ```
 
 - `T` is any integer or floating-point type.
@@ -44,31 +48,39 @@ std::from_chars(const char* first, const char* last, T& value, ...); // text →
 ### Number → text
 
 ```cpp
+#include <string_view>
 #include <charconv>
 
-char buf[32];
-auto [ptr, ec] = std::to_chars(buf, buf + sizeof buf, 42);
-if (ec == std::errc{}) {
-    std::string_view text{buf, ptr};      // "42"  (note: NOT null-terminated)
-}
+int main() {
+    char buf[32];
+    auto [ptr, ec] = std::to_chars(buf, buf + sizeof buf, 42);
+    if (ec == std::errc{}) {
+        std::string_view text{buf, ptr};      // "42"  (note: NOT null-terminated)
+    }
 
-// floats with control over format/precision:
-std::to_chars(buf, buf + sizeof buf, 3.14159, std::chars_format::fixed, 2); // "3.14"
+    // floats with control over format/precision:
+    std::to_chars(buf, buf + sizeof buf, 3.14159, std::chars_format::fixed, 2); // "3.14"
+}
 ```
 
 ### Text → number (and tokenizing)
 
 ```cpp
-std::string_view s = "123 456 789";
-int value;
-const char* p = s.data();
-const char* end = s.data() + s.size();
-while (p < end) {
-    auto [next, ec] = std::from_chars(p, end, value);
-    if (ec != std::errc{}) break;
-    // use `value`
-    p = next;
-    while (p < end && *p == ' ') ++p;     // skip separator
+#include <charconv>
+#include <string_view>
+
+int main() {
+    std::string_view s = "123 456 789";
+    int value;
+    const char* p = s.data();
+    const char* end = s.data() + s.size();
+    while (p < end) {
+        auto [next, ec] = std::from_chars(p, end, value);
+        if (ec != std::errc{}) break;
+        // use `value`
+        p = next;
+        while (p < end && *p == ' ') ++p;     // skip separator
+    }
 }
 ```
 
