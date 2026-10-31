@@ -34,6 +34,28 @@ int a = 1, b = 2;
 In a member function, `[this]` captures the object pointer; `[*this]` (C++17)
 captures a **copy** of the object.
 
+Only local variables with automatic storage are captured. Globals and `static`
+locals are used directly, so a lambda that touches them shares their state.
+C++20 adds a few more forms:
+
+```cpp
+struct Counter {
+    int n = 0;
+    auto get() { return [=, this] { return n; }; }   // C++20: spell out `this` with [=]
+};
+
+template<class... Ts>
+auto sum_later(Ts... xs) {
+    return [...xs = std::move(xs)] { return (xs + ...); };   // C++20: pack init-capture
+}
+
+void bindings() {
+    auto [x, y] = std::pair{1, 2};
+    auto add = [x, y] { return x + y; };              // C++20: capture structured bindings
+    add();
+}
+```
+
 ## Generic, mutable, constexpr
 
 ```cpp
@@ -65,9 +87,10 @@ Store one in [`std::function`](../../utilities/functional.md) (type-erased) or
 - **`[&]` capture-by-reference dangles** if the lambda outlives the captured
   locals (stored in a `std::function`, returned, run on another thread). Capture
   by value (or move) for anything that escapes the current scope.
-- **`[=]` captures `this` by pointer in member functions** (pre-C++20), not a copy
-  of members — a subtle dangling trap. Use `[*this]` (C++17) to copy the object,
-  or capture members explicitly.
+- **`[=]` captures `this` by pointer in member functions**, not a copy of
+  members — a subtle dangling trap. Since C++20 the implicit capture is
+  deprecated (GCC and Clang warn); write `[=, this]` to keep it, `[*this]`
+  (C++17) to copy the object, or capture members explicitly.
 - **By-value captures are `const` unless `mutable`.** Forgetting `mutable` on a
   stateful counter lambda is a compile error.
 - **Each lambda has a unique, unnamable type** — store in `auto`, or

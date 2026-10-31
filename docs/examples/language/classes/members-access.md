@@ -53,6 +53,39 @@ class Vault {
 `friend` grants access without making the member public — most often used for
 non-member `operator<<`/`operator==` that need internals.
 
+## Nested classes
+
+A class declared inside another is a **member** of it: it obeys the enclosing
+class's access specifiers and is named `Outer::Inner` from outside.
+
+```cpp
+class List {
+    struct Node { int value; Node* next; };    // private: an implementation detail
+    Node* head_ = nullptr;
+public:
+    class iterator {                           // public: spelled List::iterator
+        Node* n_;                              // may name List's private members
+    public:
+        explicit iterator(Node* n) : n_{n} {}
+        int operator*() const { return n_->value; }
+    };
+    iterator begin() const { return iterator{head_}; }
+};
+```
+
+- The nested class has the same access as any member (since C++11), so it can
+  use `List::Node`. It has **no implicit outer object**: unlike a Java inner
+  class, it needs a `List&` or pointer to reach non-static members.
+- Access isn't returned: the enclosing class gets no special access to the
+  nested class's private members.
+
+```cpp compile-fail="private"
+class Outer {
+    class Inner { int secret = 0; };
+    int peek(Inner& i) { return i.secret; }    // error: Inner::secret is private
+};
+```
+
 ## this and ref-qualified members
 
 ```cpp
@@ -81,3 +114,4 @@ struct Builder {
 - [Member access — cppreference](https://en.cppreference.com/w/cpp/language/access)
 - [static members — cppreference](https://en.cppreference.com/w/cpp/language/static)
 - [friend declaration — cppreference](https://en.cppreference.com/w/cpp/language/friend)
+- [Nested classes — cppreference](https://en.cppreference.com/w/cpp/language/nested_types)

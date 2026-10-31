@@ -49,6 +49,30 @@ int fifty = scaled<10>(5);             // 50
 // C++20: floating-point and class-type NTTPs (with structural types) are allowed
 ```
 
+## Template template parameters
+
+A parameter can itself be a **template**, so the user picks a container (or
+policy) and your code chooses the element type:
+
+```cpp
+#include <deque>
+#include <vector>
+
+template<class T, template<class...> class Container = std::vector>
+struct Stack {
+    Container<T> items;                   // Container is a template; Container<T> is a type
+    void push(T x) { items.push_back(std::move(x)); }
+};
+
+Stack<int> s1;                            // std::vector<int>
+Stack<int, std::deque> s2;                // std::deque<int>
+```
+
+`template<class...> class` accepts any class template whose parameters are all
+types. Since C++17 (P0522) a narrower `template<class> class C` also accepts
+`std::vector`, whose allocator parameter has a default; GCC 15 and Clang 22 both
+do this by default. `typename` may replace `class` before the name (C++17).
+
 ## Constraining templates (C++20)
 
 Prefer [concepts](../../concepts/standard-concepts.md) over unconstrained

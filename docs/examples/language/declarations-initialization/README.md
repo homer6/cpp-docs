@@ -12,4 +12,4 @@ Introducing names with types, and the many ways C++ initializes objects. Mirrors
 | [Namespaces & name lookup](namespaces.md) | namespaces, `using`, inline namespaces, ADL |
 | [Enumerations](enumerations.md) | `enum class` vs plain `enum` |
 | [Type aliases](type-aliases.md) | `using` / `typedef`, alias templates |
-| [Attributes](attributes.md) | `[[nodiscard]]`, `[[likely]]`, and friends |
+| [Attributes](attributes.md) | `[[nodiscard]]`, `[[likely]]`, `[[assume]]`, and friends |
