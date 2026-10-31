@@ -9,6 +9,7 @@ manipulation, and (C++26) data-parallel & linear-algebra facilities. Mirrors
 | [Random](random.md) | `<random>` | C++11 | engines + distributions, done right |
 | [`complex`](complex.md) | `<complex>` | C++98 | complex-number arithmetic |
 | [Math functions & constants](math.md) | `<cmath>`, `<numbers>` | C++98 / C++20 | `sqrt`, `pow`, special functions, `std::numbers::pi` |
+| [Floating-point environment](cfenv.md) | `<cfenv>` | C++11 | exception flags, rounding modes |
 | [Bit manipulation](bit.md) | `<bit>` | C++20 | `bit_cast`, `popcount`, `rotl`, endianness |
 | [`valarray`](valarray.md) | `<valarray>` | C++98 | numeric array (legacy) |
 | [Data-parallel types (SIMD)](simd.md) | `<simd>` | C++26 | portable explicit vectorization |

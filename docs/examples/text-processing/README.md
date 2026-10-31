@@ -9,6 +9,10 @@ Mirrors [cppreference's strings/text section](https://en.cppreference.com/w/cpp/
 | [`charconv` conversions](charconv.md) | `<charconv>` | C++17 | `to_chars` / `from_chars` — fast, locale-independent |
 | [Regular expressions](regex.md) | `<regex>` | C++11 | `regex_match` / `search` / `replace`, iterators |
 | [Localization](localization.md) | `<locale>` | C++98 | `std::locale`, facets, locale-aware I/O |
+| [`text_encoding`](text-encoding.md) | `<text_encoding>` | C++26 | identify the literal, environment and locale encodings |
+| [Null-terminated byte strings](null-terminated-byte-strings.md) | `<cstring>`, `<cctype>` | C++98 | the C string library: `strlen`, `strtol`, `isalpha` … |
+| [Null-terminated multibyte strings](null-terminated-multibyte-strings.md) | `<cwchar>`, `<cuchar>` | C++98 / C++11 | locale-dependent encodings, `mbrtoc32`, `mbrtoc8` |
+| [Null-terminated wide strings](null-terminated-wide-strings.md) | `<cwchar>`, `<cwctype>` | C++98 | `wchar_t` strings, `wcslen`, `iswalpha` |
 
 ## Picking a conversion tool
 

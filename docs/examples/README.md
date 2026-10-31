@@ -12,22 +12,23 @@ its own index. We're working through them roughly in order of everyday usefulnes
 |---|---|---|
 | [Containers](containers/README.md) | ✅ | vector, map, span, the lot |
 | [Strings](strings/README.md) | ✅ | `string`, `string_view`, char traits |
-| [Text processing](text-processing/README.md) | ✅ | `format`/`print`, `charconv`, regex, locales |
+| [Text processing](text-processing/README.md) | ✅ | `format`/`print`, `charconv`, regex, locales, `text_encoding`, C strings |
 | [Algorithms](algorithms/README.md) | ✅ | `<algorithm>`, `<numeric>`, parallel & ranges algos |
 | [Ranges](ranges/README.md) | ✅ | views, adaptors, factories, pipelines (C++20) |
 | [Iterators](iterators/README.md) | ✅ | categories, adaptors, `iterator_traits` |
 | [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects |
 | [Memory](memory/README.md) | ✅ | smart pointers, allocators, memory resources |
 | [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, `ratio`, `integer_sequence` |
-| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<bit>`, SIMD, linalg |
+| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg |
 | [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
 | [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
 | [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures, RCU & hazard pointers |
 | [Execution](execution/README.md) | ✅ | senders/receivers (C++26) |
 | [Diagnostics](diagnostics/README.md) | ✅ | exceptions, `system_error`, `stacktrace`, `<debugging>` |
-| [Language support](language-support/README.md) | ✅ | `numeric_limits`, `<=>`, `source_location`, `initializer_list` |
+| [Language support](language-support/README.md) | ✅ | `numeric_limits`, `<=>`, `source_location`, `initializer_list`, `typeid`, signals, `setjmp` |
 | [Concepts](concepts/README.md) | ✅ | the standard concepts library (C++20) |
 | [Feature-test macros](feature-test-macros/README.md) | ✅ | detecting what your compiler supports |
+| [Named requirements](named-requirements/README.md) | ✅ | *CopyConstructible*, *Compare*, *Hash* … and how concepts relate |
 
 ## The core language
 
