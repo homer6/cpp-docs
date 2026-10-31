@@ -1,0 +1,25 @@
+{
+  "id": "r5-needless-heap",
+  "outcome": "violation",
+  "rules": [
+    "R.5"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_cite_any": [
+      "R.5"
+    ],
+    "fix": {
+      "must_compile": true,
+      "properties": [
+        "Point is a local object (no heap allocation)",
+        "same result"
+      ]
+    }
+  },
+  "notes": "Heap allocation with purely local lifetime.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

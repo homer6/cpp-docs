@@ -23,6 +23,15 @@ The guiding question throughout: **can the compiler reject the mistake?**
 | [Build and packaging](build-and-packaging.md) | Target-based CMake, presets for each build configuration, modules and `import std`, dependencies, compile times, GCC/Clang/MSVC flags | CMake docs |
 | [Sources](sources.md) | Where each page came from, which edition, when last refreshed | — |
 
+## For coding agents
+
+- [`.claude/skills/cpp-guidelines/`](../../.claude/skills/cpp-guidelines/SKILL.md)
+  — an agent skill that applies these pages when writing or reviewing C++:
+  check the project's constraints, load only the relevant pages, cite rule
+  IDs, validate with the compiler and tests.
+- [`evals/`](../../evals/README.md) — a vendor-neutral case suite (ownership and
+  lifetime pilot) for measuring an agent with and without the skill.
+
 ## How this section differs from the reference pages
 
 - **It cites more than cppreference.** Guidelines come from the C++ Core

@@ -1,0 +1,29 @@
+{
+  "id": "r3-factory-returns-owning-raw",
+  "outcome": "violation",
+  "rules": [
+    "R.3",
+    "I.11"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "must_cite_any": [
+      "I.11",
+      "R.3",
+      "R.20",
+      "R.11"
+    ],
+    "fix": {
+      "must_compile": true,
+      "properties": [
+        "returns std::unique_ptr<Connection> (or Connection by value)",
+        "no raw owning pointer crosses the interface"
+      ]
+    }
+  },
+  "notes": "Ownership transferred through a raw pointer (I.11).",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}

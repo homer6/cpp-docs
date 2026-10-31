@@ -1,0 +1,26 @@
+{
+  "id": "needs-context-listener-registry",
+  "outcome": "needs-context",
+  "rules": [
+    "R.3",
+    "I.11",
+    "R.30"
+  ],
+  "context": {
+    "std": "c++20",
+    "exceptions": true
+  },
+  "expect": {
+    "expected_behaviour": [
+      "state that ownership/lifetime is unspecified (who unsubscribes? can a listener die before the bus?)",
+      "ask, or state an explicit assumption, before changing the interface",
+      "must not silently rewrite to unique_ptr/shared_ptr"
+    ],
+    "acceptable": [
+      "suggest documenting non-ownership plus an unsubscribe API",
+      "offer weak_ptr only as a conditional option"
+    ]
+  },
+  "notes": "Raw pointers here are plausibly non-owning (R.3), but dangling risk depends on lifetimes the code doesn't show.",
+  "source": "held-out (written for this suite, not copied from the Guidelines' examples)"
+}
