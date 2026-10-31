@@ -10,20 +10,29 @@ Assigning through these calls `push_back`/`push_front`/`insert` instead of
 overwriting, so algorithms can *append* to a container.
 
 ```cpp
+#include <algorithm>
 #include <iterator>
+#include <list>
+#include <set>
 #include <vector>
 
-std::vector<int> out;
-std::copy(in.begin(), in.end(), std::back_inserter(out));   // push_back each
-std::front_inserter(lst);                                    // push_front
-std::inserter(s, s.end());                                   // insert at a position
+void fill_all(const std::vector<int>& in) {
+    std::vector<int> out;
+    std::list<int> lst;
+    std::set<int> s;
+
+    std::copy(in.begin(), in.end(), std::back_inserter(out));   // push_back each
+    std::copy(in.begin(), in.end(), std::front_inserter(lst));  // push_front
+    std::copy(in.begin(), in.end(), std::inserter(s, s.end())); // insert at a position
+}
 ```
 
 `std::back_inserter` is the everyday one — "send results here, growing as needed."
 
 ## reverse_iterator — traverse backwards
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 3};
 for (auto it = v.rbegin(); it != v.rend(); ++it) { /* last → first */ }
 std::vector<int> rev(v.rbegin(), v.rend());      // reversed copy
 ```
@@ -36,8 +45,8 @@ its `base()`.)
 
 Dereferencing yields an rvalue, so algorithms move elements instead of copying.
 
-```cpp
-std::vector<std::string> src = {...}, dst;
+```cpp body
+std::vector<std::string> src = {"a", "b", "c"}, dst;
 std::copy(std::make_move_iterator(src.begin()),
           std::make_move_iterator(src.end()),
           std::back_inserter(dst));              // elements moved out of src
@@ -45,7 +54,7 @@ std::copy(std::make_move_iterator(src.begin()),
 
 ## Stream iterators — treat I/O as a range
 
-```cpp
+```cpp body
 #include <iterator>
 #include <iostream>
 

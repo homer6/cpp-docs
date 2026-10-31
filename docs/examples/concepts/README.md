@@ -15,14 +15,16 @@ A **concept** is a compile-time predicate on types. Constrain a template with on
 and you get (a) clear intent at the declaration, (b) crisp error messages when a
 caller violates it, and (c) cleaner overloading than SFINAE.
 
-```cpp
+```cpp compile-fail="constraints not satisfied"
 #include <concepts>
 
 template<std::integral T>           // only integer types
 T half(T x) { return x / 2; }
 
-half(10);     // ok
-half(3.14);   // error: "3.14 does not satisfy std::integral" — not a wall of template noise
+void demo() {
+    half(10);     // ok
+    half(3.14);   // error: "3.14 does not satisfy std::integral" — not a wall of template noise
+}
 ```
 
 Concepts are the modern replacement for most [`enable_if`/SFINAE](../metaprogramming/type-traits.md)

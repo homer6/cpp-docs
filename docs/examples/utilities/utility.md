@@ -33,7 +33,7 @@ Rule of thumb: **`move` an rvalue you own; `forward` a forwarding reference.**
 
 ## std::swap — exchange two values
 
-```cpp
+```cpp body
 int x = 1, y = 2;
 std::swap(x, y);                 // x==2, y==1
 ```
@@ -44,7 +44,8 @@ be O(1).
 
 ## std::exchange — set new, return old (C++14)
 
-```cpp
+```cpp body
+int x = 7;
 int old = std::exchange(x, 42);  // x becomes 42, `old` holds the previous value
 ```
 
@@ -56,8 +57,9 @@ loop accumulators.
 Comparing signed and unsigned directly is a classic bug (`-1 < 0u` is *false*).
 The `cmp_*` functions compare by mathematical value:
 
-```cpp
+```cpp body
 #include <utility>
+int x = -1; unsigned y = 0;
 std::cmp_less(-1, 0u);           // true  (correct), unlike  -1 < 0u
 std::cmp_greater_equal(x, y);
 std::in_range<std::size_t>(-1);  // false — does -1 fit in size_t?
@@ -68,7 +70,11 @@ Family: `cmp_equal`, `cmp_not_equal`, `cmp_less`, `cmp_greater`,
 
 ## Smaller helpers
 
-```cpp
+```cpp body
+std::string obj = "text";
+enum class Color : unsigned char { red, green };
+Color some_enum = Color::green;
+
 std::as_const(obj);              // C++17: view as const (force const overloads)
 std::to_underlying(some_enum);   // C++23: enum → its underlying integer
 auto [a, b] = std::pair{1, 2};   // std::pair / std::make_pair live here too

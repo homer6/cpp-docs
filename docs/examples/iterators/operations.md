@@ -8,9 +8,10 @@
 These adapt to the iterator's category automatically (O(1) for random access,
 O(n) otherwise):
 
-```cpp
+```cpp body
 #include <iterator>
 
+std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 auto it = v.begin();
 std::advance(it, 3);             // move forward 3 (or back, if negative & bidi)
 auto j = std::next(it);          // it + 1, without mutating it
@@ -24,7 +25,10 @@ be random-access — e.g. stepping through a `list` or `set`.
 
 ## Swapping/moving the pointed-to elements
 
-```cpp
+```cpp body
+std::vector<std::string> v{"a", "b"};
+auto it1 = v.begin(), it2 = v.begin() + 1, it = v.begin();
+
 std::iter_swap(it1, it2);        // swap *it1 and *it2
 auto val = std::ranges::iter_move(it);   // move-out *it as an rvalue (C++20)
 ```
@@ -34,14 +38,15 @@ auto val = std::ranges::iter_move(it);   // move-out *it as an rvalue (C++20)
 A layer that exposes an iterator's associated types, working for both class-type
 iterators and raw pointers:
 
-```cpp
+```cpp body
 using It = std::vector<int>::iterator;
-std::iterator_traits<It>::value_type;        // int
-std::iterator_traits<It>::difference_type;   // signed integer (ptrdiff_t)
-std::iterator_traits<It>::reference;         // int&
-std::iterator_traits<It>::iterator_category; // random_access_iterator_tag
+static_assert(std::same_as<std::iterator_traits<It>::value_type, int>);
+static_assert(std::same_as<std::iterator_traits<It>::difference_type, std::ptrdiff_t>);  // signed
+static_assert(std::same_as<std::iterator_traits<It>::reference, int&>);
+static_assert(std::same_as<std::iterator_traits<It>::iterator_category,
+                           std::random_access_iterator_tag>);
 
-std::iterator_traits<int*>::value_type;      // int — works for pointers too
+static_assert(std::same_as<std::iterator_traits<int*>::value_type, int>);  // works for pointers too
 ```
 
 Generic code uses these instead of assuming `It::value_type`, so raw pointers
@@ -53,7 +58,8 @@ The ranges customization points return iterators/sentinels for anything
 iterable, and a **sentinel** is an end-marker that need not be the same type as
 the iterator (enabling lazy/unbounded ranges):
 
-```cpp
+```cpp body
+std::vector<int> rng{1, 2, 3};
 auto first = std::ranges::begin(rng);
 auto last  = std::ranges::end(rng);          // may be a sentinel, not an iterator
 std::ranges::distance(rng);                   // size or counted distance

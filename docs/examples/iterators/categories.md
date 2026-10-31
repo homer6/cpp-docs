@@ -32,12 +32,20 @@ C++20 restated the categories as named **concepts** (in `<iterator>`), used to
 constrain templates and the ranges library:
 
 ```cpp
-std::input_iterator
-std::output_iterator<T>          // takes the written-value type
-std::forward_iterator
-std::bidirectional_iterator
-std::random_access_iterator
-std::contiguous_iterator
+#include <deque>
+#include <forward_list>
+#include <iterator>
+#include <list>
+#include <vector>
+
+static_assert(std::input_iterator<std::istream_iterator<int>>);
+static_assert(std::output_iterator<std::ostream_iterator<int>, int>);  // takes the written-value type
+static_assert(std::forward_iterator<std::forward_list<int>::iterator>);
+static_assert(std::bidirectional_iterator<std::list<int>::iterator>);
+static_assert(std::random_access_iterator<std::deque<int>::iterator>);
+static_assert(std::contiguous_iterator<std::vector<int>::iterator>);
+
+static_assert(!std::random_access_iterator<std::list<int>::iterator>); // why std::sort rejects list
 ```
 
 Plus supporting concepts: `std::sentinel_for<S, I>` (an end marker comparable to
@@ -54,9 +62,12 @@ void needs_jump(It first, It last);          // constrained: clear error if misu
 Pre-concepts code tags categories via `iterator_traits<It>::iterator_category`:
 
 ```cpp
-std::input_iterator_tag, std::output_iterator_tag,
-std::forward_iterator_tag, std::bidirectional_iterator_tag,
-std::random_access_iterator_tag, std::contiguous_iterator_tag  // C++20
+// each tag derives from the weaker one (output_iterator_tag stands alone):
+static_assert(std::derived_from<std::forward_iterator_tag,       std::input_iterator_tag>);
+static_assert(std::derived_from<std::bidirectional_iterator_tag, std::forward_iterator_tag>);
+static_assert(std::derived_from<std::random_access_iterator_tag, std::bidirectional_iterator_tag>);
+static_assert(std::derived_from<std::contiguous_iterator_tag,    std::random_access_iterator_tag>); // C++20
+static_assert(!std::derived_from<std::output_iterator_tag,       std::input_iterator_tag>);
 ```
 
 These drive *tag dispatch* — e.g. `std::advance` jumps in O(1) for random-access

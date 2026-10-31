@@ -14,27 +14,36 @@ time.
 
 ```cpp
 #include <any>
+#include <string>
 
-std::any a = 42;                 // holds int
-a = std::string{"hello"};        // now holds std::string
-a.has_value();                   // true
-a.type();                        // typeid(std::string)
+void any_basics() {
+    std::any a = 42;                 // holds int
+    a = std::string{"hello"};        // now holds std::string
+    a.has_value();                   // true
+    a.type();                        // typeid(std::string)
 
-std::any_cast<std::string>(a);   // "hello" — throws std::bad_any_cast if wrong type
-if (auto* p = std::any_cast<int>(&a)) { /* nullptr here: not an int */ }
+    std::any_cast<std::string>(a);   // "hello" — throws std::bad_any_cast if wrong type
+    if (auto* p = std::any_cast<int>(&a)) { /* nullptr here: not an int */ }
 
-a.reset();                       // now empty
+    a.reset();                       // now empty
+}
 ```
 
 ### A heterogeneous bag
 
 ```cpp
-std::map<std::string, std::any> properties;
-properties["count"] = 10;
-properties["name"]  = std::string{"widget"};
-properties["scale"] = 1.5;
-// retrieve by knowing the stored type:
-int n = std::any_cast<int>(properties["count"]);
+#include <any>
+#include <map>
+#include <string>
+
+void property_bag() {
+    std::map<std::string, std::any> properties;
+    properties["count"] = 10;
+    properties["name"]  = std::string{"widget"};
+    properties["scale"] = 1.5;
+    // retrieve by knowing the stored type:
+    int n = std::any_cast<int>(properties["count"]);
+}
 ```
 
 ## Gotchas

@@ -6,19 +6,29 @@
 
 ```cpp
 #include <algorithm>
+#include <functional>
+#include <vector>
 
-std::sort(v.begin(), v.end());                       // ascending, O(n log n), not stable
-std::sort(v.begin(), v.end(), std::greater<>{});     // descending
-std::sort(v.begin(), v.end(),
-          [](auto& a, auto& b){ return a.score < b.score; });   // by a field
+struct Player { int score; };
 
-std::stable_sort(v.begin(), v.end());                // preserves order of equals
-std::is_sorted(v.begin(), v.end());                  // check
+void sorts(std::vector<int>& v, std::vector<Player>& players) {
+    std::sort(v.begin(), v.end());                       // ascending, O(n log n), not stable
+    std::sort(v.begin(), v.end(), std::greater<>{});     // descending
+    std::sort(players.begin(), players.end(),
+              [](auto& a, auto& b){ return a.score < b.score; });   // by a field
+
+    std::stable_sort(v.begin(), v.end());                // preserves order of equals
+    std::is_sorted(v.begin(), v.end());                  // check
+}
 ```
 
 ### Partial / selection
 
-```cpp
+```cpp body
+std::vector<int> v(100);
+std::iota(v.begin(), v.end(), 0);
+std::size_t n = v.size() / 2;
+
 std::partial_sort(v.begin(), v.begin() + 10, v.end());   // top 10 sorted, rest unspecified
 std::nth_element(v.begin(), v.begin() + n, v.end());      // nth in place; partitions around it
 // nth_element is O(n) — the way to get a median or k-th smallest without full sort
@@ -28,7 +38,10 @@ std::nth_element(v.begin(), v.begin() + n, v.end());      // nth in place; parti
 
 These are O(log n) on a sorted range:
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 2, 2, 5};                          // sorted
+int x = 2;
+
 bool found = std::binary_search(v.begin(), v.end(), x);    // present?
 auto lo = std::lower_bound(v.begin(), v.end(), x);          // first element >= x
 auto hi = std::upper_bound(v.begin(), v.end(), x);          // first element  > x
@@ -39,14 +52,18 @@ auto [a, b] = std::equal_range(v.begin(), v.end(), x);      // the [lo, hi) run 
 
 ## Merge & set operations (sorted inputs)
 
-```cpp
+```cpp body
+std::vector<int> a{1, 2, 3, 4}, b{2, 4}, out;               // a and b sorted
+std::vector<int> v{1, 4, 7, 2, 5, 8};                       // two sorted halves
+auto mid = v.begin() + 3;
+
 std::merge(a.begin(), a.end(), b.begin(), b.end(),
            std::back_inserter(out));                  // merge two sorted ranges
 std::inplace_merge(v.begin(), mid, v.end());          // merge two sorted halves in place
 
-std::set_union       (a.begin(), a.end(), b.begin(), b.end(), out);
-std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), out);
-std::set_difference  (a.begin(), a.end(), b.begin(), b.end(), out);
+std::set_union       (a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(out));
+std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(out));
+std::set_difference  (a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(out));
 std::includes(a.begin(), a.end(), b.begin(), b.end());     // is b ⊆ a?
 ```
 

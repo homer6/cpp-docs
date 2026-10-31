@@ -18,7 +18,7 @@ the **closed sum type**: the set of possibilities is known at compile time.
 
 ### Assign, query, access
 
-```cpp
+```cpp body
 #include <variant>
 
 std::variant<int, std::string> v = 42;
@@ -34,19 +34,21 @@ if (auto* p = std::get_if<int>(&v)) { /* not taken here */ }   // pointer or nul
 ### Visiting — the idiomatic way to handle all cases
 
 ```cpp
-std::variant<int, double, std::string> v = 3.14;
-
-std::visit([](const auto& x) { /* one generic lambda for all types */ }, v);
-
 // distinct handling per type via an overload set:
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;   // CTAD guide
 
-std::visit(overloaded{
-    [](int i)                { /* handle int */ },
-    [](double d)             { /* handle double */ },
-    [](const std::string& s) { /* handle string */ },
-}, v);
+void visit_it() {
+    std::variant<int, double, std::string> v = 3.14;
+
+    std::visit([](const auto& x) { /* one generic lambda for all types */ }, v);
+
+    std::visit(overloaded{
+        [](int i)                { /* handle int */ },
+        [](double d)             { /* handle double */ },
+        [](const std::string& s) { /* handle string */ },
+    }, v);
+}
 ```
 
 ## Gotchas

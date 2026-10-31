@@ -17,10 +17,11 @@ A **view** is a cheap, non-owning, lazy adaptor over a range. Chain views with
 `|` to express a transformation declaratively; nothing is computed until you
 iterate, and no intermediate containers are allocated.
 
-```cpp
+```cpp body
 #include <ranges>
 namespace rv = std::views;
 
+std::vector<int> data{1, 2, 3, 4, 5, 6, 7, 8};
 auto result = data
     | rv::filter([](int x){ return x % 2 == 0; })   // keep evens
     | rv::transform([](int x){ return x * x; })      // square them

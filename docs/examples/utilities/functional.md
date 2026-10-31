@@ -10,7 +10,7 @@ Holds *any* callable matching a signature (free function, lambda, functor, bound
 member). Costs type erasure (often a heap allocation + indirect call), so use it
 where you genuinely need to store heterogeneous callables, not in hot loops.
 
-```cpp
+```cpp body
 #include <functional>
 
 std::function<int(int, int)> op = [](int a, int b){ return a + b; };
@@ -35,12 +35,13 @@ std::move_only_function<void()> task =
 One spelling to call free functions, function objects, **and** pointers-to-member
 (which use different syntax otherwise):
 
-```cpp
-struct S { int f(int) const; int data; };
-S s;
+```cpp body
+struct S { int f(int x) const { return x + data; } int data; };
+S s{1};
+auto some_lambda = [](int a, int b) { return a * b; };
 std::invoke(&S::f, s, 10);       // calls s.f(10)
 std::invoke(&S::data, s);        // accesses s.data
-std::invoke(some_lambda, args);  // calls the lambda
+std::invoke(some_lambda, 3, 4);  // calls the lambda
 ```
 
 `std::invoke` is the foundation the library calls callables through (e.g.
@@ -48,7 +49,7 @@ algorithms, `std::apply`). `std::invoke_r<R>` (C++23) fixes the return type.
 
 ## ref / cref — pass references through value-copying APIs
 
-```cpp
+```cpp body
 int counter = 0;
 auto inc = [](int& c){ ++c; };
 std::invoke(inc, std::ref(counter));    // reference_wrapper → counter is modified
@@ -61,7 +62,7 @@ Many library facilities copy their arguments (e.g. `std::thread`, `std::bind`);
 
 Ready-made callables for algorithms and containers:
 
-```cpp
+```cpp body
 std::plus<>{}(2, 3);             // 5  (transparent: deduces operand types, C++14)
 std::less<>{};                   // default comparator for std::sort, std::set, ...
 std::greater<int>{};             // descending sort / min-heap
@@ -74,7 +75,7 @@ std::greater<int>{};             // descending sort / min-heap
 `std::bind` (C++11) pre-binds arguments, but **lambdas are clearer and usually
 preferred** today:
 
-```cpp
+```cpp body
 auto add = [](int a, int b){ return a + b; };
 auto add5 = [add](int b){ return add(5, b); };        // prefer this
 // std::bind equivalent (placeholders), kept mostly for legacy code:

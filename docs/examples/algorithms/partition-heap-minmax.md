@@ -9,11 +9,16 @@ Reorder so all elements satisfying a predicate come first:
 
 ```cpp
 #include <algorithm>
+#include <vector>
 
-auto mid = std::partition(v.begin(), v.end(), pred);   // [begin,mid) satisfy pred
-std::stable_partition(v.begin(), v.end(), pred);        // keeps relative order
-bool ok = std::is_partitioned(v.begin(), v.end(), pred);
-auto pp = std::partition_point(v.begin(), v.end(), pred);  // boundary of a partitioned range
+void partitions(std::vector<int>& v) {
+    auto pred = [](int x) { return x % 2 == 0; };
+
+    auto mid = std::partition(v.begin(), v.end(), pred);   // [begin,mid) satisfy pred
+    std::stable_partition(v.begin(), v.end(), pred);        // keeps relative order
+    bool ok = std::is_partitioned(v.begin(), v.end(), pred);
+    auto pp = std::partition_point(v.begin(), v.end(), pred);  // boundary of a partitioned range
+}
 ```
 
 `std::partition` is the core of quicksort-style splits and "separate the matching
@@ -25,7 +30,9 @@ A heap is a `vector`-backed structure with the max at the front. (For a ready-ma
 priority queue, prefer [`std::priority_queue`](../containers/adaptors/priority_queue.md);
 use these when you need direct control.)
 
-```cpp
+```cpp body
+std::vector<int> v{3, 1, 4, 1, 5};
+
 std::make_heap(v.begin(), v.end());        // O(n): turn the range into a max-heap
 std::push_heap(v.begin(), v.end());        // after push_back, sift the new element up
 std::pop_heap(v.begin(), v.end());         // move max to the back; then pop_back it
@@ -38,7 +45,10 @@ descending order.
 
 ## Min / max / clamp
 
-```cpp
+```cpp body
+int a = 3, b = 7, x = 12;
+std::vector<int> v{3, 1, 4, 1, 5};
+
 std::min(a, b);   std::max(a, b);
 std::min({3, 1, 4, 1, 5});                 // min of an initializer_list
 auto [lo, hi] = std::minmax(a, b);          // both at once (C++11)

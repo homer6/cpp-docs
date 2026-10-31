@@ -14,7 +14,7 @@ clearer when the fields have meaning.
 
 ### Make, access, unpack
 
-```cpp
+```cpp body
 #include <tuple>
 
 std::tuple<int, double, std::string> t{1, 2.5, "hi"};
@@ -38,11 +38,16 @@ auto [q, r] = divmod(17, 5);    // q == 3, r == 2
 ### tie and ignore
 
 ```cpp
-int q; int r;
-std::tie(q, r) = divmod(17, 5);          // assign into existing variables
-std::tie(std::ignore, r) = divmod(9, 4); // discard the quotient
+std::tuple<int, int> divmod(int a, int b) { return {a / b, a % b}; }
+
+void assign_existing() {
+    int q; int r;
+    std::tie(q, r) = divmod(17, 5);          // assign into existing variables
+    std::tie(std::ignore, r) = divmod(9, 4); // discard the quotient
+}
 
 // tie is also the classic way to write lexicographic comparisons:
+struct P { int x, y; };
 bool less(const P& a, const P& b) {
     return std::tie(a.x, a.y) < std::tie(b.x, b.y);
 }
@@ -50,7 +55,7 @@ bool less(const P& a, const P& b) {
 
 ### Combine and forward
 
-```cpp
+```cpp body
 auto cat = std::tuple_cat(std::tuple{1, 2}, std::tuple{'a'});  // tuple<int,int,char>
 std::apply([](int a, int b){ return a + b; }, std::tuple{3, 4}); // call with unpacked args → 7
 ```

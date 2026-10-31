@@ -6,7 +6,10 @@
 ## A range is anything with begin/end
 
 ```cpp
-std::ranges::range<T>          // has ranges::begin(t) and ranges::end(t)
+// range<T>: has ranges::begin(t) and ranges::end(t)
+static_assert(std::ranges::range<std::vector<int>>);
+static_assert(std::ranges::range<int[4]>);
+static_assert(!std::ranges::range<int>);
 ```
 
 Every standard container is a range, as are arrays, `string_view`, `span`, and
@@ -30,7 +33,9 @@ views. The end need not be the same type as the begin iterator — it can be a
 Use the `std::ranges::` functions, not member calls — they work uniformly and do
 the right thing for arrays, members, and ADL:
 
-```cpp
+```cpp body
+std::vector<int> r{1, 2, 3};
+
 std::ranges::begin(r);   std::ranges::end(r);
 std::ranges::size(r);    std::ranges::empty(r);
 std::ranges::data(r);                                  // contiguous ranges

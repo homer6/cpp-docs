@@ -7,38 +7,58 @@
 
 **Core language / relationships:**
 ```cpp
-std::same_as<T, U>
-std::derived_from<D, B>
-std::convertible_to<From, To>
-std::common_with<T, U>,  std::common_reference_with<T, U>
-std::assignable_from<L, R>
-std::swappable<T>
+struct Base {};
+struct Derived : Base {};
+
+static_assert(std::same_as<int, int>);                      // same_as<T, U>
+static_assert(std::derived_from<Derived, Base>);            // derived_from<D, B>
+static_assert(std::convertible_to<int, double>);            // convertible_to<From, To>
+static_assert(std::common_with<int, double>);               // common_with<T, U>
+static_assert(std::common_reference_with<int&, const int&>);// common_reference_with<T, U>
+static_assert(std::assignable_from<std::string&, const char*>); // assignable_from<L, R>
+static_assert(std::swappable<std::string>);                 // swappable<T>
 ```
 
 **Type categories:**
 ```cpp
-std::integral, std::signed_integral, std::unsigned_integral
-std::floating_point
+static_assert(std::integral<char>);
+static_assert(std::signed_integral<int>);
+static_assert(std::unsigned_integral<unsigned>);
+static_assert(std::floating_point<double>);
 ```
 
 **Comparison:**
 ```cpp
-std::equality_comparable<T>,  std::equality_comparable_with<T, U>
-std::totally_ordered<T>,      std::totally_ordered_with<T, U>
-std::three_way_comparable<T>
+static_assert(std::equality_comparable<std::string>);
+static_assert(std::equality_comparable_with<std::string, const char*>);
+static_assert(std::totally_ordered<int>);
+static_assert(std::totally_ordered_with<int, double>);
+static_assert(std::three_way_comparable<std::string>);
 ```
 
 **Object / lifetime:**
 ```cpp
-std::destructible, std::constructible_from<T, Args...>,
-std::default_initializable, std::move_constructible, std::copy_constructible,
-std::movable, std::copyable, std::semiregular, std::regular
+static_assert(std::destructible<std::string>);
+static_assert(std::constructible_from<std::string, std::size_t, char>);  // <T, Args...>
+static_assert(std::default_initializable<std::vector<int>>);
+static_assert(std::move_constructible<std::unique_ptr<int>>);
+static_assert(std::copy_constructible<std::string>);
+static_assert(std::movable<std::unique_ptr<int>>);
+static_assert(!std::copyable<std::unique_ptr<int>>);       // move-only
+static_assert(std::semiregular<std::string>);               // copyable + default_initializable
+static_assert(std::regular<int>);                           // semiregular + equality_comparable
 ```
 
 **Callable:**
 ```cpp
-std::invocable<F, Args...>,  std::regular_invocable<F, Args...>
-std::predicate<F, Args...>,  std::relation<R, T, U>, std::strict_weak_order<R, T, U>
+inline constexpr auto is_even = [](int x) { return x % 2 == 0; };
+using IsEven = decltype(is_even);
+
+static_assert(std::invocable<IsEven, int>);                 // invocable<F, Args...>
+static_assert(std::regular_invocable<IsEven, int>);         // regular_invocable<F, Args...>
+static_assert(std::predicate<IsEven, int>);                 // predicate<F, Args...>
+static_assert(std::relation<std::less<>, int, long>);       // relation<R, T, U>
+static_assert(std::strict_weak_order<std::less<>, int, double>); // strict_weak_order<R, T, U>
 ```
 
 (The [iterators](../iterators/categories.md) and [ranges](../ranges/range-concepts.md)
@@ -57,7 +77,10 @@ template<class T> requires std::integral<T> void g(T);
 void h(std::integral auto x);
 
 // 4. constraining a return / variable:
-std::integral auto value = compute();
+int compute();
+void use_value() {
+    std::integral auto value = compute();
+}
 ```
 
 ## Writing your own

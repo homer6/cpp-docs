@@ -21,7 +21,9 @@ the caller should know why" — a typed alternative to throwing or to
 ### Returning success or error
 
 ```cpp
+#include <charconv>
 #include <expected>
+#include <string_view>
 
 enum class Err { empty, not_a_number, overflow };
 
@@ -38,22 +40,40 @@ std::expected<int, Err> to_int(std::string_view s) {
 ### Consuming the result
 
 ```cpp
-auto r = to_int("42");
-if (r) {                          // engaged == success
-    int v = *r;                   // value (operator*)
-    int w = r.value();            // throws std::bad_expected_access<E> if it's an error
+enum class Err { empty, not_a_number, overflow };
+std::expected<int, Err> to_int(std::string_view s);   // as above
+
+void consume() {
+    auto r = to_int("42");
+    if (r) {                          // engaged == success
+        int v = *r;                   // value (operator*)
+        int w = r.value();            // throws std::bad_expected_access<E> if it's an error
+    }
+    int v = r.value_or(0);            // value, or fallback on error
+    if (!r) Err e = r.error();        // the error payload
 }
-int v = r.value_or(0);            // value, or fallback on error
-if (!r) Err e = r.error();        // the error payload
 ```
 
 ### Monadic chaining (no manual if-ladders)
 
 ```cpp
-auto out = to_int(text)
-    .and_then(check_positive)     // runs only on success; returns expected<U,E>
-    .transform(square)            // maps the value on success
-    .transform_error(to_message); // maps the error on failure
+enum class Err { empty, not_a_number, overflow, negative };
+std::expected<int, Err> to_int(std::string_view s);   // as above
+
+std::expected<int, Err> check_positive(int x) {
+    if (x < 0) return std::unexpected{Err::negative};
+    return x;
+}
+int square(int x) { return x * x; }
+std::string to_message(Err e) { return "error " + std::to_string(static_cast<int>(e)); }
+
+std::expected<int, std::string> parse_and_square(std::string_view text) {
+    auto out = to_int(text)
+        .and_then(check_positive)     // runs only on success; returns expected<U,E>
+        .transform(square)            // maps the value on success
+        .transform_error(to_message); // maps the error on failure
+    return out;
+}
 ```
 
 ## Gotchas

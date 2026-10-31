@@ -11,7 +11,7 @@ iteration yields (`pair<const Key, T>`).
 
 ## Examples
 
-```cpp
+```cpp body
 #include <utility>
 
 std::pair<int, std::string> p{1, "one"};
@@ -26,7 +26,7 @@ auto [n, name] = p;             // structured bindings (C++17)
 
 ### As function return / map element
 
-```cpp
+```cpp body
 std::pair<bool, int> parse(std::string_view);   // (ok?, value)
 
 std::map<std::string, int> m;
@@ -40,7 +40,7 @@ for (const auto& [key, value] : m) { /* ... */ }   // each element is a pair
 `operator<=>` (C++20), so pairs are usable as map/set keys and sortable out of
 the box.
 
-```cpp
+```cpp body
 std::pair{1, 2} < std::pair{1, 3};       // true
 ```
 
