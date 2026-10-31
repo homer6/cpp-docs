@@ -225,7 +225,7 @@ dump is unreadable.
 **`std::stacktrace` (C++23)** captures a stack trace in-process — useful for
 logging where an unexpected error came from in production:
 
-```cpp
+```cpp needs=stacktrace
 #include <stacktrace>
 #include <print>
 
