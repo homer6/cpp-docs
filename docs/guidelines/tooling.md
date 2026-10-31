@@ -3,9 +3,10 @@
 > What to reach for when a C++ program crashes, corrupts memory, races, or
 > behaves differently in a release build. **Sources:** Clang sanitizer docs
 > (AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer,
-> MemorySanitizer), GCC instrumentation options, libstdc++ and libc++
-> manuals, Microsoft STL and MSVC AddressSanitizer docs, Valgrind manual —
-> checked 2026-10-31 · pairs with [safety](safety.md#build-configurations)
+> MemorySanitizer, LeakSanitizer, HWASan), GCC instrumentation options,
+> libstdc++ and libc++ manuals, Microsoft STL and MSVC AddressSanitizer docs —
+> checked 2026-10-31 · pairs with [safety](safety.md#build-configurations),
+> [debugging](debugging.md) and [Valgrind](valgrind.md)
 
 [Safety](safety.md#build-configurations) lists which builds to keep; this page
 is how to use them. The short version: **when something crashes, rebuild with a
@@ -18,12 +19,13 @@ things a core dump can't.
 | Symptom | First tool | Then |
 |---|---|---|
 | Segfault, garbage values, "works in debug, crashes in release" | ASan (+ UBSan) | debugger on the ASan report's stack |
-| Leak / memory keeps growing | LeakSanitizer (part of ASan on Linux) | heap profiler |
+| Leak / memory keeps growing | LeakSanitizer (part of ASan, or [standalone](#leaksanitizer-lsan)) | heap profiler |
 | Flaky failures under load, wrong results with threads | TSan | — |
-| Value depends on uninitialized memory | MSan (Clang) | Valgrind if you can't rebuild deps |
+| Value depends on uninitialized memory | MSan (Clang) | [Valgrind](valgrind.md) if you can't rebuild deps |
 | Overflow, bad shift, misaligned access, null deref | UBSan | — |
 | Bounds error in `vector`/`span`/`string` | Hardened standard library | ASan |
-| Crash in production, no repro | Core dump + symbols | `std::stacktrace` logging |
+| Crash in production, no repro | [Core dump](debugging.md#core-dumps) + symbols | [`std::stacktrace`](debugging.md#stdstacktrace-c23) logging |
+| Crashes or UB on hostile input | [Fuzzing](testing.md#fuzzing) (`-fsanitize=fuzzer`) with ASan + UBSan | — |
 
 No single build runs every sanitizer — several can't be combined (see
 [Combining sanitizers](#combining-sanitizers)). Keep one build per
@@ -95,6 +97,23 @@ Set at run time with `ASAN_OPTIONS` (colon-separated):
 ASAN_OPTIONS=detect_leaks=1:log_path=asan.log ./app
 ```
 
+### Suppressions and runtime options
+
+Each sanitizer reads options from an environment variable (`help=1` lists
+them) and takes a suppressions file for reports you can't fix yet: one
+`kind:pattern` per line, matching a function, file or module name in the
+report's stack (`*` wildcards).
+
+| Sanitizer | Run with | Suppression line |
+|---|---|---|
+| ASan leaks, standalone LSan | `LSAN_OPTIONS=suppressions=lsan.supp` | `leak:keep_forever` |
+| TSan | `TSAN_OPTIONS=suppressions=tsan.supp` | `race:work` (also `deadlock:`, `called_from_lib:`) |
+| UBSan | `UBSAN_OPTIONS=suppressions=ubsan.supp` | `signed-integer-overflow:ub.cpp` (a single check, not a group like `undefined`) |
+
+Each row silenced its report (exit code 0) on macOS (Clang 22) and Linux
+AArch64 (GCC 16, Clang 19). Prefer suppressions to an ignorelist
+(`-fsanitize-ignorelist=`), which skips instrumenting the code entirely.
+
 ### Combining sanitizers
 
 | Combination | Allowed? | Source |
@@ -131,6 +150,11 @@ for each build on purpose:
 | Production, crash on failure | `-fsanitize-trap=undefined` | Trap instruction, no runtime library, no message |
 | Production, log on failure | `-fsanitize=undefined -fsanitize-minimal-runtime` | Small runtime with basic logging and deduplication; no `vptr` check |
 
+**UBSan suppressions only cover recoverable checks:** under
+`-fno-sanitize-recover=all` a suppressed overflow still aborted (Clang 22,
+GCC 16), and the minimal runtime ignores them. To suppress and still fail CI,
+keep the checks recoverable and run with `UBSAN_OPTIONS=halt_on_error=1`.
+
 Don't ship the full UBSan runtime: Clang's docs say it's meant for testing and
 may weaken the executable's security, and recommend the minimal runtime or trap
 mode for security-sensitive code.
@@ -145,14 +169,31 @@ clang++ -O1 -g -fsanitize=thread app.cpp
 ```
 
 - **Can't be combined with ASan or MSan** — keep a separate TSan build.
-- 64-bit only: Clang lists Linux (x86-64, AArch64, PowerPC64), Darwin
-  (arm64, x86-64), Android, FreeBSD and NetBSD.
+- 64-bit only; platforms are in the [platform support](#platform-support).
 - A clean run means no races *on the paths your tests exercised* — not that
   the program is race-free.
 - Every library that touches shared data must be built with TSan, or races
   through it go unseen.
 - A TSan report shows both conflicting accesses and the stacks that created the
   threads. Fix the design (CP.2, CP.3), not just the line.
+- A report makes the process exit with 66 on Linux; on macOS it aborts
+  (exit 134).
+
+## LeakSanitizer (LSan)
+
+ASan includes LeakSanitizer. For leak checking alone, link with
+`-fsanitize=leak` (`clang++ -g -fsanitize=leak app.cpp`); it adds almost no
+overhead and reports at exit, with exit code 23. **Homebrew GCC 15 on macOS**
+accepts `-fsanitize=leak` but links no runtime, so nothing is reported, and its
+other sanitizers fail to link (`library 'asan' not found`) — use Clang there.
+
+## HWASan — ASan with hardware tags
+
+`-fsanitize=hwaddress` finds ASan's bug classes by tagging the top byte of
+each pointer, with much less memory overhead; detection is probabilistic (a
+tag can match by chance). It targets **64-bit AArch64** (Linux, Android);
+Clang's x86-64 mode tags only the heap and is unsafe with `fork`, and GCC
+needs `-mlam=u48`/`u57` on x86-64. Can't be combined with ASan or TSan.
 
 ## MemorySanitizer (MSan) — Clang only
 
@@ -178,6 +219,19 @@ optimizer can't exploit it — but it's still a bug (ES.20). MSan, compiler
 warnings (`-Wuninitialized`), and initializing at declaration are how you find
 and avoid it. See [safety](safety.md#c26-erroneous-behaviour).
 
+## Platform support
+
+Where each sanitizer ran here (it reported a seeded bug), and what the Clang
+and GCC docs add:
+
+| Sanitizer | Linux AArch64 (GCC 16, Clang 19) | macOS arm64 (Clang 22) | Docs also list |
+|---|---|---|---|
+| ASan, UBSan | ✅ | ✅ | Linux x86-64, Windows (MSVC ASan) |
+| TSan | ✅ | ✅ | Linux x86-64 and PowerPC64, Android, FreeBSD, NetBSD |
+| LSan (standalone) | ✅ | ✅ | Android, Fuchsia, NetBSD |
+| HWASan | ✅ | ❌ unsupported | Android; x86-64 limited |
+| MSan | ✅ (Clang only) | ❌ unsupported | Linux x86-64, FreeBSD, NetBSD |
+
 ## Hardened standard library in debug builds
 
 Turn on the strongest library checks in debug and test builds. They're cheaper
@@ -194,59 +248,14 @@ container, and dereferencing an empty `optional`:
 Microsoft plans to turn its hardening on by default in a later release; check
 your version's release notes rather than assuming.
 
-## Debuggers and core dumps
+## Debuggers, core dumps and Valgrind
 
-Use the debugger once a sanitizer has told you *what* went wrong, or for logic
-bugs that aren't memory errors.
-
-| Task | gdb | lldb |
-|---|---|---|
-| Run | `gdb --args ./app arg1` | `lldb -- ./app arg1` |
-| Backtrace | `bt` | `bt` |
-| All threads | `thread apply all bt` | `bt all` |
-| Break on a function | `break Widget::id` | `b Widget::id` |
-| Inspect | `print w`, `frame 2` | `p w`, `frame select 2` |
-
-**Debug info:** build with `-g` even for release builds and strip into a
-separate file if size matters. `-gsplit-dwarf` speeds up linking large
-projects.
-
-**Core dumps** let you debug a crash after the fact:
-
-```bash
-ulimit -c unlimited                 # allow core files in this shell
-./app                               # crashes → core file
-gdb ./app core                      # or: coredumpctl gdb   (systemd)
-```
-
-Keep the exact binary and its debug symbols for every build you ship, or the
-dump is unreadable.
-
-**`std::stacktrace` (C++23)** captures a stack trace in-process — useful for
-logging where an unexpected error came from in production:
-
-```cpp needs=stacktrace
-#include <stacktrace>
-#include <print>
-
-void on_fatal_error() {
-    std::println(stderr, "{}", std::stacktrace::current());
-}
-```
-
-**Linking with libstdc++ depends on the version:** GCC 13 needs
-`-lstdc++_libbacktrace`; GCC 14 and later use `-lstdc++exp`. Support also
-depends on how the toolchain was built, so check with a compile-**and-link**
-test in your build, not by testing that `<stacktrace>` exists. (libc++ and MSVC
-STL linking not covered here yet.)
-
-## Valgrind — when you can't rebuild
-
-Valgrind's Memcheck finds memory errors and leaks in an **unmodified binary**
-— no recompile or relink, works with third-party libraries you can't
-instrument. The cost: Memcheck runs programs about **20–30× slower** (Valgrind
-quick-start guide), so it's for targeted runs, not the whole suite. Don't run a
-sanitized binary under Valgrind.
+- **[Debugging](debugging.md)** — gdb and lldb side by side: breakpoints in
+  templates, `catch throw`, watchpoints, printing STL containers, attaching,
+  core dumps, rr and `std::stacktrace`.
+- **[Valgrind](valgrind.md)** — Memcheck on an unmodified binary (about 20–30×
+  slower), Helgrind and DRD for races, suppressions, vgdb. Don't run a
+  sanitized binary under Valgrind.
 
 ## Static analysis and formatting
 
@@ -275,11 +284,14 @@ everyone (and CI) runs the same checks.
 - [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) ·
   [UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) ·
   [ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html) ·
-  [MemorySanitizer](https://clang.llvm.org/docs/MemorySanitizer.html)
+  [MemorySanitizer](https://clang.llvm.org/docs/MemorySanitizer.html) ·
+  [LeakSanitizer](https://clang.llvm.org/docs/LeakSanitizer.html) ·
+  [HWASan design](https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html) ·
+  [TSan suppressions](https://github.com/google/sanitizers/wiki/ThreadSanitizerSuppressions)
 - [GCC instrumentation options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html) ·
   [libc++ hardening](https://libcxx.llvm.org/Hardening.html) ·
   [libstdc++ macros](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_macros.html) ·
   [Microsoft STL hardening](https://github.com/microsoft/STL/wiki/STL-Hardening) ·
-  [MSVC AddressSanitizer](https://learn.microsoft.com/en-us/cpp/sanitizers/asan) ·
-  [Valgrind quick start](https://valgrind.org/docs/manual/quick-start.html)
-- [Memory & safety](safety.md) · [Project conventions](project-conventions.md)
+  [MSVC AddressSanitizer](https://learn.microsoft.com/en-us/cpp/sanitizers/asan)
+- [Debugging](debugging.md) · [Valgrind](valgrind.md) · [Testing](testing.md#fuzzing) ·
+  [Memory & safety](safety.md) · [Project conventions](project-conventions.md)

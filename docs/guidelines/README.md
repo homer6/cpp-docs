@@ -18,7 +18,9 @@ The guiding question throughout: **can the compiler reject the mistake?**
 | [Project conventions](project-conventions.md) | Naming, headers, API shape, testing style | House style (from automerge-cpp) |
 | [Performance tooling](performance-tooling.md) | Benchmarking, `perf`, flame graphs, heap profiling, reading generated code | Core Guidelines (Per), perf-report |
 | [Industry practice](industry-practice.md) | Where Google, Chromium, and LLVM disagree; Abseil tips that still matter | Style guides, Abseil |
-| [Tooling](tooling.md) | Sanitizers, debuggers, core dumps, static analysis — what to use for which bug | Clang sanitizer docs |
+| [Tooling](tooling.md) | Sanitizers (options, suppressions, platforms), hardened libraries, static analysis — what to use for which bug | Clang sanitizer docs |
+| [Debugging](debugging.md) | gdb and lldb side by side: breakpoints in templates, `catch throw`, watchpoints, STL printing, attaching, core dumps, rr, `std::stacktrace` | GDB manual, LLDB docs |
+| [Valgrind](valgrind.md) | Memcheck, Helgrind and DRD, suppressions, vgdb, when to prefer it over ASan | Valgrind manual |
 | [Testing](testing.md) | Framework choice, property-based tests, fuzzing, contracts, coverage, compile-time tests | Framework and tool docs |
 | [Build and packaging](build-and-packaging.md) | Target-based CMake, presets for each build configuration, modules and `import std`, dependencies, compile times, GCC/Clang/MSVC flags | CMake docs |
 | [Sources](sources.md) | Where each page came from, which edition, when last refreshed | — |
