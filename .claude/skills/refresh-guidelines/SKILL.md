@@ -35,7 +35,8 @@ them wrong is the most common failure.
 
 1. **Hand the user every deep-research prompt as soon as it exists** — never
    leave one only in a branch. See [Handing over prompts](#handing-over-prompts).
-2. **One issue → one branch → one PR, opened ready for review (never draft).**
+2. **Issue first, always** — open the GitHub issue before starting any work.
+   **One issue → one branch → one PR, opened ready for review (never draft).**
 3. **Close the issue as soon as the PR is open,** with a comment saying what
    changed, why, and what's still open (template below).
 4. **Research import is a follow-up**, pushed to the same branch while the PR
