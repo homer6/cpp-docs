@@ -274,6 +274,17 @@ constexpr int factorial(int n) {
 static_assert(factorial(5) == 120);
 ```
 
+## Standard library (SL)
+
+- **SL.1: Use libraries wherever possible.**
+- **SL.con.1: Prefer `std::array` or `std::vector` over C arrays.**
+- **SL.con.2: Prefer `std::vector` by default** unless you have a reason to use
+  another container.
+- **SL.str.2: Use `std::string_view` to refer to character sequences.**
+- **SL.io.50: Avoid `std::endl`** — `'\n'` doesn't flush.
+- **SL.regex (2026 note): `std::regex` is slow.** For performance-critical work,
+  the Guidelines now suggest a third-party regular-expression library.
+
 ## Quick reference: when to use what
 
 | Need | Use |
