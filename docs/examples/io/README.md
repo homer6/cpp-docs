@@ -10,6 +10,8 @@ filesystem. Mirrors [cppreference's I/O library](https://en.cppreference.com/w/c
 | [String streams](string-streams.md) | `<sstream>` | C++98 | build/parse strings via the stream API |
 | [Manipulators](manipulators.md) | `<iomanip>` | C++98 | `setw`, `setprecision`, `hex`, `boolalpha` |
 | [Filesystem](filesystem.md) | `<filesystem>` | C++17 | paths, directory iteration, file ops |
+| [Synchronized output](syncstream.md) | `<syncstream>` | C++20 | `osyncstream`: whole messages from many threads |
+| [Print functions](print.md) | `<print>`, `<ostream>` | C++23 | `print`/`println`, `vprint_*`, Unicode consoles |
 
 > For modern formatted output prefer [`std::print` / `std::format`](../text-processing/formatting.md)
 > (C++20/23) over `cout <<` chains — type-safe, faster, and far more readable.

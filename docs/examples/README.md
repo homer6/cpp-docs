@@ -21,10 +21,10 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, `ratio`, `integer_sequence` |
 | [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<bit>`, SIMD, linalg |
 | [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
-| [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem |
-| [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures |
+| [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
+| [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures, RCU & hazard pointers |
 | [Execution](execution/README.md) | ✅ | senders/receivers (C++26) |
-| [Diagnostics](diagnostics/README.md) | ✅ | exceptions, `system_error`, `stacktrace` |
+| [Diagnostics](diagnostics/README.md) | ✅ | exceptions, `system_error`, `stacktrace`, `<debugging>` |
 | [Language support](language-support/README.md) | ✅ | `numeric_limits`, `<=>`, `source_location`, `initializer_list` |
 | [Concepts](concepts/README.md) | ✅ | the standard concepts library (C++20) |
 | [Feature-test macros](feature-test-macros/README.md) | ✅ | detecting what your compiler supports |
