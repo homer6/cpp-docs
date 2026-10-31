@@ -1,0 +1,59 @@
+// Checks claims made by docs/examples/numerics/bit.md.
+#include <bit>
+#include <cstdint>
+#include <version>
+
+#include <gtest/gtest.h>
+
+#include "support/feature.hpp"
+
+namespace {
+template <class T>
+constexpr bool popcount_accepts = requires(T x) { std::popcount(x); };
+template <class T>
+constexpr bool rotl_accepts = requires(T x) { std::rotl(x, 3); };
+}  // namespace
+
+// "std::bit_cast": raw IEEE-754 bits of 1.5f, and the round trip is exact.
+TEST(Bit, BitCastRoundTrips) {
+    float f = 1.5f;
+    auto bits = std::bit_cast<std::uint32_t>(f);
+    EXPECT_EQ(bits, 0x3FC00000u);  // sign 0, exponent 127, mantissa .1b
+    EXPECT_EQ(std::bit_cast<float>(bits), f);
+}
+
+// "Counting and inspecting bits": the values in the comments.
+TEST(Bit, CountingValues) {
+    static_assert(std::popcount(0b1011u) == 3);
+    static_assert(std::countr_zero(0b0001'0000u) == 4);
+    static_assert(std::countl_zero(0b0001'0000u) == 32 - 5);  // 32-bit unsigned
+    static_assert(std::bit_width(13u) == 4);
+    static_assert(std::countr_one(0b0111u) == 3);
+}
+
+// "Power-of-two helpers" and "Rotates": bits wrap around.
+TEST(Bit, PowerOfTwoAndRotate) {
+    static_assert(std::has_single_bit(16u));
+    static_assert(!std::has_single_bit(17u));
+    static_assert(std::bit_ceil(17u) == 32);
+    static_assert(std::bit_floor(17u) == 16);
+    static_assert(std::rotl(std::uint32_t{0x8000'0001}, 3) == 0x0000'000Cu);
+    static_assert(std::rotr(std::uint32_t{0x0000'000C}, 3) == 0x8000'0001u);
+}
+
+// "Gotchas": the counting/rotate functions reject signed types.
+TEST(Bit, SignedTypesRejected) {
+    static_assert(!popcount_accepts<int>);
+    static_assert(!rotl_accepts<int>);
+    static_assert(popcount_accepts<unsigned>);
+    static_assert(rotl_accepts<std::uint32_t>);
+}
+
+// "Endianness & byte swap": 0x1234 -> 0x3412; 0x1234u -> 0x34120000 (C++23).
+TEST(Bit, Byteswap) {
+    CPPDOCS_REQUIRE(__cpp_lib_byteswap);
+#ifdef __cpp_lib_byteswap
+    static_assert(std::byteswap(std::uint16_t{0x1234}) == 0x3412);
+    static_assert(std::byteswap(std::uint32_t{0x1234u}) == 0x34120000u);
+#endif
+}
