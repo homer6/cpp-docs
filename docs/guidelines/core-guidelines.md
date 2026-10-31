@@ -23,16 +23,16 @@ mention, it's noted.
 
 **R.1: Manage resources automatically using RAII**
 
-```cpp nocompile
+```cpp
 // BAD — leaks if anything in the middle throws
-void f() {
+void bad() {
     int* p = new int[100];
     // ...
     delete[] p;
 }
 
 // GOOD — freed on every path out of the scope
-void f() {
+void good() {
     auto p = std::make_unique<int[]>(100);
     // ...
 }
@@ -77,11 +77,11 @@ tools should warn when a by-value parameter is larger than `4 * sizeof(void*)`
 - **F.21: To return several values, return a struct** (or tuple), and unpack
   with structured bindings.
 
-```cpp nocompile
+```cpp
 struct Parsed { int id; std::string name; };
 Parsed parse(std::string_view line);
 
-auto [id, name] = parse(line);
+auto [id, name] = parse("42 widget");
 ```
 
 **I.6 / I.8 → contracts (C++26).** The Guidelines express preconditions with
@@ -108,9 +108,9 @@ Members are constructed in declaration order and destroyed in reverse. Declare
 them the other way round and `B` touches `A` before it exists and after it's
 gone.
 
-```cpp nocompile
+```cpp
 // BAD — the thread starts before data exists, and outlives it on destruction
-class Job {
+class BadJob {
     std::jthread worker;                 // constructed first, destroyed last
     std::unique_ptr<int> data;
 };
@@ -178,11 +178,15 @@ so tools shouldn't warn about it.
 **ES.28: Use an immediately-invoked lambda for complex `const`
 initialization**
 
-```cpp nocompile
-const auto config = [&] {
-    if (use_defaults) return Config::defaults();
-    return Config::from_file(path);
-}();
+```cpp
+struct Config { static Config defaults(); static Config from_file(std::string_view); };
+
+void setup(bool use_defaults, std::string_view path) {
+    const auto config = [&] {
+        if (use_defaults) return Config::defaults();
+        return Config::from_file(path);
+    }();
+}
 ```
 
 - **ES.46: Avoid narrowing conversions.**
@@ -222,7 +226,8 @@ Where exceptions aren't wanted (or failure is routine), return
 
 **CP.20: Use RAII, never plain `lock()`/`unlock()`**
 
-```cpp nocompile
+```cpp body
+std::mutex m;
 {
     std::scoped_lock lock{m};   // C++17; also locks several mutexes deadlock-free
     // ...

@@ -86,7 +86,11 @@ computation becomes visible (which is what makes it parallelizable).
 
 ### Prefer named algorithms
 
-```cpp nocompile
+```cpp body
+struct Item { int id; };
+std::vector<Item> items;
+int target = 42;
+
 // BAD — you have to read the body to learn it's a search
 bool found = false;
 for (const auto& item : items) {
@@ -94,18 +98,23 @@ for (const auto& item : items) {
 }
 
 // GOOD
-bool found = std::ranges::any_of(items, [&](const auto& i) { return i.id == target; });
+bool found1 = std::ranges::any_of(items, [&](const auto& i) { return i.id == target; });
 // or, with a projection:
 bool found2 = std::ranges::contains(items, target, &Item::id);   // C++23
 ```
 
 ### Pipelines for composition
 
-```cpp nocompile
-// BAD
-std::vector<std::string> result;
-for (const auto& e : entries)
-    if (e.is_active()) result.push_back(to_upper(e.name()));
+```cpp
+struct Entry { bool is_active() const; std::string name() const; };
+std::string to_upper(std::string_view);
+std::vector<Entry> entries;
+
+void bad() {
+    std::vector<std::string> result;
+    for (const auto& e : entries)
+        if (e.is_active()) result.push_back(to_upper(e.name()));
+}
 
 // GOOD
 auto result = entries
@@ -120,7 +129,10 @@ Recognize when an operation is a **fold**. If the binary operation is
 **associative** and has an **identity** element, it's a **monoid** — and a monoid
 can be split into chunks, folded in parallel, and the partial results combined.
 
-```cpp nocompile
+```cpp needs=pstl
+#include <execution>
+std::vector<int> values{1, 2, 3};
+
 // a fold, in order
 auto total = std::ranges::fold_left(values, 0, std::plus{});
 
@@ -138,7 +150,10 @@ merging two CRDT documents is associative, commutative, and idempotent, with the
 empty document as identity — so merging many replicas is a reduction, and
 "merge is a monoid" becomes a set of laws to test:
 
-```cpp nocompile
+```cpp
+struct Document { void merge(const Document&); };
+std::vector<Document> docs;
+
 auto merged = std::reduce(docs.begin(), docs.end(), Document{},
     [](Document a, const Document& b) { a.merge(b); return a; });
 ```
@@ -174,18 +189,24 @@ operator over build time, run-time cost, and design concerns (see
 | Not an error, just absent (lookup miss) | return `std::optional<T>` |
 | Programmer error (violated precondition, broken invariant) | contract / assertion |
 
-```cpp nocompile
+```cpp
+struct Document {};
+struct Error { std::string message; };
 auto load(std::span<const std::byte> data) -> std::expected<Document, Error>;
 
-auto doc = load(bytes);
-if (!doc) {
-    std::println(stderr, "load failed: {}", doc.error().message);
-    return;
+void open(std::span<const std::byte> bytes) {
+    auto doc = load(bytes);
+    if (!doc) {
+        std::println(stderr, "load failed: {}", doc.error().message);
+        return;
+    }
+    use(*doc);
 }
-use(*doc);
 ```
 
-```cpp nocompile
+```cpp needs=contracts
+struct ObjId {}; struct ScalarValue {}; std::size_t length(ObjId);
+
 void set(ObjId obj, std::size_t index, ScalarValue v)
     pre(index < length(obj));          // C++26; use assert() before that
 ```
@@ -210,7 +231,9 @@ Types should be copyable, movable, and comparable — they behave like `int`.
 If copying is expensive, make the type cheap to move (`noexcept` move
 operations) and document it.
 
-```cpp nocompile
+```cpp
+using ActorId = std::array<std::uint8_t, 16>;
+
 struct OpId {
     std::uint64_t counter;
     ActorId actor;
@@ -220,13 +243,18 @@ struct OpId {
 
 ### `const` by default
 
-```cpp nocompile
-const auto result = compute();          // can't be accidentally reassigned
+```cpp
+struct Config { static Config defaults(); static Config from_file(std::string_view); };
+int compute();
 
-const auto config = [&] {               // complex init, still const
-    if (use_defaults) return Config::defaults();
-    return Config::from_file(path);
-}();
+void init(bool use_defaults, std::string_view path) {
+    const auto result = compute();          // can't be accidentally reassigned
+
+    const auto config = [&] {               // complex init, still const
+        if (use_defaults) return Config::defaults();
+        return Config::from_file(path);
+    }();
+}
 ```
 
 **But not for data members of value types.** A `const` or reference data
@@ -235,9 +263,9 @@ sorted in a vector, or moved-from efficiently. Make *locals* and *member
 functions* `const`; keep data members non-`const` and protect invariants with
 `private` (Abseil [#177](https://abseil.io/tips/177)).
 
-```cpp nocompile
-struct Point { const int x, y; };   // BAD: Point can't be assigned
-struct Point { int x, y; };         // GOOD: a regular value type
+```cpp
+struct BadPoint { const int x, y; };   // BAD: BadPoint can't be assigned
+struct Point { int x, y; };            // GOOD: a regular value type
 ```
 
 ### Explicit mutation boundaries
@@ -247,6 +275,7 @@ read operations, and all writes go through a function that hands a mutable
 handle to a callable.
 
 ```cpp nocompile
+// automerge-cpp's API (third-party), shown for the pattern
 auto doc = Document{};
 doc.transact([](Transaction& tx) {
     tx.put(root, "name", "Alice");
@@ -262,11 +291,11 @@ or nothing.
 - **No deep hierarchies for data.** A struct *contains* parts; a variant *is
   one of* alternatives. Neither needs virtual dispatch.
 
-  ```cpp nocompile
+  ```cpp
   // BAD — polymorphism used to model data
-  class Value { public: virtual ~Value() = default; };
-  class IntValue : public Value { int v; };
-  class StrValue : public Value { std::string v; };
+  class ValueBase { public: virtual ~ValueBase() = default; };
+  class IntValue : public ValueBase { int v; };
+  class StrValue : public ValueBase { std::string v; };
 
   // GOOD — closed set, no heap, visitable
   using Value = std::variant<int, std::string>;
@@ -275,7 +304,9 @@ or nothing.
 - **Concepts for generic interfaces.** When several types share an interface,
   a concept gives compile-time checking with no virtual call.
 
-  ```cpp nocompile
+  ```cpp
+  struct ObjId {}; using Prop = std::string; using Value = std::variant<int, std::string>;
+
   template <typename T>
   concept Readable = requires(const T& doc, ObjId obj, Prop key) {
       { doc.get(obj, key) } -> std::same_as<std::optional<Value>>;
@@ -303,9 +334,13 @@ or nothing.
   is 5 the position or the count? Use strong types, a parameter struct with
   designated initializers, or split the function.
 
-  ```cpp nocompile
+  ```cpp
   struct Splice { std::size_t pos; std::size_t del = 0; std::string_view text; };
-  doc.splice(text_obj, {.pos = 5, .text = "hello"});
+  struct Document { void splice(int obj, Splice s); };
+
+  void f(Document& doc, int text_obj) {
+      doc.splice(text_obj, {.pos = 5, .text = "hello"});
+  }
   ```
 
 - **Don't take `const std::optional<T>&` parameters.** It forces callers with

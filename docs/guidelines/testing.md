@@ -83,10 +83,16 @@ handlers.
 
 A libFuzzer harness is one function:
 
-```cpp nocompile
+```cpp
 #include <cstddef>
 #include <cstdint>
 #include <span>
+
+struct Document {   // the type under test
+    static std::optional<Document> load(std::span<const std::byte>);
+    std::vector<std::byte> save() const;
+    bool operator==(const Document&) const;
+};
 
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size) {
     const auto bytes = std::as_bytes(std::span{data, size});
@@ -208,7 +214,9 @@ g++ --coverage ... -o tests && ./tests && gcovr --html-details cov.html
 ## Compile-time tests
 
 The [design principles](design-principles.md) promise that misuse fails to
-compile. Test that promise.
+compile. Test that promise. The checks below are written against
+automerge-cpp's types (`Document`, `OpId`, `ActorId`, …), so they aren't
+compile-checked here.
 
 **`static_assert` for compile-time facts:**
 

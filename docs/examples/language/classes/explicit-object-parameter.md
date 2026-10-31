@@ -25,7 +25,7 @@ free function.
 
 ## Declaration
 
-```cpp nocompile
+```cpp
 struct S {
     void f(this S& self);                   // like  void f() &
     void g(this const S& self, int x);      // like  void g(int) const &
