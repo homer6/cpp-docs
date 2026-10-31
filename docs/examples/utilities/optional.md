@@ -64,8 +64,9 @@ auto out = n.and_then(validate)        // optional<U>: run only if engaged
   confusion.
 - **Not for "value or error".** If failure carries information, use
   [`expected`](expected.md) (C++23) so the caller learns *why*.
-- **No reference support.** `optional<T&>` isn't in the standard (yet); store a
-  pointer, or `std::reference_wrapper`, if you need optional reference semantics.
+- **References need C++26.** `optional<T&>` is standard since C++26. Before
+  that, store a pointer (or `std::reference_wrapper`) for optional reference
+  semantics.
 
 ## See also
 

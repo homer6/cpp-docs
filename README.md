@@ -37,6 +37,21 @@ docs/examples/
 Each cppreference area becomes a subfolder under `docs/examples/`. New areas get
 added as we work through them.
 
+## Guidelines
+
+The reference tells you what each feature *is*;
+[`docs/guidelines/`](docs/guidelines/README.md) tells you how to *use* it well:
+
+- [Core Guidelines digest](docs/guidelines/core-guidelines.md) — the rules that matter most
+- [Memory & safety](docs/guidelines/safety.md) — profiles, ownership, C++26 hardening
+- [Modern idioms](docs/guidelines/modern-idioms.md) — C++17 → C++26
+- [Design principles](docs/guidelines/design-principles.md) — Ben Deane's composable, hard-to-misuse style
+- [Project conventions](docs/guidelines/project-conventions.md) — naming, layout, tests
+
+Sources and edition dates are in [sources.md](docs/guidelines/sources.md). To
+refresh them or import a new reference, ask Claude to use the
+`refresh-guidelines` skill.
+
 ## How to use these notes
 
 Every page has a consistent shape:

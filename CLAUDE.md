@@ -18,6 +18,18 @@ core language over time.
 - cppreference blocks automated fetches (HTTP 403 from WebFetch). To verify
   facts, use the `perplexity` MCP tools with
   `search_domain_filter: ["cppreference.com"]`.
+- **Exception: `docs/guidelines/`** (opinionated guidance, not reference) may
+  cite its own sources — the C++ Core Guidelines, conference talks, style
+  guides. Each page's sources are recorded in `docs/guidelines/sources.md`.
+  Language/library facts on those pages still follow cppreference.
+
+## Guidelines section
+
+`docs/guidelines/` is about *how to write* C++ well (Core Guidelines digest,
+safety, modern idioms, design principles, project conventions). To refresh it
+against upstream or import a new reference, use the `refresh-guidelines` skill
+(`.claude/skills/refresh-guidelines/`). Keep `docs/guidelines/sources.md`
+updated whenever a guidelines page changes.
 
 ## Layout
 
