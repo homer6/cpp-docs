@@ -113,7 +113,9 @@ The reference tells you what each feature *is*;
 - [Design principles](docs/guidelines/design-principles.md) — Ben Deane's composable, hard-to-misuse style
 - [Project conventions](docs/guidelines/project-conventions.md) — naming, headers, API shape, tests
 - [Industry practice](docs/guidelines/industry-practice.md) — Google/Chromium/LLVM policies, Abseil tips
-- [Tooling](docs/guidelines/tooling.md) — sanitizers, debuggers, core dumps, static analysis
+- [Tooling](docs/guidelines/tooling.md) — sanitizers, suppressions, hardened libraries, static analysis
+- [Debugging](docs/guidelines/debugging.md) — gdb and lldb side by side, core dumps, `std::stacktrace`
+- [Valgrind](docs/guidelines/valgrind.md) — Memcheck, Helgrind and DRD, suppressions, vgdb
 - [Performance tooling](docs/guidelines/performance-tooling.md) — benchmarking, `perf`, flame graphs, heap profiling
 - [Testing](docs/guidelines/testing.md) — frameworks, property-based tests, fuzzing, contracts, coverage
 - [Build and packaging](docs/guidelines/build-and-packaging.md) — CMake, presets, modules, dependencies, flags
