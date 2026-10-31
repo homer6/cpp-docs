@@ -136,6 +136,10 @@ function's interface, so test them:
 
 ```cpp needs=contracts
 int pop(std::vector<int>& v) pre(!v.empty());
+```
+
+```cpp nocompile
+#include <gtest/gtest.h>   // GoogleTest: not compile-checked here
 
 TEST(PopDeathTest, empty_vector_violates_precondition) {
     std::vector<int> v;
@@ -155,11 +159,18 @@ declares none, so you choose its exception specification (P2900R14
 [basic.contract.handler]):
 
 ```cpp needs=contracts
-void handle_contract_violation(const std::contracts::contract_violation& v) {
-    throw contract_failed{v.location()};   // your own exception type
-}
+#include <contracts>
+#include <source_location>
 
-TEST(Pop, empty_vector_violates_precondition) {
+struct contract_failed { std::source_location where; };   // your own type
+
+void handle_contract_violation(const std::contracts::contract_violation& v) {
+    throw contract_failed{v.location()};
+}
+```
+
+```cpp nocompile
+TEST(Pop, empty_vector_violates_precondition) {   // GoogleTest, as above
     std::vector<int> v;
     EXPECT_THROW(pop(v), contract_failed);   // no death test needed
 }
