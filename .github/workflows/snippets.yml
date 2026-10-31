@@ -17,8 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Guidelines (blocking)
         run: python3 tools/check_snippets.py docs/guidelines --cxx g++
-      - name: C++26 feature blocks (report only)
-        continue-on-error: true
+      - name: C++26 feature blocks (blocking)
         run: >
           python3 tools/check_snippets.py docs/guidelines --cxx g++
           --enable contracts --enable reflection --flag=-freflection

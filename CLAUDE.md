@@ -112,6 +112,9 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 | ` ```cpp nocompile ` | Deliberately wrong (BAD examples) or depends on undeclared context |
 | ` ```cpp needs=reflection ` | Needs a feature not every CI compiler has (`contracts`, `reflection`, `execution`, …) |
 
+`needs=` blocks are checked (blocking) in the GCC job with the features GCC 16
+has enabled (`contracts`, `reflection`); the Clang job skips them.
+
 Prefer making a snippet self-contained over tagging it `nocompile`. Run locally:
 `python3 tools/check_snippets.py docs/guidelines --cxx g++-15`.
 
