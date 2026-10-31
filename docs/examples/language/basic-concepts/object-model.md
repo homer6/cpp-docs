@@ -29,6 +29,45 @@ const std::string& r = make();   // a temporary bound to a const ref is lifetime
 std::string_view sv = make();    // NOT extended — dangles immediately (view, not a ref)
 ```
 
+A temporary normally dies at the end of the full-expression. Binding it
+**directly** to a `const T&` or `T&&` (including through member access, as in
+`const int& x = std::pair{1, 2}.first;`) extends it to the reference's
+lifetime. Anything in between breaks the chain:
+
+```cpp nocompile
+const int& m = std::min(1, 2);   // dangles: min returns a reference, not the temporary
+```
+
+- **Returning** a reference to a temporary never extends it; in C++26 (P2748)
+  `const std::string& f() { return std::string{}; }` is ill-formed. GCC 15 and
+  Clang 22 reject it with `-std=c++26` and only warn in C++23.
+- **Range-`for`** (C++23, P2718): every temporary in the range initializer
+  lives until the loop ends, so `for (int x : make_holder().items())` no longer
+  dangles. GCC 15 and Clang 22 implement it (`__cpp_range_based_for >= 202211L`).
+
+## Implicit-lifetime types
+
+Some types are simple enough that an object can come into existence
+**without a constructor call**: scalars, arrays, aggregates (whose destructor
+isn't user-provided), and classes with a trivial eligible constructor and a
+trivial, non-deleted destructor. Operations that create storage
+(`std::malloc`, `operator new`, `std::allocator::allocate`) or copy bytes
+(`std::memcpy`, `std::memmove`) implicitly create such objects there, if that
+gives the program defined behaviour (C++20, P0593, applied as a defect report).
+
+```cpp body
+struct Point { int x, y; };                                    // implicit-lifetime
+auto* p = static_cast<Point*>(std::malloc(sizeof(Point)));     // a Point now exists
+p->x = 1; p->y = 2;                                            // defined
+std::free(p);
+```
+
+The same code with `std::string` is UB: it has a non-trivial constructor, so
+construct it with placement `new` or `std::construct_at`. To check a type use
+`std::is_implicit_lifetime` (C++23; in libc++ 22 and libstdc++ 16, not
+libstdc++ 15). To reinterpret an existing buffer, use
+[`std::start_lifetime_as`](../../memory/raw-memory.md#stdstart_lifetime_as-c23).
+
 ## `main` — the entry point
 
 ```cpp
@@ -71,6 +110,8 @@ int main(int argc, char* argv[]) { /* ... */ }// command-line args
   common dangling bug.
 - **Temporary lifetime extension only applies to binding to a `const&` (or `&&`)
   directly** — not through a function, not to a `string_view`/`span`.
+- **Uninitialized locals:** reading one is
+  [erroneous behaviour](erroneous-behaviour.md) in C++26, not UB, but still a bug.
 - **Static init order across TUs is unspecified.** Use the "construct on first
   use" idiom (a function-local `static`) for cross-TU dependencies.
 - **`int main`, not `void main`.** `void main` is non-standard despite some
@@ -80,4 +121,7 @@ int main(int argc, char* argv[]) { /* ... */ }// command-line args
 
 - [Object — cppreference](https://en.cppreference.com/w/cpp/language/object)
 - [Lifetime — cppreference](https://en.cppreference.com/w/cpp/language/lifetime)
+- [Reference initialization (lifetime of a temporary) — cppreference](https://en.cppreference.com/w/cpp/language/reference_initialization#Lifetime_of_a_temporary)
+- [std::is_implicit_lifetime — cppreference](https://en.cppreference.com/w/cpp/types/is_implicit_lifetime)
+- [P0593R6: Implicit creation of objects for low-level object manipulation](https://wg21.link/p0593r6)
 - [main function — cppreference](https://en.cppreference.com/w/cpp/language/main_function)

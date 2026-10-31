@@ -77,8 +77,42 @@ A class with a pure virtual (`= 0`) function can't be instantiated; it defines a
 interface derived classes must implement. An interface is typically all pure
 virtuals plus a virtual destructor.
 
+## Multiple inheritance & virtual bases (the diamond)
+
+With plain multiple inheritance, a shared base appears **once per path**, and
+naming its members is ambiguous:
+
+```cpp compile-fail="ambiguous|multiple"
+struct Device { int id = 0; };
+struct Scanner : Device {};
+struct Printer : Device {};
+struct Copier  : Scanner, Printer {};          // two Device subobjects
+
+int get(Copier& c) { return c.id; }            // error: which Device::id?
+```
+
+Inheriting `virtual`ly shares one base subobject among all paths. The
+**most-derived class** constructs it, and the intermediate classes'
+initializers for it are skipped:
+
+```cpp
+struct Device { int id; explicit Device(int i = 0) : id{i} {} };
+struct Scanner : virtual Device { Scanner() : Device{1} {} };
+struct Printer : virtual Device { Printer() : Device{2} {} };
+struct Copier  : Scanner, Printer { Copier() : Device{3} {} };
+
+int id = Copier{}.id;                          // 3: one Device, built by Copier
+```
+
+Virtual bases cost an extra indirection to reach, and you can't `static_cast`
+down from one (use `dynamic_cast`). Reserve them for interface-like bases that
+genuinely appear on several paths.
+
 ## Gotchas
 
+- **A virtual base is initialized by the most-derived class.** If it lacks a
+  default constructor, every non-abstract class below it must name it in its
+  member-init list.
 - **A polymorphic base needs a `virtual` destructor.** `delete`ing a `Derived`
   through a `Base*` with a non-virtual destructor is UB (the derived destructor
   won't run). Give every base with virtuals a `virtual ~Base() = default;`.
@@ -99,3 +133,4 @@ virtuals plus a virtual destructor.
 - [Derived classes — cppreference](https://en.cppreference.com/w/cpp/language/derived_class)
 - [virtual functions — cppreference](https://en.cppreference.com/w/cpp/language/virtual)
 - [override / final — cppreference](https://en.cppreference.com/w/cpp/language/override)
+- [Virtual base classes — cppreference](https://en.cppreference.com/w/cpp/language/derived_class#Virtual_base_classes)

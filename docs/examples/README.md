@@ -34,7 +34,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 
 | Area | Status | What's in it |
 |---|---|---|
-| [Basic concepts](language/basic-concepts/README.md) | ✅ | comments, keywords, types, names/lookup, storage/linkage, `main`, freestanding |
+| [Basic concepts](language/basic-concepts/README.md) | ✅ | comments, keywords, types, names/lookup, storage/linkage, object lifetime, erroneous behaviour, `main`, freestanding |
 | [Expressions](language/expressions/README.md) | ✅ | value categories, operators, conversions, literals, constant exprs |
 | [Statements](language/statements/README.md) | ✅ | `if`/`switch`, loops, range-`for`, `break`/`continue`/`return`/`goto` |
 | [Declarations & initialization](language/declarations-initialization/README.md) | ✅ | `auto`, `const`/`constexpr`, the many initializations |

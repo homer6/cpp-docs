@@ -20,6 +20,24 @@ struct Serializer<bool> {
 `std::hash`, `std::formatter`, and friends are customized exactly this way — you
 fully specialize the library template for your type.
 
+Function templates can be fully specialized too, but an ordinary overload is
+usually what you want:
+
+```cpp
+template<class T> const char* kind(T)  { return "T";  }   // primary #1
+template<class T> const char* kind(T*) { return "T*"; }   // primary #2 (an overload)
+template<> const char* kind<int*>(int*) { return "int* specialization"; }  // specializes #1
+
+const char* kind(double) { return "double overload"; }    // plain overload
+
+int i = 0;
+const char* r = kind(&i);   // "T*": overload resolution picks #2, never sees #1's specialization
+```
+
+Overload resolution only looks at primary templates and non-templates; a
+specialization is used only if its primary wins. That makes function
+specializations surprising, so overload instead.
+
 ## Partial specialization (class templates only)
 
 Specialize for a *pattern* of arguments (e.g. "any pointer", "any vector"):

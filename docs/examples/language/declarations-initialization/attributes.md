@@ -57,6 +57,30 @@ void dispatch(const int* ptr, int n) {
 }
 ```
 
+## `[[assume(expr)]]` (C++23)
+
+The expression is **never evaluated**; the compiler may assume it would be
+`true` at that point and optimize accordingly.
+
+```cpp
+int div16(int x) {
+    [[assume(x >= 0)]];          // lets x / 16 compile to a plain shift
+    return x / 16;
+}
+
+int count_calls() {
+    int count = 0;
+    [[assume(++count > 0)]];     // not evaluated: count stays 0
+    return count;                // 0 (Clang warns -Wassume: side effects ignored)
+}
+```
+
+It must be an empty statement of its own, and the expression must convert to
+`bool`. GCC 15 and Clang 22 both support it (`__has_cpp_attribute(assume) ==
+202207L`). If the condition could ever be false, the program has undefined
+behaviour, so it's a promise, not a check: use `assert` or
+[contracts](../basic-concepts/contracts.md) for checks.
+
 ## Gotchas
 
 - **`[[nodiscard]]` is high-value** on functions whose result must be used — error
@@ -76,3 +100,4 @@ void dispatch(const int* ptr, int n) {
 - [Attribute specifier sequence — cppreference](https://en.cppreference.com/w/cpp/language/attributes)
 - [`[[nodiscard]]` — cppreference](https://en.cppreference.com/w/cpp/language/attributes/nodiscard)
 - [`[[likely]]` / `[[unlikely]]` — cppreference](https://en.cppreference.com/w/cpp/language/attributes/likely)
+- [`[[assume]]` — cppreference](https://en.cppreference.com/w/cpp/language/attributes/assume)

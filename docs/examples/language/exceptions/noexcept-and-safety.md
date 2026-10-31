@@ -16,6 +16,28 @@ void swap(T& a, T& b) noexcept(std::is_nothrow_move_constructible_v<T>);  // con
 If a `noexcept` function *does* throw, the program calls `std::terminate` — no
 unwinding. It's a hard promise, not a hint.
 
+## The noexcept operator
+
+`noexcept(expr)` is a compile-time `bool`: `false` if `expr` could throw
+(it calls something not declared non-throwing, or contains a `throw`),
+otherwise `true`. Like `sizeof`, it doesn't evaluate `expr`.
+
+```cpp
+void may_throw();
+void wont_throw() noexcept;
+
+static_assert(!noexcept(may_throw()));
+static_assert( noexcept(wont_throw()));
+static_assert( noexcept(1 + 1));                               // built-ins don't throw
+static_assert(!noexcept(std::vector<int>{}.push_back(1)));     // may allocate
+
+template<class T>                                              // the noexcept(noexcept(...)) idiom
+void exchange_values(T& a, T& b) noexcept(noexcept(T(std::move(a))) && noexcept(a = std::move(b)));
+```
+
+The outer `noexcept(...)` is the specifier, the inner one the operator: the
+function promises not to throw exactly when the moves it does can't.
+
 ## Why noexcept matters for moves
 
 The standard library checks `noexcept` to decide whether it can safely move. The
@@ -89,4 +111,5 @@ public:
 ## See also
 
 - [noexcept specifier — cppreference](https://en.cppreference.com/w/cpp/language/noexcept_spec)
+- [noexcept operator — cppreference](https://en.cppreference.com/w/cpp/language/noexcept)
 - [Exceptions (safety) — cppreference](https://en.cppreference.com/w/cpp/language/exceptions)

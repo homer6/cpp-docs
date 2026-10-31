@@ -74,3 +74,21 @@ TEST(Lambdas, ThisVersusStarThis) {
     EXPECT_EQ(copy(), 1);
     EXPECT_EQ(ptr(), 2);
 }
+
+namespace {
+template <class... Ts> auto sum_later(Ts... xs) {
+    return [... xs = std::move(xs)] { return (xs + ...); };
+}
+int global_hits = 0;
+}  // namespace
+
+// "Captures": C++20 pack init-capture, structured-binding capture; globals aren't captured.
+TEST(Lambdas, Cxx20CaptureForms) {
+    EXPECT_EQ(sum_later(1, 2, 3)(), 6);
+    auto [x, y] = std::pair{1, 2};
+    auto add = [x, y] { return x + y; };
+    EXPECT_EQ(add(), 3);
+    auto bump = [] { return ++global_hits; };
+    bump();
+    EXPECT_EQ(global_hits, 1);
+}

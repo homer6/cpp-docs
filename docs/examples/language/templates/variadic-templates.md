@@ -73,7 +73,15 @@ void f(Ts... args) {
 ```
 
 `pack...[i]` indexes the type pack `Ts` or value pack `args`. The index must be a
-constant expression in range `[0, sizeof...(pack))`.
+constant expression in range `[0, sizeof...(pack))`; out of range is a compile
+error. It works anywhere a type or expression does, such as an alias:
+
+```cpp
+template<class... Ts> using first_t = Ts...[0];
+static_assert(std::is_same_v<first_t<int, double>, int>);
+```
+
+GCC 15 and Clang 22 implement it (`__cpp_pack_indexing == 202311L`).
 
 Folds replaced most recursion, but it's still needed when each step does
 something stateful or type-dependent.
@@ -95,3 +103,4 @@ something stateful or type-dependent.
 
 - [Parameter pack — cppreference](https://en.cppreference.com/w/cpp/language/parameter_pack)
 - [Fold expressions — cppreference](https://en.cppreference.com/w/cpp/language/fold)
+- [Pack indexing — cppreference](https://en.cppreference.com/w/cpp/language/pack_indexing)
