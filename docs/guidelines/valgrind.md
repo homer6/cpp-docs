@@ -14,8 +14,8 @@ Docker image, GCC 16); output is trimmed.
 
 **Platforms:** Linux (x86-64 is the primary target; ARM64, x86, PowerPC,
 s390x, MIPS and RISC-V are supported), FreeBSD, Solaris/illumos and Android.
-macOS support stops at macOS 11 on Intel — there is no Apple Silicon port —
-and Windows isn't supported
+macOS support is Intel only — upstream has no Apple Silicon port — and
+Windows isn't supported
 ([platforms](https://valgrind.org/info/platforms.html)). On a Mac, run it in a
 Linux container.
 
@@ -24,7 +24,7 @@ Linux container.
 | Prefer Valgrind when… | Prefer ASan when… |
 |---|---|
 | You can't rebuild the binary or some of its libraries | You can rebuild everything — it's ~2× slower instead of 20–30× |
-| You want uninitialized-value reports without MSan's "instrument everything" rule | You need stack and global buffer overflows (Memcheck missed both here; it checks heap blocks) |
+| You want uninitialized-value reports without MSan's "instrument everything" rule | You need stack and global buffer overflows (Memcheck missed both here; its FAQ says it can't check them) |
 | You want a second opinion on a sanitizer-clean run | You're on macOS or Windows, or want it on every test run |
 
 Don't combine them: a sanitized binary under Valgrind stops at startup

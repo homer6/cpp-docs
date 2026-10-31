@@ -152,7 +152,7 @@ for each build on purpose:
 
 **UBSan suppressions only cover recoverable checks:** under
 `-fno-sanitize-recover=all` a suppressed overflow still aborted (Clang 22,
-GCC 16), and the minimal runtime ignores them. To suppress and still fail CI,
+GCC 16), and the minimal runtime doesn't read `UBSAN_OPTIONS` at all. To suppress and still fail CI,
 keep the checks recoverable and run with `UBSAN_OPTIONS=halt_on_error=1`.
 
 Don't ship the full UBSan runtime: Clang's docs say it's meant for testing and
@@ -177,23 +177,32 @@ clang++ -O1 -g -fsanitize=thread app.cpp
 - A TSan report shows both conflicting accesses and the stacks that created the
   threads. Fix the design (CP.2, CP.3), not just the line.
 - A report makes the process exit with 66 on Linux; on macOS it aborts
-  (exit 134).
+  (exit 134), because `abort_on_error` defaults to on for Apple targets —
+  `TSAN_OPTIONS=abort_on_error=0` gives 66 there too.
 
 ## LeakSanitizer (LSan)
 
 ASan includes LeakSanitizer. For leak checking alone, link with
 `-fsanitize=leak` (`clang++ -g -fsanitize=leak app.cpp`); it adds almost no
-overhead and reports at exit, with exit code 23. **Homebrew GCC 15 on macOS**
-accepts `-fsanitize=leak` but links no runtime, so nothing is reported, and its
-other sanitizers fail to link (`library 'asan' not found`) — use Clang there.
+overhead and reports at exit, with exit code 23. Leaks found by ASan exit with
+ASan's code, 1, so don't make CI look for 23. Leak checking doesn't work under
+ptrace (a debugger or `strace`): LSan stops with a fatal error instead.
+
+**Homebrew GCC on macOS:** GCC 15.2 ships no sanitizer runtimes — it accepts
+`-fsanitize=leak` but links nothing, so nothing is reported, and the others
+fail to link (`library 'asan' not found`). The GCC 16.2 arm64 bottle adds
+`libasan` and `libubsan` but still has no TSan or LSan runtime. Use Clang
+there.
 
 ## HWASan — ASan with hardware tags
 
 `-fsanitize=hwaddress` finds ASan's bug classes by tagging the top byte of
 each pointer, with much less memory overhead; detection is probabilistic (a
 tag can match by chance). It targets **64-bit AArch64** (Linux, Android);
-Clang's x86-64 mode tags only the heap and is unsafe with `fork`, and GCC
-needs `-mlam=u48`/`u57` on x86-64. Can't be combined with ASan or TSan.
+Clang also lists Linux RISC-V 64 and, experimentally, x86-64 with Intel LAM
+(GCC needs `-mlam=u48`/`u57`). Linux has disabled LAM since 6.12 (and 6.6.59,
+6.11.6) unless the kernel is built without CPU mitigations, so x86-64 HWASan
+needs a custom kernel. Can't be combined with ASan or TSan.
 
 ## MemorySanitizer (MSan) — Clang only
 
@@ -229,7 +238,7 @@ and GCC docs add:
 | ASan, UBSan | ✅ | ✅ | Linux x86-64, Windows (MSVC ASan) |
 | TSan | ✅ | ✅ | Linux x86-64 and PowerPC64, Android, FreeBSD, NetBSD |
 | LSan (standalone) | ✅ | ✅ | Android, Fuchsia, NetBSD |
-| HWASan | ✅ | ❌ unsupported | Android; x86-64 limited |
+| HWASan | ✅ | ❌ unsupported | Android, Linux RISC-V 64; x86-64 experimental |
 | MSan | ✅ (Clang only) | ❌ unsupported | Linux x86-64, FreeBSD, NetBSD |
 
 ## Hardened standard library in debug builds

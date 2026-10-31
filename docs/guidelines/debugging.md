@@ -17,7 +17,9 @@ code shows variables as `<optimized out>` and jumps between lines.
 `-gsplit-dwarf` writes debug info to `.dwo` files and speeds up linking large
 projects. On macOS the debug info lives in a `.dSYM` bundle next to the
 binary: copy the binary without it and `file:line` breakpoints don't resolve.
-On macOS, use lldb; Homebrew's gdb needs codesigning to debug anything.
+On macOS, use lldb: gdb has no native Apple Silicon support (its Darwin
+port is x86 only, and Homebrew builds the arm64 gdb for an x86-64 target),
+and on Intel Macs it needs codesigning.
 
 ## Command map
 
@@ -30,7 +32,7 @@ On macOS, use lldb; Homebrew's gdb needs codesigning to debug anything.
 | Every instantiation (regex) | `rbreak ^scale<` | `br set -r '^scale<'` |
 | One-shot breakpoint | `tbreak check` | `br set -n check -o true` |
 | Stop when an exception is thrown | `catch throw` | `br set -E c++` |
-| … when it's caught | `catch catch` | `br set -E c++ -h true` |
+| … when it's caught | `catch catch` | `br set -E c++ -w false -h true` |
 | Stop when a variable changes | `watch total` | `watchpoint set variable total` |
 | … only past a value | `watch total if total > 150` | `watchpoint modify -c 'total > 150' 1` |
 | Backtrace, all threads | `bt`, `thread apply all bt` | `bt`, `bt all` |
@@ -69,6 +71,8 @@ Catchpoint 2 (exception thrown), 0x0000fffff7cb2f3c in __cxa_throw () from libst
 
 gdb takes a regex for the type: `catch throw std::runtime_error`. LLDB 22 has
 no type filter for C++ exceptions; stop on every throw and read the backtrace.
+In lldb, `-h true` alone stops on the throw *and* the catch
+(`__cxa_begin_catch`); add `-w false` to stop only where it's caught.
 
 **Watchpoints** stop on the write that changes a value — the fastest way to
 find who corrupts a field. They're hardware-backed and few (LLDB reports 4 on
@@ -100,8 +104,9 @@ $3 = std::map with 2 elements = {["a"] = 1, ["b"] = 2}
 - **Stepping:** `step` into `v[i]` lands in library code. LLDB skips functions
   matching `target.process.thread.step-avoid-regexp` (default `^std::`).
   libstdc++'s gdb script adds `skip` entries for `std::move`, `std::forward`,
-  smart-pointer accessors and container `begin`/`size`/`operator[]` (GCC 16
-  checked; `info skip` lists them). Add your own with
+  smart-pointer accessors and container `begin`/`size`/`operator[]` (since
+  GCC 15, PR118260; present in 15.2 and 16, absent in 14; `info skip` lists
+  them). Add your own with
   `skip -gfi '/usr/include/c++/*/bits/*'`.
 
 ## Attaching, startup files, TUI
@@ -139,6 +144,9 @@ Where the file goes depends on `/proc/sys/kernel/core_pattern` (`core` in the
 on cores too. `gcore` (gdb) and `process save-core` (lldb) write a core of a
 live process without killing it — handy for a hung service. On macOS a crash
 left no core here even with `ulimit -c unlimited`; `process save-core` worked.
+Sanitizers turn core dumps off on 64-bit targets (`disable_coredump=1`); to
+get one from an ASan failure, run with
+`ASAN_OPTIONS=disable_coredump=0:abort_on_error=1`.
 
 Keep the exact binary and its debug symbols for every build you ship, or the
 dump is unreadable.
