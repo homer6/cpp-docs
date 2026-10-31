@@ -32,7 +32,8 @@ int main() {
     std::cout.imbue(std::locale{""});
     std::cout << std::fixed << std::setprecision(2);   // grouping needs fixed notation
     std::cout << 1234567.89 << '\n';             // e.g. "1,234,567.89" (en_US) or
-                                                  //      "1.234.567,89" (de_DE)
+                                                  //      "1.234.567,89" (de_DE, glibc;
+                                                  //      macOS's de_DE: "1234567,89")
 
     std::cout.imbue(std::locale::classic());      // the "C" locale: no grouping
     std::cout << 1234567.89 << '\n';             // "1234567.89"

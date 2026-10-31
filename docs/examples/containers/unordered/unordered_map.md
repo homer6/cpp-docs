@@ -86,9 +86,13 @@ int main() {
 
 ```cpp body
 std::unordered_map<int, int> m;
-m.reserve(10'000);               // pre-size buckets for ~10k elements
-m.max_load_factor(0.5f);         // trade memory for fewer collisions
+m.max_load_factor(0.5f);         // trade memory for fewer collisions (set it first)
+m.reserve(10'000);               // pre-size buckets for 10k elements at that load factor
 ```
+
+`reserve(n)` sizes the table for `n` elements under the *current* max load
+factor, so lower the load factor before reserving — the other way round, filling
+to 10k triggers a rehash anyway.
 
 ### Custom key type needs a hash
 

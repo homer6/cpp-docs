@@ -20,7 +20,7 @@ Mirrors [cppreference's strings/text section](https://en.cppreference.com/w/cpp/
   straight to output).
 - **Fastest, locale-independent, round-trippable number ↔ text** → `from_chars`
   / `to_chars`.
-- **Quick-and-dirty number → string** → `std::to_string` (locale-affected,
+- **Quick-and-dirty number → string** → `std::to_string` (locale-affected before C++26,
   allocates) — fine for casual use, but `format`/`to_chars` are better.
 - **Match/replace by pattern** → `<regex>` (note: powerful but slow; for hot
   paths consider hand-written parsing or a faster library).

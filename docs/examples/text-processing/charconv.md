@@ -11,7 +11,7 @@ result struct. These are the building blocks under `std::format` and JSON/CSV
 parsers.
 
 ```
- from_chars: "  123abc"  →  reads "123", value = 123, ptr → "abc"
+ from_chars: "123abc"    →  reads "123", value = 123, ptr → "abc"
  to_chars:   value 255   →  writes "255" into your buffer, ptr → one past
 ```
 
