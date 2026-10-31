@@ -31,6 +31,7 @@ it accurate.
 | `libcxx-hardening` | libc++ hardening modes | https://libcxx.llvm.org/Hardening.html | live page | 2026-10-31 |
 | `msvc-stl-hardening` | Microsoft STL hardening wiki and VS 2022 17.14 STL release notes | https://github.com/microsoft/STL/wiki/STL-Hardening · https://github.com/microsoft/STL/releases/tag/vs-2022-17.14 | wiki (2025) · 17.14 release | 2026-10-31 |
 | `msvc-asan` | Microsoft Learn, AddressSanitizer and known issues | https://learn.microsoft.com/en-us/cpp/sanitizers/asan | ms.date 2026-05-28 | 2026-10-31 |
+| `testing-tools` | GoogleTest, Catch2, doctest, RapidCheck release pages; libFuzzer and llvm-cov docs | https://github.com/google/googletest · https://github.com/catchorg/Catch2 · https://github.com/doctest/doctest · https://github.com/emil-e/rapidcheck · https://llvm.org/docs/LibFuzzer.html | GoogleTest 1.18.0, Catch2 3.16.1, doctest 2.5.3, RapidCheck (no releases; pushed 2026-10-05); P2900R14 for contract testing | 2026-10-31 |
 
 ## Page → sources
 
@@ -44,6 +45,7 @@ it accurate.
 | [performance-tooling.md](performance-tooling.md) | `ccg` (Per, SL.regex), `perf-report`, `gbench`, `perf-man`, `fedora-fp`, `valgrind`, `abseil-totw` (#197) |
 | [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `abseil-totw` |
 | [tooling.md](tooling.md) | `clang-sanitizers`, `gcc-instrumentation`, `libstdcxx-manual`, `libcxx-hardening`, `msvc-stl-hardening`, `msvc-asan`, `valgrind`, `impl-status` |
+| [testing.md](testing.md) | `testing-tools`, `cppref` (contracts), `deane-*` (laws) |
 
 ## Candidate sources (not yet imported)
 
@@ -72,3 +74,5 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-31 | Imported the issue #2 deep-research report (`.firecrawl/reports/issue-2-2026-10-31.md`, a map only). Verified and added: `compare.py` runs a Mann–Whitney U test and its docs ask for at least 9 repetitions (`gbench`); perf `fp`/`dwarf`/`lbr` unwinders, `fp` default, 8192-byte DWARF stack dump, LBR limits (`perf-man`); Fedora's frame-pointer measurements and F38 default, Red Hat's position (`fedora-fp`); Massif and DHAT (`valgrind`). Added a reproducibility checklist and flame-graph labelling advice as house recommendations. Left out as unverified: benchmark-library comparison, profiler licence/platform matrix, current Fedora/Ubuntu frame-pointer policy, continuous-profiling support, LTO/PGO/BOLT speedups. |
 | 2026-10-30 | Added `tooling.md` (issue #1): symptom→tool table, ASan/UBSan/TSan/MSan with flags and slowdowns from the Clang docs, hardened library in debug, gdb/lldb and core dumps, `std::stacktrace`, Valgrind, clang-tidy/clang-format/IWYU. Deep-research prompt: `.claude/skills/refresh-guidelines/prompts/issue-1-tooling.md`. |
 | 2026-10-31 | Imported the issue #1 deep-research report into `tooling.md` (only claims verified against primary sources): sanitizer combination table (GCC manual + Clang/GCC driver tests), GCC ASan enables use-after-scope, GCC pointer-pair checks, UBSan minimal runtime and the full runtime's production warning, TSan/MSan platforms, libstdc++ assertions on at `-O0` since GCC 15, MSVC STL hardening (17.14), MSVC `/fsanitize=address`, `std::stacktrace` link flags by GCC version, Memcheck 20–30×. Report: `.firecrawl/reports/issue-1-2026-10-31.md`. |
+| 2026-10-30 | Added `testing.md` (issue #7): framework comparison, property-based tests, fuzzing, testing contracts, coverage, compile-time tests. Versions from GitHub release APIs. Deep-research prompt: `.claude/skills/refresh-guidelines/prompts/issue-7-testing.md` — import its report before treating the page as final. |
+| 2026-10-31 | Imported the issue #7 deep-research report (`.firecrawl/reports/issue-7-2026-10-31.md`) into `testing.md`. Release versions re-checked against GitHub tags. Throwing contract-violation handler semantics added from P2900R14 §3.6.6 and [basic.contract.handler]. Noted GCC 13 `-fcontracts` is the pre-P2900 design and TSan can't be combined with ASan. Fixed the handler signature in `examples/language/basic-concepts/contracts.md` (`const contract_violation&`). Most of the report was unverified; remaining gaps are listed under "Still open" in the prompt. |
