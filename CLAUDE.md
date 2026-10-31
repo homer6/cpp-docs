@@ -66,6 +66,11 @@ docs/examples/
 ```
 
 Keep `docs/examples/README.md` updated whenever a page is added or finished.
+Then regenerate the root README's clickable index — never edit it by hand:
+`python3 tools/gen_index.py` (titles come from each page's `# ` heading, area
+order and descriptions from `docs/examples/README.md`);
+`python3 tools/gen_index.py --check` fails if it's stale. Run the check before
+every PR that adds, removes, moves or retitles a page.
 
 ## House style for a page
 
