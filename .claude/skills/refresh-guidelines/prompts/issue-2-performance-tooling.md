@@ -24,6 +24,38 @@ where they matter. Today's date is {{DATE}}.
 - bpftrace/BCC one-liners for CPU, memory, disk, network (I link to my own
   collection, perf-report, for these)
 - heaptrack, Compiler Explorer, `-O2` vs `-O3`, LTO, PGO
+- Verified 2026-10-31: `compare.py` runs a Mann–Whitney U test and its docs
+  warn it needs at least 9 repetitions; `--benchmark_enable_random_interleaving`;
+  `--benchmark_min_time=0.5s` / `100x` syntax
+- Verified 2026-10-31: perf `--call-graph fp|dwarf|lbr`, `fp` is the
+  user-space default, DWARF copies 8192 bytes of stack by default
+  (`dwarf,<size>`), LBR is newer-Intel-only, user-space only, and can't be
+  combined with branch-stack sampling
+- Verified 2026-10-31: Fedora's F38 frame-pointer change (accepted, per-package
+  opt-out, re-evaluate by F40) and its F37 measurements (kernel build 2.4%,
+  Blender 2%, CPython 1–10%, openssl/botan/zstd/Redis not significant);
+  Red Hat KB 7041624 (updated 2024-10-09) position
+- Valgrind's heap profilers are Massif and DHAT
+
+## Still open from the last run (prioritize these)
+
+- **Current** frame-pointer policy: did Fedora keep it after the F40 review?
+  Ubuntu (24.04 enabled it on 64-bit?), Arch, Debian — with the official
+  announcement for each.
+- Google Benchmark warm-up option (`--benchmark_min_warmup_time`?) and whether
+  random interleaving is still recommended; nanobench and Catch2 benchmark
+  statistics and maintenance status, from their own docs.
+- Profiler matrix (VTune, uProf, Tracy, Hotspot, samply, Instruments,
+  WPA/ETW): licence, platforms, current release — from each project's own page.
+- Measured overhead numbers for heaptrack, jemalloc/tcmalloc heap profiling,
+  bytehound, with conditions.
+- Continuous profiling for native C++ (Parca, Pyroscope, Cloud Profiler):
+  which unwinders they support (frame pointers only? DWARF? .eh_frame?).
+- LTO/PGO/AutoFDO/BOLT gains **with** benchmark, hardware and baseline from
+  the primary paper or vendor doc (e.g. the BOLT CGO 2019 paper).
+- Top-down analysis: `perf stat --topdown` and `toplev` usage from their docs.
+- Any primary measurements for the C++ cost traps (question 8). The last
+  report found none; say so again rather than guessing.
 
 ## Questions
 
