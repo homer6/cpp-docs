@@ -16,7 +16,32 @@ static_assert(std::is_same_v<std::make_index_sequence<3>,
                              std::index_sequence<0, 1, 2>>);
 ```
 
-## The canonical pattern: call a function with tuple elements
+## Declaration
+
+```cpp
+template<class T, T... Ints> struct integer_sequence;   // static constexpr size() → sizeof...(Ints)
+```
+
+| Alias | Meaning |
+|---|---|
+| `std::index_sequence<Is...>` | `integer_sequence<std::size_t, Is...>` |
+| `std::make_integer_sequence<T, N>` | `integer_sequence<T, 0, 1, …, N-1>` |
+| `std::make_index_sequence<N>` | `index_sequence<0, 1, …, N-1>` |
+| `std::index_sequence_for<Ts...>` | `make_index_sequence<sizeof...(Ts)>` — one index per type |
+
+The object itself is empty; pass it by value just so the helper can deduce
+`Is...`.
+
+## When to use it
+
+- **Fits:** writing your own tuple/array helpers — apply, transform, print or
+  compare element by element; building arrays and tables at compile time.
+- **Anti-fits:** cases `std::apply`, `std::make_from_tuple` or a fold over a
+  parameter pack already cover; and plain runtime loops over a container.
+
+## Examples
+
+### The canonical pattern: call a function with tuple elements
 
 (This is what `std::apply` does internally.)
 
@@ -42,7 +67,7 @@ int six = my_apply([](int a, int b, int c){ return a+b+c; }, std::tuple{1,2,3});
 The `std::get<Is>(t)...` expansion is the whole point: `Is` becomes `0,1,2`, so
 the call is `f(get<0>(t), get<1>(t), get<2>(t))`.
 
-## Building an array from a generator
+### Building an array from a generator
 
 ```cpp
 template<std::size_t... Is>
@@ -51,6 +76,21 @@ constexpr auto squares_impl(std::index_sequence<Is...>) {
 }
 constexpr auto squares = squares_impl(std::make_index_sequence<5>{});  // {0,1,4,9,16}
 ```
+
+### Inline, with a templated lambda (C++20)
+
+```cpp body
+#include <iostream>
+#include <tuple>
+#include <utility>
+
+auto t = std::tuple{1, 'a', 2.5};
+[&]<std::size_t... Is>(std::index_sequence<Is...>) {
+    ((std::cout << (Is ? ", " : "") << std::get<Is>(t)), ...);   // prints 1, a, 2.5
+}(std::make_index_sequence<std::tuple_size_v<decltype(t)>>{});
+```
+
+No named helper needed: the lambda's template parameter list deduces `Is...`.
 
 ## Gotchas
 
@@ -66,3 +106,4 @@ constexpr auto squares = squares_impl(std::make_index_sequence<5>{});  // {0,1,4
 
 - [std::integer_sequence — cppreference](https://en.cppreference.com/w/cpp/utility/integer_sequence)
 - [std::apply — cppreference](https://en.cppreference.com/w/cpp/utility/apply)
+- [Variadic templates](../language/templates/variadic-templates.md)

@@ -10,6 +10,37 @@ compiler creates a small, read-only, contiguous array of the elements and hands
 you a lightweight view of it. It's how `std::vector<int>{1,2,3}` and friends get
 their elements.
 
+```
+ take({1, 2, 3});
+        │
+        ▼  compiler materializes      initializer_list<int>
+   const int __arr[3] = {1, 2, 3}; ◀── { begin pointer, size 3 }   (copied cheaply)
+```
+
+## Declaration
+
+```cpp
+template<class E> class initializer_list;
+```
+
+| Member | Meaning |
+|---|---|
+| `size()` | Number of elements (`constexpr`, `noexcept`) |
+| `begin()`, `end()` | `const E*` to the first / one-past-last element |
+| `std::begin(il)`, `std::end(il)` | Free overloads, so range-for and algorithms work |
+
+There's no public constructor except the empty one: only the compiler makes
+non-empty lists. Copying an `initializer_list` copies the view, not the elements.
+
+## When to use it
+
+- **Fits:** constructors and functions that take "a few values of one type" from
+  a literal list — `Bag{1, 2, 3}`, `max({a, b, c})`.
+- **Anti-fits:** storing the list (copy into a `vector`), move-only element
+  types, and heterogeneous values (a variadic template or
+  [`tuple`](../utilities/tuple.md)). To accept any contiguous range, take a
+  [`span`](../containers/views/span.md) instead.
+
 ## Examples
 
 ### Accepting one
@@ -41,6 +72,15 @@ auto sum = [](std::initializer_list<int> xs){ return std::accumulate(xs.begin(),
 sum({1, 2, 3});                       // 6
 ```
 
+### What `auto` deduces
+
+```cpp body
+auto a = {1, 2, 3};   // std::initializer_list<int>
+auto b{1};            // int (N3922; C++11/14 as published said initializer_list<int>)
+static_assert(std::is_same_v<decltype(a), std::initializer_list<int>>);
+static_assert(std::is_same_v<decltype(b), int>);
+```
+
 ## Gotchas
 
 - **It's the #1 overload-resolution surprise.** `std::vector<int> v(3, 0);` makes
@@ -55,7 +95,17 @@ sum({1, 2, 3});                       // 6
 - **Elements are `const`.** You can read but not modify them through the list, and
   you can't move out of it (so `initializer_list<unique_ptr<T>>` is unusable).
 
+  ```cpp compile-fail="unique_ptr|construct_at"
+  #include <memory>
+  #include <vector>
+  std::vector<std::unique_ptr<int>> v{std::make_unique<int>(1)};  // tries to copy
+  ```
+
+- **Narrowing is an error inside braces:** `std::vector<int>{1, 2.5}` doesn't
+  compile.
+
 ## See also
 
 - [std::initializer_list — cppreference](https://en.cppreference.com/w/cpp/utility/initializer_list)
 - [List initialization — cppreference](https://en.cppreference.com/w/cpp/language/list_initialization)
+- [Initialization](../language/declarations-initialization/initialization.md)
