@@ -80,7 +80,7 @@ void poll(std::future<int>& f) {
   `std::async(...)` future joins at end of scope — `std::async(...)` as a bare
   statement runs synchronously. Keep the future alive intentionally.
 - **A `promise` destroyed without setting a value** makes the future throw
-  `std::broken_promise` at `get()`.
+  `std::future_error` at `get()`, with `code() == std::future_errc::broken_promise`.
 
 ## See also
 

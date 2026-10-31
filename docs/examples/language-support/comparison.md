@@ -66,9 +66,10 @@ if (c == std::strong_ordering::equal) { /* ... */ }
 
 ## Gotchas
 
-- **You usually still need `operator==` too.** `<=>` synthesizes the relational
-  ops but **not** `==`/`!=`; default or define `==` separately (often
-  `= default` alongside).
+- **A hand-written `<=>` doesn't give you `operator==`.** `<=>` synthesizes the
+  relational ops but **not** `==`/`!=`; default or define `==` separately. (A
+  *defaulted* `<=>` also implicitly declares a defaulted `==`, so writing
+  `= default` for both, as above, is explicit but not required.)
 - **Floating-point gives `partial_ordering`** — NaN compares `unordered`, so don't
   assume `!(a < b)` implies `a >= b` for floats.
 - **`<=>` returns an ordering, not a bool.** Comparing the result to `0` (or to a

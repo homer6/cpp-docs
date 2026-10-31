@@ -46,10 +46,12 @@ docs/
       exceptions/            #     throw/try/catch, noexcept and exception safety
       coroutines/  modules/  preprocessor/   # preprocessor includes #embed
   guidelines/                # how to use it well (see below)
-tools/                       # check_snippets.py — compile-checks every ```cpp block
+tests/                       # GoogleTest suite checking each page's claims (see below)
+tools/                       # check_snippets.py — compile-checks every ```cpp block; run_tests.sh
 evals/                       # test cases for the cpp-guidelines agent skill
 .claude/skills/              # cpp-guidelines (apply the guidelines), refresh-guidelines (keep them current)
 modules/                     # submodules: C++ Core Guidelines, perf-report
+CMakeLists.txt  CMakePresets.json   # build for tests/ only
 ```
 
 Every area on cppreference's main page has pages, and every snippet compiles
@@ -102,6 +104,49 @@ python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
 Both must pass cleanly; the list of known failures
 (`tools/snippet_baseline/gcc.txt`) is empty and stays that way. Fence tags (`body`,
 `nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](CLAUDE.md).
+
+## Running the tests
+
+The snippet checker proves the code **compiles**; the GoogleTest suite under
+[`tests/`](tests/) checks that it **does what the pages say** (printed output,
+values in comments, thrown exceptions, type claims). There's no CI; run it
+locally with CMake 3.25+ (presets) and Ninja:
+
+```bash
+tools/run_tests.sh              # gcc-15: Homebrew g++-15, libstdc++
+tools/run_tests.sh clang-22     # Homebrew Clang 22 with libc++
+tools/run_tests.sh gcc-16       # GCC 16 in the gcc:16 Docker image
+tools/run_tests.sh gcc-15 -L containers   # one area (ctest arguments)
+```
+
+`tools/run_tests.sh <preset>` runs `cmake --workflow --preset <preset>`
+(configure → build → test into `build/<preset>/`) and then lists each skipped
+test with its reason, which ctest itself doesn't show. You can also run the
+workflow directly: `cmake --workflow --preset gcc-15`.
+
+- **gcc-15** — `CMAKE_CXX_COMPILER=g++-15`.
+- **clang-22** — `/opt/homebrew/opt/llvm/bin/clang++ -stdlib=libc++`, linked
+  with `-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind
+  -lunwind` plus matching `-rpath`s, so the binaries use Homebrew's libc++
+  (whose headers they were compiled against) rather than the older system one
+  in `/usr/lib`.
+- **gcc-16** — runs inside Docker. The `gcc:16` image (arm64-native, Debian
+  trixie) has `g++` 16.2 and git but no CMake or Ninja, so the script installs
+  them from Debian (CMake 3.31) before running the workflow:
+
+  ```bash
+  docker run --rm -v "$PWD":/w -w /w gcc:16 bash -c \
+    'apt-get update -qq && apt-get install -y -qq --no-install-recommends cmake ninja-build && cmake --workflow --preset gcc-16'
+  ```
+
+GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests
+mirror the pages: `docs/examples/<area>/.../<page>.md` is checked by
+`tests/<area>/.../<page>_test.cpp`, and each area folder builds into one
+executable (`examples_containers_tests`, `examples_text_processing_tests`, …;
+`examples_tests` builds them all). Helpers in [`tests/support/`](tests/support/):
+`capture.hpp` captures what `std::cout`, `printf` and `std::print` write, and
+`feature.hpp` provides `CPPDOCS_REQUIRE(__cpp_lib_x)`, which skips a test with
+the missing feature's name when a toolchain doesn't define the macro.
 
 ## Conventions
 
