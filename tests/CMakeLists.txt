@@ -26,6 +26,13 @@ add_executable(cppdocs_support_tests support/support_test.cpp)
 target_link_libraries(cppdocs_support_tests PRIVATE cppdocs_support)
 gtest_discover_tests(cppdocs_support_tests PROPERTIES LABELS support DISCOVERY_TIMEOUT 60)
 
+# Reflection (P2996) is behind -freflection on GCC 16; enable it only for the
+# file that tests docs/examples/language/expressions/reflection.md (#47).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+  set_source_files_properties(language/expressions/reflection_test.cpp
+                              PROPERTIES COMPILE_OPTIONS -freflection)
+endif()
+
 add_custom_target(examples_tests)
 add_dependencies(examples_tests cppdocs_support_tests)
 

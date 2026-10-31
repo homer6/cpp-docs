@@ -4,8 +4,15 @@
 #include <cstdint>
 #include <limits>
 #include <type_traits>
+#include <utility>
+#include <version>
+#if __has_include(<stdfloat>)
+#include <stdfloat>
+#endif
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "Sizes are minimums, not fixed": int has at least 16 bits; <cstdint> aliases are exact.
 TEST(FundamentalTypes, SizesAndFixedWidthAliases) {
@@ -44,4 +51,55 @@ TEST(FundamentalTypes, UnsignedWraps) {
     --u;
     EXPECT_EQ(u, std::numeric_limits<unsigned>::max());
     EXPECT_EQ(u + 1u, 0u);
+}
+
+// "The categories": void, nullptr_t, and the arithmetic tree (integral = bool/char/int, floating).
+TEST(FundamentalTypes, Categories) {
+    static_assert(std::is_void_v<void>);
+    static_assert(std::is_same_v<decltype(nullptr), std::nullptr_t> && std::is_null_pointer_v<std::nullptr_t>);
+    static_assert(std::is_integral_v<bool> && std::is_integral_v<wchar_t> && std::is_integral_v<char8_t> &&
+                  std::is_integral_v<char16_t> && std::is_integral_v<char32_t> && std::is_integral_v<long long>);
+    static_assert(std::is_floating_point_v<float> && std::is_floating_point_v<long double>);
+    static_assert(std::is_arithmetic_v<bool> && std::is_arithmetic_v<double> && !std::is_arithmetic_v<std::nullptr_t>);
+    static_assert(!std::is_arithmetic_v<std::byte>);  // "Gotchas": std::byte is raw memory, not a number
+}
+
+// "The categories": the C++23 extended floating-point types.
+TEST(FundamentalTypes, ExtendedFloatingPoint) {
+    CPPDOCS_REQUIRE(__STDCPP_FLOAT32_T__);
+#if defined(__STDCPP_FLOAT32_T__) && __has_include(<stdfloat>)
+    static_assert(std::is_floating_point_v<std::float32_t> && !std::is_same_v<std::float32_t, float>);
+    static_assert(std::numeric_limits<std::float64_t>::digits == 53);
+#endif
+#if defined(__STDCPP_FLOAT16_T__) && defined(__STDCPP_BFLOAT16_T__) && __has_include(<stdfloat>)
+    static_assert(std::numeric_limits<std::float16_t>::digits == 11);
+    static_assert(std::numeric_limits<std::bfloat16_t>::digits == 8);
+#endif
+}
+
+// "Initialization defaults & the bool/char notes": bool holds only true/false and is 1 byte;
+// plain char's signedness is implementation-defined.
+TEST(FundamentalTypes, BoolAndCharNotes) {
+    bool b = true;
+    EXPECT_EQ(static_cast<int>(b), 1);
+    EXPECT_EQ(sizeof(bool), 1u);  // implementation-defined; 1 on every toolchain here
+    static_assert(std::is_signed_v<char> == (CHAR_MIN < 0));
+    static_assert(std::is_signed_v<signed char> && std::is_unsigned_v<unsigned char>);
+    char c = 'A';
+    EXPECT_EQ(c, 65);
+}
+
+// "Type sizes and properties at compile time" / "Gotchas": sizeof, alignof, numeric_limits;
+// std::cmp_less fixes mixed signed/unsigned comparison.
+TEST(FundamentalTypes, CompileTimePropertiesAndCmpLess) {
+    static_assert(sizeof(int) * CHAR_BIT == std::numeric_limits<int>::digits + 1);
+    static_assert(alignof(double) <= sizeof(double));
+    static_assert(std::numeric_limits<int>::max() == INT_MAX);
+    int neg = -1;
+    unsigned one = 1;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+    EXPECT_FALSE(neg < one);  // -1 converts to UINT_MAX: the classic bug
+#pragma GCC diagnostic pop
+    EXPECT_TRUE(std::cmp_less(neg, one));
 }

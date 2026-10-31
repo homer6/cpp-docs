@@ -19,6 +19,21 @@ template <class T> constexpr const char* category<T&&> = "xvalue";
 #define CATEGORY(...) category<decltype((__VA_ARGS__))>
 
 std::string named_rref(std::string&& x) { return sink(x); }
+std::string forwarded_rref(std::string&& x) { return sink(std::move(x)); }
+
+struct Moves {
+    static inline int moves = 0;
+    Moves() = default;
+    Moves(const Moves&) = default;
+    Moves(Moves&&) noexcept { ++moves; }
+};
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wpessimizing-move"
+#else
+#pragma GCC diagnostic ignored "-Wpessimizing-move"
+#endif
+Moves make_plain() { Moves m; return m; }
+Moves make_moved() { Moves m; return std::move(m); }  // the page's anti-pattern
 }  // namespace
 
 // "The taxonomy": examples of each category, checked with decltype((expr)).
@@ -60,4 +75,36 @@ TEST(ValueCategories, ForwardingReferenceDeduction) {
 // "Gotchas": a named rvalue reference is itself an lvalue.
 TEST(ValueCategories, NamedRvalueReferenceIsLvalue) {
     EXPECT_EQ(named_rref(std::string{"x"}), "const&");
+}
+
+// "Reference binding rules": int& takes lvalues only, int&& rvalues only, const int& anything.
+TEST(ValueCategories, ReferenceBindingRules) {
+    static_assert(std::is_constructible_v<int&, int&>);
+    static_assert(!std::is_constructible_v<int&, int>);   // int& a = 42; is ill-formed
+    static_assert(std::is_constructible_v<int&&, int>);
+    static_assert(!std::is_constructible_v<int&&, int&>);  // int&& c = x; is ill-formed
+    static_assert(std::is_constructible_v<const int&, int>);
+    static_assert(std::is_constructible_v<const int&, int&>);
+}
+
+// "Why it matters": std::move is only a cast to an xvalue; it doesn't move anything.
+TEST(ValueCategories, StdMoveIsACast) {
+    std::string s = "kept";
+    static_assert(std::is_same_v<decltype(std::move(s)), std::string&&>);
+    [[maybe_unused]] std::string&& r = std::move(s);
+    EXPECT_EQ(s, "kept");  // nothing moved: no move overload was selected
+    EXPECT_EQ(forwarded_rref(std::string{"x"}), "&&");  // std::move(x) passes it on as movable
+}
+
+// "Gotchas": return std::move(local) forces a move and disables NRVO.
+TEST(ValueCategories, ReturnStdMoveDisablesNrvo) {
+    Moves::moves = 0;
+    Moves a = make_moved();
+    (void)a;
+    EXPECT_EQ(Moves::moves, 1);
+    Moves::moves = 0;
+    Moves b = make_plain();
+    (void)b;
+    if (Moves::moves != 0) GTEST_SKIP() << "this toolchain didn't apply NRVO (it's optional)";
+    EXPECT_EQ(Moves::moves, 0);
 }

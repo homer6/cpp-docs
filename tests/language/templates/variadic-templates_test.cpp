@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/language/templates/variadic-templates.md.
 #include <iostream>
+#include <utility>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -30,6 +31,23 @@ template <class T, class... Rest> void print_rec(const T& first, const Rest&... 
     std::cout << first << ' ';
     print_rec(rest...);
 }
+
+std::string sink(int&) { return "&"; }
+std::string sink(int&&) { return "&&"; }
+template <class... Args> std::string forward_to(Args&&... args) {
+    return (sink(std::forward<Args>(args)) + ...);  // each argument keeps its value category
+}
+
+template <class... T> constexpr int right_init(T... xs) { return (xs - ... - 100); }  // x0 - (x1 - (... - 100))
+template <class... T> constexpr int left_init(T... xs) { return (100 - ... - xs); }   // ((100 - x0) - x1) ...
+template <class... T> constexpr bool any(T... bs) { return (bs || ...); }
+template <class... T> void comma_fold(T... xs) { (xs, ...); }
+
+constexpr int g(int x) { return x * 10; }
+template <class... T> constexpr int g(T... xs) { return (xs + ... + 0); }
+template <class... T> constexpr int count_args(T...) { return sizeof...(T); }
+template <class... T> constexpr int each(T... args) { return count_args(g(args)...); }    // g on each arg
+template <class... T> constexpr int whole(T... args) { return count_args(g(args...)); }   // one g on all
 
 #ifdef __cpp_pack_indexing
 template <class... Ts> auto first_and_last(Ts... args) {
@@ -73,4 +91,26 @@ TEST(VariadicTemplates, PackIndexing) {
     EXPECT_EQ(first, 1);
     EXPECT_EQ(last, 'z');
 #endif
+}
+
+// "Expansion": std::forward<Args>(args)... preserves each argument's value category.
+TEST(VariadicTemplates, PerfectForwardingExpansion) {
+    int x = 0;
+    EXPECT_EQ(forward_to(x, 1, std::move(x)), "&&&&&");  // "&" + "&&" + "&&"
+    EXPECT_EQ(forward_to(x), "&");
+}
+
+// "Fold expressions": the two init-value forms; empty || is false and empty , is void.
+TEST(VariadicTemplates, InitFoldsAndEmptyPacks) {
+    static_assert(right_init(1, 2) == 1 - (2 - 100));
+    static_assert(left_init(1, 2) == (100 - 1) - 2);
+    static_assert(right_init() == 100);  // binary folds handle empty packs via the init
+    static_assert(!any());
+    static_assert(std::is_void_v<decltype(comma_fold())>);
+}
+
+// "Gotchas": f(g(args)...) calls g per argument; f(g(args...)) passes the whole pack to one g.
+TEST(VariadicTemplates, EllipsisPlacementDefinesThePattern) {
+    static_assert(each(1, 2, 3) == 3);
+    static_assert(whole(1, 2, 3) == 1);
 }
