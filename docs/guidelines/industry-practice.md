@@ -13,22 +13,32 @@ what fits yours.
 
 ## Where the big guides disagree
 
-| Feature | Google | Chromium | LLVM |
-|---|---|---|---|
-| Language baseline | C++20 ("should not use C++23 features") | C++20 allowed; C++23 support began Jan 2026, feature by feature; C++26 not yet | — |
-| Exceptions | **Not used** | Not used (inherits Google) | **Not used** — to reduce code and binary size |
-| RTTI (`typeid`, `dynamic_cast`) | Avoid | Inherits Google | **Not used**; LLVM has its own opt-in `isa<>`/`dyn_cast<>` |
-| `auto` | Use when it helps the reader, not just to save typing | Inherits Google | "If and only if it makes the code more readable"; not "almost always auto" |
-| Coroutines | Only through libraries your project leads approve | **Banned** — needs support code and a migration plan | — |
-| Modules | **Do not use** | **Banned** | — |
-| Range adaptors and `\|` pipelines | — | **Banned** (design questions, build time, run-time cost), except `views::reverse`, `views::zip`, `views::as_rvalue` — and even those can't be piped | — |
-| `<format>` | — | **Banned** — format specifiers differ from its existing `StrFormat`; migration is nontrivial | — |
-| `std::span` | — | **Banned** — superseded by `base::span` | — |
-| `std::function`, `std::bind` | — | **Banned** — Chromium has its own callback types | — |
-| `std::shared_ptr` | — | **Banned** — uses intrusive `base::RefCounted`; switching "would require significant migration" | — |
-| `std::expected`, `std::print`, `std::flat_map`, `std::generator` | — | **TBD** (under review, C++23) | — |
+| Feature | Google | Chromium | LLVM | Mozilla |
+|---|---|---|---|---|
+| Language baseline | C++20 ("should not use C++23 features") | C++20 allowed; C++23 support began Jan 2026, feature by feature; C++26 not yet | — | C++20 required since Mozilla 147, usable "where supported on all platforms" |
+| Exceptions | **Not used** | Not used (inherits Google) | **Not used** — to reduce code and binary size | **Disabled** — no `try`/`catch`/`throw` |
+| RTTI (`typeid`, `dynamic_cast`) | Avoid | Inherits Google | **Not used**; LLVM has its own opt-in `isa<>`/`dyn_cast<>` | **Disabled** |
+| `auto` | Use when it helps the reader, not just to save typing | Inherits Google | "If and only if it makes the code more readable"; not "almost always auto" | Allowed |
+| Coroutines | Only through libraries your project leads approve | **Banned** — needs support code and a migration plan | — | **Not allowed** — Clang's coroutines are unmaintained on 32-bit Windows |
+| Modules | **Do not use** | **Banned** | — | — |
+| Range adaptors and `\|` pipelines | — | **Banned** (design questions, build time, run-time cost), except `views::reverse`, `views::zip`, `views::as_rvalue` — and even those can't be piped | — | — |
+| `<format>` | — | **Banned** — format specifiers differ from its existing `StrFormat`; migration is nontrivial | — | **Not allowed** — use `fmt/format.h` (patched for Gecko's float formatting) |
+| `std::span` | — | **Banned** — superseded by `base::span` | — | — |
+| `std::function`, `std::bind` | — | **Banned** — Chromium has its own callback types | — | — |
+| `std::shared_ptr` | — | **Banned** — uses intrusive `base::RefCounted`; switching "would require significant migration" | — | — |
+| `std::expected`, `std::print`, `std::flat_map`, `std::generator` | — | **TBD** (under review, C++23) | — | — |
+| Standard library in general | — | Allowed, with the bans above | — | Prefers its own MFBT/XPCOM libraries; its list of allowed standard components is marked as a draft |
 
 "—" means the guide doesn't take a specific position that we checked.
+
+**Not in the table:**
+
+- **SEI CERT C++** is a catalogue of secure-coding rules (2016 edition, now
+  hosted at [cmu-sei.github.io](https://cmu-sei.github.io/secure-coding-standards/sei-cert-cpp-coding-standard/)),
+  not a feature-adoption policy. It takes no position on most of these
+  features. Use it for specific security rules, not for this comparison.
+- **Bloomberg BDE** — no normative, codebase-wide style policy was found.
+  Not checked further.
 
 **What this means for these guidelines:**
 

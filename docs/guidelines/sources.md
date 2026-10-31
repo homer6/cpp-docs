@@ -19,7 +19,6 @@ it accurate.
 | `llvm-style` | LLVM Coding Standards | https://llvm.org/docs/CodingStandards.html | living page | 2026-10-30 |
 | `abseil-totw` | Abseil Tips of the Week | https://abseil.io/tips/ | index checked; #163, #177, #197, #224 read in full | 2026-10-30 |
 | `google-hardening` | Google Security Blog, *Retrofitting spatial safety to hundreds of millions of lines of C++* | https://security.googleblog.com/2024/11/retrofitting-spatial-safety-to-hundreds.html | Nov 15, 2024 | 2026-10-30 |
-| `impl-status` | GCC C++ status; libc++ C++26 status | https://gcc.gnu.org/projects/cxx-status.html · https://libcxx.llvm.org/Status/Cxx26.html | live pages | 2026-10-30 |
 | `perf-report` | perf-report — Linux performance analysis one-liners and references (homer6) | https://github.com/homer6/perf-report — submodule at `modules/perf-report` (also perf-report.com) | commit `bf0bac0` (Feb 2024) | 2026-10-30 |
 | `gbench` | Google Benchmark user guide and tools docs | https://github.com/google/benchmark/blob/main/docs/user_guide.md · https://github.com/google/benchmark/blob/main/docs/tools.md | `main` (flags, `compare.py` U test checked) | 2026-10-31 |
 | `perf-man` | perf-record(1) manual (man7 copy of the Linux tree) | https://man7.org/linux/man-pages/man1/perf-record.1.html | taken from the kernel git tree 2026-08-04 | 2026-10-31 |
@@ -34,6 +33,10 @@ it accurate.
 | `testing-tools` | GoogleTest, Catch2, doctest, RapidCheck release pages; libFuzzer and llvm-cov docs | https://github.com/google/googletest · https://github.com/catchorg/Catch2 · https://github.com/doctest/doctest · https://github.com/emil-e/rapidcheck · https://llvm.org/docs/LibFuzzer.html | GoogleTest 1.18.0, Catch2 3.16.1, doctest 2.5.3, RapidCheck (no releases; pushed 2026-10-05); P2900R14 for contract testing | 2026-10-31 |
 | `cmake-docs` | CMake documentation and release announcements — `cmake-cxxmodules(7)` (v3.30, v4.4, 4.5.0-rc2), `cmake-presets(7)`, 4.3/4.5 release notes, Discourse announcements | https://cmake.org/cmake/help/v4.4/ · https://cmake.org/cmake/help/latest/ (shows 4.5.0-rc2) · https://discourse.cmake.org/c/announcements/8 + CMake 4.3.4 bundled help | 4.4.5 stable (2026-10-29); 4.5.0-rc2 (2026-10-28) | 2026-10-31 |
 | `msvc-docs` | Microsoft C++ docs and MSVC STL wiki — `/fsanitize`, conformance improvements (17.14), STL Hardening | https://learn.microsoft.com/en-us/cpp/build/reference/fsanitize · https://learn.microsoft.com/en-us/cpp/overview/cpp-conformance-improvements · https://github.com/microsoft/STL/wiki/STL-Hardening | VS 2022 17.14 | 2026-10-31 |
+| `impl-status` | GCC, Clang, and MSVC C++ status; GCC 16 release notes; libc++ C++26 status | https://gcc.gnu.org/projects/cxx-status.html · https://gcc.gnu.org/gcc-16/changes.html · https://clang.llvm.org/cxx_status.html · https://learn.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance · https://libcxx.llvm.org/Status/Cxx26.html | live pages (MSVC page updated 2026-10-16) | 2026-10-31 (MSVC STL rows) |
+| `mozilla` | Using C++ in Mozilla code | https://firefox-source-docs.mozilla.org/code-quality/coding-style/using_cxx_in_firefox_code.html | live page (C++20 since Mozilla 147) | 2026-10-30 |
+| `wg21-task` | WG21 papers on `std::execution::task`: P4007R3, P4089R0, P4123R0 | https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/ | 2026-04-17 to 2026-05-01 | 2026-10-30 |
+| `msvc-stl` | Microsoft STL release notes, changelog, and STL Hardening wiki | https://github.com/microsoft/STL/releases · https://github.com/microsoft/STL/wiki/Changelog · https://github.com/microsoft/STL/wiki/STL-Hardening | VS 2022 17.14 release (2025-05-14) through MSVC Build Tools 14.53 | 2026-10-31 |
 
 ## Page → sources
 
@@ -41,14 +44,14 @@ it accurate.
 |---|---|
 | [core-guidelines.md](core-guidelines.md) | `ccg`, `cppref` |
 | [safety.md](safety.md) | `ccg`, `cppref`, `google-hardening`, `abseil-totw` |
-| [modern-idioms.md](modern-idioms.md) | `cppref`, `impl-status`, `google-style`, `chromium` |
+| [modern-idioms.md](modern-idioms.md) | `cppref`, `impl-status`, `msvc-stl`, `google-style`, `chromium`, `wg21-task` |
 | [design-principles.md](design-principles.md) | `deane-*`, `automerge-style`, `abseil-totw`, `chromium` |
 | [project-conventions.md](project-conventions.md) | `automerge-style`, `ccg` (F.16, NL), `google-style`, `chromium` |
 | [performance-tooling.md](performance-tooling.md) | `ccg` (Per, SL.regex), `perf-report`, `gbench`, `perf-man`, `fedora-fp`, `valgrind`, `abseil-totw` (#197) |
-| [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `abseil-totw` |
 | [tooling.md](tooling.md) | `clang-sanitizers`, `gcc-instrumentation`, `libstdcxx-manual`, `libcxx-hardening`, `msvc-stl-hardening`, `msvc-asan`, `valgrind`, `impl-status` |
 | [testing.md](testing.md) | `testing-tools`, `cppref` (contracts), `deane-*` (laws) |
 | [build-and-packaging.md](build-and-packaging.md) | `cmake-docs`, `msvc-docs` |
+| [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `mozilla`, `abseil-totw` |
 
 ## Candidate sources (not yet imported)
 
@@ -58,10 +61,7 @@ Notable references worth considering for a future import. Move a row up to
 | Source | Why it might be worth it |
 |---|---|
 | SEI CERT C++ Coding Standard | Security-focused rules (deep-research report couldn't establish its positions — needs a direct read) |
-| Mozilla — Using C++ in Mozilla code | Another large-codebase feature subset (unverified in the report) |
 | Bloomberg BDE | Component-contract conventions (report found no normative style policy) |
-| Clang / MSVC conformance pages | Fill in the compiler table in modern-idioms.md |
-| WG21 papers on `std::execution::task` design (P4007, P4089, P4123) | Open design concerns, per the report — read before recommending `task` broadly |
 | Jason Turner, *C++ Best Practices* | Tooling, warnings, sanitizers |
 | Sean Parent, *C++ Seasoning* / "no raw loops" | Origin of several design-principles ideas |
 
@@ -81,3 +81,5 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-31 | Imported the issue #7 deep-research report (`.firecrawl/reports/issue-7-2026-10-31.md`) into `testing.md`. Release versions re-checked against GitHub tags. Throwing contract-violation handler semantics added from P2900R14 §3.6.6 and [basic.contract.handler]. Noted GCC 13 `-fcontracts` is the pre-P2900 design and TSan can't be combined with ASan. Fixed the handler signature in `examples/language/basic-concepts/contracts.md` (`const contract_violation&`). Most of the report was unverified; remaining gaps are listed under "Still open" in the prompt. |
 | 2026-10-30 | Added `build-and-packaging.md` (issue #6, first draft). CMake feature versions checked against CMake 4.3.4's bundled help and the 4.5 online modules manual; example project and presets (debug, release-hardened, tsan, asan-ubsan workflow) built and tested with CMake 4.3.4 + Ninja + Apple Clang 15. Not yet verified (waiting on `prompts/issue-6-build-packaging.md` research): whether CMake 4.5 is a stable release, a tested modules/`import std` example, MSVC STL hardening and zero-init flags, dependency-manager details, compile-time measurements. |
 | 2026-10-31 | Imported the issue #6 section of the Perplexity deep-research report (`.firecrawl/reports/issue-6-2026-10-31.md`) into `build-and-packaging.md`. Checked against cmake.org and Microsoft docs: **corrected** the page's claim that CMake 4.5 supports `import std` — 4.4.5 is the latest stable release (2026-10-29), 4.5.0-rc2 is a release candidate, and `import std` is still experimental in 4.4; added a 3.30 / 4.4 / 4.5-rc matrix from the versioned manuals; the presets schema → CMake version table; CPS packaging (4.3), tested with CMake 4.3.4 using a CPS-only consumer at a relocated prefix; `cmake-instrumentation(7)` and its 4.3.4 format change; MSVC `_MSVC_STL_HARDENING` (17.14) and MSVC's documented `/fsanitize` options. Removed the unsupported "order of payoff" ranking for compile-time techniques. Still unverified: dependency-manager comparison, reproducible-build flags and SBOM practice, full flag table, module build-time measurements. |
+| 2026-10-30 | Issue #4 (partial). Verified from primary sources: Clang and MSVC C++26 language support and libstdc++ (GCC 16) library support, filled into modern-idioms.md; Mozilla added to the industry-practice comparison; CERT (rule catalogue, no feature policy) and BDE (no policy found) noted; `std::execution::task` debate summarized from P4007R3, P4089R0, P4123R0. Still open: MSVC STL details, BDE, talk catalogue, committee response to the task papers — see `prompts/issue-4-research-gaps.md`. |
+| 2026-10-31 | Issue #4: imported the deep-research report (`.firecrawl/reports/issue-4-2026-10-31.md`, used as a map only; it was mostly evidence gaps). Verified and added: MSVC STL P3471 hardening is partial since VS 2022 17.14 (opt-in `_MSVC_STL_HARDENING=1`, off by default, `__fastfail()` because contracts aren't implemented — STL release notes, microsoft/STL#5286 still open), plus P3697R1 in VS 2026 18.0 (STL changelog). Reworded the Croydon sentence in the `task` debate to name the adopted papers (P3980R1, P3941R4, P3927R2, P4151R1, from the libc++ status page) instead of relying on P4007R3. Still unverified, left out: MSVC reflection/contracts/library rows beyond hardening, Apple Clang mapping, BDE, current CERT edition, talk catalogue, post-Croydon committee action on the task papers. |
