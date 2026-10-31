@@ -67,3 +67,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_G
   set_source_files_properties(metaprogramming/reflection_test.cpp
                               PROPERTIES COMPILE_OPTIONS -freflection)
 endif()
+
+# <stacktrace> and <debugging> live in libstdc++'s experimental library on
+# GCC 16; link it into the diagnostics tests (#46).
+if(TARGET examples_diagnostics_tests AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+  target_link_libraries(examples_diagnostics_tests PRIVATE stdc++exp)
+endif()

@@ -79,8 +79,8 @@ in >> std::chrono::parse("%Y-%m-%d %H:%M:%S", tp);
   false; validate before trusting a date you built from parts.
 - **`sys_days` is UTC midnight**, not local — converting a civil date to an
   instant goes through a time zone for local wall-clock time.
-- **`%Z`/`%z` need a zoned time** (or known offset); formatting a bare
-  `system_clock` time point as UTC won't print a meaningful zone name.
+- **`%Z`/`%z` need a zoned time for a local zone.** A bare `system_clock` time
+  point always formats as `UTC` / `+0000`, never the host's zone.
 
 ## See also
 

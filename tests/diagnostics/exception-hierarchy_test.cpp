@@ -85,3 +85,26 @@ TEST(ExceptionHierarchy, CustomExceptionAndSlicing) {
         EXPECT_EQ(typeid(by_value), typeid(std::runtime_error));  // sliced
     }
 }
+
+// "The tree": dynamic_cast to a reference throws bad_cast; a failed allocation bad_alloc.
+TEST(ExceptionHierarchy, BadCastAndBadAlloc) {
+    struct B { virtual ~B() = default; };
+    struct D : B {};
+    B b;
+    B& rb = b;
+    EXPECT_THROW((void)dynamic_cast<D&>(rb), std::bad_cast);
+    std::vector<int> v;
+    EXPECT_THROW(v.reserve(v.max_size()), std::bad_alloc);
+    EXPECT_THROW(v.reserve(v.max_size() + 1), std::length_error);  // a logic_error
+}
+
+// "Gotchas": catch blocks are tried in order, so a base handler first shadows a derived one.
+TEST(ExceptionHierarchy, BaseHandlerFirstShadows) {
+    std::string caught;
+    try {
+        throw std::out_of_range{"x"};
+    } catch (const std::exception&) {
+        caught = "exception";
+    }
+    EXPECT_EQ(caught, "exception");
+}
