@@ -29,7 +29,7 @@ std::vector<int> v(100);
 std::iota(v.begin(), v.end(), 0);
 std::size_t n = v.size() / 2;
 
-std::partial_sort(v.begin(), v.begin() + 10, v.end());   // top 10 sorted, rest unspecified
+std::partial_sort(v.begin(), v.begin() + 10, v.end());   // 10 smallest, sorted; rest unspecified order
 std::nth_element(v.begin(), v.begin() + n, v.end());      // nth in place; partitions around it
 // nth_element is O(n) — the way to get a median or k-th smallest without full sort
 ```

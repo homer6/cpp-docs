@@ -61,7 +61,7 @@ void bitset_basics() {
 
     b |= std::bitset<8>{0b0100};     // bitwise ops work between same-size bitsets
     auto n  = b.to_ulong();          // → unsigned long  (throws if it doesn't fit)
-    auto s  = b.to_string();         // → "0001..." 
+    auto s  = b.to_string();         // → "11100101" (229; most significant bit first)
 }
 ```
 

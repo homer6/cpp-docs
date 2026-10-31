@@ -31,8 +31,9 @@ void sort_all_ways(std::vector<int>& v) {
 
 **Rules:** with `par`/`par_unseq` your element operations must be free of data
 races; with the `_unseq` variants they must not acquire locks or otherwise depend
-on sequential execution. Throwing from a parallel element op calls
-`std::terminate`.
+on sequential execution. An exception escaping an element op calls
+`std::terminate` under every standard policy — even `seq`, unlike the overload
+without a policy.
 
 > Availability: parallel algorithms need a backend (e.g. Intel TBB) on some
 > standard libraries, and may fall back to sequential. Measure — parallelism only
