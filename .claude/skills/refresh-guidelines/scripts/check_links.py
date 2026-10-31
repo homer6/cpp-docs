@@ -19,7 +19,11 @@ FENCE = re.compile(r"^(```|~~~).*?^\1", re.M | re.S)
 
 
 def slug(heading: str) -> str:
-    h = re.sub(r"[`*_]|\[([^\]]*)\]\([^)]*\)", r"\1", heading).strip().lower()
+    # Like GitHub: drop code/emphasis markers and link targets, keep underscores
+    # inside words (`start_lifetime_as` -> `start_lifetime_as`).
+    h = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading)
+    h = re.sub(r"(?<!\w)_+([^_]+?)_+(?!\w)", r"\1", h)  # _emphasis_ / __strong__
+    h = re.sub(r"[`*]", "", h).strip().lower()
     h = re.sub(r"[^\w\- ]", "", h)
     return h.replace(" ", "-")
 
