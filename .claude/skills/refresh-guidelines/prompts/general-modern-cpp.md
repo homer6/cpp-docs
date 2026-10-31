@@ -1,12 +1,12 @@
-# Deep research prompt — modern C++ best practices
+# Deep research prompt — modern C++ best practices (general sweep)
 
-Paste everything below the line into Perplexity Deep Research (or
-`perplexity_research`). Save the report as
-`.firecrawl/deep-research-<YYYY-MM-DD>.md`, then ask Claude to run the
-`refresh-guidelines` skill in **import** mode on it.
+A broad sweep across the whole guidelines section, for periodic refreshes.
+Topic-specific prompts live next to this file as `issue-<n>-<slug>.md`.
 
-Update the "already covered" list before each run so the report focuses on
-what's new.
+Hand it to the user with `scripts/collect_prompts.py` (fills in the date). The
+report goes in `.firecrawl/reports/general-<YYYY-MM-DD>.md`; import it with the
+`refresh-guidelines` skill (mode C). Before each run, move settled items into
+"already covered" and leftovers into "still open".
 
 ---
 

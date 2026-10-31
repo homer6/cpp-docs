@@ -263,6 +263,9 @@ One configuration can't do everything. A reasonable set:
 
 Every bug a sanitizer or fuzzer finds gets a regression test.
 
+How to use each of these — reading an ASan report, sanitizer options,
+debuggers, core dumps — is in [tooling](tooling.md).
+
 Exact flag names, default modes, and costs vary by compiler version — verify
 against the toolchain you've pinned before copying these into a build.
 
