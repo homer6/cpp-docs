@@ -20,6 +20,8 @@ it accurate.
 | `abseil-totw` | Abseil Tips of the Week | https://abseil.io/tips/ | index checked; #163, #177, #197, #224 read in full | 2026-10-30 |
 | `google-hardening` | Google Security Blog, *Retrofitting spatial safety to hundreds of millions of lines of C++* | https://security.googleblog.com/2024/11/retrofitting-spatial-safety-to-hundreds.html | Nov 15, 2024 | 2026-10-30 |
 | `impl-status` | GCC C++ status; libc++ C++26 status | https://gcc.gnu.org/projects/cxx-status.html · https://libcxx.llvm.org/Status/Cxx26.html | live pages | 2026-10-30 |
+| `perf-report` | perf-report — Linux performance analysis one-liners and references (homer6) | https://github.com/homer6/perf-report — submodule at `modules/perf-report` (also perf-report.com) | commit `bf0bac0` (Feb 2024) | 2026-10-30 |
+| `gbench` | Google Benchmark user guide | https://github.com/google/benchmark/blob/main/docs/user_guide.md | `main` (flags checked) | 2026-10-30 |
 
 ## Page → sources
 
@@ -30,6 +32,7 @@ it accurate.
 | [modern-idioms.md](modern-idioms.md) | `cppref`, `impl-status`, `google-style`, `chromium` |
 | [design-principles.md](design-principles.md) | `deane-*`, `automerge-style`, `abseil-totw`, `chromium` |
 | [project-conventions.md](project-conventions.md) | `automerge-style`, `ccg` (F.16, NL), `google-style`, `chromium` |
+| [performance-tooling.md](performance-tooling.md) | `ccg` (Per, SL.regex), `perf-report`, `gbench`, `abseil-totw` (#197) |
 | [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `abseil-totw` |
 
 ## Candidate sources (not yet imported)
@@ -55,3 +58,4 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-30 | Core Guidelines added as a submodule at `modules/CppCoreGuidelines`, tracking `master`. Pulled upstream: still at `d1dda82` (Jun 14, 2026 edition), so no page changes. |
 | 2026-10-30 | Full catch-up check. The original notes' copy of the Guidelines is upstream commit `cb798c4` (Dec 3, 2025; its header still says Jul 8, 2025). Reviewed all 16 commits `cb798c4..d1dda82`: C.13, T.46, F.16 and ES.23 were already covered; added the SL.regex performance note plus a short SL section. The rest were typo, CI or example-only fixes (C.48, ES.49, T.21, an added `const`, the GSL link). automerge-cpp `docs/style.md` and `docs/plans/architecture.md` are unchanged since import. |
 | 2026-10-30 | Imported a Perplexity deep-research report (`.firecrawl/deep-research-2026-10-30.md`, used as a map only). Verified against primary sources before importing: libc++ status confirms `std::execution::task` (P3552, Sofia 2025) is C++26 and trivial relocation (P2786) was reverted by P3920 (Kona 2025); GCC 16 support for contracts, reflection (`-freflection`), expansion statements, erroneous behaviour; Google's 0.30% hardening overhead; Google/Chromium/LLVM policies; all 25 Abseil tip titles. Added `industry-practice.md`; hardening-in-practice and build configurations (safety); C++26 adoption section, `task`, relocation note (modern idioms); `const` data members, pipeline caveats, optional parameters, failure kinds (design principles); feature matrix, warnings, clang-tidy, modules (project conventions). Left out as unverified: Mozilla/BDE/CERT positions, Clang/MSVC support, the talk catalogue. |
+| 2026-10-30 | Added `performance-tooling.md` (issue #2): workflow, benchmarking (Google Benchmark flags checked against its user guide), `perf`, flame graphs, off-CPU tracing and memory via perf-report links, reading generated code, common C++ costs. Linked from Per.6 in the digest. Deep-research prompt: `.claude/skills/refresh-guidelines/prompts/issue-2-performance-tooling.md`. |
