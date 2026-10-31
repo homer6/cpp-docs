@@ -98,6 +98,14 @@ def check(block: Block, cmd: list[str]) -> tuple[Block, bool, str]:
         os.unlink(name)
 
 
+def compiler_version(cxx: str) -> str:
+    try:
+        out = subprocess.run([cxx, "--version"], capture_output=True, text=True, timeout=30).stdout
+        return out.splitlines()[0] if out else "unknown"
+    except (OSError, subprocess.SubprocessError):
+        return "unknown"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("paths", nargs="*", default=["docs"])
@@ -116,8 +124,9 @@ def main() -> int:
         files += sorted(p.rglob("*.md")) if p.is_dir() else [p]
 
     blocks = [b for f in files for b in extract(f)]
-    skipped = [b for b in blocks if "nocompile" in b.info or not b.needs() <= set(args.enable)]
-    todo = [b for b in blocks if b not in skipped]
+    nocompile = [b for b in blocks if "nocompile" in b.info]
+    gated = [b for b in blocks if b not in nocompile and not b.needs() <= set(args.enable)]
+    todo = [b for b in blocks if b not in nocompile and b not in gated]
 
     cmd = [args.cxx, f"-std={args.std}", "-fsyntax-only", "-pedantic-errors", *args.flag]
     failures: list[tuple[Block, str]] = []
@@ -131,8 +140,12 @@ def main() -> int:
         print(f"FAIL {block.where}")
         if not args.quiet:
             print("\n".join("    " + l for l in err.strip().splitlines()[:15]))
-    print(f"\n{len(todo)} checked, {len(failures)} failed, {len(skipped)} skipped "
-          f"({' '.join(cmd)})")
+    # Skips are reported by reason so untested blocks stay visible.
+    missing = sorted({n for b in gated for n in b.needs() - set(args.enable)})
+    print(f"\n{len(todo)} checked, {len(failures)} failed, "
+          f"{len(nocompile) + len(gated)} skipped "
+          f"({len(nocompile)} nocompile, {len(gated)} need {', '.join(missing) or '-'})")
+    print(f"compiler: {compiler_version(args.cxx)}\ncommand: {' '.join(cmd)}")
     return 0 if args.report_only or not failures else 1
 
 

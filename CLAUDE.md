@@ -115,6 +115,12 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 Prefer making a snippet self-contained over tagging it `nocompile`. Run locally:
 `python3 tools/check_snippets.py docs/guidelines --cxx g++-15`.
 
+`-fsyntax-only` is more than a parse: on GCC and Clang it catches type errors,
+errors in templates that are instantiated, and failed constant evaluation —
+the same as `-c`. It misses templates that are never instantiated, link errors
+(a declared but undefined function), and anything at run time. The summary
+counts skipped blocks by reason; keep the `nocompile` count falling.
+
 ## Git / commits
 
 - **Do not add Claude as a commit author or co-author.** Commit messages must not

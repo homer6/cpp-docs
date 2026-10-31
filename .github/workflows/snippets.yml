@@ -10,7 +10,9 @@ on:
 jobs:
   gcc:
     runs-on: ubuntu-24.04
-    container: gcc:16          # official image; GCC 16 has contracts and -freflection
+    # Official image; gcc:16 was 16.2.0 on 2026-10-25 (Docker Hub). GCC 16 has
+    # P2900 contracts with no extra flag; P2996 reflection needs -freflection.
+    container: gcc:16
     steps:
       - uses: actions/checkout@v4
       - name: Guidelines (blocking)
@@ -28,18 +30,20 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      # The ubuntu-24.04 image only ships Clang 16-18 and GCC 13. apt.llvm.org:
+      # LLVM 23 is stable since 2026-08-26 (22 is old-stable).
       - name: Install latest stable Clang and libc++
         run: |
           wget -qO llvm.sh https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 22
-          sudo apt-get install -y libc++-22-dev libc++abi-22-dev
+          sudo ./llvm.sh 23
+          sudo apt-get install -y libc++-23-dev libc++abi-23-dev
       - name: Guidelines (blocking)
         run: >
-          python3 tools/check_snippets.py docs/guidelines --cxx clang++-22
+          python3 tools/check_snippets.py docs/guidelines --cxx clang++-23
           --flag=-stdlib=libc++
       - name: Reference examples (report only)
         continue-on-error: true
         run: >
-          python3 tools/check_snippets.py docs/examples --cxx clang++-22
+          python3 tools/check_snippets.py docs/examples --cxx clang++-23
           --flag=-stdlib=libc++ -q --report-only

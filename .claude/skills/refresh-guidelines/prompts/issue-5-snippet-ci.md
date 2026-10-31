@@ -14,6 +14,40 @@ and placeholder declarations, and runs `g++`/`clang++ -std=c++26 -fsyntax-only
 (wrap in a function), `cpp nocompile` (skip), `cpp needs=<feature>` (skip unless
 enabled). It runs in GitHub Actions. Today's date is {{DATE}}.
 
+## Already covered (verified 2026-10-31 — confirm only if something changed)
+
+- CI uses the official `gcc:16` image (16.2.0 on Docker Hub, 2026-10-25) and
+  Clang 23 + libc++ from apt.llvm.org (`llvm.sh 23`; LLVM 23 stable since
+  2026-08-26, 22 is old-stable). The `ubuntu-24.04` runner image itself ships
+  only Clang 16–18 and GCC 13.2 (runner-images README, image 20261026).
+- GCC 16: P2900R14 contracts with plain `-std=c++26`; P2996 reflection needs
+  `-freflection` (GCC C++ status page, GCC 16 release notes). GCC 13's
+  `-fcontracts` was the older P1429R3 extension (`<experimental/contract>`,
+  libstdc++exp), not P2900.
+- `-fsyntax-only` (tested on GCC 15.2 and Apple Clang 15 with canaries)
+  catches type errors, errors in instantiated templates and failed constant
+  evaluation, the same as `-c`; it misses uninstantiated templates, link
+  errors and run-time behaviour. GCC's manual still describes it as "check
+  for syntax errors"; Clang's says "preprocessor, parser and semantic analysis".
+- The checker reports skips by reason (`nocompile` vs `needs=<feature>`) and
+  prints the compiler version.
+
+## Still open from the last run (prioritize these)
+
+- The prior-art audit was not done: mdsnippets/MarkdownSnippets markers and
+  CI behaviour, Doxygen `\snippet`, Boost and {fmt} doc pipelines,
+  cppreference "Run this code", Microsoft Learn's pipeline (don't claim it
+  compiles examples without evidence), rustdoc hidden lines and
+  `ignore`/`no_run`/`compile_fail` semantics.
+- MSVC on `windows-latest`: version shipped, `/std:c++latest` C++26 coverage,
+  any contracts/reflection support.
+- Clang reflection status: upstream Clang vs the Bloomberg `clang-p2996`
+  fork, and the flags each needs.
+- Any GCC vs Clang differences in what `-fsyntax-only` diagnoses beyond the
+  canaries above (e.g. warnings only emitted by the middle end).
+- Real-world examples of baseline/ratchet files for doc snippets, and of
+  `compile_fail` tests that assert the diagnostic.
+
 ## Questions to answer
 
 1. **Prior art.** How do established projects compile-test C++ code in

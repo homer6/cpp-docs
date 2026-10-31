@@ -46,6 +46,10 @@
 #if __has_include(<generator>)
 #include <generator>
 #endif
+// <meta> only when reflection is on (GCC 16 needs -freflection).
+#if defined(__cpp_impl_reflection) && __has_include(<meta>)
+#include <meta>
+#endif
 
 // Placeholder types and functions used across the docs.
 struct Widget {

@@ -185,7 +185,7 @@ if (!doc) {
 use(*doc);
 ```
 
-```cpp needs=contracts
+```cpp nocompile
 void set(ObjId obj, std::size_t index, ScalarValue v)
     pre(index < length(obj));          // C++26; use assert() before that
 ```

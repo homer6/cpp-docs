@@ -274,7 +274,9 @@ double sqrt_checked(double x)
     pre(x >= 0)
     post(r: r >= 0);
 
-contract_assert(index < size);
+void at(std::size_t index, std::size_t size) {
+    contract_assert(index < size);
+}
 ```
 
 Checking is configurable per build (ignore / observe / enforce /
