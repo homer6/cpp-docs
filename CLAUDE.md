@@ -101,8 +101,9 @@ Links to the relevant cppreference pages (cppreference.com only).
 
 There is no CI (GitHub Actions is disabled for this repo); run the checks
 locally. `tools/check_snippets.py` compiles every ```cpp block with
-`-std=c++26 -fsyntax-only -pedantic-errors`; `docs/guidelines/` should pass
-cleanly, while `docs/examples/` still has many known failures. Each block is
+`-std=c++26 -fsyntax-only -pedantic-errors`. `docs/guidelines/` must pass
+cleanly; `docs/examples/` is checked against a list of known failures (see
+below). Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
 like `Widget`, `use()`, `process()`). Tag the fence's info string:
 
@@ -110,15 +111,28 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 |---|---|
 | ` ```cpp ` | Must compile at namespace scope |
 | ` ```cpp body ` | Statements; checked inside a function body |
-| ` ```cpp nocompile ` | Deliberately wrong (BAD examples) or depends on undeclared context |
+| ` ```cpp nocompile ` | Depends on undeclared context, third-party headers, or is wrong but still compiles (UB, dangling) |
+| ` ```cpp compile-fail="regex" ` | A BAD example that must **not** compile; the diagnostics must match the regex (plain `compile-fail` accepts any error) |
 | ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
 
 `needs=` blocks are skipped unless you enable the feature, e.g.
 `--enable contracts --enable reflection --flag=-freflection` with GCC 16.
 
-Prefer making a snippet self-contained over tagging it `nocompile`. Run:
-`python3 tools/check_snippets.py docs/guidelines --cxx g++-15` (and with
-`--cxx clang++ --flag=-stdlib=libc++` if you have a recent Clang).
+Prefer making a snippet self-contained over tagging it `nocompile`, and
+`compile-fail` over `nocompile` for type errors. Run:
+
+```bash
+python3 tools/check_snippets.py docs/guidelines --cxx g++-15
+python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
+  --baseline tools/snippet_baseline/gcc.txt
+```
+
+Each block has a stable ID, `<file>#<heading-slug>/<n>`, shown next to every
+failure. `tools/snippet_baseline/gcc.txt` lists the `docs/examples/` blocks
+known to fail on GCC; the run fails on a **new** failure, and on a listed
+block that now compiles or no longer exists — so when you fix a snippet,
+delete its line (or rerun with `--update-baseline`). The list should only
+shrink (#20 drives it to empty).
 
 `-fsyntax-only` is more than a parse: on GCC and Clang it catches type errors,
 errors in templates that are instantiated, and failed constant evaluation —

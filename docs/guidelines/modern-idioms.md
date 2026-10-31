@@ -127,7 +127,7 @@ Reference: [span](../examples/containers/views/span.md)
 
 ### `consteval` and `constexpr` everywhere
 
-```cpp nocompile
+```cpp compile-fail="not a constant expression"
 consteval int square(int n) { return n * n; }   // must run at compile time
 
 constexpr int s = square(5);    // OK
