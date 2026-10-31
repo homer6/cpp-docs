@@ -31,6 +31,33 @@ date is {{DATE}}.
 - Mozilla: C++20 required since Mozilla 147; exceptions and RTTI disabled;
   coroutines and `std::format` not allowed (use `fmt`).
 - `std::execution::task` debate: P4007R3, P4089R0, P4123R0 summarized.
+- MSVC STL hardening: P3471 partial since VS 2022 17.14 (May 2025), opt-in
+  `_MSVC_STL_HARDENING=1`, off by default, violations call `__fastfail()`
+  because C++26 contracts aren't implemented (microsoft/STL#5286 open);
+  P3697R1 added in VS 2026 18.0 (MSVC Build Tools 14.50).
+- Croydon (Mar 2026) adopted P3980R1, P3941R4, P3927R2, P4151R1 (libc++
+  status page), addressing some of the issues P4007 lists.
+
+## Still open from the last run (prioritize these)
+
+The 2026-10-31 report verified only the MSVC hardening item above. Everything
+below was "not established" or "unverified" — answer from primary sources or
+say "not found":
+
+- MSVC (VS 2026 18.x) and Clang/libc++ release-by-release rows for contracts,
+  reflection, `template for`, erroneous behaviour, `std::execution`, `task`,
+  `inplace_vector`, `indirect`/`polymorphic`, `std::simd`, `std::linalg` —
+  tie each to a release note or tag, not a project-board "done" card.
+- Has MSVC STL hardening become on by default in any VS 2026 release?
+- Apple Clang / Xcode → upstream Clang mapping.
+- BDE: any public normative coding standard (exceptions, RTTI, `auto`,
+  allocators, `BSLS_ASSERT` vs C++26 contracts).
+- CERT C++: is the published edition still 2016, and what has changed in the
+  living rule collection since?
+- Talk catalogue 2024–2026 with official video/slides links.
+- `task`: SG1/LEWG polls and decisions after Croydon (Brno 2026 and later),
+  P3552 author responses, C++29 or defect-report plans, implementer
+  performance data.
 
 ## Questions
 

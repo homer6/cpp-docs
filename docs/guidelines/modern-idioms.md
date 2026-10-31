@@ -329,8 +329,10 @@ these points:
 - **Some problems can be fixed later; some can't.**
   [P4007R3](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4007r3.pdf)
   (May 2026) sorts open issues by whether they can be fixed after C++26 ships.
-  The Croydon meeting (Mar 2026) resolved several allocator and stop-token
-  issues. It argues that allocator timing and propagation (for the coroutine
+  Some were already addressed at the Croydon meeting (Mar 2026), which adopted
+  P3980R1 (task's allocator use), P3941R4 (scheduler affinity), P3927R2 and
+  P4151R1 (per the [libc++ status page](https://libcxx.llvm.org/Status/Cxx26.html)).
+  It argues that allocator timing and propagation (for the coroutine
   frame), error return (errors need `co_yield with_error(e)` because
   `co_return` can't carry one), and symmetric transfer (synchronous completions
   can grow the stack) are locked in once `task` ships.
@@ -412,14 +414,30 @@ confirmed "no".
 | `std::inplace_vector` | yes (experimental) | not checked | not checked |
 | `std::indirect` / `std::polymorphic` | yes (experimental) | not marked complete | not checked |
 | `std::simd` | yes (experimental) | not checked | not checked |
-| Reflection `<meta>`, hardening (P3471), `std::execution::task` | not listed | not marked complete | not checked |
+| Hardening (P3471) | not listed | not marked complete | partial since VS 2022 17.14 (May 2025): opt-in with `_MSVC_STL_HARDENING=1`, off by default |
+| Reflection `<meta>`, `std::execution::task` | not listed | not marked complete | not checked |
 
 Sources: [GCC 16 release notes](https://gcc.gnu.org/gcc-16/changes.html)
 ("improved experimental support for C++26"),
 [libc++ C++26 status](https://libcxx.llvm.org/Status/Cxx26.html). Microsoft
 tracks its C++26 library work on the
 [STL C++26 Features project board](https://github.com/orgs/microsoft/projects/1143/views/2),
-not on the conformance page.
+not on the conformance page. A "done" card there isn't a shipping version;
+use the [STL release notes](https://github.com/microsoft/STL/releases) or the
+[changelog](https://github.com/microsoft/STL/wiki/Changelog) for that.
+
+**MSVC STL hardening.** The
+[VS 2022 17.14 release](https://github.com/microsoft/STL/releases/tag/vs-2022-17.14)
+merged P3471 as a *partial* C++26 feature: off by default, enabled for any
+`/std` mode by defining `_MSVC_STL_HARDENING` to `1` project-wide. Because
+MSVC doesn't implement C++26 contracts yet
+([microsoft/STL#5286](https://github.com/microsoft/STL/issues/5286), open), a
+violated hardened precondition calls `__fastfail()`. Per-container macros
+(`_MSVC_STL_HARDENING_VECTOR`, …) let you opt individual classes in or out
+([STL Hardening wiki](https://github.com/microsoft/STL/wiki/STL-Hardening)).
+VS 2026 18.0 (MSVC Build Tools 14.50) added P3697R1 (minor additions to
+hardening) and made the checks cheaper. Microsoft plans to turn hardening on by
+default in a later release; check the changelog for the version you use.
 
 **A sensible adoption order:**
 
