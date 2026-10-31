@@ -141,7 +141,8 @@ comment saying why.
 Pilot modules on one target end to end before adopting them: dependency
 scanning, clean and incremental builds, caching, debugging, IDE indexing,
 static analysis, packaging, and downstream consumers. Google and Chromium both
-still ban modules.
+still ban modules. A worked CMake example and toolchain floors are in
+[build and packaging](build-and-packaging.md#3-modules).
 
 ## Thread-safety contract
 

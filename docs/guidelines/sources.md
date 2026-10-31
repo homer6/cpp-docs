@@ -32,6 +32,7 @@ it accurate.
 | `msvc-stl-hardening` | Microsoft STL hardening wiki and VS 2022 17.14 STL release notes | https://github.com/microsoft/STL/wiki/STL-Hardening · https://github.com/microsoft/STL/releases/tag/vs-2022-17.14 | wiki (2025) · 17.14 release | 2026-10-31 |
 | `msvc-asan` | Microsoft Learn, AddressSanitizer and known issues | https://learn.microsoft.com/en-us/cpp/sanitizers/asan | ms.date 2026-05-28 | 2026-10-31 |
 | `testing-tools` | GoogleTest, Catch2, doctest, RapidCheck release pages; libFuzzer and llvm-cov docs | https://github.com/google/googletest · https://github.com/catchorg/Catch2 · https://github.com/doctest/doctest · https://github.com/emil-e/rapidcheck · https://llvm.org/docs/LibFuzzer.html | GoogleTest 1.18.0, Catch2 3.16.1, doctest 2.5.3, RapidCheck (no releases; pushed 2026-10-05); P2900R14 for contract testing | 2026-10-31 |
+| `cmake-docs` | CMake documentation — `cmake-cxxmodules(7)`, `cmake-presets(7)`, variable/property help | https://cmake.org/cmake/help/latest/ (4.5 online manual) + CMake 4.3.4 bundled help | 4.3 / 4.5 | 2026-10-30 |
 
 ## Page → sources
 
@@ -46,6 +47,7 @@ it accurate.
 | [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `abseil-totw` |
 | [tooling.md](tooling.md) | `clang-sanitizers`, `gcc-instrumentation`, `libstdcxx-manual`, `libcxx-hardening`, `msvc-stl-hardening`, `msvc-asan`, `valgrind`, `impl-status` |
 | [testing.md](testing.md) | `testing-tools`, `cppref` (contracts), `deane-*` (laws) |
+| [build-and-packaging.md](build-and-packaging.md) | `cmake-docs` |
 
 ## Candidate sources (not yet imported)
 
@@ -76,3 +78,4 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-31 | Imported the issue #1 deep-research report into `tooling.md` (only claims verified against primary sources): sanitizer combination table (GCC manual + Clang/GCC driver tests), GCC ASan enables use-after-scope, GCC pointer-pair checks, UBSan minimal runtime and the full runtime's production warning, TSan/MSan platforms, libstdc++ assertions on at `-O0` since GCC 15, MSVC STL hardening (17.14), MSVC `/fsanitize=address`, `std::stacktrace` link flags by GCC version, Memcheck 20–30×. Report: `.firecrawl/reports/issue-1-2026-10-31.md`. |
 | 2026-10-30 | Added `testing.md` (issue #7): framework comparison, property-based tests, fuzzing, testing contracts, coverage, compile-time tests. Versions from GitHub release APIs. Deep-research prompt: `.claude/skills/refresh-guidelines/prompts/issue-7-testing.md` — import its report before treating the page as final. |
 | 2026-10-31 | Imported the issue #7 deep-research report (`.firecrawl/reports/issue-7-2026-10-31.md`) into `testing.md`. Release versions re-checked against GitHub tags. Throwing contract-violation handler semantics added from P2900R14 §3.6.6 and [basic.contract.handler]. Noted GCC 13 `-fcontracts` is the pre-P2900 design and TSan can't be combined with ASan. Fixed the handler signature in `examples/language/basic-concepts/contracts.md` (`const contract_violation&`). Most of the report was unverified; remaining gaps are listed under "Still open" in the prompt. |
+| 2026-10-30 | Added `build-and-packaging.md` (issue #6, first draft). CMake feature versions checked against CMake 4.3.4's bundled help and the 4.5 online modules manual; example project and presets (debug, release-hardened, tsan, asan-ubsan workflow) built and tested with CMake 4.3.4 + Ninja + Apple Clang 15. Not yet verified (waiting on `prompts/issue-6-build-packaging.md` research): whether CMake 4.5 is a stable release, a tested modules/`import std` example, MSVC STL hardening and zero-init flags, dependency-manager details, compile-time measurements. |
