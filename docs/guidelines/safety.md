@@ -110,14 +110,19 @@ struct Node { std::shared_ptr<Node> child; std::weak_ptr<Node> parent; };
 
 ### Returning references to locals or temporaries
 
-```cpp nocompile
+Both of these used to compile with only a warning. The standard now rejects
+them: the first since C++23 (P2266R3, simpler implicit move: `local` is an
+rvalue in a `return`), the second since C++26 (P2748R5: a returned reference
+can't bind to a temporary). Older modes and older compilers still accept them.
+
+```cpp compile-fail="cannot bind non-const lvalue reference|returning reference to (local )?temporary|non-const lvalue reference to type"
 std::string& bad() {
     std::string local = "hello";
-    return local;                  // dangling
+    return local;                  // dangling — ill-formed since C++23
 }
 
 const std::string& bad2() {
-    return "hello";                // reference to a temporary std::string — dangling
+    return "hello";                // reference to a temporary — ill-formed since C++26
 }
 
 std::string good() {

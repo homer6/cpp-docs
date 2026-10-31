@@ -166,7 +166,7 @@ Reference: [special members](../examples/language/classes/special-members.md)
 
 **ES.23: Prefer `{}` initialization** — it rejects narrowing.
 
-```cpp nocompile
+```cpp body compile-fail="narrowing"
 double d = 7.9;
 int a = d;       // compiles, silently truncates
 int b{d};        // error: narrowing
