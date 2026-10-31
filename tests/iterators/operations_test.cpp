@@ -3,6 +3,9 @@
 #include <cstddef>
 #include <forward_list>
 #include <iterator>
+#include <list>
+#include <set>
+#include <sstream>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -41,6 +44,9 @@ TEST(IteratorOperations, IterSwapAndIterMove) {
     std::iter_swap(v.begin(), v.begin() + 1);
     EXPECT_EQ(v, (std::vector<std::string>{"b", "a"}));
     static_assert(std::same_as<decltype(std::ranges::iter_move(v.begin())), std::string&&>);
+    auto val = std::ranges::iter_move(v.begin());  // moves "b" out of v[0]
+    EXPECT_EQ(val, "b");
+    EXPECT_EQ(v[1], "a");
 }
 
 // "std::iterator_traits": the associated types for vector<int>::iterator and int*.
@@ -61,4 +67,34 @@ TEST(IteratorOperations, RangesSentinels) {
     EXPECT_EQ(std::ranges::distance(rng), 3);
     auto inf = std::views::iota(0);  // unbounded: end is unreachable_sentinel_t
     static_assert(!std::same_as<decltype(std::ranges::begin(inf)), decltype(std::ranges::end(inf))>);
+}
+
+// "Moving and measuring": next/prev step through list and set; advance goes back with a negative count.
+TEST(IteratorOperations, BidirectionalStepping) {
+    std::list<int> l{10, 20, 30, 40};
+    auto it = std::next(l.begin(), 3);
+    EXPECT_EQ(*it, 40);
+    std::advance(it, -2);  // negative: bidirectional+
+    EXPECT_EQ(*it, 20);
+    std::set<int> s{5, 1, 3};
+    EXPECT_EQ(*std::prev(s.end()), 5);
+    EXPECT_EQ(std::distance(s.begin(), s.end()), 3);
+}
+
+// "Gotchas": distance on single-pass iterators consumes the input.
+TEST(IteratorOperations, DistanceConsumesInputIterators) {
+    std::istringstream in{"1 2 3"};
+    std::istream_iterator<int> first{in}, last;
+    EXPECT_EQ(std::distance(first, last), 3);
+    std::istream_iterator<int> again{in};
+    EXPECT_EQ(again, last);  // nothing left to read
+}
+
+// "ranges::begin / end and sentinels": default_sentinel ends a counted iterator after N.
+TEST(IteratorOperations, DefaultSentinelEndsCountedIterator) {
+    std::list<int> l{1, 2, 3, 4};
+    std::counted_iterator it{l.begin(), 2};
+    EXPECT_EQ(std::ranges::distance(it, std::default_sentinel), 2);
+    std::ranges::advance(it, 2);
+    EXPECT_TRUE(it == std::default_sentinel);
 }

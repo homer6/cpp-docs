@@ -3,6 +3,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <version>
 
 #include <gtest/gtest.h>
@@ -75,4 +76,62 @@ TEST(Optional, OptionalReferenceCpp26) {
     *r = 2;
     EXPECT_EQ(x, 2);
 #endif
+}
+
+// "Mental model": optional<int> a = 42 is engaged; b = std::nullopt (or `return {};`) is empty.
+TEST(Optional, MentalModelEngagedOrEmpty) {
+    std::optional<int> a = 42;
+    std::optional<int> b = std::nullopt;
+    auto braces = []() -> std::optional<int> { return {}; };
+    EXPECT_TRUE(a.has_value());
+    EXPECT_EQ(*a, 42);
+    EXPECT_FALSE(b.has_value());
+    EXPECT_FALSE(braces().has_value());
+    EXPECT_EQ(b, std::nullopt);
+}
+
+namespace {
+struct Counted {
+    static inline int copies = 0, moves = 0;
+    Counted(int, char) {}
+    Counted(const Counted&) { ++copies; }
+    Counted(Counted&&) noexcept { ++moves; }
+};
+}  // namespace
+
+// "In-place construction": emplace builds the value in place, no temporary is copied or moved.
+TEST(Optional, EmplaceMakesNoTemporary) {
+    Counted::copies = Counted::moves = 0;
+    std::optional<Counted> c;
+    c.emplace(5, 'x');
+    std::optional<Counted> d{std::in_place, 5, 'x'};
+    EXPECT_EQ(Counted::copies, 0);
+    EXPECT_EQ(Counted::moves, 0);
+}
+
+// "Monadic operations (C++23)": transform maps to optional<V>; or_else runs only when empty.
+TEST(Optional, MonadicResultTypesAndLaziness) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_optional, 202110L);
+#if defined(__cpp_lib_optional) && __cpp_lib_optional >= 202110L
+    std::optional<int> n = 3;
+    auto s = n.transform([](int x) { return std::to_string(x); });
+    static_assert(std::is_same_v<decltype(s), std::optional<std::string>>);
+    EXPECT_EQ(s, "3");
+    auto half = [](int x) { return x % 2 == 0 ? std::optional<double>{x / 2.0} : std::nullopt; };
+    static_assert(std::is_same_v<decltype(n.and_then(half)), std::optional<double>>);
+
+    int calls = 0;
+    auto fallback = [&] { ++calls; return std::optional<int>{0}; };
+    EXPECT_EQ(n.or_else(fallback), 3);
+    EXPECT_EQ(calls, 0);  // engaged: or_else not invoked
+    EXPECT_EQ(std::optional<int>{}.or_else(fallback), 0);
+    EXPECT_EQ(calls, 1);
+#endif
+}
+
+// "Gotchas": an engaged optional<T*> holding nullptr is truthy too.
+TEST(Optional, OptionalPointerTestsEngagement) {
+    std::optional<int*> p{nullptr};
+    EXPECT_TRUE(p.has_value());
+    EXPECT_EQ(*p, nullptr);
 }

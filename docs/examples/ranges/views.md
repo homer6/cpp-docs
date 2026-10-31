@@ -114,8 +114,10 @@ for (auto field : line | rv::split(','))
   its invariants. Treat filtered views as read-mostly.
 - **Views don't own.** A pipeline over a temporary container dangles — keep the
   source alive while iterating.
-- **C++23 adaptors need a recent stdlib.** `zip`, `enumerate`, `chunk`, etc. may
-  be missing on older toolchains; check support.
+- **C++23 adaptors need a recent stdlib.** Support is uneven even today: libc++
+  in Clang 22 has `zip`, `adjacent`, `chunk_by` and `as_rvalue` but not
+  `enumerate`, `chunk`, `slide`, `stride` or `as_const`. Check the
+  `__cpp_lib_ranges_*` feature-test macros.
 
 ## See also
 
