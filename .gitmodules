@@ -2,3 +2,7 @@
 	path = modules/CppCoreGuidelines
 	url = https://github.com/isocpp/CppCoreGuidelines.git
 	branch = master
+[submodule "modules/perf-report"]
+	path = modules/perf-report
+	url = https://github.com/homer6/perf-report.git
+	branch = main

@@ -36,6 +36,11 @@ The full C++ Core Guidelines are a git submodule at `modules/CppCoreGuidelines`
 `git submodule update --init` after cloning. Third-party sources go under
 `modules/`; don't edit them.
 
+`modules/perf-report` is the owner's Linux performance-analysis guide
+(https://github.com/homer6/perf-report, also perf-report.com: perf, bpftrace,
+flame graphs, CPU/memory/disk/network analysis). Link to it for profiling
+commands instead of duplicating them.
+
 ## Layout
 
 Each cppreference area is a subfolder under `docs/examples/`:
