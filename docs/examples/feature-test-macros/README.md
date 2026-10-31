@@ -24,8 +24,9 @@ the standard version — because compilers ship features incrementally.
 ## Two families
 
 - **Language** macros: `__cpp_concepts`, `__cpp_constexpr`, `__cpp_modules`,
-  `__cpp_consteval`, `__cpp_if_constexpr` … (always available, from
-  the compiler).
+  `__cpp_consteval`, `__cpp_if_constexpr` … (predefined by the compiler, no
+  header needed). A macro is only defined while its feature is on: GCC defines
+  `__cpp_modules` only with `-fmodules`, and Clang 22 sets it to `1`, not a date.
 - **Library** macros: `__cpp_lib_*`, exposed via `<version>` (or the specific
   feature's own header): `__cpp_lib_ranges`, `__cpp_lib_expected`,
   `__cpp_lib_print`, `__cpp_lib_simd`, `__cpp_lib_linalg`, etc.

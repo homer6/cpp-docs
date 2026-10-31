@@ -57,3 +57,21 @@ TEST(Bit, Byteswap) {
     static_assert(std::byteswap(std::uint32_t{0x1234u}) == 0x34120000u);
 #endif
 }
+
+// "std::bit_cast": both types must be trivially copyable and the same size.
+template <class To, class From>
+concept BitCastable = requires(From f) { std::bit_cast<To>(f); };
+TEST(Bit, BitCastNeedsSameSize) {
+    static_assert(BitCastable<std::uint32_t, float>);
+    static_assert(!BitCastable<std::uint64_t, float>);
+    static_assert(std::bit_cast<std::uint32_t>(1.5f) == 0x3FC00000u);  // constexpr
+}
+
+// "Endianness": std::endian::native is little on every local toolchain (arm64, x86-64).
+TEST(Bit, NativeEndian) {
+    static_assert(std::endian::native == std::endian::little ||
+                  std::endian::native == std::endian::big);
+    std::uint32_t v = 1;
+    bool little = *reinterpret_cast<unsigned char*>(&v) == 1;
+    EXPECT_EQ(little, std::endian::native == std::endian::little);
+}

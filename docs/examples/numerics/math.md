@@ -66,10 +66,10 @@ void demo(double r, float d) {
 
 ## Gotchas
 
-- **`std::abs` ambiguity.** `<cmath>`'s `std::abs` handles floats; the integer
-  `std::abs` lives in `<cstdlib>`. Calling `std::abs(some_int)` with only
-  `<cmath>` included can pick the float overload and surprise you — include the
-  right header and/or use explicit types.
+- **Qualify `abs`.** Since C++17 both `<cmath>` and `<cstdlib>` declare every
+  `std::abs` overload, so `std::abs(-3)` is `int` and `std::abs(-2.5)` is
+  `double`. The trap is unqualified `abs(x)` or `::abs`, which can find C's
+  `int abs(int)` and truncate a `double`.
 - **`M_PI` is non-standard** (a POSIX extension, needs `_USE_MATH_DEFINES` on
   MSVC). Use `std::numbers::pi` in C++20+.
 - **`std::pow` for integer powers can be slower and imprecise.** `pow(x, 2)` may

@@ -60,3 +60,10 @@ endforeach()
 if(TARGET examples_language_tests)
   include(language/modules/modules.cmake)
 endif()
+
+# <meta> (P2996) needs -freflection on GCC 16; enable it only for the file that
+# tests docs/examples/metaprogramming/reflection.md (#46).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
+  set_source_files_properties(metaprogramming/reflection_test.cpp
+                              PROPERTIES COMPILE_OPTIONS -freflection)
+endif()

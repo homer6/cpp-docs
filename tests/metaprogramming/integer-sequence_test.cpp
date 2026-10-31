@@ -50,3 +50,14 @@ TEST(IntegerSequence, SquaresArray) {
     static_assert(squares == std::array<std::size_t, 5>{0, 1, 4, 9, 16});
     EXPECT_EQ(squares.back(), 16u);
 }
+
+// "Gotchas": std::make_from_tuple constructs an object from a tuple's elements.
+TEST(IntegerSequence, MakeFromTupleConstructs) {
+    struct P {
+        int x, y;
+        P(int a, int b) : x(a), y(b) {}
+    };
+    auto p = std::make_from_tuple<P>(std::tuple{3, 4});
+    EXPECT_EQ(p.x, 3);
+    EXPECT_EQ(p.y, 4);
+}

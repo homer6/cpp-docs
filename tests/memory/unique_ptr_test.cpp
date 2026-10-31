@@ -74,3 +74,44 @@ TEST(UniquePtr, CustomDeleterNotCalledOnNull) {
     }
     EXPECT_EQ(calls, 1);
 }
+
+// "Create with make_unique": get() borrows without transferring ownership.
+TEST(UniquePtr, GetBorrowsWithoutTransfer) {
+    auto p = std::make_unique<int>(42);
+    int* raw = p.get();
+    EXPECT_EQ(raw, &*p);
+    EXPECT_NE(p, nullptr);  // still the owner
+    EXPECT_EQ(*raw, 42);
+}
+
+// "Ownership transfer": returning a local by value moves it out, no std::move needed.
+TEST(UniquePtr, ReturnByValueMovesOut) {
+    auto make = [] {
+        auto p = std::make_unique<int>(3);
+        return p;
+    };
+    auto q = make();
+    ASSERT_NE(q, nullptr);
+    EXPECT_EQ(*q, 3);
+}
+
+// "As a class member": the owner frees the member without a user-written destructor.
+TEST(UniquePtr, MemberFreedWithOwner) {
+    struct Owner {
+        std::unique_ptr<Tracked> impl_ = std::make_unique<Tracked>();
+    };
+    live = 0;
+    {
+        Owner o;
+        EXPECT_EQ(live, 1);
+    }
+    EXPECT_EQ(live, 0);
+}
+
+// "Arrays and custom deleters": unique_ptr<int[]> indexes and uses delete[].
+TEST(UniquePtr, ArrayFormUsesDeleteArray) {
+    auto arr = std::make_unique<int[]>(100);
+    arr[0] = 1;
+    EXPECT_EQ(arr[0], 1);
+    static_assert(std::is_same_v<decltype(arr)::deleter_type, std::default_delete<int[]>>);
+}
