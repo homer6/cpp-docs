@@ -18,32 +18,33 @@ docs/
     README.md                #   master index and progress
     containers/              #   sequence, associative, unordered, adaptors, views
     strings/                 #   string, string_view, char_traits
-    text-processing/         #   format/print, charconv, regex, localization
+    text-processing/         #   format, charconv, regex, localization, C strings, text_encoding
     algorithms/              #   <algorithm>, <numeric>, parallel and ranges algorithms
     ranges/                  #   views, adaptors, factories, range concepts
     iterators/               #   categories, adaptors, operations
     utilities/               #   optional, variant, tuple, expected, any, bitset, functional
     memory/                  #   smart pointers, allocators, memory resources
     metaprogramming/         #   type traits, ratio, integer_sequence, reflection
-    numerics/                #   math, random, complex, bit, SIMD, linalg, valarray
+    numerics/                #   math, random, complex, bit, cfenv, SIMD, linalg, valarray
     datetime/                #   chrono durations, clocks, calendars, time zones
-    io/                      #   streams, files, string streams, filesystem
-    concurrency/             #   threads, mutexes, atomics, futures, coordination
+    io/                      #   streams, files, filesystem, print, syncstream
+    concurrency/             #   threads, mutexes, atomics, futures, coordination, safe reclamation
     execution/               #   senders/receivers (C++26)
-    diagnostics/             #   exceptions, system_error, stacktrace
-    language-support/        #   numeric_limits, <=>, source_location, initializer_list
+    diagnostics/             #   exceptions, system_error, stacktrace, debugging
+    language-support/        #   numeric_limits, <=>, source_location, typeid, signals, setjmp
     concepts/                #   the standard concepts library
     feature-test-macros/     #   detecting what your compiler supports
+    named-requirements/      #   Cpp17* requirements and how concepts relate
     language/                #   the core language
-      basic-concepts/        #     types, object model, storage and linkage, contracts
+      basic-concepts/        #     types, object model, storage, contracts, comments, keywords, freestanding
       expressions/           #     value categories, operators, conversions, constant expressions
-      statements/            #     selection, iteration
+      statements/            #     selection, iteration, jump statements
       declarations-initialization/
       functions/             #     overloading, default and variadic args, lambdas
-      classes/               #     special members, inheritance, unions and aggregates
-      templates/             #     basics, variadics, specialization and CTAD
+      classes/               #     special members, inheritance, operator overloading, deducing this, bit-fields
+      templates/             #     basics, variadics, specialization and CTAD, constraints
       exceptions/            #     throw/try/catch, noexcept and exception safety
-      coroutines/  modules/  preprocessor/
+      coroutines/  modules/  preprocessor/   # preprocessor includes #embed
   guidelines/                # how to use it well (see below)
 tools/                       # check_snippets.py — compile-checks every ```cpp block
 evals/                       # test cases for the cpp-guidelines agent skill
@@ -51,8 +52,10 @@ evals/                       # test cases for the cpp-guidelines agent skill
 modules/                     # submodules: C++ Core Guidelines, perf-report
 ```
 
-Work still to do is tracked in [#20](https://github.com/homer6/cpp-docs/issues/20)
-(missing topics and snippets that don't compile yet).
+Every area on cppreference's main page has pages, and every snippet compiles
+(or is tagged with why it can't). A GoogleTest suite that checks each page's
+claims at run time is in progress:
+[#41](https://github.com/homer6/cpp-docs/issues/41).
 
 ## Guidelines
 
@@ -96,8 +99,8 @@ python3 tools/check_snippets.py docs/examples --cxx g++-15 -q \
   --baseline tools/snippet_baseline/gcc.txt
 ```
 
-`docs/guidelines/` must pass cleanly. `docs/examples/` is checked against a
-list of known failures that should only shrink. Fence tags (`body`,
+Both must pass cleanly; the list of known failures
+(`tools/snippet_baseline/gcc.txt`) is empty and stays that way. Fence tags (`body`,
 `nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](CLAUDE.md).
 
 ## Conventions
