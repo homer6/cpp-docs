@@ -181,3 +181,21 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
   (`git worktree remove <path>`) and the local branch.
 - Merge several PRs one at a time: merge one, rebase the next onto the new
   `main`, check, merge, repeat.
+- **Comment on the issue every time a PR for it ships** — when it's opened
+  (the closing comment above) and again when it's merged, plus after any
+  follow-up push such as a research import. Say what changed since the last
+  comment and why:
+
+  ```markdown
+  Merged in <PR URL> (<merge commit SHA>).
+
+  **What changed**
+  - what landed since the PR was opened (follow-up commits, research
+    import, rebase conflicts and how they were resolved)
+
+  **Why**
+  - the reason for each change and what it was verified against
+
+  **Still open**
+  - follow-ups, with issue links
+  ```
