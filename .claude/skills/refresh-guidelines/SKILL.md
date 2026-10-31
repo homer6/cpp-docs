@@ -45,20 +45,30 @@ wrong about which papers made it into a standard.
 1. **Read `docs/guidelines/sources.md`.** Note each tracked source's edition and
    "last checked" date, and which pages depend on it.
 
-2. **C++ Core Guidelines (`ccg`)** — use Git, not scraping:
+2. **C++ Core Guidelines (`ccg`)** — use the submodule at
+   `modules/CppCoreGuidelines`, not scraping. It's pinned to the commit the
+   pages track (see `sources.md`).
 
    ```bash
-   # ~/dev/CppCoreGuidelines is a local clone of isocpp/CppCoreGuidelines
-   git -C ~/dev/CppCoreGuidelines fetch -q
-   git -C ~/dev/CppCoreGuidelines log --oneline <tracked-commit>..origin/master
-   git -C ~/dev/CppCoreGuidelines diff <tracked-commit> origin/master -- CppCoreGuidelines.md \
-     | grep -E '^[+-](### |Jun|Jul|[A-Z][a-z]{2} [0-9]+, 20)'
+   git submodule update --init modules/CppCoreGuidelines   # if not checked out
+   git -C modules/CppCoreGuidelines fetch -q origin
+   git -C modules/CppCoreGuidelines log --oneline HEAD..origin/master
+   git -C modules/CppCoreGuidelines diff HEAD origin/master -- CppCoreGuidelines.md \
+     | grep -E '^[+-](### |[A-Z][a-z]{2} [0-9]+, 20[0-9]{2}$)'
    ```
 
-   If the clone is missing, clone it to the scratchpad instead. The first line
-   of `CppCoreGuidelines.md` is the edition date. Look for added, removed and
-   renamed rules (`### <a name=...>` headings), changed enforcement thresholds,
-   and changed examples for rules the digest quotes.
+   The edition date is the first line matching `Mon D, YYYY` near the top of
+   `CppCoreGuidelines.md`. Look for added, removed and renamed rules
+   (`### <a name=...>` headings), changed enforcement thresholds, and changed
+   examples for rules the digest quotes.
+
+   After the pages are updated, move the pin forward so the submodule matches
+   the edition the pages now describe:
+
+   ```bash
+   git -C modules/CppCoreGuidelines checkout origin/master
+   git add modules/CppCoreGuidelines
+   ```
 
 3. **cppreference / the standard (`cppref`)** — ask what changed since the last
    check:

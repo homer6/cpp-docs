@@ -31,6 +31,11 @@ against upstream or import a new reference, use the `refresh-guidelines` skill
 (`.claude/skills/refresh-guidelines/`). Keep `docs/guidelines/sources.md`
 updated whenever a guidelines page changes.
 
+The full C++ Core Guidelines are a git submodule at `modules/CppCoreGuidelines`
+(pinned to the edition the pages track). Run
+`git submodule update --init` after cloning. Third-party sources go under
+`modules/`; don't edit them.
+
 ## Layout
 
 Each cppreference area is a subfolder under `docs/examples/`:
