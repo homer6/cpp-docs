@@ -24,6 +24,38 @@ report on **current best practice for testing modern C++** — as of {{DATE}}.
   `llvm-profdata`, `llvm-cov`) and GCC (`--coverage`, gcov/gcovr)
 - `static_assert` + concepts/requires-expressions to check that misuse fails to
   compile
+- Verified 2026-10-31 from GitHub release tags: GoogleTest 1.18.0
+  (2026-08-10, C++17 minimum since 1.17.0), Catch2 3.16.1 (2026-10-08, C++14
+  minimum), doctest 2.5.3 (2026-07-06, C++11); FuzzTest is tagged by date
+  (latest 2026-06-29)
+- Verified from P2900R14 (2025-02-13): the handler takes
+  `const std::contracts::contract_violation&` and returns void; no header
+  declares it; replaceability is implementation-defined; a throwing handler
+  is allowed and skips `enforce` termination; for `pre`/`post` the exception
+  acts as if thrown from the function body (so `std::terminate` if the
+  function is `noexcept`, and a function-try-block doesn't catch it); for
+  `contract_assert` the handler search continues from the statement
+- GCC 13's `-fcontracts` is the C++20-era design (N4820 + P1290, P1332,
+  P1429), not P2900 (GCC 13 manual)
+- GCC rejects combining `-fsanitize=thread` with `-fsanitize=address`
+
+## Still open from the last run (prioritize these)
+
+- Which shipping compilers/libraries implement P2900 today (GCC 16? Clang?
+  libc++/libstdc++), their flags for choosing the evaluation semantic, and
+  whether each lets you replace `handle_contract_violation`
+- Framework compile-time comparison and feature matrix, including Boost.Test,
+  Boost.UT and snitch, from measurements (not framework self-benchmarks)
+- RapidCheck and FuzzTest: maintenance, supported platforms/compilers,
+  shrinking, seed/counterexample reproduction, GoogleTest/Catch2 integration
+- libFuzzer maintenance stance, AFL++ commands, Centipede vs FuzzTest,
+  OSS-Fuzz/ClusterFuzzLite setup, structure-aware fuzzing APIs
+- Clang MC/DC minimum version and flags; gcov/gcovr/lcov differences;
+  template/inline aggregation; merging across binaries
+- CMake `try_compile`/`WILL_FAIL` and LLVM `-verify` mechanics for negative
+  compilation tests
+- Relacy/CDSChecker maintenance; TLA+ bridges
+- A talk catalogue (official video/slide links only)
 
 ## Questions to answer
 

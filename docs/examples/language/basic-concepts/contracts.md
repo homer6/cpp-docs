@@ -43,11 +43,12 @@ When a checking semantic finds the predicate `false` (or it throws), a **contrac
 violation** occurs and the **contract-violation handler** is invoked:
 
 ```cpp
-// the program's handler (implementation provides a default):
-void ::handle_contract_violation(std::contracts::contract_violation);
+// the program's handler (implementation provides a default; whether you can
+// replace it is implementation-defined):
+void handle_contract_violation(const std::contracts::contract_violation&);
 ```
 
-It receives a `std::contracts::contract_violation` describing the failure
+It receives a `const std::contracts::contract_violation&` describing the failure
 (location, kind, the predicate's source text where available). Under `enforce`
 the program is then *contract-terminated*; under `observe` execution continues.
 
