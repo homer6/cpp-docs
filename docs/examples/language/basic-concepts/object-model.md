@@ -45,6 +45,8 @@ int main(int argc, char* argv[]) { /* ... */ }// command-line args
   failure. `main` is the **only** function with an implicit `return 0`.
 - `argv[0]` is (conventionally) the program name; `argv[argc]` is null.
 - You cannot call `main` recursively, take its address, or overload it.
+- In a [freestanding](freestanding.md) implementation (kernels, firmware),
+  whether `main` is required at all is implementation-defined.
 
 ## Startup & shutdown order
 

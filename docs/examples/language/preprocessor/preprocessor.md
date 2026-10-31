@@ -21,6 +21,9 @@ Literally pastes the file's text in. Guard headers against double-inclusion:
 #endif
 ```
 
+To include a file's *bytes* rather than its text (images, shaders, tables), use
+[`#embed`](embed.md) (C++26).
+
 ## Macros (#define)
 
 ```cpp
