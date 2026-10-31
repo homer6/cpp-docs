@@ -5,6 +5,7 @@
 ## const — "I won't modify this"
 
 ```cpp
+int x = 0;
 const int max = 100;            // a constant
 const int* p1;                  // pointer to const int (can't change *p1)
 int* const p2 = &x;             // const pointer (can't repoint p2)
@@ -12,7 +13,7 @@ const int* const p3 = &x;       // both
 
 void print(const std::string& s);   // const ref param: no copy, no mutation
 
-struct Widget {
+struct Counter {
     int value() const;          // const member function: callable on const objects, won't mutate *this
 };
 ```
@@ -29,6 +30,9 @@ and can't modify data members (except `mutable` ones).
 ## mutable — escape hatch in a const object
 
 ```cpp
+struct Result { int value; };
+Result compute();               // the expensive call being cached
+
 class Cache {
     mutable std::mutex m_;          // lockable even from const methods
     mutable std::optional<Result> cached_;
@@ -50,6 +54,7 @@ caches, mutexes, lazy-computed values.
 See [constant expressions](../expressions/constant-expressions.md).
 
 ```cpp
+int read();
 const int     a = read();      // const, but value computed at runtime
 constexpr int b = 5 * 5;       // const AND a compile-time constant
 ```

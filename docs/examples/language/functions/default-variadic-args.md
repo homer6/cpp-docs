@@ -7,9 +7,11 @@
 ```cpp
 void connect(std::string_view host, int port = 8080, bool tls = true);
 
-connect("example.com");                 // port=8080, tls=true
-connect("example.com", 443);            // tls=true
-connect("example.com", 443, false);
+void demo() {
+    connect("example.com");             // port=8080, tls=true
+    connect("example.com", 443);        // tls=true
+    connect("example.com", 443, false);
+}
 ```
 
 - Only **trailing** parameters can have defaults (no gaps).
@@ -25,7 +27,9 @@ template<class... Args>                  // Args is a type pack
 void log(Args&&... args) {               // args is a function parameter pack
     (std::cout << ... << args) << '\n';  // fold expression — see below
 }
-log("x=", 42, " y=", 3.14);
+void demo() {
+    log("x=", 42, " y=", 3.14);          // prints: x=42 y=3.14
+}
 ```
 
 `sizeof...(args)` gives the count. Packs are expanded with `...`.

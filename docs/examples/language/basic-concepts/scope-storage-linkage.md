@@ -7,6 +7,8 @@
 ## Scope — where a name is visible
 
 ```cpp
+int compute();
+
 int g;                       // namespace (global) scope
 void f() {
     int local;               // block scope: visible to the end of the block

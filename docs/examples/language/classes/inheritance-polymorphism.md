@@ -27,11 +27,26 @@ public:
 ## Dynamic dispatch
 
 ```cpp
-std::unique_ptr<Shape> s = std::make_unique<Circle>(2.0);
-s->area();              // calls Circle::area() — resolved at runtime via the vtable
-s->name();              // "circle"
+struct Shape {                                // as above, abbreviated
+    virtual ~Shape() = default;
+    virtual double area() const = 0;
+    virtual std::string name() const { return "shape"; }
+};
+struct Circle : Shape {
+    double r;
+    explicit Circle(double r) : r{r} {}
+    double area() const override { return 3.14159 * r * r; }
+    std::string name() const override { return "circle"; }
+};
 
 void render(const Shape& sh) { sh.area(); }   // works for any Shape subtype
+
+void demo() {
+    std::unique_ptr<Shape> s = std::make_unique<Circle>(2.0);
+    s->area();          // calls Circle::area() — resolved at runtime via the vtable
+    s->name();          // "circle"
+    render(*s);
+}
 ```
 
 Calling a `virtual` function through a base reference/pointer dispatches to the
@@ -40,6 +55,12 @@ most-derived override. Through a *value*, it doesn't (see slicing).
 ## override and final
 
 ```cpp
+class Base {
+public:
+    virtual ~Base() = default;
+    virtual void f();
+    virtual void g();
+};
 class Derived : public Base {
     void f() override;          // ERROR if Base::f isn't virtual / signature mismatch
     void g() final;             // no further class may override g

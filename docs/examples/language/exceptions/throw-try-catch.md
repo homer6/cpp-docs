@@ -11,16 +11,19 @@
 int parse(std::string_view s) {
     if (s.empty()) throw std::invalid_argument{"empty input"};
     // ...
+    return 0;
 }
 
-try {
-    int n = parse(input);
-} catch (const std::invalid_argument& e) {     // most-derived handlers first
-    std::cerr << e.what() << '\n';
-} catch (const std::exception& e) {             // base-class catch-all
-    std::cerr << "error: " << e.what() << '\n';
-} catch (...) {                                  // truly everything (rarely needed)
-    std::cerr << "unknown error\n";
+void run(std::string_view input) {
+    try {
+        int n = parse(input);
+    } catch (const std::invalid_argument& e) {     // most-derived handlers first
+        std::cerr << e.what() << '\n';
+    } catch (const std::exception& e) {             // base-class catch-all
+        std::cerr << "error: " << e.what() << '\n';
+    } catch (...) {                                  // truly everything (rarely needed)
+        std::cerr << "unknown error\n";
+    }
 }
 ```
 
@@ -32,6 +35,9 @@ this is what makes RAII exception-safe: locks release, files close, memory frees
 automatically.
 
 ```cpp
+std::mutex m;
+void risky();
+
 void f() {
     std::lock_guard lk{m};        // acquired
     risky();                       // if this throws...
@@ -41,22 +47,40 @@ void f() {
 ## Rethrow & nested exceptions
 
 ```cpp
-catch (const std::exception&) {
-    log();
-    throw;                         // rethrow the SAME exception (preserves type)
+#include <exception>
+#include <stdexcept>
+
+void log();
+void lowLevel();
+
+void rethrow() {
+    try { lowLevel(); }
+    catch (const std::exception&) {
+        log();
+        throw;                     // rethrow the SAME exception (preserves type)
+    }
 }
 
-// preserve a cause chain:
-try { lowLevel(); }
-catch (...) { std::throw_with_nested(std::runtime_error{"high-level failed"}); }
-// later inspect with std::rethrow_if_nested / std::nested_exception
+void chain() {
+    // preserve a cause chain:
+    try { lowLevel(); }
+    catch (...) { std::throw_with_nested(std::runtime_error{"high-level failed"}); }
+    // later inspect with std::rethrow_if_nested / std::nested_exception
+}
 ```
 
 ## Catching: throw by value, catch by const reference
 
 ```cpp
-throw MyError{"msg"};                  // throw a value (a temporary)
-catch (const MyError& e) { }           // catch by const reference (no slicing, no copy)
+struct MyError : std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
+
+void example() {
+    try {
+        throw MyError{"msg"};          // throw a value (a temporary)
+    } catch (const MyError& e) { }     // catch by const reference (no slicing, no copy)
+}
 ```
 
 ## Gotchas

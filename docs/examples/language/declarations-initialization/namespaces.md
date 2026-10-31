@@ -6,13 +6,17 @@
 ## Declaring and using
 
 ```cpp
+#include <filesystem>
+
 namespace app {
     int version();
     namespace net { void connect(); }      // nested
 }
 
-app::version();                              // qualified name
-app::net::connect();
+void start() {
+    app::version();                          // qualified name
+    app::net::connect();
+}
 
 namespace fs = std::filesystem;              // namespace alias (shorten long names)
 
@@ -38,7 +42,9 @@ namespace lib {
     inline namespace v2 { void api(); }      // lib::api() resolves to lib::v2::api()
     namespace v1         { void api(); }      // still reachable as lib::v1::api()
 }
-lib::api();                                   // picks the inline (v2) by default
+void call_api() {
+    lib::api();                               // picks the inline (v2) by default
+}
 ```
 
 Members of an `inline namespace` act as if they're in the enclosing namespace —
@@ -50,11 +56,13 @@ To resolve an unqualified name, the compiler searches enclosing scopes — and f
 **function calls**, also **argument-dependent lookup (ADL)**: it looks in the
 namespaces of the argument types.
 
-```cpp
-std::vector<int> v{3, 1, 2};
-sort(v.begin(), v.end());        // unqualified `sort` found via ADL (arg is in namespace std)
+```cpp body
+std::vector<int> a{3, 1, 2}, b;
+swap(a, b);                       // unqualified `swap` found via ADL (args are std::vector, in namespace std)
 
-std::cout << x;                   // operator<< found via ADL in std — why `using std::operator<<` is unneeded
+std::string s = "hi";
+std::cout << s;                   // the free operator<<(ostream&, const string&) is found via ADL in std —
+                                  // why `using std::operator<<` is unneeded
 ```
 
 ADL is why `swap(a, b)` and range-based code can find the *right* overload without

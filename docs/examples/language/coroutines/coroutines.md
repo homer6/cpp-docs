@@ -17,7 +17,7 @@ heap-allocated **coroutine frame**.
 
 ## The three keywords
 
-```cpp
+```cpp nocompile
 co_yield value;   // produce a value and suspend (generators)
 co_await expr;    // suspend until `expr` (an awaitable) is ready, then resume with its result
 co_return value;  // finish the coroutine, producing a final value
@@ -43,16 +43,19 @@ std::generator<int> fibonacci() {
     }
 }
 
-for (int x : fibonacci() | std::views::take(10))   // lazy: only 10 values computed
-    /* 0 1 1 2 3 5 8 13 21 34 */;
+void print_first_ten() {
+    for (int x : fibonacci() | std::views::take(10))   // lazy: only 10 values computed
+        std::print("{} ", x);                          // 0 1 1 2 3 5 8 13 21 34
+}
 ```
 
 `std::generator<T>` is a lazy, single-pass range — perfect for producing
-sequences on demand.
+sequences on demand. GCC 15's libstdc++ ships `<generator>`; Clang 22's libc++
+doesn't yet.
 
 ## What awaiting looks like (sketch)
 
-```cpp
+```cpp nocompile
 Task<int> fetch() {
     int a = co_await read_async();      // suspend until read completes, resume with the value
     int b = co_await read_async();

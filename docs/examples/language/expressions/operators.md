@@ -50,10 +50,15 @@ C++17 tightened some rules, but most binary operators still **don't** order thei
 operands:
 
 ```cpp
-f() + g();             // unspecified which of f/g runs first
-a[i] = i++;            // UB pre-C++17; defined in C++17 (RHS sequenced before assignment)
-std::cout << f() << g();// C++17: left-to-right for << chains
-i = i++ + 1;            // still UB-ish territory — don't
+int f();
+int g();
+
+void demo(int* a, int i) {
+    f() + g();               // unspecified which of f/g runs first
+    a[i] = i++;              // UB pre-C++17; defined in C++17 (RHS sequenced before assignment)
+    std::cout << f() << g(); // C++17: left-to-right for << chains
+    i = i++ + 1;             // UB pre-C++17; defined since (same rule) — but don't write it
+}
 ```
 
 - `&&`, `||`, `,`, and `?:` **do** guarantee left-to-right with a sequence point

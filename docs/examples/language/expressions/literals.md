@@ -5,31 +5,31 @@
 ## Numeric literals
 
 ```cpp
-42        // int
-42u  42U  // unsigned
-42L  42LL // long / long long
-0x2A      // hex (42)
-0b1010    // binary (C++14)
-052       // octal (leading 0!) = 42
-3.14      // double
-3.14f     // float
-3.14L     // long double
-1'000'000 // digit separators (C++14) — ignored, just readability
-1e9  6.022e23
+auto i   = 42;         // int
+auto u   = 42u;        // unsigned int (also 42U)
+auto l   = 42L;        // long  (42LL: long long)
+auto hex = 0x2A;       // hex (42)
+auto bin = 0b1010;     // binary (C++14)
+auto oct = 052;        // octal (leading 0!) = 42
+auto d   = 3.14;       // double
+auto f   = 3.14f;      // float
+auto ld  = 3.14L;      // long double
+auto big = 1'000'000;  // digit separators (C++14) — ignored, just readability
+auto sci = 6.022e23;   // scientific notation: a double (1e9 is a double too)
 ```
 
 ## Character & string literals
 
 ```cpp
-'A'        // char
-u8'A'      // char8_t (C++20)
-L"wide"    // const wchar_t[]
-u8"utf8"   // const char8_t[]  (C++20)
-u"utf16"   // const char16_t[]
-U"utf32"   // const char32_t[]
+auto c    = 'A';        // char
+auto c8   = u8'A';      // char8_t (C++20)
+auto w    = L"wide";    // const wchar_t[5] (auto decays it to const wchar_t*)
+auto s8   = u8"utf8";   // const char8_t[5]  (C++20)
+auto s16  = u"utf16";   // const char16_t[6]
+auto s32  = U"utf32";   // const char32_t[6]
 
-R"(raw \n no escapes)"        // raw string: backslashes are literal
-R"delim(can contain )" here)delim"   // custom delimiter when ")" appears
+auto raw  = R"(raw \n no escapes)";              // raw string: backslashes are literal
+auto raw2 = R"delim(can contain )" here)delim";  // custom delimiter when ")" appears
 ```
 
 Adjacent string literals concatenate: `"foo" "bar"` is `"foobar"`.
@@ -39,6 +39,8 @@ Adjacent string literals concatenate: `"foo" "bar"` is `"foobar"`.
 Opt in with the right `using namespace`:
 
 ```cpp
+#include <complex>
+
 using namespace std::string_literals;     // "..."s  → std::string
 using namespace std::chrono_literals;     // 100ms, 2h → durations
 using namespace std::complex_literals;    // 1i → std::complex

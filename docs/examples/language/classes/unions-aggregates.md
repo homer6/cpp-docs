@@ -25,7 +25,7 @@ Aggregates are the right choice for plain bundles of data with no invariant.
 A `union` stores **one** of its members at a time, all sharing the same memory.
 It does **not** track which member is active — that's on you.
 
-```cpp
+```cpp body
 union Value {
     int    i;
     double d;
@@ -44,7 +44,7 @@ punning via unions in standard C++ — use [`std::bit_cast`](../../numerics/bit.
 `std::variant<int, double, std::string>` is a **type-safe union**: it knows which
 alternative is active, checks access, and runs the right destructor.
 
-```cpp
+```cpp body
 std::variant<int, double, std::string> v = 3.14;   // tracks the active type
 std::get<double>(v);                                // checked; throws on mismatch
 ```

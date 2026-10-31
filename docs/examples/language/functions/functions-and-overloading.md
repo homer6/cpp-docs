@@ -25,8 +25,10 @@ Multiple functions, same name, distinguished by parameter types:
 void print(int);
 void print(double);
 void print(const std::string&);
-print(42);        // → print(int)
-print(3.14);      // → print(double)
+void demo() {
+    print(42);        // → print(int)
+    print(3.14);      // → print(double)
+}
 ```
 
 Overloads differ by parameter **types/count**, not by return type alone. The
@@ -36,6 +38,8 @@ conversion); ambiguity is an error.
 ## Attributes that matter
 
 ```cpp
+enum class Status { ok, failed };
+
 [[nodiscard]] int compute();          // warn if the return value is ignored
 [[nodiscard("check the error")]] Status run();   // with a reason (C++20)
 [[noreturn]] void fail();              // never returns (throws/exits)

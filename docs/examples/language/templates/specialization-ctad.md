@@ -39,7 +39,8 @@ Function templates **cannot** be partially specialized — overload them instead
 Construct a class template without spelling the type arguments; the compiler
 deduces them from the constructor arguments:
 
-```cpp
+```cpp body
+std::mutex mtx;
 std::vector v{1, 2, 3};            // std::vector<int>
 std::pair  p{1, 2.5};               // std::pair<int, double>
 std::lock_guard lk{mtx};            // std::lock_guard<std::mutex>

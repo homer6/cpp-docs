@@ -8,9 +8,11 @@
 template<class T>
 T max_of(T a, T b) { return a > b ? a : b; }
 
-max_of(3, 7);          // T = int, deduced from arguments
-max_of(2.5, 1.0);      // T = double
-max_of<long>(3, 7);    // T explicitly long
+void demo() {
+    max_of(3, 7);          // T = int, deduced from arguments
+    max_of(2.5, 1.0);      // T = double
+    max_of<long>(3, 7);    // T explicitly long
+}
 ```
 
 The compiler **instantiates** a concrete function per type used. Argument types
@@ -27,6 +29,7 @@ public:
     const T& get() const { return value_; }
 };
 
+using namespace std::string_literals;
 Box<int> b{42};
 Box bs{"hi"s};         // CTAD deduces Box<std::string> (C++17) — see CTAD page
 ```
@@ -41,7 +44,7 @@ struct Array { T data[N]; };          // N is a compile-time size (this is how s
 
 template<int Base>
 int scaled(int x) { return x * Base; }
-scaled<10>(5);                         // 50
+int fifty = scaled<10>(5);             // 50
 
 // C++20: floating-point and class-type NTTPs (with structural types) are allowed
 ```

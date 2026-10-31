@@ -10,6 +10,7 @@ run at compile time when its inputs are constant, and at runtime otherwise.
 
 ```cpp
 constexpr int square(int x) { return x * x; }
+int read();                       // some runtime input
 
 constexpr int a = square(5);     // computed at compile time → 25
 int n = read();
@@ -29,8 +30,9 @@ recent standards.
 An **immediate function**: every call is evaluated at compile time, or it's an
 error. Use it to force compile-time-only work (e.g. validating a format string).
 
-```cpp
+```cpp compile-fail="call to consteval function .* is not a constant expression"
 consteval int force_ct(int x) { return x * x; }
+int read();
 
 constexpr int ok = force_ct(5);   // fine
 int n = read();
@@ -43,6 +45,8 @@ Asserts a static/thread-local variable is initialized at compile time, avoiding
 the static-initialization-order fiasco — without making it `const`.
 
 ```cpp
+constexpr int compute_constant() { return 42; }
+
 constinit int counter = compute_constant();   // must be a constant initializer;
                                                // but `counter` is still mutable at runtime
 ```

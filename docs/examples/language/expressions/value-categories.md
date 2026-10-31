@@ -30,10 +30,12 @@ steal resources:
 void sink(const std::string&);    // binds to lvalues (and rvalues as fallback): copy
 void sink(std::string&&);          // binds to rvalues: may move
 
-std::string s = "hi";
-sink(s);              // lvalue  → const& overload (copy)
-sink(std::move(s));   // xvalue  → && overload (move) — s is now moved-from
-sink("temp");          // prvalue → && overload (move)
+void demo() {
+    std::string s = "hi";
+    sink(s);              // lvalue  → const& overload (copy)
+    sink(std::move(s));   // xvalue  → && overload (move) — s is now moved-from
+    sink("temp");         // converts to a temporary std::string (prvalue) → && overload (move)
+}
 ```
 
 `std::move(x)` doesn't move anything — it's a **cast to an xvalue** that *permits*
@@ -41,11 +43,13 @@ a move overload to be selected. See [`std::move`](../../utilities/utility.md).
 
 ## Reference binding rules
 
-```cpp
+```cpp body
+int x = 0;
 int&        a = x;             // lvalue ref: binds to lvalues only
 const int&  b = 42;            // const lvalue ref: binds to anything (extends temp lifetime)
 int&&       c = 42;            // rvalue ref: binds to rvalues only
-auto&&      d = anything;      // forwarding ref (in deduced context): binds to either
+auto&&      d = x;             // forwarding ref (in deduced context): binds to either —
+auto&&      e = 42;            //   here d is int& and e is int&&
 ```
 
 ## Gotchas

@@ -35,6 +35,8 @@ risky everywhere else). Prefer `enum class` unless you specifically want this.
 ## Using scoped enum values conveniently (C++20)
 
 ```cpp
+enum class Color { red, green, blue };
+
 void f(Color c) {
     using enum Color;            // C++20: bring red/green/blue into scope here
     if (c == red) { /* no Color:: needed in this scope */ }
@@ -44,8 +46,10 @@ void f(Color c) {
 ## Helpers
 
 ```cpp
-std::to_underlying(Status::error);   // C++23: enum → underlying integer, safely
-                                     // (was: static_cast<std::underlying_type_t<Status>>(...))
+enum class Status : std::uint8_t { ok, warn, error };
+
+auto code = std::to_underlying(Status::error);   // C++23: enum → underlying integer (std::uint8_t{2})
+// was: static_cast<std::underlying_type_t<Status>>(Status::error)
 ```
 
 [Reflection](../expressions/reflection.md) (C++26) enables generic enum↔string

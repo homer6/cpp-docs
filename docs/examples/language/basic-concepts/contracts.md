@@ -9,13 +9,13 @@
 A **contract assertion** states a `bool` predicate that's expected to hold at a
 point in execution. Three forms:
 
-```cpp
+```cpp needs=contracts
 int factorial(int n)
     pre (n >= 0)              // precondition: checked on entry
     post(r: r >= 1)           // postcondition: `r` names the return value
 {
     contract_assert(n < 13);  // assertion: checked at this point in the body
-    // ...
+    return n <= 1 ? 1 : n * factorial(n - 1);
 }
 ```
 
@@ -42,7 +42,9 @@ contract can be off in a release build and enforced in a debug/hardened build.
 When a checking semantic finds the predicate `false` (or it throws), a **contract
 violation** occurs and the **contract-violation handler** is invoked:
 
-```cpp
+```cpp needs=contracts
+#include <contracts>
+
 // the program's handler (implementation provides a default; whether you can
 // replace it is implementation-defined):
 void handle_contract_violation(const std::contracts::contract_violation&);
@@ -73,7 +75,9 @@ the program is then *contract-terminated*; under `observe` execution continues.
   keep them pure.
 - **C++26, very early support.** Feature-test with `__cpp_contracts` (`202502L`);
   this is one of the last C++26 features to land and tooling is nascent. It is
-  *not* the older Contracts TS (which was removed from C++20).
+  *not* the older Contracts TS (which was removed from C++20). The examples here
+  were checked with GCC 16 (plain `-std=c++26`; the handler type lives in
+  `<contracts>`); Clang 22 doesn't implement them yet.
 
 ## See also
 
