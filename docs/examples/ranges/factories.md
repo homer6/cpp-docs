@@ -5,20 +5,22 @@
 
 ## Factories — ranges out of thin air
 
-```cpp
+```cpp body
 #include <ranges>
 namespace rv = std::views;
 
-rv::iota(0)             // 0,1,2,3,...  (infinite — pair with take!)
-rv::iota(1, 5)          // 1,2,3,4      (bounded)
-rv::single(42)          // a one-element range: {42}
-rv::empty<int>          // an empty range of int
-rv::repeat(7)           // 7,7,7,...    (infinite, C++23)
-rv::repeat(7, 3)        // 7,7,7        (bounded, C++23)
-rv::istream<int>(std::cin)   // lazily read ints from a stream
+auto a = rv::iota(0);           // 0,1,2,3,...  (infinite — pair with take!)
+auto b = rv::iota(1, 5);        // 1,2,3,4      (bounded)
+auto c = rv::single(42);        // a one-element range: {42}
+auto d = rv::empty<int>;        // an empty range of int
+auto e = rv::repeat(7);         // 7,7,7,...    (infinite, C++23)
+auto f = rv::repeat(7, 3);      // 7,7,7        (bounded, C++23)
+auto g = rv::istream<int>(std::cin);   // lazily read ints from a stream
 ```
 
-```cpp
+```cpp body
+namespace rv = std::views;
+
 // first 10 squares, lazily:
 for (int sq : rv::iota(1) | rv::transform([](int n){ return n*n; }) | rv::take(10))
     /* 1,4,9,...,100 */;
@@ -31,8 +33,12 @@ always bound it before iterating to completion.
 
 Collect a lazy pipeline into a real container in one call:
 
-```cpp
+```cpp body
 #include <ranges>
+namespace rv = std::views;
+
+std::vector<int> data{1, 2, 3, 4};
+std::vector<std::pair<int, std::string>> pairs{{1, "one"}, {2, "two"}};
 
 auto evens = data | rv::filter([](int x){ return x % 2 == 0; })
                   | std::ranges::to<std::vector>();      // std::vector<int>

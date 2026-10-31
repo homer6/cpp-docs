@@ -15,7 +15,8 @@ Mirrors [cppreference's algorithms library](https://en.cppreference.com/w/cpp/al
 
 ## Two flavors of every algorithm (C++20)
 
-```cpp
+```cpp body
+std::vector<int> v{3, 1, 2};
 std::sort(v.begin(), v.end());     // classic: iterator pair
 std::ranges::sort(v);              // C++20: whole range, + projections, safer
 ```

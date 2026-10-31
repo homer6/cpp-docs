@@ -7,12 +7,17 @@
 ## accumulate — the classic left fold
 
 ```cpp
+#include <functional>
 #include <numeric>
+#include <string>
+#include <vector>
 
-int sum  = std::accumulate(v.begin(), v.end(), 0);              // 0 + each
-int prod = std::accumulate(v.begin(), v.end(), 1, std::multiplies<>{});
-std::string joined = std::accumulate(words.begin(), words.end(), std::string{},
-        [](std::string acc, const std::string& w){ return acc + w; });
+void folds(const std::vector<int>& v, const std::vector<std::string>& words) {
+    int sum  = std::accumulate(v.begin(), v.end(), 0);              // 0 + each
+    int prod = std::accumulate(v.begin(), v.end(), 1, std::multiplies<>{});
+    std::string joined = std::accumulate(words.begin(), words.end(), std::string{},
+            [](std::string acc, const std::string& w){ return acc + w; });
+}
 ```
 
 The init value's **type drives the accumulation** — `accumulate(v, 0)` over a
@@ -24,20 +29,31 @@ The init value's **type drives the accumulation** — `accumulate(v, 0)` over a
 commutative**, which lets it run out of order (and in parallel with a policy):
 
 ```cpp
-int s = std::reduce(v.begin(), v.end());                          // sum, may reorder
-int s2 = std::reduce(std::execution::par, v.begin(), v.end());    // parallel sum
+#include <execution>
+#include <functional>
+#include <numeric>
+#include <vector>
 
-// map-then-reduce in one pass (dot product, etc.):
-double dot = std::transform_reduce(a.begin(), a.end(), b.begin(), 0.0);  // Σ aᵢ·bᵢ
-int n = std::transform_reduce(v.begin(), v.end(), 0,
-                              std::plus<>{}, [](int x){ return x > 0; });  // count positives
+void reductions(const std::vector<int>& v,
+                const std::vector<double>& a, const std::vector<double>& b) {
+    int s = std::reduce(v.begin(), v.end());                          // sum, may reorder
+    int s2 = std::reduce(std::execution::par, v.begin(), v.end());    // parallel sum
+
+    // map-then-reduce in one pass (dot product, etc.):
+    double dot = std::transform_reduce(a.begin(), a.end(), b.begin(), 0.0);  // Σ aᵢ·bᵢ
+    int n = std::transform_reduce(v.begin(), v.end(), 0,
+                                  std::plus<>{}, [](int x){ return x > 0; });  // count positives
+}
 ```
 
 `std::inner_product` is the older, sequential dot-product equivalent.
 
 ## Scans — running totals
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 3, 4};
+std::vector<int> out(v.size());
+
 std::partial_sum(v.begin(), v.end(), out.begin());        // inclusive prefix sums
 std::inclusive_scan(v.begin(), v.end(), out.begin());      // C++17, parallelizable
 std::exclusive_scan(v.begin(), v.end(), out.begin(), 0);   // each excludes itself
@@ -46,7 +62,10 @@ std::adjacent_difference(v.begin(), v.end(), out.begin()); // out[i] = v[i] - v[
 
 ## Small but handy
 
-```cpp
+```cpp body
+std::vector<int> v(5);
+int a = 7, b = 10;
+
 std::iota(v.begin(), v.end(), 1);     // fill 1,2,3,...
 std::gcd(12, 18);                      // 6   (C++17)
 std::lcm(4, 6);                        // 12  (C++17)

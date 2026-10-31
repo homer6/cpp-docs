@@ -7,21 +7,31 @@
 
 ```cpp
 #include <algorithm>
+#include <string>
+#include <vector>
 
-auto it = std::find(v.begin(), v.end(), 42);          // first == 42, or end()
-auto it2 = std::find_if(v.begin(), v.end(),
-                        [](int x){ return x > 10; });  // first matching predicate
-auto it3 = std::find_if_not(v.begin(), v.end(), pred);
+void searches(const std::vector<int>& v, const std::vector<int>& set,
+              const std::string& hay, const std::string& needle) {
+    auto pred = [](int x) { return x >= 0; };
 
-// subsequence / element-of-set searches:
-std::search(hay.begin(), hay.end(), needle.begin(), needle.end());  // find subrange
-std::find_first_of(v.begin(), v.end(), set.begin(), set.end());     // any of a set
-std::adjacent_find(v.begin(), v.end());               // first equal-adjacent pair
+    auto it = std::find(v.begin(), v.end(), 42);          // first == 42, or end()
+    auto it2 = std::find_if(v.begin(), v.end(),
+                            [](int x){ return x > 10; });  // first matching predicate
+    auto it3 = std::find_if_not(v.begin(), v.end(), pred);
+
+    // subsequence / element-of-set searches:
+    std::search(hay.begin(), hay.end(), needle.begin(), needle.end());  // find subrange
+    std::find_first_of(v.begin(), v.end(), set.begin(), set.end());     // any of a set
+    std::adjacent_find(v.begin(), v.end());               // first equal-adjacent pair
+}
 ```
 
 ## Counting & testing
 
-```cpp
+```cpp body
+std::vector<int> v{7, 1, 7, 4};
+auto pred = [](int x) { return x > 3; };
+
 std::count(v.begin(), v.end(), 7);                    // how many == 7
 std::count_if(v.begin(), v.end(), pred);              // how many satisfy pred
 
@@ -35,7 +45,9 @@ you mean.
 
 ## Comparing ranges
 
-```cpp
+```cpp body
+std::vector<int> a{1, 2, 3}, b{1, 2, 4};
+
 std::equal(a.begin(), a.end(), b.begin());            // element-wise equal
 std::equal(a.begin(), a.end(), b.begin(), b.end());   // safe 4-iterator form
 
@@ -46,7 +58,10 @@ std::lexicographical_compare(a.begin(), a.end(),
 
 ## Traversal
 
-```cpp
+```cpp body
+std::vector<int> v{1, 2, 3, 4, 5, 6};
+auto fn = [](int& x) { x *= 2; };
+
 std::for_each(v.begin(), v.end(), [](int& x){ /* side effects */ });
 std::for_each_n(v.begin(), 5, fn);                    // first 5 (C++17)
 ```

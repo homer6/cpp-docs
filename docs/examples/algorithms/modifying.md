@@ -7,20 +7,29 @@
 
 ```cpp
 #include <algorithm>
+#include <functional>
+#include <iterator>
+#include <vector>
 
-std::copy(in.begin(), in.end(), std::back_inserter(out));   // append-copy
-std::copy_if(in.begin(), in.end(), std::back_inserter(out), pred);
-std::move(in.begin(), in.end(), out.begin());               // move elements over
+void copy_and_transform(std::vector<int>& in, std::vector<int>& out,
+                        const std::vector<int>& a, const std::vector<int>& b) {
+    auto pred = [](int x) { return x % 2 == 0; };
 
-std::transform(in.begin(), in.end(), out.begin(),
-               [](int x){ return x * x; });                  // map one range
-std::transform(a.begin(), a.end(), b.begin(), out.begin(),
-               std::plus<>{});                               // zip two ranges
+    std::copy(in.begin(), in.end(), std::back_inserter(out));   // append-copy
+    std::copy_if(in.begin(), in.end(), std::back_inserter(out), pred);
+    std::move(in.begin(), in.end(), out.begin());               // move elements over
+
+    std::transform(in.begin(), in.end(), out.begin(),
+                   [](int x){ return x * x; });                  // map one range
+    std::transform(a.begin(), a.end(), b.begin(), out.begin(),
+                   std::plus<>{});                               // zip two ranges
+}
 ```
 
 ## Fill / generate
 
-```cpp
+```cpp body
+std::vector<int> v(10);
 std::fill(v.begin(), v.end(), 0);
 std::fill_n(v.begin(), 5, -1);
 std::generate(v.begin(), v.end(), [n = 0]() mutable { return n++; });  // 0,1,2,...
@@ -29,7 +38,9 @@ std::iota(v.begin(), v.end(), 1);              // 1,2,3,... (from <numeric>)
 
 ## Replace
 
-```cpp
+```cpp body
+std::vector<int> v{0, 5, 0, -3};
+auto pred = [](int x) { return x < 0; };
 std::replace(v.begin(), v.end(), 0, -1);                  // every 0 → -1
 std::replace_if(v.begin(), v.end(), pred, 0);
 ```
@@ -40,7 +51,10 @@ std::replace_if(v.begin(), v.end(), pred, 0);
 elements to the front and return an iterator to the new logical end; the tail is
 left as unspecified leftovers. You must `erase` that tail.
 
-```cpp
+```cpp body
+std::vector<int> v{0, 1, 0, 2, -3};
+auto pred = [](int x) { return x < 0; };
+
 // pre-C++20:
 v.erase(std::remove(v.begin(), v.end(), 0), v.end());        // drop all 0s
 v.erase(std::remove_if(v.begin(), v.end(), pred), v.end());
@@ -52,7 +66,8 @@ std::erase_if(v, pred);
 
 ## unique — collapse *consecutive* duplicates
 
-```cpp
+```cpp body
+std::vector<int> v{3, 1, 3, 2, 1};
 std::sort(v.begin(), v.end());                                // unique needs them adjacent
 v.erase(std::unique(v.begin(), v.end()), v.end());            // dedup a sorted range
 ```
@@ -60,10 +75,19 @@ v.erase(std::unique(v.begin(), v.end()), v.end());            // dedup a sorted 
 ## Reorder
 
 ```cpp
-std::reverse(v.begin(), v.end());
-std::rotate(v.begin(), v.begin() + 3, v.end());   // bring element 3 to the front
-std::shuffle(v.begin(), v.end(), rng);             // random permutation (needs a generator)
-std::sample(in.begin(), in.end(), std::back_inserter(out), 5, rng);  // pick 5 (C++17)
+#include <algorithm>
+#include <iterator>
+#include <random>
+#include <vector>
+
+void reorder(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& out) {
+    std::mt19937 rng{std::random_device{}()};
+
+    std::reverse(v.begin(), v.end());
+    std::rotate(v.begin(), v.begin() + 3, v.end());   // bring element 3 to the front
+    std::shuffle(v.begin(), v.end(), rng);             // random permutation (needs a generator)
+    std::sample(in.begin(), in.end(), std::back_inserter(out), 5, rng);  // pick 5 (C++17)
+}
 ```
 
 ## Gotchas

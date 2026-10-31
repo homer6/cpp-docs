@@ -11,11 +11,15 @@ Pass a policy as the first argument to opt into parallel/vectorized execution:
 ```cpp
 #include <execution>
 #include <algorithm>
+#include <vector>
 
-std::sort(std::execution::seq,        v.begin(), v.end());   // sequential (default)
-std::sort(std::execution::par,        v.begin(), v.end());   // parallel threads
-std::sort(std::execution::par_unseq,  v.begin(), v.end());   // parallel + vectorized
-std::for_each(std::execution::unseq,  v.begin(), v.end(), f);// vectorized, single thread (C++20)
+void sort_all_ways(std::vector<int>& v) {
+    auto f = [](int& x) { x *= 2; };
+    std::sort(std::execution::seq,        v.begin(), v.end());   // sequential (default)
+    std::sort(std::execution::par,        v.begin(), v.end());   // parallel threads
+    std::sort(std::execution::par_unseq,  v.begin(), v.end());   // parallel + vectorized
+    std::for_each(std::execution::unseq,  v.begin(), v.end(), f);// vectorized, single thread (C++20)
+}
 ```
 
 | Policy | Meaning |
@@ -42,15 +46,24 @@ richer result types, and give clean concept-checked errors:
 ```cpp
 #include <algorithm>
 #include <ranges>
+#include <string>
+#include <vector>
 
-std::ranges::sort(v);                                   // no .begin()/.end()
-std::ranges::sort(people, {}, &Person::age);            // sort by a projected field
-//                         ↑ comparator (default <)  ↑ projection
+struct Person { std::string name; int age; int score; };
 
-bool any = std::ranges::any_of(v, [](int x){ return x > 0; });
-auto it  = std::ranges::find(v, 42);
-std::ranges::for_each(v, fn);
-auto n   = std::ranges::count_if(people, is_adult, &Person::age);
+void demo(std::vector<int>& v, std::vector<Person>& people) {
+    auto fn       = [](int& x) { x *= 2; };
+    auto is_adult = [](int age) { return age >= 18; };
+
+    std::ranges::sort(v);                                   // no .begin()/.end()
+    std::ranges::sort(people, {}, &Person::age);            // sort by a projected field
+    //                         ↑ comparator (default <)  ↑ projection
+
+    bool any = std::ranges::any_of(v, [](int x){ return x > 0; });
+    auto it  = std::ranges::find(v, 42);
+    std::ranges::for_each(v, fn);
+    auto n   = std::ranges::count_if(people, is_adult, &Person::age);
+}
 ```
 
 ### Projections
@@ -59,8 +72,10 @@ A projection is a callable applied to each element *before* the predicate/
 comparator — usually a pointer-to-member or a lambda. It removes the boilerplate
 lambda that just reaches into a field:
 
-```cpp
-std::ranges::max_element(people, std::less<>{}, &Person::score);  // person with max score
+```cpp body
+struct Person { std::string name; int score; };
+std::vector<Person> people{{"Ann", 90}, {"Bob", 75}};
+auto best = std::ranges::max_element(people, std::less<>{}, &Person::score);  // person with max score
 ```
 
 ### Borrowed iterators & dangling
@@ -69,8 +84,10 @@ When you pass a temporary range, ranges algorithms return `std::ranges::dangling
 instead of a would-be-dangling iterator, turning a runtime bug into a compile
 error:
 
-```cpp
+```cpp body
+auto make_vector = [] { return std::vector<int>{1, 2, 3}; };
 auto it = std::ranges::find(make_vector(), 1);   // it is std::ranges::dangling — can't deref
+static_assert(std::same_as<decltype(it), std::ranges::dangling>);
 ```
 
 ## Gotchas

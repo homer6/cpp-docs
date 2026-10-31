@@ -20,23 +20,26 @@ value": parse failures, lookups that can miss, lazily-computed values.
 
 ```cpp
 #include <optional>
+#include <span>
 
 std::optional<int> find_even(std::span<const int> xs) {
     for (int x : xs) if (x % 2 == 0) return x;
     return std::nullopt;                  // or just `return {};`
 }
 
-auto r = find_even(data);
-if (r) {                                  // contextually bool: engaged?
-    int v = *r;                           // operator* — UB if empty
-    int w = r.value();                    // throws std::bad_optional_access if empty
+void use_it(std::span<const int> data) {
+    auto r = find_even(data);
+    if (r) {                                  // contextually bool: engaged?
+        int v = *r;                           // operator* — UB if empty
+        int w = r.value();                    // throws std::bad_optional_access if empty
+    }
+    int v = r.value_or(-1);                   // value, or a fallback if empty
 }
-int v = r.value_or(-1);                   // value, or a fallback if empty
 ```
 
 ### In-place construction
 
-```cpp
+```cpp body
 std::optional<std::string> s;
 s.emplace(5, 'x');               // construct "xxxxx" in place, no temporary
 std::optional<std::string> t{std::in_place, "hello"};
@@ -48,10 +51,18 @@ s.reset();                       // back to empty
 Chain without unwrapping by hand:
 
 ```cpp
-std::optional<int> n = parse(str);
-auto out = n.and_then(validate)        // optional<U>: run only if engaged
-            .transform(square)          // optional<V>: map the value if engaged
-            .or_else(default_value);    // supply an optional if empty
+std::optional<int> parse(std::string_view s);
+std::optional<int> validate(int x) { return x >= 0 ? std::optional{x} : std::nullopt; }
+int square(int x) { return x * x; }
+std::optional<int> default_value() { return 0; }
+
+std::optional<int> parse_validate_square(std::string_view str) {
+    std::optional<int> n = parse(str);
+    auto out = n.and_then(validate)        // optional<U>: run only if engaged
+                .transform(square)          // optional<V>: map the value if engaged
+                .or_else(default_value);    // supply an optional if empty
+    return out;
+}
 ```
 
 ## Gotchas

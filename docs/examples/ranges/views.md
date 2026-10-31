@@ -8,9 +8,13 @@
 `range | adaptor` applies the adaptor; chaining reads in data-flow order. Each
 adaptor returns a view; nothing runs until iteration.
 
-```cpp
+```cpp body
 #include <ranges>
 namespace rv = std::views;
+
+std::vector<int> data{1, 2, 3, 4, 5, 6, 7, 8};
+auto pred = [](int x) { return x % 2 == 0; };
+auto fn   = [](int x) { return x * 10; };
 
 auto pipeline = data | rv::filter(pred) | rv::transform(fn) | rv::take(5);
 ```
@@ -20,43 +24,61 @@ reads better when chaining.
 
 ## Core adaptors (C++20)
 
-```cpp
-rv::filter(pred)         // keep elements satisfying pred
-rv::transform(fn)        // apply fn to each (map)
-rv::take(n)              // first n
-rv::take_while(pred)     // prefix while pred holds
-rv::drop(n)              // skip first n
-rv::drop_while(pred)     // skip leading run satisfying pred
-rv::reverse              // back-to-front (bidirectional ranges)
-rv::join                 // flatten a range-of-ranges
-rv::split(delim)         // split into subranges on a delimiter
-rv::elements<N>          // Nth element of each tuple-like
-rv::keys                 // = elements<0>  (e.g. map keys)
-rv::values               // = elements<1>  (e.g. map values)
-rv::common               // make begin/end the same type (for legacy APIs)
+```cpp body
+namespace rv = std::views;
+std::vector<int> v{1, 2, 3, 4, 5, 6};
+std::vector<std::vector<int>> nested{{1, 2}, {3}};
+std::map<std::string, int> m{{"a", 1}, {"b", 2}};
+std::string csv = "a,b,c";
+auto pred = [](int x) { return x < 4; };
+auto fn   = [](int x) { return x * 10; };
+int n = 2;
+
+auto r1  = v | rv::filter(pred);       // keep elements satisfying pred
+auto r2  = v | rv::transform(fn);      // apply fn to each (map)
+auto r3  = v | rv::take(n);            // first n
+auto r4  = v | rv::take_while(pred);   // prefix while pred holds
+auto r5  = v | rv::drop(n);            // skip first n
+auto r6  = v | rv::drop_while(pred);   // skip leading run satisfying pred
+auto r7  = v | rv::reverse;            // back-to-front (bidirectional ranges)
+auto r8  = nested | rv::join;          // flatten a range-of-ranges
+auto r9  = csv | rv::split(',');       // split into subranges on a delimiter
+auto r10 = m | rv::elements<1>;        // Nth element of each tuple-like
+auto r11 = m | rv::keys;               // = elements<0>  (e.g. map keys)
+auto r12 = m | rv::values;             // = elements<1>  (e.g. map values)
+auto r13 = r4 | rv::common;            // make begin/end the same type (for legacy APIs)
 ```
 
-```cpp
-std::map<std::string,int> m = {...};
+```cpp body
+namespace rv = std::views;
+std::map<std::string,int> m = {{"a", 1}, {"b", 2}};
 for (const auto& k : m | rv::keys)   { /* every key */ }
 for (int v : m | rv::values)         { /* every value */ }
 ```
 
 ## New in C++23
 
-```cpp
-rv::enumerate            // yields (index, element) pairs
-rv::zip                  // zip N ranges into tuples, stops at the shortest
-rv::zip_transform(fn)    // zip then apply fn
-rv::adjacent<N>          // sliding tuples of N consecutive elements
-rv::chunk(n)             // group into sub-ranges of size n
-rv::slide(n)             // sliding windows of width n
-rv::chunk_by(pred)       // split where pred(a,b) is false
-rv::stride(n)            // every nth element
-rv::as_const, rv::as_rvalue
+```cpp body
+namespace rv = std::views;
+std::vector<int> a{1, 2, 3, 4, 5, 6}, b{10, 20, 30};
+int n = 2;
+
+auto r1  = a | rv::enumerate;                         // yields (index, element) pairs
+auto r2  = rv::zip(a, b);                             // zip N ranges into tuples, stops at the shortest
+auto r3  = rv::zip_transform(std::plus<>{}, a, b);    // zip then apply fn
+auto r4  = a | rv::adjacent<2>;                       // sliding tuples of N consecutive elements
+auto r5  = a | rv::chunk(n);                          // group into sub-ranges of size n
+auto r6  = a | rv::slide(n);                          // sliding windows of width n
+auto r7  = a | rv::chunk_by(std::ranges::less{});     // split where pred(a,b) is false
+auto r8  = a | rv::stride(n);                         // every nth element
+auto r9  = a | rv::as_const;
+auto r10 = a | rv::as_rvalue;
 ```
 
-```cpp
+```cpp body
+namespace rv = std::views;
+std::vector<std::string> names{"ann", "bob", "cy"};
+
 for (auto [i, name] : names | rv::enumerate) { /* i = 0,1,2..., name = element */ }
 
 std::vector<int> a{1,2,3}, b{10,20,30};
@@ -65,7 +87,10 @@ for (auto [x, y] : rv::zip(a, b)) { /* (1,10), (2,20), (3,30) */ }
 
 ## Examples
 
-```cpp
+```cpp body
+namespace rv = std::views;
+std::vector<int> data{1, 2, 3, 4, 5, 6, 7, 8};
+
 // sum of squares of the first 3 even numbers in `data`:
 int s = 0;
 for (int x : data | rv::filter([](int n){ return n%2==0; })

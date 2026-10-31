@@ -19,21 +19,23 @@ The size N is fixed at compile time.
 ```cpp
 #include <bitset>
 
-std::bitset<8> b{0b1011};        // from an integer
-std::bitset<8> c{"00001011"};    // from a string
+void bitset_basics() {
+    std::bitset<8> b{0b1011};        // from an integer
+    std::bitset<8> c{"00001011"};    // from a string
 
-b[0];                            // true  (bit 0 set)
-b.test(2);                       // false (bounds-checked; [] is not)
-b.set(4);                        // set bit 4
-b.reset(0);                      // clear bit 0
-b.flip();                        // invert all bits
-b.count();                       // number of set bits  (popcount)
-b.size();                        // 8
-b.any(); b.all(); b.none();      // predicates
+    b[0];                            // true  (bit 0 set)
+    b.test(2);                       // false (bounds-checked; [] is not)
+    b.set(4);                        // set bit 4
+    b.reset(0);                      // clear bit 0
+    b.flip();                        // invert all bits
+    b.count();                       // number of set bits  (popcount)
+    b.size();                        // 8
+    b.any(); b.all(); b.none();      // predicates
 
-b |= std::bitset<8>{0b0100};     // bitwise ops work between same-size bitsets
-auto n  = b.to_ulong();          // → unsigned long  (throws if it doesn't fit)
-auto s  = b.to_string();         // → "0001..." 
+    b |= std::bitset<8>{0b0100};     // bitwise ops work between same-size bitsets
+    auto n  = b.to_ulong();          // → unsigned long  (throws if it doesn't fit)
+    auto s  = b.to_string();         // → "0001..." 
+}
 ```
 
 ## Gotchas
