@@ -262,6 +262,9 @@ Reference: [standard concepts](../examples/concepts/standard-concepts.md)
 
 - **Per.1 / Per.2: Don't optimize without reason, or prematurely.** Measure.
 - **Per.4 / Per.5: Complicated or low-level code isn't automatically faster.**
+- **Per.6: Don't make claims about performance without measurements.** How to
+  measure — benchmarks, `perf`, flame graphs — is in
+  [performance tooling](performance-tooling.md).
 - **Per.7: Design to enable optimization** — value semantics, contiguous data,
   moves instead of copies.
 - **Per.10: Rely on the static type system.**
