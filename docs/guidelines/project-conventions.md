@@ -165,6 +165,9 @@ If a type does its own locking internally, say so and say what it costs.
   [design principles](design-principles.md#7-test-the-laws).
 - **Build warning-clean** at `-Wall -Wextra` (and `-Werror` in CI).
 
+For property-based tests, fuzzing, testing contracts, coverage, and
+compile-time tests, see [testing](testing.md).
+
 ## Performance
 
 - **Measure before optimizing;** keep a benchmark suite for exactly this.

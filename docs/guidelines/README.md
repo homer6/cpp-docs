@@ -17,6 +17,7 @@ The guiding question throughout: **can the compiler reject the mistake?**
 | [Design principles](design-principles.md) | Types model the domain, no raw loops, monoids, errors in the type system | Ben Deane's talks |
 | [Project conventions](project-conventions.md) | Naming, headers, API shape, testing style | House style (from automerge-cpp) |
 | [Industry practice](industry-practice.md) | Where Google, Chromium, and LLVM disagree; Abseil tips that still matter | Style guides, Abseil |
+| [Testing](testing.md) | Framework choice, property-based tests, fuzzing, contracts, coverage, compile-time tests | Framework and tool docs |
 | [Sources](sources.md) | Where each page came from, which edition, when last refreshed | — |
 
 ## How this section differs from the reference pages
