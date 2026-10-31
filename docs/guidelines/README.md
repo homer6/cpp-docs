@@ -18,6 +18,7 @@ The guiding question throughout: **can the compiler reject the mistake?**
 | [Project conventions](project-conventions.md) | Naming, headers, API shape, testing style | House style (from automerge-cpp) |
 | [Performance tooling](performance-tooling.md) | Benchmarking, `perf`, flame graphs, heap profiling, reading generated code | Core Guidelines (Per), perf-report |
 | [Industry practice](industry-practice.md) | Where Google, Chromium, and LLVM disagree; Abseil tips that still matter | Style guides, Abseil |
+| [Tooling](tooling.md) | Sanitizers, debuggers, core dumps, static analysis — what to use for which bug | Clang sanitizer docs |
 | [Sources](sources.md) | Where each page came from, which edition, when last refreshed | — |
 
 ## How this section differs from the reference pages
