@@ -9,6 +9,13 @@ The guidance lives in `docs/guidelines/` of the cpp-docs repo (this skill's
 repo). The full C++ Core Guidelines are in `modules/CppCoreGuidelines/`. Treat
 them as the source; this file only says how to use them.
 
+**Repo-bound.** The paths below are relative to the cpp-docs repo root, not to
+this skill's folder, so the skill works only inside a cpp-docs checkout (with
+`git submodule update --init`). That keeps one copy of the guidance. To use it
+in another project, open that project alongside a cpp-docs checkout and read
+the pages from there; a self-contained copy (pages under `references/` plus a
+sync script) is a possible follow-up.
+
 ## 1. Learn the project's constraints first
 
 Before recommending anything, find out (from build files, `CLAUDE.md`, a
