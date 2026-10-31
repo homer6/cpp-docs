@@ -101,7 +101,7 @@ delegate to an existing formatter (e.g. inherit from `std::formatter<int>`).
 - **Compile-time check needs a literal format string.** A `std::string` format
   argument won't compile with `std::format`; route runtime strings through
   `std::vformat(str, std::make_format_args(args...))`.
-- **It's locale-independent by default** (unlike `iostream`/`to_string`). Use the
+- **It's locale-independent by default** (unlike `iostream`, and `to_string` before C++26). Use the
   `L` spec / `std::format(std::locale, ...)` overloads when you actually want
   locale formatting.
 

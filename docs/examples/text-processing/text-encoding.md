@@ -125,15 +125,19 @@ int main() {
 }
 ```
 
+Like `environment()`, this needs `-lstdc++exp` with libstdc++.
+
 ## Gotchas
 
 - **Library support is partial.** libstdc++ has it
   (`__cpp_lib_text_encoding == 202306L` in GCC 15 and 16, verified locally); libc++ in Clang 22
   has no `<text_encoding>` header at all. MSVC status not verified locally.
-- **With libstdc++, `environment()` and `environment_is()` need
-  `-lstdc++exp`.** Without it, GCC 15 (macOS) and GCC 16 (Linux) both fail to
-  link with `undefined reference to std::text_encoding::environment()`.
-  `literal()`, lookups and `locale::encoding()` link without it.
+- **With libstdc++, `environment()`, `environment_is()` and
+  `std::locale::encoding()` need `-lstdc++exp`.** Without it, GCC 15 (macOS)
+  and GCC 16 (Linux) both fail to link with
+  `undefined reference to std::text_encoding::environment()` (or
+  `std::locale::encoding() const`). `literal()` and lookups by name or id link
+  without it.
 - **`environment()` is fixed at program start.** It reflects the environment
   the program was launched with, not later calls to `std::setlocale` or
   `std::locale::global` (verified: still `UTF-8` after both switched to `"C"`). For the current C++ locale ask `locale::encoding()`.

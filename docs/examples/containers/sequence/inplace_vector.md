@@ -50,12 +50,18 @@ gives you three back-insert families with different overflow behavior:
 | Function | On overflow (`size() == N`) | Returns |
 |---|---|---|
 | `push_back` / `emplace_back` | **throws `std::bad_alloc`** | `reference` to new element |
-| `try_push_back` / `try_emplace_back` | does nothing, no throw | `pointer` — `nullptr` if full |
+| `try_push_back` / `try_emplace_back` | does nothing, no throw | `std::optional<T&>` — empty if full |
 | `unchecked_push_back` / `unchecked_emplace_back` | **undefined behavior** (precondition `size() < N`) | `reference` |
 
 Choose by context: `push_back` for "shouldn't happen, fail loudly",
 `try_push_back` for "full is normal, branch on it", `unchecked_push_back` for hot
 paths where you've already proven there's room.
+
+The `try_*` functions return `std::optional<T&>` in C++26 as published (P3981,
+`__cpp_lib_inplace_vector == 202603L`). Earlier drafts, and libraries that
+define the macro as `202406L`, return a raw `T*` that is `nullptr` when full.
+Both test false when full, so `if (auto p = v.try_push_back(x))` works with
+either.
 
 ## Iterator & reference invalidation
 
@@ -95,7 +101,7 @@ int main() {
     std::inplace_vector<int, 2> small;
     small.push_back(1);
     small.push_back(2);
-    if (int* p = small.try_push_back(3)) {   // returns nullptr — it's full
+    if (auto p = small.try_push_back(3)) {   // empty optional<int&> — it's full
         // not taken
     } else {
         // handle "buffer full" without an exception
@@ -132,10 +138,10 @@ int main() {
   `n > N` (it can't grow past `N`). `shrink_to_fit` is a no-op.
 - **Moves are not cheap like `vector`'s.** A `vector` move just steals a pointer;
   `inplace_vector` must move each element, because storage is inline.
-- **Toolchain support is still arriving.** None of the local toolchains this
-  page was checked with (GCC 15.2, GCC 16.2, Clang 22 with libc++) ships
-  `<inplace_vector>` yet, so the examples are tagged `needs=inplace_vector` and
-  have not been compiled.
+- **Toolchain support is still arriving.** GCC 16.2 (libstdc++) ships
+  `<inplace_vector>` with the `202603L` (`optional<T&>`) interface; GCC 15.2 and
+  Clang 22 with libc++ don't yet, so the examples are tagged
+  `needs=inplace_vector`.
 
 ## See also
 
