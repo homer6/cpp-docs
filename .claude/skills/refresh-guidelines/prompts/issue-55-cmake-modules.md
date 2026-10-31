@@ -20,22 +20,65 @@ C++26 with C++20/23 as the practical baseline. I'm rewriting my coverage of
 the language. CMake's modules support is extensive and I want all of it,
 precisely, with the version each piece arrived in. Today's date is {{DATE}}.
 
-## What I already cover (verify, correct, or add nuance — don't re-explain)
+## What I already cover or have verified (against CMake's `Help/` at the release tags, and built locally — don't re-explain)
 
-- CMake scans sources for named modules since **3.28**; module sources go in a
-  `FILE_SET CXX_MODULES` (`target_sources(geo PUBLIC FILE_SET CXX_MODULES FILES src/geo.cppm)`).
-- Toolchain floor for scanning, per the CMake manual: Ninja 1.11+ or Visual
-  Studio 2022 17.4+ generators; MSVC toolset 14.34+, Clang 16+, GCC 14+.
-  Header units aren't supported.
-- `import std;` via `CXX_MODULE_STD` / `CMAKE_CXX_MODULE_STD`: experimental
-  through CMake 4.4 (gated by `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` with a
-  per-version UUID); CMake 4.5 (release candidate as of late Oct 2026) lists
-  it as "Added in version 4.5" with no gate. GCC 15+ (16+ on macOS) for
-  libstdc++. 4.5 adds `CMAKE_CXX_STDLIB_MODULES_JSON`; Ubuntu releases before
-  26.04 ship a broken `libstdc++.modules.json` (Launchpad bug 2141579).
-- Google and Chromium still ban modules; I recommend piloting one target
-  end-to-end (clean and incremental builds, ccache, debugging, clangd,
-  clang-tidy, install/export, a consumer built against the installed package).
+The page keeps only the essentials (FILE_SET example, floor, `import std` status,
+install/export, known issues); the rest below was verified and kept out of the
+page on purpose.
+
+- Named modules supported since **3.28** (3.25–3.27 experimental with per-release
+  `CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API` UUIDs; 3.25/3.26 also needed
+  `CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP`). Providers (interface units and both
+  kinds of partition) go in `FILE_SET CXX_MODULES`; implementation units are
+  ordinary sources; `module M:part;` is an internal partition (CMake errors if
+  it's outside the file set); PRIVATE-module-from-PUBLIC-module rule.
+- Floor: Ninja 1.11+ / Ninja Multi-Config, VS 17 2022 and VS 18 2026; MSVC
+  14.34+, Clang 16+, clang-cl 19.1+ (4.4, not VS generators), GCC 14+. No
+  header units, no Makefiles, no Xcode.
+- Scanning decision order, CMP0155 (unset = OLD, no warning), file-set
+  `CXX_SCAN_FOR_MODULES` (4.4), `set(CMAKE_CXX_SCAN_FOR_MODULES 0)` as a
+  non-cache variable, unity-build exclusion.
+- Install/export: `FILE_SET CXX_MODULES DESTINATION`, `CXX_MODULES_DIRECTORY`
+  (required), `CXX_MODULES_BMI` (installed but unused by consumers),
+  `IMPORTED_CXX_MODULES_<CONFIG>`; consumers rebuild BMIs in synthetic targets;
+  before 4.4 those use the provider's settings (dialect/extensions mismatches
+  fail — tested with 3.28.6 and 4.3.4), 4.4+ takes `COMPILE_FEATURES` /
+  `COMPILE_OPTIONS` from the consumer (tested with 4.4.5, 4.5.0-rc2); 4.5
+  `install_prep/*` targets.
+- `import std`: 3.30 experimental (Clang/libc++, MSVC 14.36+); 4.1 adds GCC 15+
+  and Clang+libstdc++; 4.2 adds `CMAKE_CXX_STDLIB_MODULES_JSON`; 4.3.0-rc1
+  shipped ungated and 4.3.0 restored the gate; gate UUIDs for 3.30, 4.3, 4.4
+  (`f35a9ac6-…`); 4.5.0-rc2 ungated for all scanned C++20+ sources, removed
+  `CXX_MODULE_STD` / `CMAKE_CXX_MODULE_STD` / `CMAKE_CXX_COMPILER_IMPORT_STD`,
+  GCC 16+ on macOS (GCC 15 + 4.5-rc2 on macOS fails to link "initializer for
+  module std" — tested); Ninja only; Ubuntu < 26.04 broken manifest; Homebrew
+  LLVM 22 needs `CMAKE_CXX_STDLIB_MODULES_JSON`.
+- Build database (3.31, still gated in 4.5-rc2), CMP0154, CMP0211, 4.4
+  file-set properties, 4.5 `FILE_SET_TYPES` and AUTOMOC (Qt 6.13+); the
+  compiler command templates in `Modules/Compiler/*-CXX.cmake`; ccache doesn't
+  support C++20 modules.
+- Google and Chromium still ban modules; the pilot checklist.
+
+## Still open (answer these; the rest is settled)
+
+- **sccache and distributed builds** with CMake's module rules (GCC, Clang,
+  MSVC): what's cached, what bypasses, minimum versions — from sccache's own
+  docs and release notes.
+- **Editor and analysis tools**: clangd (`--experimental-modules-support`,
+  current limitations), clang-tidy, CLion, VS Code, Visual Studio — what works
+  with a CMake/Ninja module build as of the date, with versions.
+- **CPS packages with modules**: does `install(PACKAGE_INFO … CXX_MODULES_DIRECTORY)`
+  produce a package a CMake consumer can import modules from, since which
+  version, and is there a worked example?
+- **Patch-level fixes** in 4.4.1–4.4.5 and 4.5.0-rc1/rc2 that affect modules
+  (primary sources: release announcements, merge requests).
+- **4.5.0 final**: anything that changed from rc2 (std availability rules,
+  removed variables, the CXX_SCAN_FOR_MODULES requirement for `std`).
+- **MSVC** with CMake: the `.ixx` convention, `import std` behaviour in VS vs
+  Ninja generators, VS 2026 status — not verifiable locally (no MSVC).
+- **Header units**: the status of CMake issue 25293 and any shipped support.
+- **Real-world adoption** with numbers from primary sources (Kitware posts,
+  project mailing lists): build-time effects, migration reports.
 
 ## Questions to answer
 

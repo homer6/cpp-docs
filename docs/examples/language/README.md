@@ -14,7 +14,7 @@ column of [cppreference](https://cppreference.com/).
 | [Templates](templates/README.md) | function/class templates, variadics & folds, specialization, CTAD, constraints |
 | [Exceptions](exceptions/README.md) | `throw`/`try`/`catch`, `noexcept`, exception safety |
 | [Coroutines](coroutines/README.md) | `co_await`/`co_yield`/`co_return` (C++20) |
-| [Modules](modules/README.md) | `import`/`export` (C++20) |
+| [Modules](modules/README.md) | `import`/`export`, partitions, `import std;`, building with GCC/Clang/CMake (C++20) |
 | [Preprocessor](preprocessor/README.md) | macros, includes, conditional compilation, `#embed` |
 
 > The *standard concepts* live with the [Concepts library](../concepts/README.md);

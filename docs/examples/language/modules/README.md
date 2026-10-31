@@ -5,4 +5,5 @@ A modern alternative to header `#include`. Mirrors
 
 | Page | What |
 |---|---|
-| [Modules](modules.md) | `export`/`import`, module units, `import std;` |
+| [Modules](modules.md) | module units, `export`, partitions, linkage and reachability, the module fragments, header units |
+| [Building modules](building.md) | GCC, Clang, MSVC and CMake; `import std;` / `import std.compat;` |
