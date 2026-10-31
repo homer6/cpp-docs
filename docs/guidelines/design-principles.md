@@ -151,6 +151,21 @@ auto merged = std::reduce(docs.begin(), docs.end(), Document{},
 
 Even then, extract the loop body into a named function.
 
+### Algorithms first; pipelines are a separate choice
+
+"Use a named algorithm" and "use lazy range pipelines" are different
+decisions. Chromium allows algorithms but bans most range adaptors and the `|`
+operator over build time, run-time cost, and design concerns (see
+[industry practice](industry-practice.md)). If you use pipelines, watch for:
+
+- **Dangling:** a view holds references into its source — don't return a view
+  over a local, and don't store one past its source's lifetime.
+- **Repeated work:** some views re-evaluate their function each time they're
+  iterated (e.g. `filter` + `transform` iterated twice runs the lambda twice).
+  Materialize with `std::ranges::to` when you'll reuse the result.
+- **Hidden cost:** check that a pipeline in a hot loop compiles to what you
+  expect.
+
 ## 3. Errors in the type system
 
 | Kind of failure | Use |
@@ -178,8 +193,14 @@ void set(ObjId obj, std::size_t index, ScalarValue v)
 A library may go further and **not use exceptions at all** for expected
 failures, leaving only `std::bad_alloc` from the standard library. That's a
 per-project choice — the Core Guidelines (E.2) favour exceptions for "can't do
-its job" failures. What matters is picking one strategy (E.1) and making the
-failure visible in the signature.
+its job" failures, while Google, Chromium, and LLVM don't use exceptions at all
+(see [industry practice](industry-practice.md)). What matters is picking one
+strategy (E.1) and making the failure visible in the signature.
+
+Be explicit about *which kind* of failure each path is: a violated
+precondition, a cancelled operation, an environmental error (file missing), and
+a domain error (invalid input) deserve different handling, even if several can
+be carried in the same error type.
 
 ## 4. Value semantics and immutability
 
@@ -206,6 +227,17 @@ const auto config = [&] {               // complex init, still const
     if (use_defaults) return Config::defaults();
     return Config::from_file(path);
 }();
+```
+
+**But not for data members of value types.** A `const` or reference data
+member deletes the type's assignment operators, so it can't be reassigned,
+sorted in a vector, or moved-from efficiently. Make *locals* and *member
+functions* `const`; keep data members non-`const` and protect invariants with
+`private` (Abseil [#177](https://abseil.io/tips/177)).
+
+```cpp
+struct Point { const int x, y; };   // BAD: Point can't be assigned
+struct Point { int x, y; };         // GOOD: a regular value type
 ```
 
 ### Explicit mutation boundaries
@@ -275,6 +307,12 @@ or nothing.
   struct Splice { std::size_t pos; std::size_t del = 0; std::string_view text; };
   doc.splice(text_obj, {.pos = 5, .text = "hello"});
   ```
+
+- **Don't take `const std::optional<T>&` parameters.** It forces callers with
+  a plain `T` to build an `optional` copy. Take small optionals by value; for
+  large objects take a nullable `const T*` (or `std::optional<const T&>` in
+  C++26). Use `optional` for things you own — members and return values
+  (Abseil [#163](https://abseil.io/tips/163)).
 
 - **Prefer non-member, non-friend functions** when an operation doesn't need
   private state (`to_json(doc)` rather than `doc.to_json()`). The class

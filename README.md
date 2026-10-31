@@ -47,6 +47,7 @@ The reference tells you what each feature *is*;
 - [Modern idioms](docs/guidelines/modern-idioms.md) — C++17 → C++26
 - [Design principles](docs/guidelines/design-principles.md) — Ben Deane's composable, hard-to-misuse style
 - [Project conventions](docs/guidelines/project-conventions.md) — naming, layout, tests
+- [Industry practice](docs/guidelines/industry-practice.md) — Google/Chromium/LLVM policies, Abseil tips
 
 Sources and edition dates are in [sources.md](docs/guidelines/sources.md). To
 refresh them or import a new reference, ask Claude to use the

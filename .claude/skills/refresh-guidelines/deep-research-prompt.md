@@ -29,6 +29,17 @@ industry and committee sources. Today's date is {{DATE}}.
 - Ben Deane-style design: illegal states unrepresentable, strong types,
   `std::variant` for closed sets, no raw loops, monoids/folds, `std::expected`
   for errors, value semantics, concepts over inheritance
+- `std::execution::task` (P3552) is in C++26; trivial relocation (P2786) was
+  reverted (P3920) — settled, don't re-research
+- Google, Chromium and LLVM feature policies (exceptions, RTTI, `auto`,
+  coroutines, modules, ranges, `<format>`, `std::span`, `std::function`), and
+  25 Abseil tips (#1, 76, 93, 108, 112, 117, 124, 136, 141, 144, 147, 149, 152,
+  163, 173, 177, 180, 181, 186, 197, 218, 224, 227, 231, 232)
+- Google's hardened-libc++ results (0.30% overhead) and GCC 16's C++26 support
+
+Still open from the last run (prioritize these): Clang and MSVC C++26 support;
+Mozilla, Bloomberg BDE and SEI CERT positions; a verified 2024–2026 talk list;
+the WG21 debate on `std::execution::task` design.
 
 ## Questions to answer
 

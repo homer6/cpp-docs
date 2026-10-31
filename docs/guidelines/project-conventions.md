@@ -90,6 +90,59 @@ include fails to compile right away.
 | In-out | `T&` |
 | Callable, not stored | template parameter or `std::function_ref` (C++26) |
 
+## Feature matrix
+
+"Requires C++23" isn't enough: compilers and standard libraries implement
+features at different times, and projects restrict features on purpose (see
+[industry practice](industry-practice.md)). Keep a short table in the repo:
+
+| Item | Example (illustrative) |
+|---|---|
+| Compilers and exact versions | GCC 16.2, Clang 22, MSVC 19.50 |
+| Standard libraries and versions | libstdc++ 16, libc++ 22, MSVC STL |
+| Language mode | `-std=c++23` (`c++26` for opted-in targets) |
+| Beyond-baseline features in use | contracts, `std::optional<T&>` — each with its feature-test macro |
+| Banned or restricted features, with the reason | modules: build system support not ready |
+| Exceptions / RTTI policy | no exceptions in library code; RTTI on |
+| Hardening and sanitizer builds | see [safety](safety.md#build-configurations) |
+
+Gate optional features with their feature-test macros, and keep them out of
+public headers unless every supported consumer toolchain has them.
+
+## Warnings and static analysis
+
+Start from a reviewed baseline and turn on more as the code gets clean — not
+every check at once.
+
+```text
+Always:     -Wall -Wextra -Wpedantic        (-Werror in CI)
+Migrate to: -Wconversion -Wsign-conversion -Wshadow
+```
+
+A clang-tidy starting point focused on real bugs:
+
+```yaml
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-use-nullptr,
+  modernize-use-override,
+  performance-*
+```
+
+Pin the clang-tidy version with the compiler — check names and behaviour
+change between releases. Disable individual checks that don't fit, with a
+comment saying why.
+
+## Modules
+
+Pilot modules on one target end to end before adopting them: dependency
+scanning, clean and incremental builds, caching, debugging, IDE indexing,
+static analysis, packaging, and downstream consumers. Google and Chromium both
+still ban modules.
+
 ## Thread-safety contract
 
 State it for every public type. A common default, matching the standard

@@ -218,6 +218,54 @@ production too.
 
 This doesn't replace Bounds.1–4 — it's the safety net for when they're missed.
 
+## Hardening in practice
+
+**You don't need to wait for C++26 to turn hardening on.** The library modes
+above already exist and run in production at scale. Google enabled hardened
+libc++ across its server fleet (and in Chrome since 2022) and
+[reported](https://security.googleblog.com/2024/11/retrofitting-spatial-safety-to-hundreds.html)
+(Nov 2024):
+
+- **0.30% average performance impact** across its services.
+- **Over 1,000 bugs found**, with an estimated 1,000–2,000 new bugs prevented
+  per year.
+- **30% fewer segmentation faults** across production.
+
+Those are averages for one fleet — measure on your own workload, but expect
+the cost to be small.
+
+**Rules of thumb:**
+
+- **Hardened isn't memory-safe.** Library hardening catches *spatial* errors
+  (out-of-bounds) in library types. It doesn't catch use-after-free, data races,
+  or bounds errors on raw pointers. Keep claims about each defence separate.
+- **Zero-initialization isn't erroneous behaviour.** Compiler flags like
+  `-ftrivial-auto-var-init=zero` are a deployment mitigation; C++26 erroneous
+  behaviour is a language rule. Use both, and still initialize (ES.20).
+- **Look before you leap, then use the unchecked API.** For indexes that are
+  correct by construction, plain `v[i]` plus hardening is the right
+  combination; for untrusted indexes, check explicitly and handle the error.
+  `at()` and its exception is rarely what you want (Abseil
+  [#224](https://abseil.io/tips/224)).
+
+### Build configurations
+
+One configuration can't do everything. A reasonable set:
+
+| Build | What it's for | Typical settings (check your toolchain's docs) |
+|---|---|---|
+| Release | What ships | Library hardening on (libc++ `_LIBCPP_HARDENING_MODE`, libstdc++ `_GLIBCXX_ASSERTIONS`); `-ftrivial-auto-var-init=zero`; `-fstack-protector-strong`; `_FORTIFY_SOURCE` where the platform supports it |
+| Debug / test | Catch bugs early | Above, plus contracts `enforce`d and the library's debug mode |
+| ASan + UBSan | Memory errors and undefined behaviour | `-fsanitize=address,undefined` |
+| TSan | Data races | `-fsanitize=thread` (can't combine with ASan) |
+| MSan | Uninitialized reads | `-fsanitize=memory` (Clang; dependencies must be instrumented too) |
+| Fuzzing | Hostile-input boundaries (parsers, decoders, network) | libFuzzer or similar, with ASan |
+
+Every bug a sanitizer or fuzzer finds gets a regression test.
+
+Exact flag names, default modes, and costs vary by compiler version — verify
+against the toolchain you've pinned before copying these into a build.
+
 ## C++26: erroneous behaviour
 
 Reading an uninitialized automatic variable used to be **undefined behaviour**.

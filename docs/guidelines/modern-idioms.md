@@ -305,7 +305,22 @@ Reference: [reflection (language)](../examples/language/expressions/reflection.m
 ### `std::execution` (senders/receivers)
 
 The standard model for asynchronous and parallel work: describe work as
-composable senders, run it on a scheduler.
+composable senders, run it on a scheduler. C++26 also adds
+`std::execution::task` (P3552), a coroutine type that is itself a sender, so
+you can write async code with `co_await` and still compose it with other
+senders.
+
+```cpp
+std::execution::task<int> fetch_and_parse(Url url) {
+    auto body = co_await http_get(url);   // any sender can be awaited
+    co_return parse(body);
+}
+```
+
+Large codebases are cautious here: Google allows coroutines only through
+libraries approved by project leads, and Chromium bans them for now (see
+[industry practice](industry-practice.md)). Choose one async framework for a
+codebase before using `task` and senders widely.
 
 Reference: [senders/receivers](../examples/execution/senders-receivers.md)
 
@@ -334,6 +349,52 @@ constexpr unsigned char icon[] = {
 | Hardened library | checked `operator[]` and friends — see [safety](safety.md#c26-hardened-standard-library) |
 
 Reference: [inplace_vector](../examples/containers/sequence/inplace_vector.md)
+
+**Not in C++26:** trivial relocatability (P2786,
+`trivially_relocatable_if_eligible`) was voted in in Feb 2025 and then
+**reverted** at Kona in Nov 2025 (P3920). Don't use that spelling.
+
+## Adopting C++26 today
+
+A compiler's `-std=c++26` switch doesn't mean every C++26 feature works.
+Language support and library support move separately, and a feature can be
+present but experimental.
+
+**Compiler support as of 2026-10-30** (GCC from its
+[status page](https://gcc.gnu.org/projects/cxx-status.html)):
+
+| Feature | GCC | Notes |
+|---|---|---|
+| Contracts (P2900) | 16 | `__cpp_contracts` |
+| Reflection (P2996) | 16 | needs `-freflection` |
+| Expansion statements, `template for` (P1306) | 16 | |
+| Erroneous behaviour (P2795) | 16 | |
+
+GCC still labels its C++26 support experimental. Clang and MSVC weren't
+checked for this table — see their status pages before relying on a feature.
+
+**Library support** moves more slowly. libc++'s
+[C++26 status page](https://libcxx.llvm.org/Status/Cxx26.html) lists
+`std::optional<T&>` and `std::function_ref` as complete, while contracts
+support, reflection's `<meta>`, hardening (P3471), `indirect`/`polymorphic`,
+and `std::execution::task` were not yet marked complete.
+
+**A sensible adoption order:**
+
+1. **Library hardening — now.** It works in C++20/23 builds and needs no code
+   changes (see [safety](safety.md#hardening-in-practice)).
+2. **Small library additions** (`optional<T&>`, `function_ref`,
+   `inplace_vector`) once your standard library ships them — they're easy to
+   swap back out.
+3. **Contracts** — once your toolchain supports them, with a build-wide policy
+   for which semantic each build uses.
+4. **Reflection** — behind a small, contained interface (e.g. one
+   `to_string(enum)` helper) while support is experimental.
+5. **`std::execution` / `task`** — after choosing your async framework; it
+   shapes every async API you write.
+
+Gate each one with its feature-test macro, and keep features your users'
+toolchains may not have out of public headers.
 
 ## See also
 

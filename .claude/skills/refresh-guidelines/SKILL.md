@@ -183,7 +183,8 @@ claim against the primary source it names, and import from those sources.
 
 - **Every claim about the standard is verified,** with since-versions correct.
   Common traps: `if consteval` is C++23 (not C++20); `std::reduce` needs a
-  commutative operation; papers being voted *out* of a draft late in the cycle.
+  commutative operation; papers being voted *out* of a draft late in the cycle
+  (trivial relocation was adopted in Feb 2025 and reverted in Nov 2025).
 - **No invented APIs.** If you can't find a facility on cppreference, it doesn't
   go in.
 - **Examples compile in principle** — no stray placeholders that change meaning,
