@@ -1,8 +1,12 @@
 // Checks claims made by docs/examples/language/expressions/conversions.md.
 #include <type_traits>
 #include <typeinfo>
+#include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 struct Base {};
@@ -80,4 +84,27 @@ TEST(Conversions, ExplicitBlocksImplicit) {
     static_assert(std::is_constructible_v<Meters, double>);
     Meters m{5.0};
     EXPECT_EQ(static_cast<double>(m), 5.0);
+}
+
+namespace auto_cast {
+struct NoMove {
+    NoMove() = default;
+    NoMove(const NoMove&) = delete;
+    NoMove(NoMove&&) = delete;
+};
+NoMove make() { return {}; }
+}  // namespace auto_cast
+
+// "auto(x) — make a copy (C++23)": a decayed prvalue copy.
+TEST(Conversions, AutoDecayCopy) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_auto_cast, 202110L);
+    std::vector<int> v{1, 2, 1, 3, 1};
+    std::erase(v, auto(v.front()));
+    EXPECT_EQ(v, (std::vector<int>{2, 3}));
+    const int& r = v[0];
+    static_assert(std::is_same_v<decltype(auto(r)), int>);
+    static_assert(std::is_same_v<decltype(auto{r}), int>);
+    int arr[3]{};
+    static_assert(std::is_same_v<decltype(auto(arr)), int*>);  // arrays decay
+    [[maybe_unused]] auto x = auto(auto_cast::make());          // prvalue: no copy or move needed
 }

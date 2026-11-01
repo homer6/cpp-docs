@@ -2,8 +2,11 @@
 #include <sstream>
 #include <type_traits>
 #include <utility>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 
@@ -94,4 +97,30 @@ TEST(MembersAccess, RefQualifiedMembers) {
     b.set(3);
     Builder out = std::move(b).build();
     EXPECT_EQ(out.n, 3);
+}
+
+namespace passkey {
+template <class... Ts>
+class Passkey {
+    friend Ts...;
+    Passkey() = default;
+};
+class Registry {
+public:
+    int added = 0;
+    void add(Passkey<class Loader, class Admin>) { ++added; }
+};
+class Loader { public: void run(Registry& r) { r.add({}); } };
+class Admin { public: void run(Registry& r) { r.add({}); } };
+class Stranger {};
+}  // namespace passkey
+
+// "friend — selective access": variadic friends (C++26) and the passkey idiom.
+TEST(MembersAccess, VariadicFriends) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_variadic_friend, 202403L);
+    passkey::Registry r;
+    passkey::Loader{}.run(r);
+    passkey::Admin{}.run(r);
+    EXPECT_EQ(r.added, 2);
+    static_assert(!std::is_default_constructible_v<passkey::Passkey<passkey::Loader>>);  // private to outsiders
 }
