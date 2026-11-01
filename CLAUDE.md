@@ -154,7 +154,10 @@ Clang too: `--cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++
 --enable private-module-fragment`.
 
 Prefer making a snippet self-contained over tagging it `nocompile`, and
-`compile-fail` over `nocompile` for type errors. Run:
+`compile-fail` over `nocompile` for type errors. For an issue, check only the
+pages you changed (`python3 tools/check_snippets.py <pages> --cxx …` with
+both compilers). The full runs below are for a release (see "Running the
+tests"):
 
 ```bash
 python3 tools/check_snippets.py docs/guidelines --cxx g++-15
@@ -185,7 +188,25 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 ## Running the tests
 
 `tests/` is a GoogleTest suite that turns each page's claims into assertions
-(#41). It's the only thing CMake builds. There's no CI; run it locally:
+(#41). It's the only thing CMake builds. There's no CI; run it locally.
+
+**Run only the tests that apply to an issue.** The full suite runs only
+before a release.
+
+| When | What to run |
+|---|---|
+| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, and the link and index checks. The counts go in the release notes. |
+
+One area, without building the rest of the suite:
+
+```bash
+cmake --preset gcc-15 && cmake --build --preset gcc-15 --target examples_<area>_tests
+ctest --preset gcc-15 -L '^<area>$'
+```
+
+The area is the top folder under `tests/`; hyphens become underscores in the
+target name. The full-suite commands:
 
 ```bash
 tools/run_tests.sh              # gcc-15 (default)
@@ -229,7 +250,8 @@ Writing tests:
   file that imports them goes in that file's `_mod_tests` list so CMake scans
   it. Guard imports with `#ifdef CPPDOCS_NAMED_MODULES` and start each test
   with `CPPDOCS_REQUIRE_NAMED_MODULES()` (`language/modules/named_modules.hpp`).
-- `gcc-15` and `clang-22` must both pass (or skip with a reason) before a PR.
+- The affected test areas must pass on `gcc-15` and `clang-22` (or skip with a
+  reason) before a PR. The PR's Tested section names what was run.
 
 ## Git / commits
 
