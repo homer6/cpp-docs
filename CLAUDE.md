@@ -10,6 +10,9 @@ We mirror how cppreference organizes the reference. Every library area and
 language area on cppreference's main page now has pages (see
 `docs/examples/README.md`); new work fills in detail, fixes mistakes, and keeps
 up with new standards.
+To add a feature, facility or gotcha to a topic, use the `add-to-topic`
+skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity research,
+verification on all three toolchains, placement, snippet and test.
 
 ## Source of truth
 
