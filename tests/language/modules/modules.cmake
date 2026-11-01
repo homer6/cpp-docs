@@ -84,6 +84,11 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.5)
   endif()
 elseif(NOT DEFINED CMAKE_EXPERIMENTAL_CXX_IMPORT_STD)
   set(_std_skip "CMake ${CMAKE_VERSION}: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions tested)")
+elseif(CMAKE_CXX_STDLIB_MODULES_JSON AND NOT (IS_ABSOLUTE "${CMAKE_CXX_STDLIB_MODULES_JSON}"
+                                             AND EXISTS "${CMAKE_CXX_STDLIB_MODULES_JSON}"))
+  # The compiler's -print-file-name didn't find the file (Homebrew LLVM keeps
+  # libc++.modules.json in lib/c++/), and CMake would fail at generate time.
+  set(_std_skip "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}: '${CMAKE_CXX_STDLIB_MODULES_JSON}' not found; pass -DCMAKE_CXX_STDLIB_MODULES_JSON=<path> to build import std")
 elseif(NOT _std_level IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
   string(REPLACE ";" "," _levels "${CMAKE_CXX_COMPILER_IMPORT_STD}")  # no ';' in a definition
   set(_std_skip "CMake ${CMAKE_VERSION} with ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}: no import std for C++${_std_level} (CMAKE_CXX_COMPILER_IMPORT_STD='${_levels}')")

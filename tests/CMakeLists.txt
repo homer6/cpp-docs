@@ -2,6 +2,24 @@
 # *_test.cpp files that exist under tests/<area>/ (recursively), plus the
 # aggregate target `examples_tests` that builds every area.
 
+# Conformance flags for cl-style compilers (MSVC and clang-cl; `MSVC` is true
+# for both), set for every target here, gtest and the module libraries
+# included, so a BMI and its importers see the same flags:
+# /permissive- (standard conformance), /Zc:__cplusplus (report the real
+# __cplusplus, which some tests compare), /utf-8 (UTF-8 source and execution
+# character sets), /EHsc (standard C++ exceptions; CMake adds it already),
+# /bigobj (big gtest files exceed the default section count) and, for cl
+# only, /Zc:preprocessor (the conforming preprocessor, for __VA_OPT__).
+if(MSVC)
+  add_compile_options(/permissive- /Zc:__cplusplus /utf-8 /EHsc /bigobj)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options(/Zc:preprocessor)
+  endif()
+  set(cppdocs_warnings /W4)   # clang-cl would read -Wall as -Weverything
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  set(cppdocs_warnings -Wall -Wextra)
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -11,6 +29,9 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 )
 set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+# MSVC and clang-cl: build gtest against the same dynamic CRT (/MD, /MDd) as
+# the tests, CMake's default, instead of gtest's static /MT.
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
@@ -52,9 +73,7 @@ foreach(area IN LISTS area_dirs)
   set(target examples_${id}_tests)
   add_executable(${target} ${sources})
   target_link_libraries(${target} PRIVATE cppdocs_support)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${target} PRIVATE -Wall -Wextra)
-  endif()
+  target_compile_options(${target} PRIVATE ${cppdocs_warnings})
   add_dependencies(examples_tests ${target})
   # Test names come out as <Suite>.<Test>; the area is added as a label so
   # `ctest -L containers` runs one area.
