@@ -18,7 +18,10 @@ cd "$root"
 if [[ "$preset" == "gcc-16" && ! -f /.dockerenv ]]; then
     # The gcc:16 image has g++ 16 and git but no cmake/ninja; install them
     # from Debian (trixie: cmake 3.31) and rerun this script inside.
-    exec docker run --rm -v "$root":/w -w /w gcc:16 bash -c \
+    # Run the image for the host's architecture: under emulation (Rosetta on
+    # Apple silicon) huge allocations trap instead of throwing bad_alloc (#130).
+    case "$(uname -m)" in arm64|aarch64) platform=linux/arm64 ;; *) platform=linux/amd64 ;; esac
+    exec docker run --rm --platform "$platform" -v "$root":/w -w /w gcc:16 bash -c \
         'apt-get update -qq && apt-get install -y -qq --no-install-recommends cmake ninja-build >/dev/null && tools/run_tests.sh gcc-16 "$@"' \
         bash "$@"
 fi

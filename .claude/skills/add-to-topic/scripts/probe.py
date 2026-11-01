@@ -14,6 +14,7 @@ not added.
 """
 import argparse
 import pathlib
+import platform
 import shutil
 import subprocess
 import sys
@@ -28,6 +29,9 @@ TOOLCHAINS = {
     "gcc-16": ["g++"],  # run inside Docker
 }
 FLAGS = ["-std=c++26", "-pedantic-errors"]
+# Run gcc:16 natively: an image for the other architecture runs under emulation
+# (Rosetta on Apple silicon), which changes results such as huge allocations (#130).
+HOST_PLATFORM = "linux/arm64" if platform.machine() in ("arm64", "aarch64") else "linux/amd64"
 
 
 def run(name: str, workdir: pathlib.Path, src: str, execute: bool, extra: list[str]):
@@ -42,7 +46,8 @@ def run(name: str, workdir: pathlib.Path, src: str, execute: bool, extra: list[s
     if name == "gcc-16":
         if not shutil.which("docker"):
             return False, "docker not found"
-        argv = ["docker", "run", "--rm", "-v", f"{workdir}:/w", "-w", "/w", "gcc:16", "sh", "-c", cmd_str]
+        argv = ["docker", "run", "--rm", "--platform", HOST_PLATFORM, "-v", f"{workdir}:/w", "-w", "/w", "gcc:16",
+                "sh", "-c", cmd_str]
     else:
         argv = ["sh", "-c", cmd_str]
     p = subprocess.run(argv, cwd=workdir, capture_output=True, text=True)

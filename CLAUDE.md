@@ -26,8 +26,10 @@ right pages, toolchain support, the guidelines, validation.
   runs and does what the page says.
 - Local toolchains: `g++-15` (Homebrew GCC 15.2),
   `/opt/homebrew/opt/llvm/bin/clang++` (Homebrew Clang 22, use
-  `-stdlib=libc++`), and Docker (`docker run --rm -v "$PWD":/w -w /w gcc:16 …`)
-  for GCC 16 features such as contracts and reflection.
+  `-stdlib=libc++`), and Docker (`docker run --rm --platform linux/arm64 -v "$PWD":/w -w /w gcc:16 …`)
+  for GCC 16 features such as contracts and reflection. Always run the image for
+  the host's architecture (`linux/arm64` on Apple silicon): under emulation,
+  results change (#130). `tools/run_tests.sh` and `probe.py` pass it for you.
 - If something can't be verified locally (no local compiler implements it
   yet), say so on the page and tag the snippet `needs=<feature>`.
 - **Compiler support beyond the local toolchains** (MSVC, other releases,
