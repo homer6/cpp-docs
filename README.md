@@ -334,6 +334,11 @@ needs the owner's go-ahead. Every workflow is read-only (`permissions:
 contents: read`) with actions pinned to commit SHAs;
 `python3 tools/check_workflows.py` checks that. How to run, watch and read a
 workflow is in [`.github/workflows/README.md`](.github/workflows/README.md).
+The platform workflows (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
+`windows-gnu.yml`, `freebsd.yml`, `qemu.yml`) build and run the suite and the
+snippet checker with the portable presets on each platform, through the
+scripts in [`tools/ci/`](tools/ci/), and upload one
+`results-<platform>-<compiler>.json` per job; they run at releases.
 The local checks above remain the source of truth.
 
 ## Conventions

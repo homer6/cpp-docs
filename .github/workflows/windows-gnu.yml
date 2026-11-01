@@ -1,0 +1,169 @@
+# Windows without cl: clang-cl with the MS STL (VS's own LLVM), and MinGW-w64
+# from MSYS2 (UCRT64: GCC and Clang with libstdc++; CLANG64: Clang with
+# libc++). The same OS as windows-msvc.yml with GCC- and Clang-style
+# toolchains, for OS-specific claims (paths, locales, 2-byte wchar_t). Issue #147.
+#
+# Third-party action: msys2/setup-msys2 (the MSYS2 project's own action:
+# installs or reuses MSYS2, installs the packages, caches them, and provides
+# the `msys2 {0}` shell). clang-cl needs none: tools/ci/vsdevenv.ps1.
+#
+# Manual only: started by hand (or by all.yml through workflow_call), with the
+# owner's consent for each run. See .github/workflows/README.md.
+name: Windows (clang-cl, MinGW)
+
+on:
+  workflow_dispatch:
+    inputs:
+      areas:
+        description: "Test areas: a ctest label regex (empty = all), e.g. ^containers$|^ranges$"
+        type: string
+        default: ""
+      tests:
+        description: "Build and run the GoogleTest suite"
+        type: boolean
+        default: true
+      snippets:
+        description: "Run the snippet checker"
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+        default: ""
+      tests:
+        type: boolean
+        default: true
+      snippets:
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  clang-cl:
+    name: windows-2025-vs2026 · clang-cl
+    # windows-2025 is the same image (VS 2026 with the "C++ Clang tools" component).
+    runs-on: windows-2025-vs2026
+    continue-on-error: false
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_PLATFORM: windows-2025-x64
+      CPPDOCS_PRESET: clang-cl
+      CPPDOCS_SNIPPET_TOOLCHAIN: clang-cl
+      CPPDOCS_BASELINE: tools/snippet_baseline/clang-cl.txt
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: VS Developer environment (amd64)
+        run: tools/ci/vsdevenv.ps1 -Arch amd64
+
+      - name: Pick clang-cl (VS's LLVM, else C:\Program Files\LLVM)
+        run: |
+          $cands = @("$env:VCINSTALLDIR\Tools\Llvm\x64\bin\clang-cl.exe",
+                     "$env:ProgramFiles\LLVM\bin\clang-cl.exe")
+          $cxx = $cands | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $cxx) { throw "no clang-cl in: $($cands -join ', ')" }
+          & $cxx --version
+          $ver = ((& $cxx --version | Select-Object -First 1) -replace '.*version (\d+)\..*', '$1')
+          $os = Get-CimInstance Win32_OperatingSystem
+          "CXX=$cxx" >> $env:GITHUB_ENV
+          "CPPDOCS_COMPILER=clang-cl-$ver" >> $env:GITHUB_ENV
+          "CPPDOCS_OS_VERSION=$($os.Caption) $($os.Version), VS $($env:VisualStudioVersion), MS STL from VC tools $($env:VCToolsVersion)" >> $env:GITHUB_ENV
+
+      - name: Configure, build, test (run_tests.ps1), check snippets
+        run: tools/ci/run.ps1
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-windows-2025-x64-${{ env.CPPDOCS_COMPILER || 'clang-cl' }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn
+
+  msys2:
+    name: windows-2025-vs2026 · MSYS2 ${{ matrix.msystem }} ${{ matrix.compiler }}
+    runs-on: windows-2025-vs2026
+    continue-on-error: false
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - msystem: UCRT64       # GCC + libstdc++, UCRT
+            compiler: gcc
+            package: gcc
+            preset: mingw
+            baseline: tools/snippet_baseline/gcc.txt
+            snippet_args: ""
+          - msystem: UCRT64       # Clang + libstdc++ (UCRT64's clang uses GCC's library)
+            compiler: clang
+            package: clang
+            preset: clang
+            baseline: ""
+            snippet_args: ""
+          - msystem: CLANG64      # Clang + libc++, UCRT
+            compiler: clang
+            package: clang
+            preset: clang
+            baseline: tools/snippet_baseline/clang.txt
+            snippet_args: --flag=-fexperimental-library
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_PLATFORM: windows-2025-x64-${{ matrix.msystem }}
+      CPPDOCS_PRESET: ${{ matrix.preset }}
+      CPPDOCS_BASELINE: ${{ matrix.baseline }}
+      CPPDOCS_SNIPPET_ARGS: ${{ matrix.snippet_args }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e  # v2.33.0
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          pacboy: ${{ matrix.package }}:p cmake:p ninja:p python:p
+
+      - name: Record compiler and OS versions
+        run: |
+          case "${{ matrix.compiler }}" in
+            gcc)   cxx=g++;     ver="$(g++ -dumpversion | cut -d. -f1)" ;;
+            clang) cxx=clang++; ver="$(clang++ --version | sed -nE 's/.*version ([0-9]+)\..*/\1/p' | head -1)" ;;
+          esac
+          "$cxx" --version
+          {
+            echo "CXX=$cxx"
+            echo "CPPDOCS_COMPILER=${{ matrix.compiler }}-$ver"
+            echo "CPPDOCS_OS_VERSION=$(uname -sr), MSYS2 $MSYSTEM"
+          } >> "$GITHUB_ENV"
+
+      - name: Configure, build, test, check snippets
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-windows-2025-x64-${{ matrix.msystem }}-${{ env.CPPDOCS_COMPILER || matrix.compiler }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn

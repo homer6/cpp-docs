@@ -57,3 +57,42 @@ gh run download <run-id> -R homer6/cpp-docs -D <dir>    # artifacts it uploaded
 
 A run's result is evidence to verify, like any other output. It doesn't
 replace the local checks in `CLAUDE.md` ("Running the tests").
+
+## Platform workflows
+
+| File | Runners | Compilers |
+|---|---|---|
+| `linux.yml` | ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04 (preview), ubuntu-26.04-arm (preview) | GCC 13–16 (official `gcc:N` images, by digest), Clang 18–22 (apt.llvm.org) with libstdc++ and libc++; GCC 15 and Clang 22 from Ubuntu 26.04 |
+| `macos.yml` | macos-15, macos-26 (arm64), macos-15-intel, macos-26-intel | Apple Clang (the runner's Xcode), Homebrew `gcc`, Homebrew `llvm` (its own libc++) |
+| `windows-msvc.yml` | windows-2022 (VS 2022), windows-2025-vs2026, windows-11-arm (VS 2026) | MSVC `cl`, `msvc` preset, `run_tests.ps1`, `check_snippets.py --toolchain msvc` |
+| `windows-gnu.yml` | windows-2025-vs2026 | clang-cl (VS's LLVM, `clang-cl` preset); MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++) |
+| `freebsd.yml` | ubuntu-24.04 + a FreeBSD VM (`vmactions/freebsd-vm`) | 14.5 and 15.1 x86_64: base Clang (libc++) and pkg GCC; 15.1 aarch64 (emulated): base Clang |
+| `qemu.yml` | ubuntu-24.04 + QEMU user mode (Ubuntu's `qemu-user-static`) | riscv64, s390x (big-endian), ppc64le: Debian trixie GCC 14 |
+
+Each takes three inputs, from `workflow_dispatch` or from `all.yml` through
+`workflow_call`:
+
+- `areas`: a ctest label regex (empty = all areas). Only the matching
+  `examples_<area>_tests` targets are built (on Windows, `run_tests.ps1`
+  builds all and runs the matching labels), and only their
+  `docs/examples/<area>` folders are snippet-checked. Use it for the slow
+  QEMU and emulated FreeBSD runs.
+- `tests` and `snippets`: booleans, default true.
+
+Every job runs `tools/ci/run.sh` (or `tools/ci/run.ps1` with a VS Developer
+environment from `tools/ci/vsdevenv.ps1`), after a toolchain script
+(`tools/ci/linux-toolchain.sh`, `tools/ci/macos-toolchain.sh`) sets `CXX`,
+the preset, the snippet baseline and the labels. It uploads an artifact named
+`results-<platform>-<compiler>` holding `results-<platform>-<compiler>.json`
+(schema `cpp-docs/results/1`, kind `run`: `platform`, `arch`, `os_version`,
+`byte_order`, `compiler`, `compiler_version`, `preset`, plus the whole
+`tests` and `snippets` documents from `ctest_to_json.py` and
+`check_snippets.py --json`) and its logs (`ci-out/`), and writes a step
+summary: counts, failures and skips by reason. Matrices use
+`fail-fast: false`, so one platform's failure doesn't cancel the others.
+The same scripts run locally, e.g.
+
+```bash
+CPPDOCS_PLATFORM=local CPPDOCS_COMPILER=gcc-15 CPPDOCS_PRESET=gcc CXX=g++-15 \
+  CPPDOCS_BASELINE=tools/snippet_baseline/gcc.txt tools/ci/run.sh
+```
