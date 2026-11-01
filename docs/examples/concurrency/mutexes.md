@@ -72,8 +72,51 @@ void consumer() {
 }
 ```
 
+## Run something exactly once — `std::call_once`
+
+`std::call_once(flag, f, args...)` runs `f` once per `std::once_flag`, however
+many threads arrive at the same time. The others block until it finishes, then
+return without calling `f`. When the thing to set up is a single object,
+a **function-local static** does the same job with less code: since C++11 its
+initialization is thread-safe ("magic statics"). Reach for `call_once` when the
+"once" belongs to an object rather than the program (a `once_flag` member), or
+when the setup isn't the construction of one variable.
+
+```cpp
+#include <mutex>
+#include <string_view>
+
+struct Config { int port = 8080; };
+
+Config& config() {
+    static Config c;                       // initialized once, thread-safe: prefer this
+    return c;
+}
+
+class Connection {
+    std::once_flag opened_;                // one flag per object: a static can't do this
+    void open();                           // expensive, must run once per Connection
+public:
+    void send(std::string_view msg) {
+        std::call_once(opened_, &Connection::open, this);  // first caller opens; the rest wait, then skip
+        // ... write msg ...
+    }
+};
+```
+
+If `f` throws, the flag stays unset, the exception reaches the caller, and the
+next `call_once` tries again. A static's initializer is retried the same way.
+
 ## Gotchas
 
+- **`call_once` with a throwing callable is broken in libstdc++ on some
+  targets** ([GCC PR 66146](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66146)).
+  With GCC 15 on macOS the program died instead of retrying, while GCC 16 on
+  Linux and Clang with libc++ retried. Don't rely on the retry with libstdc++
+  off Linux.
+- **A `once_flag` can't be reset, copied or moved.** For "once per object",
+  make it a member; a class holding one isn't copyable unless you write the
+  copy yourself.
 - **Always use an RAII lock**, never raw `lock()`/`unlock()`. And to lock several
   mutexes, use `std::scoped_lock` — locking them one-by-one invites deadlock.
 - **Always pass a predicate to `cv.wait`.** The predicate form loops internally,
@@ -92,3 +135,7 @@ void consumer() {
 - [std::mutex — cppreference](https://en.cppreference.com/w/cpp/thread/mutex)
 - [std::scoped_lock — cppreference](https://en.cppreference.com/w/cpp/thread/scoped_lock)
 - [std::condition_variable — cppreference](https://en.cppreference.com/w/cpp/thread/condition_variable)
+- [std::call_once — cppreference](https://en.cppreference.com/w/cpp/thread/call_once) ·
+  [std::once_flag](https://en.cppreference.com/w/cpp/thread/once_flag) ·
+  [static local variables](https://en.cppreference.com/w/cpp/language/storage_duration#Static_local_variables)
+- [GCC PR 66146: call_once with an exception](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66146)

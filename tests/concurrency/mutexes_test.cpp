@@ -1,4 +1,5 @@
 // Checks claims made by docs/examples/concurrency/mutexes.md.
+#include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <latch>
@@ -12,6 +13,8 @@
 #include <vector>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "Lock with RAII": the guard unlocks on scope exit, even when the scope throws.
 TEST(Mutexes, LockGuardUnlocksOnThrow) {
@@ -122,4 +125,90 @@ TEST(Mutexes, ConditionVariableLockTypes) {
     ss.request_stop();
     std::unique_lock lk{m};
     EXPECT_FALSE(cv.wait(lk, ss.get_token(), [] { return false; }));  // returns on stop
+}
+
+// "Run something exactly once": racing threads run the callable once, and every
+// caller returns only after it has finished.
+TEST(Mutexes, CallOnceRunsOnce) {
+    std::once_flag flag;
+    std::atomic<int> calls{0};
+    int value = 0;
+    std::latch go{1};
+    std::vector<int> seen(8);
+    std::vector<std::thread> ts;
+    for (int i = 0; i < 8; ++i)
+        ts.emplace_back([&, i] {
+            go.wait();
+            std::call_once(flag, [&] { ++calls; value = 42; });
+            seen[i] = value;  // the setup is complete and visible here
+        });
+    go.count_down();
+    for (auto& t : ts) t.join();
+    EXPECT_EQ(calls, 1);
+    for (int v : seen) EXPECT_EQ(v, 42);
+}
+
+// "Run something exactly once": a function-local static is initialized once,
+// thread-safely.
+namespace {
+std::atomic<int> config_ctors{0};
+struct Config { int port = 8080; Config() { ++config_ctors; } };
+Config& config() { static Config c; return c; }
+}  // namespace
+TEST(Mutexes, LocalStaticInitializedOnce) {
+    std::latch go{1};
+    std::vector<std::thread> ts;
+    for (int i = 0; i < 8; ++i)
+        ts.emplace_back([&] { go.wait(); EXPECT_EQ(config().port, 8080); });
+    go.count_down();
+    for (auto& t : ts) t.join();
+    EXPECT_EQ(config_ctors, 1);
+}
+
+// "Run something exactly once": a once_flag member gives once per object.
+namespace {
+class Connection {
+    std::once_flag opened_;
+    void open() { ++opens; }
+public:
+    int opens = 0;
+    void send() { std::call_once(opened_, &Connection::open, this); }
+};
+}  // namespace
+TEST(Mutexes, CallOncePerObject) {
+    Connection a, b;
+    a.send(); a.send(); b.send();
+    EXPECT_EQ(a.opens, 1);
+    EXPECT_EQ(b.opens, 1);
+    static_assert(!std::is_copy_constructible_v<std::once_flag>);
+    static_assert(!std::is_move_constructible_v<std::once_flag>);
+    static_assert(!std::is_copy_constructible_v<Connection>);
+}
+
+// "Run something exactly once" + "Gotchas": a throwing callable leaves the flag
+// unset and the next call retries; libstdc++ off Linux breaks this (GCC PR 66146).
+TEST(Mutexes, CallOnceRetriesAfterThrow) {
+#if defined(__GLIBCXX__) && !defined(__linux__)
+    GTEST_SKIP() << "libstdc++ off Linux: call_once with a throwing callable is broken (GCC PR 66146)";
+#else
+    std::once_flag flag;
+    int attempts = 0;
+    EXPECT_THROW(std::call_once(flag, [&] { ++attempts; throw std::runtime_error("x"); }),
+                 std::runtime_error);
+    std::call_once(flag, [&] { ++attempts; });
+    std::call_once(flag, [&] { ++attempts; });
+    EXPECT_EQ(attempts, 2);
+#endif
+}
+
+// "Run something exactly once": a static's initializer that throws is retried.
+TEST(Mutexes, LocalStaticRetriesAfterThrow) {
+    static int tries = 0;
+    auto get = [] -> int& {
+        static int v = [] { if (++tries < 2) throw std::runtime_error("x"); return 7; }();
+        return v;
+    };
+    EXPECT_THROW(get(), std::runtime_error);
+    EXPECT_EQ(get(), 7);
+    EXPECT_EQ(tries, 2);
 }
