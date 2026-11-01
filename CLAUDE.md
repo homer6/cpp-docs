@@ -10,6 +10,9 @@ We mirror how cppreference organizes the reference. Every library area and
 language area on cppreference's main page now has pages (see
 `docs/examples/README.md`); new work fills in detail, fixes mistakes, and keeps
 up with new standards.
+To add a feature, facility or gotcha to a topic, use the `add-to-topic`
+skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl research,
+verification on all three toolchains, placement, snippet and test.
 
 ## Source of truth
 
@@ -24,11 +27,14 @@ up with new standards.
   for GCC 16 features such as contracts and reflection.
 - If something can't be verified locally (no local compiler implements it
   yet), say so on the page and tag the snippet `needs=<feature>`.
-- **See also** links to what you used: cppreference first, then papers or
-  vendor docs where they add something. No unsourced blogs or AI summaries.
-- cppreference blocks automated fetches (HTTP 403 from WebFetch); query it with
-  the `perplexity` MCP tools (`search_domain_filter: ["cppreference.com"]`) or
-  read other sources with Firecrawl.
+- **See also** links to what you used: cppreference first, then papers, the
+  draft, vendor docs, articles or talks where they add something. Don't cite
+  AI summaries; cite the source they came from.
+- cppreference blocks WebFetch (HTTP 403). Query it with the `perplexity` MCP
+  tools (`search_domain_filter: ["cppreference.com"]`), or read the page itself
+  with the Firecrawl CLI (`firecrawl scrape <url> --only-main-content`), which
+  also reads papers (`wg21.link`) and finds implementation PRs
+  (`firecrawl developer`).
 - `docs/guidelines/` records each page's sources in `docs/guidelines/sources.md`.
 
 ## Guidelines section
@@ -104,7 +110,7 @@ Short, focused snippets. Prefer modern C++ (CTAD, structured bindings, ranges,
 The non-obvious traps.
 
 ## See also
-Links to the relevant cppreference pages (cppreference.com only).
+Links to the relevant cppreference pages first, then the other sources used.
 ```
 
 ## Conventions
