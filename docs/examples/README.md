@@ -16,7 +16,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Algorithms](algorithms/README.md) | ✅ | `<algorithm>`, `<numeric>`, parallel & ranges algos |
 | [Ranges](ranges/README.md) | ✅ | views, adaptors, factories, pipelines (C++20) |
 | [Iterators](iterators/README.md) | ✅ | categories, adaptors, `iterator_traits` |
-| [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects |
+| [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects, callable wrappers (`function_ref` …) |
 | [Memory](memory/README.md) | ✅ | smart pointers, allocators, memory resources |
 | [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, constant evaluation, `ratio`, `integer_sequence` |
 | [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg |
