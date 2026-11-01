@@ -19,7 +19,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects, callable wrappers (`function_ref` …) |
 | [Memory](memory/README.md) | ✅ | smart pointers, `indirect`/`polymorphic`, allocators, memory resources |
 | [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, constant evaluation, `ratio`, `integer_sequence` |
-| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg |
+| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, saturation arithmetic, SIMD, linalg |
 | [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
 | [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
 | [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures, RCU & hazard pointers |
