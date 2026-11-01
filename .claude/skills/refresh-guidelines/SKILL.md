@@ -228,7 +228,7 @@ Known traps:
 
 ```bash
 git fetch -q
-git worktree add ../cpp-docs-worktrees/issue-<n> -b docs/<n>-<slug> origin/main
+git worktree add ../cpp-docs-worktrees/issue-<n> -b docs/<n>-<slug> origin/dev
 ```
 
 Branch prefixes: `docs/`, `feat/` (skills, evals), `ci/`.
@@ -239,7 +239,7 @@ no AI trailers.
 **PR** — ready for review:
 
 ```bash
-gh pr create -R homer6/cpp-docs --base main --title "<commit subject>" --body-file pr.md
+gh pr create -R homer6/cpp-docs --base dev --title "<commit subject>" --body-file pr.md
 ```
 
 Body: Summary · Contents · `Closes #<n>` (or `Part of #<n>`) · Deep research
@@ -266,7 +266,7 @@ Delivered in <PR URL>.
 gh issue close <n> -R homer6/cpp-docs -c "$(cat close.md)"
 ```
 
-**Merge** (only on the owner's explicit approval for that PR — never on your own): sync by rebasing (`git rebase origin/main`,
+**Merge** (only on the owner's explicit approval for that PR — never on your own): sync by rebasing (`git rebase origin/dev`,
 `git push --force-with-lease`; comment on the PR if you rebased), then
 `gh pr merge <n> -R homer6/cpp-docs --merge --delete-branch` — merge commits
 only, never squash. Remove the worktree and local branch afterwards. See
