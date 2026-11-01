@@ -84,7 +84,10 @@ namespace {
 #endif
 TEST(Stacktrace, CatchBlockDoesNotShowThrowSite) {
     CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
-#ifdef __cpp_lib_stacktrace
+#if defined(_MSC_VER)
+    GTEST_SKIP() << "MSVC ABI (MSVC, clang-cl): the catch block runs before the throwing frames' "
+                    "stack is popped, so a trace taken there can still show the throw site";
+#elif defined(__cpp_lib_stacktrace)
     std::string text;
     try {
         thrower_fn();

@@ -55,7 +55,12 @@ TEST(Valarray, ComparisonsReturnMask) {
 TEST(Valarray, AutoGivesProxy) {
     std::valarray<double> a{1, 2}, b{3, 4};
     auto c = a + b;
+#if defined(_MSVC_STL_VERSION)
+    // MS STL has no expression templates: operator+ returns a valarray<T>.
+    static_assert(std::is_same_v<decltype(c), std::valarray<double>>);
+#else
     static_assert(!std::is_same_v<decltype(c), std::valarray<double>>);
+#endif
     std::valarray<double> d = a + b;
     EXPECT_EQ(d[1], 6.0);
 }

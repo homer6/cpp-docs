@@ -61,9 +61,14 @@ TEST(NullTerminatedWideStrings, SizeAndLength) {
 // "Counting and classifying characters": C locale: iswalpha(é)=0, towupper(é)=U+00E9.
 TEST(NullTerminatedWideStrings, CLocaleClassifiesOnlyAscii) {
     ASSERT_STREQ(std::setlocale(LC_ALL, nullptr), "C");
+#if defined(_WIN32)
+    GTEST_SKIP() << "the UCRT's \"C\"-locale wide classification of non-ASCII characters isn't "
+                    "documented; the page states macOS/glibc behaviour";
+#else
     EXPECT_EQ(std::iswalpha(L'é') != 0, false);
     EXPECT_EQ(static_cast<unsigned>(std::towupper(L'é')), 0xE9u);
     EXPECT_NE(std::iswalpha(L'a'), 0);
+#endif
 }
 
 // "Counting and classifying characters": UTF-8 locale: iswalpha(é)=1, towupper(é)=U+00C9.

@@ -58,18 +58,24 @@ found:
     return true;
 }
 
+// MSVC doesn't implement P2324 (labels at the end of compound statements: "no" in
+// Microsoft's conformance table); there's no feature-test macro, so test the compiler.
+#if !(defined(_MSC_VER) && !defined(__clang__))
 void report(int errors) {
     if (errors == 0) goto done;
     std::printf("%d errors\n", errors);
 done:
 }
+#endif
 
+#if __cpp_constexpr >= 202110L  // P2242; MSVC from VS 2022 17.14
 constexpr int abs_or_minus_one(int n) {  // goto may appear in a constexpr function (C++23)...
     if (n < 0) goto negative;
     return n;
 negative:
     return -1;
 }
+#endif
 }  // namespace
 
 // "Mental model": break/return/goto out of a scope destroy its locals in reverse order.
@@ -166,13 +172,20 @@ TEST(JumpStatements, BreakInExpansionStatement) {
 
 // "Labels at the end of a block (C++23)": report(0) jumps straight to the label.
 TEST(JumpStatements, LabelAtEndOfBlock) {
+#if defined(_MSC_VER) && !defined(__clang__)
+    GTEST_SKIP() << "MSVC doesn't implement labels at the end of a block (P2324)";
+#else
     EXPECT_EQ(cppdocs::capture_stdout([] { report(0); }), "");
     EXPECT_EQ(cppdocs::capture_stdout([] { report(2); }), "2 errors\n");
+#endif
 }
 
 // "Gotchas": goto in a constexpr function is fine as long as it isn't evaluated.
 TEST(JumpStatements, GotoInConstexprFunction) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_constexpr, 202110L);
+#if __cpp_constexpr >= 202110L
     static_assert(abs_or_minus_one(3) == 3);  // goto not taken during constant evaluation
     volatile int n = -5;
     EXPECT_EQ(abs_or_minus_one(n), -1);       // ...and runs normally at run time
+#endif
 }

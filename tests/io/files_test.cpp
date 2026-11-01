@@ -6,16 +6,40 @@
 #include <string>
 
 #include <gtest/gtest.h>
+#if defined(_WIN32)
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 namespace fs = std::filesystem;
+
+namespace {
+int process_id() {
+#if defined(_WIN32)
+    return ::_getpid();
+#else
+    return ::getpid();
+#endif
+}
+
+// The bytes a text-mode stream writes for `s`. Windows opens files in text mode
+// by default and writes each '\n' as "\r\n"; slurp() reads in binary mode, so it
+// sees the CRs. Elsewhere text and binary mode are the same.
+std::string text_mode(std::string s) {
+#if defined(_WIN32)
+    for (std::size_t i = 0; (i = s.find('\n', i)) != std::string::npos; i += 2) s.insert(i, 1, '\r');
+#endif
+    return s;
+}
+}  // namespace
 
 class Files : public testing::Test {
 protected:
     fs::path dir;
     void SetUp() override {
         dir = fs::temp_directory_path() /
-              ("cppdocs-files-" + std::to_string(::getpid()) + "-" +
+              ("cppdocs-files-" + std::to_string(process_id()) + "-" +
                testing::UnitTest::GetInstance()->current_test_info()->name());
         fs::create_directories(dir);
     }
@@ -33,7 +57,7 @@ TEST_F(Files, WriteClosesInDestructor) {
         ASSERT_TRUE(out);
         out << "line 1\n" << 42 << '\n';
     }
-    EXPECT_EQ(slurp(dir / "data.txt"), "line 1\n42\n");
+    EXPECT_EQ(slurp(dir / "data.txt"), text_mode("line 1\n42\n"));
 }
 
 // "Read a file": line by line, then token by token; read_all slurps everything.
@@ -48,7 +72,7 @@ TEST_F(Files, ReadLinesTokensAll) {
     int n, sum = 0;
     while (in2 >> n) sum += n;
     EXPECT_EQ(sum, 6);
-    EXPECT_EQ(slurp(dir / "nums.txt"), "1 2\n3\n");
+    EXPECT_EQ(slurp(dir / "nums.txt"), text_mode("1 2\n3\n"));
 }
 
 // "Gotchas": opening a missing file leaves the stream falsy.
@@ -63,11 +87,15 @@ TEST_F(Files, TruncateAppendAte) {
     auto p = dir / "log.txt";
     { std::ofstream{p} << "first\n"; }
     { std::ofstream{p} << "second\n"; }
-    EXPECT_EQ(slurp(p), "second\n");
+    EXPECT_EQ(slurp(p), text_mode("second\n"));
     { std::ofstream{p, std::ios::app} << "third\n"; }
-    EXPECT_EQ(slurp(p), "second\nthird\n");
+    EXPECT_EQ(slurp(p), text_mode("second\nthird\n"));
     std::ifstream at{p, std::ios::ate};
+#if defined(_WIN32)
+    EXPECT_EQ(at.tellg(), std::streampos(15));  // text mode wrote "second\r\nthird\r\n"
+#else
     EXPECT_EQ(at.tellg(), std::streampos(13));
+#endif
 }
 
 // "Binary I/O & positioning": raw write/read round-trips; seekg/tellg give the size.

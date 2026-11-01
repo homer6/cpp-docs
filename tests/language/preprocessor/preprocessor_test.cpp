@@ -43,7 +43,13 @@ TEST(Preprocessor, PredefinedMacros) {
     const long line = __LINE__;
     EXPECT_EQ(__LINE__, line + 1);
     EXPECT_STREQ(where(), "where");
+#if defined(_MSC_VER) && !defined(__clang__)
+    // MSVC /std:c++latest (with /Zc:__cplusplus): "at least one higher than the highest supported
+    // __cplusplus standard value" (Microsoft Learn, /Zc:__cplusplus), e.g. 202004L in VS 2022.
+    EXPECT_GT(__cplusplus, 202002L);
+#else
     EXPECT_GT(__cplusplus, 202302L);  // built with -std=c++26: newer than C++23's value
+#endif
 }
 
 // "Conditional compilation": __cpp_lib_format >= 201907L means <format> is usable.
@@ -91,6 +97,8 @@ TEST(Preprocessor, PlatformBranches) {
     EXPECT_EQ(path, "linux");
 #elif defined(__APPLE__)
     EXPECT_EQ(path, "other");  // neither _WIN32 nor __linux__ on macOS
+#elif defined(_WIN32)
+    EXPECT_EQ(path, "windows");
 #endif
 #ifdef DEBUG
     GTEST_SKIP() << "DEBUG is defined by this build";
@@ -125,7 +133,7 @@ TEST(Preprocessor, VaOptDropsComma) {
         CPPDOCS_LOG("%d items\n", 3);
     });
     EXPECT_EQ(out, "starting\n3 items\n");
-#ifdef __cpp_va_opt
+#if defined(__cpp_va_opt) && !(defined(_MSC_VER) && !defined(__clang__))  // the page covers GCC and Clang
     ADD_FAILURE() << "the page says no toolchain defines __cpp_va_opt";
 #endif
 }

@@ -14,7 +14,10 @@
 // replaces cout's streambuf there, which bypasses the forwarding buffer (the
 // text is still captured through fd 1, but may come out of order).
 //
-// POSIX only (macOS, Linux, the gcc:16 container).
+// Portable: POSIX dup/dup2 on macOS, Linux and FreeBSD; the CRT's _dup/_dup2
+// on Windows (MSVC, clang-cl, MinGW), where fd 1 is also switched to binary
+// mode while capturing so "\n" isn't written as "\r\n", and the temporary
+// file goes in the temp directory (the CRT's tmpfile() uses the drive root).
 //
 //   auto out = cppdocs::capture_stdout([] { std::print("{} {}", 1, 2); });
 //   EXPECT_EQ(out, "1 2");
@@ -27,20 +30,57 @@
 #include <string>
 #include <utility>
 
+#if defined(_WIN32)
+#include <atomic>
+#include <filesystem>
+#include <fcntl.h>
+#include <io.h>
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 namespace cppdocs {
+
+namespace detail {
+#if defined(_WIN32)
+inline int dup_fd(int fd) { return ::_dup(fd); }
+inline int dup2_fd(int from, int to) { return ::_dup2(from, to); }
+inline int close_fd(int fd) { return ::_close(fd); }
+inline int file_fd(std::FILE* f) { return ::_fileno(f); }
+inline constexpr int stdout_fd = 1;
+
+// tmpfile() would create the file in the drive root; "D" deletes it on close.
+inline std::FILE* capture_file() {
+    static std::atomic<unsigned> counter{0};
+    auto path = std::filesystem::temp_directory_path() /
+                ("cppdocs-capture-" + std::to_string(::_getpid()) + "-" +
+                 std::to_string(counter++) + ".tmp");
+    return ::_wfopen(path.c_str(), L"w+bD");
+}
+#else
+inline int dup_fd(int fd) { return ::dup(fd); }
+inline int dup2_fd(int from, int to) { return ::dup2(from, to); }
+inline int close_fd(int fd) { return ::close(fd); }
+inline int file_fd(std::FILE* f) { return ::fileno(f); }
+inline constexpr int stdout_fd = STDOUT_FILENO;
+inline std::FILE* capture_file() { return std::tmpfile(); }
+#endif
+}  // namespace detail
 
 class CaptureStdout {
 public:
     CaptureStdout() {
         std::cout.flush();
         std::fflush(stdout);
-        file_ = std::tmpfile();
-        if (file_ == nullptr) throw std::runtime_error("tmpfile failed");
-        saved_fd_ = ::dup(STDOUT_FILENO);
-        if (saved_fd_ < 0 || ::dup2(::fileno(file_), STDOUT_FILENO) < 0)
+        file_ = detail::capture_file();
+        if (file_ == nullptr) throw std::runtime_error("can't create the capture file");
+        saved_fd_ = detail::dup_fd(detail::stdout_fd);
+        if (saved_fd_ < 0 || detail::dup2_fd(detail::file_fd(file_), detail::stdout_fd) < 0)
             throw std::runtime_error("dup2 failed");
+#if defined(_WIN32)
+        saved_mode_ = ::_setmode(detail::stdout_fd, _O_BINARY);
+#endif
         saved_buf_ = std::cout.rdbuf(&forward_);
     }
 
@@ -73,8 +113,11 @@ private:
         std::cout.flush();
         std::cout.rdbuf(saved_buf_);
         std::fflush(stdout);
-        ::dup2(saved_fd_, STDOUT_FILENO);
-        ::close(saved_fd_);
+#if defined(_WIN32)
+        if (saved_mode_ != -1) ::_setmode(detail::stdout_fd, saved_mode_);
+#endif
+        detail::dup2_fd(saved_fd_, detail::stdout_fd);
+        detail::close_fd(saved_fd_);
         std::rewind(file_);
         char buf[4096];
         for (std::size_t n; (n = std::fread(buf, 1, sizeof buf, file_)) > 0;) text_.append(buf, n);
@@ -86,6 +129,9 @@ private:
     std::streambuf* saved_buf_ = nullptr;
     std::FILE* file_ = nullptr;
     int saved_fd_ = -1;
+#if defined(_WIN32)
+    int saved_mode_ = -1;
+#endif
     std::string text_;
 };
 

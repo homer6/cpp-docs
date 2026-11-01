@@ -99,6 +99,7 @@ TEST(MembersAccess, RefQualifiedMembers) {
     EXPECT_EQ(out.n, 3);
 }
 
+#if __cpp_variadic_friend >= 202403L  // MSVC has no C++26 core features yet
 namespace passkey {
 template <class... Ts>
 class Passkey {
@@ -114,13 +115,16 @@ class Loader { public: void run(Registry& r) { r.add({}); } };
 class Admin { public: void run(Registry& r) { r.add({}); } };
 class Stranger {};
 }  // namespace passkey
+#endif
 
 // "friend — selective access": variadic friends (C++26) and the passkey idiom.
 TEST(MembersAccess, VariadicFriends) {
     CPPDOCS_REQUIRE_VERSION(__cpp_variadic_friend, 202403L);
+#if __cpp_variadic_friend >= 202403L
     passkey::Registry r;
     passkey::Loader{}.run(r);
     passkey::Admin{}.run(r);
     EXPECT_EQ(r.added, 2);
     static_assert(!std::is_default_constructible_v<passkey::Passkey<passkey::Loader>>);  // private to outsiders
+#endif
 }

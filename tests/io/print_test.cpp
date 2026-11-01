@@ -96,7 +96,11 @@ TEST(Print, OwnPrintLikeFunction) {
 
 // "Errors": a failed write to a FILE* throws std::system_error.
 TEST(Print, FailedWriteThrowsSystemError) {
+#if defined(_WIN32)
+    std::FILE* ro = std::fopen("NUL", "r");  // Windows' null device
+#else
     std::FILE* ro = std::fopen("/dev/null", "r");
+#endif
     ASSERT_NE(ro, nullptr);
     EXPECT_THROW(std::println(ro, "x"), std::system_error);
     std::fclose(ro);

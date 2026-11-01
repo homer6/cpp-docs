@@ -103,6 +103,9 @@ TEST(ObjectModel, StartupAndShutdownOrder) {
 TEST(ObjectModel, QuickExitSkipsDestructors) {
 #if defined(__APPLE__)
     GTEST_SKIP() << "macOS libc has no quick_exit (libc++ declares std::quick_exit only if ::quick_exit exists)";
+#elif defined(_WIN32) && defined(__GLIBCXX__) && !defined(_GLIBCXX_HAVE_QUICK_EXIT)
+    GTEST_SKIP() << "this MinGW libstdc++ was built without quick_exit (libstdc++ declares std::quick_exit only "
+                    "with _GLIBCXX_HAVE_QUICK_EXIT)";
 #else
     EXPECT_EXIT(
         {

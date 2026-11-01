@@ -2,8 +2,13 @@
 #include <climits>
 #include <cstdint>
 #include <numeric>
-#include <stdckdint.h>
 #include <version>
+
+// <stdckdint.h> (C23, C++26): GCC, Clang and libc++/libstdc++ ship it; MSVC/UCRT doesn't yet.
+#if __has_include(<stdckdint.h>)
+#include <stdckdint.h>
+#define CPPDOCS_HAS_STDCKDINT 1
+#endif
 
 #include "support/feature.hpp"
 
@@ -91,8 +96,12 @@ TEST(Saturation, PortableSwitch) {
 
 // "Gotchas" ("Not a checked operation"): ckd_add reports overflow by returning true.
 TEST(Saturation, CkdAddReportsOverflow) {
+#ifdef CPPDOCS_HAS_STDCKDINT
     int r = 0;
     EXPECT_TRUE(ckd_add(&r, INT_MAX, 1));
     EXPECT_FALSE(ckd_add(&r, 2, 3));
     EXPECT_EQ(r, 5);
+#else
+    GTEST_SKIP() << "<stdckdint.h> not provided by this toolchain (MSVC/UCRT lacks it)";
+#endif
 }

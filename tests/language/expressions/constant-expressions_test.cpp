@@ -78,6 +78,9 @@ TEST(ConstantExpressions, ConstexprVariableIsConstMemberIsNot) {
 }
 
 namespace cpp26_constexpr {
+// Guarded by their macros: MSVC has no C++26 core features yet, and can't even parse a
+// non-literal static_assert message.
+#if __cpp_static_assert >= 202306L
 template <std::size_t N>
 struct Slots {
     static_assert(N <= 4, std::string("Slots holds at most 4, got ") + char('0' + N));
@@ -85,10 +88,13 @@ struct Slots {
 constexpr std::string slots_message(std::size_t n) {
     return std::string("Slots holds at most 4, got ") + char('0' + n);
 }
+#endif
+#if __cpp_constexpr >= 202306L
 constexpr int through_void(int v) {
     void* erased = &v;
     return *static_cast<int*>(erased);
 }
+#endif
 #if __cpp_constexpr_exceptions >= 202411L
 constexpr int checked_div(int a, int b) {
     if (b == 0) throw std::invalid_argument("divide by zero");
@@ -104,14 +110,18 @@ constexpr int div_or_zero(int a, int b) {
 // "static_assert with a computed message (C++26)": the message is a constexpr std::string.
 TEST(ConstantExpressions, ComputedStaticAssertMessage) {
     CPPDOCS_REQUIRE_VERSION(__cpp_static_assert, 202306L);
+#if __cpp_static_assert >= 202306L
     [[maybe_unused]] cpp26_constexpr::Slots<3> fine;
     static_assert(cpp26_constexpr::slots_message(7) == "Slots holds at most 4, got 7");
+#endif
 }
 
 // "Casting from void* (C++26)": static_cast back to the real type in a constant expression.
 TEST(ConstantExpressions, ConstexprCastFromVoidPointer) {
     CPPDOCS_REQUIRE_VERSION(__cpp_constexpr, 202306L);
+#if __cpp_constexpr >= 202306L
     static_assert(cpp26_constexpr::through_void(7) == 7);
+#endif
 }
 
 // "Exceptions during constant evaluation (C++26)": thrown and caught at compile time.
