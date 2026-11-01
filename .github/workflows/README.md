@@ -30,13 +30,19 @@ per problem otherwise. It needs no third-party Python packages.
 
 Only someone with the owner's explicit consent, given in the moment for that
 run: which workflow, which ref, which inputs. Agents never start one on their
-own.
+own. Start small (one workflow, one area, e.g. `-f areas='^strings$'`) to
+prove the plumbing, then go wide. When to ask, the fix loop for failures and
+how results feed the pages, baselines and `docs/platform-support.md` are in
+`CLAUDE.md` ("GitHub Actions").
 
 ## Running a workflow
 
-A workflow file has to exist on the **default branch (`main`)** before it can
-be dispatched for the first time. Once it's there, you can run it against any
-branch that has the file:
+A workflow file has to exist on the repo's **default branch** before it can
+be dispatched at all. Once it's there, you can run it against any branch
+that has the file. The default is normally `main`; the owner has switched it
+to `dev` for now (#140), because no workflow file is on `main` yet, and it
+goes back to `main` before the next release PR (CLAUDE.md, "Release
+checklist"). Meanwhile, runs happen on `dev`:
 
 ```bash
 gh workflow list -R homer6/cpp-docs

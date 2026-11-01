@@ -46,7 +46,10 @@ directory that's deleted after the merge.
   partial support): read the vendors' status pages. The `add-to-topic` skill's
   "Checking compiler support" section lists them (GCC, libstdc++, Clang,
   libc++, MSVC, MS STL, cppreference) and explains how to read a level of
-  support. Say where a vendor-only claim comes from.
+  support. Say where a vendor-only claim comes from. Where a consented
+  GitHub Actions run covered that toolchain, cite it
+  (`docs/platform-support.md` or the run link) in preference to the status
+  page alone.
 - **See also** links to what you used: cppreference first, then papers, the
   draft, vendor docs, articles or talks where they add something. Don't cite
   AI summaries; cite the source they came from.
@@ -223,12 +226,15 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 GitHub automatically.
 
 **Run only the tests that apply to an issue.** The full suite runs only
-before a release.
+before a release. A GitHub Actions run (manual, with the owner's consent; see
+"GitHub Actions") adds the platforms we can't run here, but never replaces
+these local runs.
 
 | When | What to run |
 |---|---|
 | Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
-| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes. |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
+| A claim about a platform we can't run locally (MSVC, FreeBSD, big-endian…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
 
 One area, without building the rest of the suite:
 
@@ -324,11 +330,53 @@ run automatically... manual invocation only"*.
   every PR that touches `.github/` and in release checks;
   `--self-test` runs its built-in good and bad samples. It needs no
   third-party packages and exits 0 when there are no workflows.
+- **The default-branch rule.** GitHub dispatches a workflow only if its file
+  exists on the repo's default branch; then it can run on any ref that has
+  the file. The owner has **temporarily made `dev` the default branch**
+  (#140), because no workflow file is on `main` yet and the release is on
+  hold until every platform is green. Runs happen on `dev` meanwhile. The
+  default switches back to `main` before the release PR is opened (see
+  "Release checklist"); after that release, the files are on `main` and
+  any ref can be dispatched again.
 - Running and reading (details in
-  [`.github/workflows/README.md`](.github/workflows/README.md)): a workflow
-  file must be on the default branch (`main`) before its first dispatch; then
+  [`.github/workflows/README.md`](.github/workflows/README.md)):
   `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
   <id>`, `gh run view <id> --log-failed`, `gh run download <id> -D <dir>`.
+- **When to ask the owner for a run:**
+  - **before a release**: required (the release gate, #140). Every platform
+    workflow needs a green consented run on `dev` first;
+  - **for a claim about a platform we can't run locally** (MSVC, clang-cl,
+    MinGW, FreeBSD, big-endian or other architectures): a page that states
+    how that toolchain behaves is better backed by a run than by a vendor
+    status page alone.
+
+  Never ask just to refresh the badges or the platform page.
+- **How to ask:** the orchestrating session names the workflow, the ref and
+  every input, e.g. *"May I run `linux.yml` on `dev` with `areas=^strings$`,
+  `tests=true`, `snippets=true`?"*, and waits for a yes. **Start small**: one
+  area on one workflow proves the plumbing (toolchain setup, artifacts, the
+  summary) cheaply. Then go wide: empty `areas` (every area), one workflow at
+  a time or `all.yml`, each with its own consent.
+- **The fix loop:** each failure gets its own issue (the workflow, job, run
+  link and failing test or snippet ID) and a PR into `dev` that fixes the
+  page, the test or the script, with the local runs in its Tested section.
+  After it merges, ask for consent to re-run the failed job (`gh run rerun
+  <id> --failed`) or a new run on `dev`. Repeat until that workflow is green.
+  A wrong page claim is fixed on the page, not hidden in a baseline.
+- **How results feed the repo:**
+  - **Pages:** a claim about MSVC, FreeBSD or another non-local toolchain can
+    say it was verified there, citing `docs/platform-support.md` or the run
+    link, once a consented run passed the test that checks it.
+  - **Baselines:** a report-only toolchain becomes enforced in three steps:
+    seed `tools/snippet_baseline/<toolchain>.txt` from the run (the failing
+    IDs in its `results-*.json`, `snippets.failures[].id`, or
+    `check_snippets.py --toolchain … --baseline <file> --update-baseline` on
+    that toolchain); review every entry (genuine gaps only; fix wrong
+    snippets instead); then add the compiler to `ENFORCED_SNIPPETS` in
+    `tools/ci/cppdocs_ci.py`, in a PR.
+  - **`docs/platform-support.md`:** regenerate it with
+    `tools/collect_results.py <run-id> …` (see "Platform support page and
+    badges") and commit it in a PR.
 - **Platform workflows** (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
   `windows-gnu.yml`, `freebsd.yml`, `qemu.yml`; #143–#149) take the inputs
   `areas` (ctest label regex), `tests` and `snippets`, and keep their steps in
@@ -406,10 +454,12 @@ each workflow's page, next to a line saying runs are manual.
   Work each issue on its own feature branch from `origin/dev` (e.g.
   `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
   `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
-  out: GitHub's default branch is `main`, so a PR without it targets `main`.
+  out: GitHub's default branch is normally `main` (temporarily `dev`, see
+  "GitHub Actions"), and a PR without it would target `main` once it's back.
 - **The only PR into `main` is the release PR** (`dev` → `main`), opened when
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
-  GitHub release; the notes live in `docs/releases/vX.Y.Z.md`.
+  GitHub release; the notes live in `docs/releases/vX.Y.Z.md`. Follow the
+  "Release checklist" below.
 - **Open PRs ready for review, never as drafts.**
 - **Every PR keeps `README.md` and `CLAUDE.md` current.**
   - `README.md`: regenerate the clickable index (`python3 tools/gen_index.py`)
@@ -457,6 +507,31 @@ each workflow's page, next to a line saying runs are manual.
   that report (with the `refresh-guidelines` skill) is a follow-up — on the
   same branch if the PR is still open, otherwise a new PR.
 - No AI attribution in issues or PR descriptions either.
+
+## Release checklist
+
+A release (the owner names the version) needs all of these, in order:
+
+1. **Local runs** (still required): everything in the "Cutting a release"
+   row of "Running the tests", with the counts.
+2. **Green consented Actions runs of every platform workflow** (`linux`,
+   `macos`, `windows-msvc`, `windows-gnu`, `freebsd`, `qemu`) on the `dev`
+   commit being released, each started only with the owner's consent for
+   that run. Every failure is fixed through the fix loop in "GitHub
+   Actions" (an issue and a PR into `dev` each), then re-run green. A fix
+   that lands on `dev` after a run means re-running the workflows it can
+   affect.
+3. **The notes** (`docs/releases/vX.Y.Z.md`) carry the local counts and a
+   per-platform table of the runs: the run links and the passed / failed /
+   skipped counts, taken from `tools/collect_results.py <run-id>… --local
+   <folder> --summary --stdout`. Commit the regenerated
+   `docs/platform-support.md` with them.
+4. **Switch the default branch back to `main`** (the owner does it, or
+   consents to it) before opening the release PR, so the README badges
+   (`branch=main`) and the front page point at releases again.
+5. **The owner's explicit approval** of the release. Then open the release
+   PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
+   merge commit `vX.Y.Z` and publish the GitHub release.
 
 ## Syncing and merging
 

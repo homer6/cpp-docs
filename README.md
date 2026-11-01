@@ -20,9 +20,10 @@ verified locally (the snippet compiles, and behaves as described when run).
 **Verified locally first:** every release passes the full test suite and the
 snippet checker on GCC 15 and Clang 22 (macOS, arm64) and GCC 16 (Linux,
 Docker); that's the primary proof. The badges above are the GitHub Actions
-platform workflows, which run **only by hand**, with the owner's consent, at
-a release: each shows its last consented run (or "no status" before the
-first), not the current tip. The full platform × compiler × architecture
+platform workflows, which run **only by hand**, with the owner's consent,
+before each release: each shows its last consented run on `main`, not the
+current tip. They stay "no status" until the first consented run on `main`
+(the runs before the next release are on `dev`). The full platform × compiler × architecture
 matrix, with counts, skip reasons, run links and dates, is in
 [`docs/platform-support.md`](docs/platform-support.md).
 
@@ -338,8 +339,10 @@ The platform workflows (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
 `windows-gnu.yml`, `freebsd.yml`, `qemu.yml`) build and run the suite and the
 snippet checker with the portable presets on each platform, through the
 scripts in [`tools/ci/`](tools/ci/), and upload one
-`results-<platform>-<compiler>.json` per job; they run at releases.
-The local checks above remain the source of truth.
+`results-<platform>-<compiler>.json` per job. A release needs a green
+consented run of each on `dev` first, with every failure fixed (the release
+checklist is in [`CLAUDE.md`](CLAUDE.md)). The local checks above remain the
+source of truth.
 
 ## Conventions
 
