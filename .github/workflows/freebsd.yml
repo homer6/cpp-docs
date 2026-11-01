@@ -1,0 +1,126 @@
+# FreeBSD in a VM on an Ubuntu runner: base-system Clang with libc++, and GCC
+# from packages with libstdc++. Issue #148.
+#
+# Third-party action: vmactions/freebsd-vm (chosen over
+# cross-platform-actions/action, 2026-11-01): one step with `prepare` and
+# `run`, runs as root (pkg needs no sudo), uses every host core by default,
+# rsyncs the workspace in and copies it back after `run`, so the host uploads
+# the results; supports 14.0-15.1 on x86_64 (KVM-accelerated) and aarch64
+# (emulated with QEMU, slow; neither action has a fast arm64 path).
+#
+# Releases: 14.5 (base Clang 21.1) and 15.1 (base Clang 19.1), the newest of
+# each supported branch (https://www.freebsd.org/security/).
+#
+# Manual only: started by hand (or by all.yml through workflow_call), with the
+# owner's consent for each run. See .github/workflows/README.md.
+name: FreeBSD
+
+on:
+  workflow_dispatch:
+    inputs:
+      areas:
+        description: "Test areas: a ctest label regex (empty = all), e.g. ^containers$|^ranges$"
+        type: string
+        default: ""
+      tests:
+        description: "Build and run the GoogleTest suite"
+        type: boolean
+        default: true
+      snippets:
+        description: "Run the snippet checker"
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+        default: ""
+      tests:
+        type: boolean
+        default: true
+      snippets:
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  freebsd:
+    name: FreeBSD ${{ matrix.release }} ${{ matrix.arch }} · ${{ matrix.toolchain }}
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ["14.5", "15.1"]
+        arch: [x86_64]
+        toolchain: [clang, gcc]
+        include:
+          # aarch64 runs under emulation: one job, base Clang only.
+          - release: "15.1"
+            arch: aarch64
+            toolchain: clang
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_PLATFORM: freebsd-${{ matrix.release }}-${{ matrix.arch }}
+      TOOLCHAIN: ${{ matrix.toolchain }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Configure, build, test, check snippets (in the VM)
+        uses: vmactions/freebsd-vm@c46abacb49f09938ca4e1702d15d836285d694cc  # v1.5.9
+        with:
+          release: ${{ matrix.release }}
+          arch: ${{ matrix.arch }}
+          mem: 12288
+          sync: rsync
+          copyback: true
+          envs: CPPDOCS_AREAS CPPDOCS_TESTS CPPDOCS_SNIPPETS CPPDOCS_PLATFORM TOOLCHAIN
+          prepare: |
+            pkg install -y bash cmake ninja python3 git gcc
+          # The VM step always succeeds so the files are copied back; the
+          # exit code goes to ci-out/exit-code and the last step reports it.
+          run: |
+            mkdir -p ci-out
+            CPPDOCS_OS_VERSION="FreeBSD $(freebsd-version) $(uname -m)"
+            if [ "$TOOLCHAIN" = gcc ]; then
+              # pkg's `gcc` meta-package: the default GCC (g++ -> g++14).
+              major="$(g++ -dumpversion | cut -d. -f1)"
+              CXX=g++ CPPDOCS_PRESET=gcc CPPDOCS_COMPILER="gcc-$major"
+              CPPDOCS_BASELINE=tools/snippet_baseline/gcc.txt CPPDOCS_SNIPPET_ARGS=
+              # Load GCC's libstdc++, not the base system's libraries.
+              LDFLAGS="-Wl,-rpath=/usr/local/lib/gcc$major"
+            else
+              major="$(/usr/bin/clang++ --version | sed -nE 's/.*version ([0-9]+)\..*/\1/p' | head -1)"
+              CXX=/usr/bin/clang++ CPPDOCS_PRESET=clang CPPDOCS_COMPILER="clang-$major"
+              CPPDOCS_BASELINE=tools/snippet_baseline/clang.txt
+              CPPDOCS_SNIPPET_ARGS=--flag=-fexperimental-library
+              LDFLAGS=
+            fi
+            export CXX CPPDOCS_PRESET CPPDOCS_COMPILER CPPDOCS_BASELINE CPPDOCS_SNIPPET_ARGS LDFLAGS CPPDOCS_OS_VERSION
+            rc=0
+            bash tools/ci/run.sh || rc=$?
+            echo "$rc" > ci-out/exit-code
+
+      - name: Step summary
+        if: always()
+        run: cat ci-out/summary.md >> "$GITHUB_STEP_SUMMARY" || echo "no summary (the VM step failed early)"
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-freebsd-${{ matrix.release }}-${{ matrix.arch }}-${{ matrix.toolchain }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn
+
+      - name: Result
+        run: exit "$(cat ci-out/exit-code)"

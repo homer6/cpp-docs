@@ -1,0 +1,111 @@
+# Other architectures under QEMU user-mode emulation: riscv64, s390x (the only
+# big-endian target) and ppc64le, each in a Debian trixie container with
+# Debian's GCC (14) and libstdc++. Issue #149.
+#
+# No third-party action and no third-party image: Ubuntu's own
+# qemu-user-static package registers the binfmt handlers (with the F flag, so
+# they work inside containers), and plain `docker run --platform` runs the
+# official debian image, pinned by its multi-arch index digest.
+#
+# Emulation is slow (a full run can take hours): use the `areas` input to pick
+# test areas; it limits the build to those areas' targets and the snippet
+# check to their docs/examples/<area> folders. Emulated runs prove
+# correctness, not performance; the summary lists what ran and the byte order.
+#
+# Manual only: started by hand (or by all.yml through workflow_call), with the
+# owner's consent for each run. See .github/workflows/README.md.
+name: QEMU (riscv64, s390x, ppc64le)
+
+on:
+  workflow_dispatch:
+    inputs:
+      areas:
+        description: "Test areas: a ctest label regex (empty = all), e.g. ^containers$|^ranges$"
+        type: string
+        default: ""
+      tests:
+        description: "Build and run the GoogleTest suite"
+        type: boolean
+        default: true
+      snippets:
+        description: "Run the snippet checker"
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+        default: ""
+      tests:
+        type: boolean
+        default: true
+      snippets:
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  qemu:
+    name: ${{ matrix.arch }} (QEMU) · GCC
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [riscv64, s390x, ppc64le]
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_PLATFORM: linux-${{ matrix.arch }}-qemu
+      # debian:trixie, multi-arch index (amd64, arm64, riscv64, s390x, ppc64le, ...),
+      # resolved 2026-11-01 with `docker buildx imagetools inspect debian:trixie`.
+      IMAGE: debian:trixie@sha256:2dc419c6d7fe3dad0a2f9fd469c34cc90b0f9ba642d8fde837fe3d7d34a0e7f1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Register QEMU binfmt handlers (Ubuntu's qemu-user-static)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends qemu-user-static
+          q="/proc/sys/fs/binfmt_misc/qemu-${{ matrix.arch }}"
+          cat "$q"
+          # F (fix binary): the interpreter is opened now, so it works in containers.
+          grep -q '^flags:.*F' "$q" || { echo "binfmt handler for ${{ matrix.arch }} lacks the F flag"; exit 1; }
+          docker run --rm --platform "linux/${{ matrix.arch }}" "$IMAGE" uname -m
+
+      - name: Configure, build, test, check snippets (in the container)
+        run: |
+          rc=0
+          docker run --rm --platform "linux/${{ matrix.arch }}" \
+            -v "$PWD":/w -w /w \
+            -e CPPDOCS_AREAS -e CPPDOCS_TESTS -e CPPDOCS_SNIPPETS -e CPPDOCS_PLATFORM \
+            "$IMAGE" bash -c '
+              set -e
+              apt-get update -qq
+              apt-get install -y -qq --no-install-recommends \
+                g++ cmake ninja-build python3 git ca-certificates >/dev/null
+              export CXX=g++ CPPDOCS_PRESET=gcc
+              export CPPDOCS_COMPILER="gcc-$(g++ -dumpversion | cut -d. -f1)"
+              export CPPDOCS_BASELINE=tools/snippet_baseline/gcc.txt
+              export CPPDOCS_OS_VERSION="Debian $(cat /etc/debian_version) $(uname -m) under QEMU user-mode"
+              (cd / && git config --global --add safe.directory /w)
+              bash tools/ci/run.sh
+            ' || rc=$?
+          cat ci-out/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit "$rc"
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-linux-${{ matrix.arch }}-qemu-gcc
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn

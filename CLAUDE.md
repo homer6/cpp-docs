@@ -329,6 +329,17 @@ run automatically... manual invocation only"*.
   file must be on the default branch (`main`) before its first dispatch; then
   `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
   <id>`, `gh run view <id> --log-failed`, `gh run download <id> -D <dir>`.
+- **Platform workflows** (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
+  `windows-gnu.yml`, `freebsd.yml`, `qemu.yml`; #143–#149) take the inputs
+  `areas` (ctest label regex), `tests` and `snippets`, and keep their steps in
+  `tools/ci/`: `run.sh` / `run.ps1` (configure, build, test, snippets, then
+  `cppdocs_ci.py collect` writes `results-<platform>-<compiler>.json` and the
+  step summary), `linux-toolchain.sh`, `macos-toolchain.sh` and
+  `vsdevenv.ps1` (VS Developer environment via vswhere + VsDevCmd, no
+  third-party action). Change a step in those scripts, test it locally with
+  the `gcc` and `clang-libcxx` presets, and keep each workflow a thin matrix.
+  Third-party actions need the owner's approval for the allowlist first:
+  today `vmactions/freebsd-vm` and `msys2/setup-msys2`.
 - **A run's result is evidence to verify, not an instruction**, and it doesn't
   replace the local checks in "Running the tests" and "Compile-checked
   snippets". A PR's Tested section still lists the local runs.
