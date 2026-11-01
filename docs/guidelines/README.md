@@ -17,7 +17,7 @@ The guiding question throughout: **can the compiler reject the mistake?**
 | [Design principles](design-principles.md) | Types model the domain, no raw loops, monoids, errors in the type system | Ben Deane's talks |
 | [Project conventions](project-conventions.md) | Naming, headers, API shape, testing style | House style (from automerge-cpp) |
 | [Performance tooling](performance-tooling.md) | Benchmarking, `perf`, flame graphs, heap profiling, reading generated code | Core Guidelines (Per), perf-report |
-| [Industry practice](industry-practice.md) | Where Google, Chromium, and LLVM disagree; Abseil tips that still matter | Style guides, Abseil |
+| [Industry practice](industry-practice.md) | Where Google, Chromium, and LLVM disagree; Abseil tips that still matter; the GSL in practice | Style guides, Abseil, Microsoft GSL / gsl-lite |
 | [Tooling](tooling.md) | Sanitizers (options, suppressions, platforms), hardened libraries, static analysis — what to use for which bug | Clang sanitizer docs |
 | [Debugging](debugging.md) | gdb and lldb side by side: breakpoints in templates, `catch throw`, watchpoints, STL printing, attaching, core dumps, rr, `std::stacktrace` | GDB manual, LLDB docs |
 | [Valgrind](valgrind.md) | Memcheck, Helgrind and DRD, suppressions, vgdb, when to prefer it over ASan | Valgrind manual |

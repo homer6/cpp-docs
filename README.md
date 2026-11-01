@@ -112,7 +112,7 @@ The reference tells you what each feature *is*;
 - [Modern idioms](docs/guidelines/modern-idioms.md) — C++17 → C++26 and when to reach for each
 - [Design principles](docs/guidelines/design-principles.md) — Ben Deane's composable, hard-to-misuse style
 - [Project conventions](docs/guidelines/project-conventions.md) — naming, headers, API shape, tests
-- [Industry practice](docs/guidelines/industry-practice.md) — Google/Chromium/LLVM policies, Abseil tips
+- [Industry practice](docs/guidelines/industry-practice.md) — Google/Chromium/LLVM policies, Abseil tips, the GSL
 - [Tooling](docs/guidelines/tooling.md) — sanitizers, suppressions, hardened libraries, static analysis
 - [Debugging](docs/guidelines/debugging.md) — gdb and lldb side by side, core dumps, `std::stacktrace`
 - [Valgrind](docs/guidelines/valgrind.md) — Memcheck, Helgrind and DRD, suppressions, vgdb

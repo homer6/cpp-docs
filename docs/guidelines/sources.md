@@ -9,6 +9,7 @@ it accurate.
 | ID | Source | URL | Edition / version tracked | Last checked |
 |---|---|---|---|---|
 | `ccg` | C++ Core Guidelines (Stroustrup, Sutter) | https://github.com/isocpp/CppCoreGuidelines — submodule at `modules/CppCoreGuidelines` | Jun 14, 2026 (commit `d1dda82`, the submodule pin) | 2026-10-30 |
+| `gsl` | Microsoft GSL (reference GSL implementation); gsl-lite | https://github.com/microsoft/GSL · https://github.com/gsl-lite/gsl-lite | GSL 5.0.1 (2026-09-22), gsl-lite 1.1.1 | 2026-11-01 |
 | `cppref` | cppreference.com — C++26 / C++23 / C++20 pages | https://en.cppreference.com/w/cpp/26 | C++26 (final) | 2026-10-30 |
 | `deane-types` | Ben Deane, *Using Types Effectively* | CppCon 2016 | — | 2026-10-30 |
 | `deane-misuse` | Ben Deane, *Easy to Use, Hard to Misuse: Declarative Style in C++* | C++Now 2018 | — | 2026-10-30 |
@@ -56,7 +57,7 @@ it accurate.
 | Page | Sources |
 |---|---|
 | [core-guidelines.md](core-guidelines.md) | `ccg`, `cppref` |
-| [safety.md](safety.md) | `ccg`, `cppref`, `google-hardening`, `abseil-totw` |
+| [safety.md](safety.md) | `ccg`, `cppref`, `google-hardening`, `abseil-totw`, `gsl` |
 | [modern-idioms.md](modern-idioms.md) | `cppref`, `impl-status`, `msvc-stl`, `google-style`, `chromium`, `wg21-task` |
 | [design-principles.md](design-principles.md) | `deane-*`, `automerge-style`, `abseil-totw`, `chromium` |
 | [project-conventions.md](project-conventions.md) | `automerge-style`, `ccg` (F.16, NL), `google-style`, `chromium` |
@@ -66,7 +67,7 @@ it accurate.
 | [valgrind.md](valgrind.md) | `valgrind` (incl. FAQ, 3.28 NEWS) |
 | [testing.md](testing.md) | `testing-tools`, `cppref` (contracts), `deane-*` (laws) |
 | [build-and-packaging.md](build-and-packaging.md) | `cmake-docs`, `cmake-git`, `cmake-local`, `ccache`, `msvc-docs` |
-| [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `mozilla`, `abseil-totw` |
+| [industry-practice.md](industry-practice.md) | `google-style`, `chromium`, `llvm-style`, `mozilla`, `abseil-totw`, `gsl` |
 
 ## Candidate sources (not yet imported)
 
@@ -106,3 +107,4 @@ Notable references worth considering for a future import. Move a row up to
 | 2026-10-31 | Issue #70: `testing.md` "Testing contracts" — the two `needs=contracts` snippets failed on GCC 16 because they used GoogleTest macros, `contract_failed` and `<contracts>` without declaring them. Each is now a compiled contract block (the `pre()` declaration; the throwing handler with its `<contracts>` include and exception type) followed by a `nocompile` GoogleTest block. The P2900 claims were rechecked against P2900R14 ([basic.contract.eval], [basic.contract.handler]) and run on GCC 16.2: a throwing handler is caught by the test under `enforce` and `observe`, and a `noexcept` function terminates. No guidance changed. |
 | 2026-10-31 | Issue #79: added `debugging.md` (gdb and lldb side by side: template and conditional breakpoints, `catch throw` / `br set -E c++`, watchpoints, STL pretty-printers and formatters, attaching, startup files, TUI, core dumps and `std::stacktrace` moved from `tooling.md`, rr) and `valgrind.md` (Valgrind vs ASan, Memcheck and its report, Helgrind/DRD, suppressions, vgdb, Massif/DHAT pointer). `tooling.md`: suppressions and runtime options for LSan/TSan/UBSan (UBSan suppressions need recoverable checks), standalone LSan, HWASan, a platform-support table, fuzzing row linking `testing.md`; debugger and Valgrind sections now link out. Every command run locally: lldb 22 on macOS arm64, gdb 16.3 and Valgrind 3.24 in the `gcc:16` image (Linux AArch64), sanitizers with Clang 22 (macOS) and GCC 16 / Clang 19 (Linux). rr not run (needs Linux with CPU performance counters). |
 | 2026-10-31 | Issue #81: imported the issue #79 deep-research report (`.firecrawl/reports/issue-79-2026-10-31.md`, a map only). Corrected: lldb catch-only breakpoint is `br set -E c++ -w false -h true` (`-h true` alone also stops on throw — run with LLDB 22); libstdc++'s gdb `skip` entries arrived in GCC 15 (PR118260; present in 15.2/16.2, absent in 14.4); gdb has no native Apple Silicon support (`configure.nat`, Homebrew formula); Valgrind's macOS support is Intel only. Added: standalone LSan exits 23 but ASan leaks exit 1, LSan fails under ptrace, TSan's macOS abort comes from `abort_on_error` (66 with `=0`), the UBSan minimal runtime ignores `UBSAN_OPTIONS`, sanitizers disable core dumps (`disable_coredump=0`) — each run on Clang 22 (macOS) and GCC 16 (Linux); Homebrew GCC 16.2 arm64 bottle has `libasan`/`libubsan` but no TSan/LSan (bottle listed); HWASan platforms and Linux's LAM disable (Clang docs, CVE-2024-50112, Kconfig). Not imported (prompt "Still open"): rr, debug info at scale, Valgrind release changes, CI option inventory, MSVC, MTE, new sanitizers. |
+| 2026-11-01 | Issue #154: the GSL. `industry-practice.md` "The GSL in practice": the Microsoft GSL and gsl-lite (versions, standards, namespaces), what's still worth using, what the standard replaced, and the clang-tidy checks built on GSL names. `safety.md`: the GSL → standard table now covers `narrow`/`narrow_cast`, `at`, `zstring`, `index`, `byte`, `joining_thread` and the concepts, and says `gsl::span` is bounds-checked. `core-guidelines.md`: which rules name GSL types. Checked against the Guidelines' GSL chapter (pin `d1dda82`), the Microsoft GSL v5.0.1 headers and README (`owner` is an alias; `not_null(nullptr_t)` deleted; `narrow` throws `narrowing_error`; `Expects` terminates; `joining_thread` never implemented; `byte` deprecated), the gsl-lite README, and clang-tidy 22 run locally (`owning-memory`, `narrowing-conversions`, `pro-bounds-constant-array-index` on a local `gsl::owner` alias). The GSL code itself wasn't compiled: the session's permission check blocks building downloaded third-party code. |
