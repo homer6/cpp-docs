@@ -11,7 +11,7 @@ language area on cppreference's main page now has pages (see
 `docs/examples/README.md`); new work fills in detail, fixes mistakes, and keeps
 up with new standards.
 To add a feature, facility or gotcha to a topic, use the `add-to-topic`
-skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity research,
+skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl research,
 verification on all three toolchains, placement, snippet and test.
 
 ## Source of truth
@@ -29,9 +29,11 @@ verification on all three toolchains, placement, snippet and test.
   yet), say so on the page and tag the snippet `needs=<feature>`.
 - **See also** links to what you used: cppreference first, then papers or
   vendor docs where they add something. No unsourced blogs or AI summaries.
-- cppreference blocks automated fetches (HTTP 403 from WebFetch); query it with
-  the `perplexity` MCP tools (`search_domain_filter: ["cppreference.com"]`) or
-  read other sources with Firecrawl.
+- cppreference blocks WebFetch (HTTP 403). Query it with the `perplexity` MCP
+  tools (`search_domain_filter: ["cppreference.com"]`), or read the page itself
+  with the Firecrawl CLI (`firecrawl scrape <url> --only-main-content`), which
+  also reads papers (`wg21.link`) and finds implementation PRs
+  (`firecrawl developer`).
 - `docs/guidelines/` records each page's sources in `docs/guidelines/sources.md`.
 
 ## Guidelines section
