@@ -5,6 +5,7 @@ docs/examples/algorithms/execution-and-ranges.md#folds-c23/1
 docs/examples/concurrency/atomics.md#atomicref-and-atomicsharedptr-c20/1
 docs/examples/datetime/calendar-timezones.md#formatting-and-parsing/1
 docs/examples/datetime/calendar-timezones.md#time-zones/1
+docs/examples/io/string-streams.md#fixed-buffers-stdspanstream-c23/1
 docs/examples/io/syncstream.md#when-does-the-text-arrive/1
 docs/examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win/1
 docs/examples/metaprogramming/type-traits.md#islayoutcompatible-and-iscorrespondingmember-c20/1

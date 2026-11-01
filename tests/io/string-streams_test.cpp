@@ -1,11 +1,19 @@
 // Checks claims made by docs/examples/io/string-streams.md.
 #include <format>
 #include <iterator>
+#include <span>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
+#include <version>
+#if __has_include(<spanstream>)
+#include <spanstream>
+#endif
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "Building strings": the built string, and the std::format equivalent.
 TEST(StringStreams, Build) {
@@ -67,4 +75,30 @@ TEST(StringStreams, ExtractionStopsAtWhitespace) {
     EXPECT_EQ(s, "two");
     std::getline(b, s);
     EXPECT_EQ(s, "two words");
+}
+
+// "Fixed buffers: std::spanstream (C++23)": writes into the caller's buffer, never
+// grows (a full stream sets failbit), and ispanstream parses a view in place.
+TEST(StringStreams, SpanStreamFixedBuffer) {
+    CPPDOCS_REQUIRE(__cpp_lib_spanstream);
+#ifdef __cpp_lib_spanstream
+    char buf[16];
+    std::ospanstream out{std::span{buf}};
+    out << "x=" << 42;
+    std::span<char> written = out.span();
+    EXPECT_EQ(std::string_view(written.data(), written.size()), "x=42");
+    EXPECT_EQ(written.data(), buf);  // no copy: the stream writes into buf
+    EXPECT_FALSE(out.fail());
+
+    out << " and far more than sixteen chars";
+    EXPECT_TRUE(out.fail());
+    EXPECT_EQ(out.span().size(), 16u);
+
+    std::ispanstream in{std::string_view{"10 20 30"}};
+    int a, b, c;
+    in >> a >> b >> c;
+    EXPECT_EQ(a, 10);
+    EXPECT_EQ(b, 20);
+    EXPECT_EQ(c, 30);
+#endif
 }

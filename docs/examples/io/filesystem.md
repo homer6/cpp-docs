@@ -23,6 +23,29 @@ void paths() {
 }
 ```
 
+## Formatting a path (C++26)
+
+`std::format` and `std::print` take a `fs::path` directly
+(`__cpp_lib_format_path`). The default prints the native string unquoted; `?`
+quotes and escapes it, like a string's debug format; `g` uses the generic
+(`/`-separated) form; fill, alignment and width work as for strings. GCC 16 has
+it; GCC 15 and Clang 22 don't, so write `p.string()` there.
+
+```cpp needs=format_path
+#include <filesystem>
+#include <format>
+namespace fs = std::filesystem;
+
+void format_paths() {
+    fs::path p = "dir/sub/file.txt";
+    std::format("{}", p);                    // dir/sub/file.txt
+    std::format("{:?}", p);                  // "dir/sub/file.txt"
+    std::format("{:>20}", p);                // 4 spaces, then dir/sub/file.txt
+    std::format("{:?}", fs::path{"a\nb"});   // "a\nb": the newline escaped
+    std::format("{:g}", p);                  // dir/sub/file.txt ('\\' becomes '/' on Windows)
+}
+```
+
 ## Querying the filesystem
 
 ```cpp
@@ -101,6 +124,9 @@ void make_out_dir() {
   permission).
 - **Paths have a native encoding.** Don't assume `path::string()` is UTF-8 on all
   platforms (Windows uses wide natively); use `u8string()` when you need UTF-8.
+- **Before C++26, `std::format("{}", p)` doesn't compile** (no `formatter` for
+  `path`), and `std::cout << p` quotes the path (`"dir/file"`). Use
+  `p.string()` until your library has `__cpp_lib_format_path`.
 - **`remove_all` is recursive and unforgiving** — double-check the target before
   calling it.
 
@@ -109,3 +135,5 @@ void make_out_dir() {
 - [Filesystem library — cppreference](https://en.cppreference.com/w/cpp/filesystem)
 - [std::filesystem::path — cppreference](https://en.cppreference.com/w/cpp/filesystem/path)
 - [std::filesystem::directory_iterator — cppreference](https://en.cppreference.com/w/cpp/filesystem/directory_iterator)
+- [std::formatter<std::filesystem::path> — cppreference](https://en.cppreference.com/w/cpp/filesystem/path/formatter)
+- [P2845R8: Formatting of std::filesystem::path](https://wg21.link/P2845R8)
