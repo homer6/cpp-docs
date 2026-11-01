@@ -3,9 +3,11 @@
 
 Every file in .github/workflows/*.yml (and *.yaml) must:
 
-  * have workflow_dispatch as its only trigger. The owner's rule: no workflow
+  * have workflow_dispatch as its trigger. The owner's rule: no workflow
     ever runs automatically, so push, pull_request, schedule, workflow_run,
-    release and every other event are rejected;
+    release and every other event are rejected. The one addition allowed is
+    workflow_call next to workflow_dispatch, for a platform workflow that a
+    manually dispatched caller (all.yml) runs;
   * set top-level `permissions:` to a map with `contents: read`, grant no
     write scope at the top level, and have no job that grants write
     (`write-all`, or any scope set to `write`);
@@ -44,6 +46,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 ALLOWED_TRIGGER = "workflow_dispatch"
+# Allowed only next to workflow_dispatch: a reusable workflow that a manually
+# dispatched caller (all.yml) runs with `uses: ./.github/workflows/<file>`.
+CALL_TRIGGER = "workflow_call"
 
 
 # --------------------------------------------------------------------------
@@ -347,10 +352,14 @@ def check_triggers(doc: dict) -> list[str]:
     problems = [
         f"trigger `{e}` is not allowed: workflows are manual only (`workflow_dispatch`)"
         for e in events
-        if e != ALLOWED_TRIGGER
+        if e not in (ALLOWED_TRIGGER, CALL_TRIGGER)
     ]
     if not events:
         problems.append("`on:` is empty; the only allowed trigger is `workflow_dispatch`")
+    elif CALL_TRIGGER in events and ALLOWED_TRIGGER not in events:
+        # A reusable workflow still has to be startable by hand, and it only
+        # runs when a manually dispatched caller runs it.
+        problems.append(f"`{CALL_TRIGGER}` is allowed only alongside `{ALLOWED_TRIGGER}`")
     return problems
 
 
@@ -456,6 +465,21 @@ def run(paths: list[Path], display_root: Path) -> int:
 SHA = "11bd71901bbe5b1630ceea73d27597364c9af683"
 
 GOOD = {
+    "dispatch-and-call.yml": """
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+permissions:
+  contents: read
+jobs:
+  a:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo ok
+""",
     "minimal.yml": """
 on: workflow_dispatch
 permissions:
@@ -513,6 +537,12 @@ jobs: {}
 }
 
 BAD = {
+    "call-only.yml": ("""
+on: workflow_call
+permissions:
+  contents: read
+jobs: {}
+""", ["allowed only alongside `workflow_dispatch`"]),
     "push.yml": ("""
 on: [push, workflow_dispatch]
 permissions:

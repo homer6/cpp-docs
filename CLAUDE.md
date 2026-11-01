@@ -281,7 +281,9 @@ run automatically... manual invocation only"*.
 
 - **Every workflow's only trigger is `workflow_dispatch`.** No `push`,
   `pull_request`, `schedule`, `workflow_run`, `release` or any other event,
-  not even for lint. Each workflow sets top-level `permissions: contents:
+  not even for lint. The one addition: a platform workflow may also have
+  `workflow_call`, next to `workflow_dispatch`, so the manually dispatched
+  `all.yml` can run it (`uses: ./.github/workflows/<file>`). Each workflow sets top-level `permissions: contents:
   read`, no job grants write, and every `uses:` is pinned to a full
   40-character commit SHA with the version in a comment
   (`uses: actions/checkout@<sha>  # v4.2.2`); local `./` actions are fine.

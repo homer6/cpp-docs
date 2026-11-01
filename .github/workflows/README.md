@@ -7,7 +7,8 @@ Every workflow in this folder therefore:
 
 - has **`workflow_dispatch` as its only trigger**. There are no `push`,
   `pull_request`, `schedule`, `workflow_run`, `release` or other event
-  triggers, not even for a lint-only job;
+  triggers, not even for a lint-only job; A platform workflow may also have `workflow_call` next to it, so the
+  manually dispatched `all.yml` can run it; `workflow_call` alone is rejected.
 - sets top-level **`permissions: contents: read`**, and no job grants write;
 - **pins every action to a full 40-character commit SHA**, with the version in
   a comment, GitHub's own `actions/*` included:
