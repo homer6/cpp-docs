@@ -11,10 +11,11 @@ Use it as the first source when writing C++, not memory. A page also says
 when *not* to use a feature, and which compilers have it.
 
 **Finding the repo.** Inside a cpp-docs checkout, paths are relative to its
-root. From another project, use `$CPP_DOCS` if it's set, otherwise
-`~/dev/homer6/cpp-docs`. Read the pages from there. To make the skill available
-everywhere, link it into your user skills:
-`ln -s ~/dev/homer6/cpp-docs/.claude/skills/modern-cpp ~/.claude/skills/modern-cpp`.
+root. From another project, find the checkout from the skill's real path,
+because `make install` links the skill back into it (`<repo>/.claude/skills/modern-cpp`):
+`realpath ~/.claude/skills/modern-cpp/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
+`$CPP_DOCS` overrides that if it's set. Read the pages from there. To install
+the skill for every project, run `make install` in the checkout.
 
 ## 1. Learn the project's constraints
 
@@ -85,7 +86,8 @@ or guard it:
 ## 5. Apply the guidelines
 
 Use the `cpp-guidelines` skill for ownership, lifetime, safety, idioms and
-design. It loads only the guideline pages that matter, and its findings cite
+design. `make install` installs it too. Without it, read
+`<repo>/.claude/skills/cpp-guidelines/SKILL.md` and follow it. It loads only the guideline pages that matter, and its findings cite
 Core Guidelines rule IDs. Prefer what the reference pages recommend
 over habits from older standards, unless the project's constraints say
 otherwise.

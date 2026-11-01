@@ -124,6 +124,33 @@ Sources and edition dates are in [sources.md](docs/guidelines/sources.md). To
 refresh them or import a new reference, ask Claude to use the
 `refresh-guidelines` skill.
 
+## Use it while you write C++ (Claude Code)
+
+The [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) skill makes Claude Code
+check this reference before writing C++. It:
+- looks up the page for a facility and follows its gotchas and version notes;
+- checks that the feature is supported on your compilers;
+- applies the guidelines and validates the result.
+
+**Install it once for all your projects:** clone this repo and run
+`make install`. That links `modern-cpp` and
+[`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (review C++ against
+the Core Guidelines, citing rule IDs) into `~/.claude/skills`.
+
+```bash
+git clone https://github.com/homer6/cpp-docs.git
+cd cpp-docs && make install        # make uninstall removes the links
+```
+
+Then ask for it by name (`/modern-cpp`), or just ask for modern C++.
+
+**Upgrading:** run `make update`. It pulls the latest release (stay on `main`)
+and re-links. The links point back at your checkout, so a plain `git pull`
+upgrades the skills too. `make install` also upgrades an older install: it
+re-points a link to another checkout, and moves an older copied folder to
+`~/.claude/skills-backup/` before linking. `SKILLS_DIR=… make install`
+installs somewhere else.
+
 ## How to use these notes
 
 Every reference page has the same shape:
