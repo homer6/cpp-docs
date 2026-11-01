@@ -1,20 +1,34 @@
 ---
 name: cpp-guidelines
-description: Apply this repo's C++ guidelines (C++ Core Guidelines digest, safety, modern idioms, design principles, industry practice) when writing, reviewing, or refactoring C++ in any project — inspecting the project's C++ version and constraints first, loading only the relevant guideline pages, citing rule IDs, and validating changes with the compiler, tests, and clang-tidy. Use when asked to write or review C++, check code against the Core Guidelines, modernize C++, or fix ownership, lifetime, or memory-safety issues.
+description: Review or audit C++ against this repo's guidelines (C++ Core Guidelines digest, safety, modern idioms, design principles, industry practice). It inspects the project's constraints, loads only the relevant guideline pages, cites rule IDs and validates fixes. For writing or modernizing C++, prefer the modern-cpp skill, which calls this one itself. Use this skill directly to review or audit existing code against the Core Guidelines with rule IDs, to answer a question about a specific rule ("what does R.11 say?"), to make a focused ownership, lifetime or memory-safety fix, or to run the guideline evals.
 ---
 
 # Apply the C++ guidelines
+
+**Prefer `/modern-cpp` for writing or modernizing C++.** It also checks the
+reference pages and toolchain support, and it calls this skill when the
+guidelines matter. Use this skill directly for:
+
+- **Reviewing or auditing existing code against the Core Guidelines**, where
+  you want findings with rule IDs (**R.11**, **C.13**) and no new code.
+- **A question about a specific rule** ("what does F.16 say, and does this
+  code follow it?") or about one guidelines page.
+- **A focused ownership, lifetime or memory-safety fix** in code that already
+  uses the right facilities.
+- **Measuring the guidelines skill** with the case suite in `evals/`.
 
 The guidance lives in `docs/guidelines/` of the cpp-docs repo (this skill's
 repo). The full C++ Core Guidelines are in `modules/CppCoreGuidelines/`. Treat
 them as the source; this file only says how to use them.
 
-**Repo-bound.** The paths below are relative to the cpp-docs repo root, not to
-this skill's folder, so the skill works only inside a cpp-docs checkout (with
-`git submodule update --init`). That keeps one copy of the guidance. To use it
-in another project, open that project alongside a cpp-docs checkout and read
-the pages from there; a self-contained copy (pages under `references/` plus a
-sync script) is a possible follow-up.
+**Finding the repo.** The paths below are relative to the cpp-docs repo root,
+not to this skill's folder. Inside a cpp-docs checkout, use them as they are.
+From another project, find the checkout from the skill's real path, because
+`make install` links the skill back into it (`<repo>/.claude/skills/cpp-guidelines`):
+`realpath ~/.claude/skills/cpp-guidelines/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
+`$CPP_DOCS` overrides that if it's set. Read every page from there. The
+full Core Guidelines need `git submodule update --init` in the checkout. There
+is one copy of the guidance, and `git pull` keeps it current.
 
 ## 1. Learn the project's constraints first
 

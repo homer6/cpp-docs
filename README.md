@@ -94,7 +94,7 @@ area has its own README.
 - **[`tests/`](tests/CMakeLists.txt)** — GoogleTest suite that checks the pages' claims (see [Running the tests](#running-the-tests))
 - **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) runs the tests
 - **[`evals/`](evals/README.md)** — test cases for the `cpp-guidelines` agent skill
-- **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (apply the guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current), [`add-to-topic`](.claude/skills/add-to-topic/SKILL.md) (add a feature or gotcha to the reference), [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) (write C++ using this reference)
+- **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (review against the Core Guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current), [`add-to-topic`](.claude/skills/add-to-topic/SKILL.md) (add a feature or gotcha to the reference), [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) (**start here**: write C++ using this reference)
 - **[`modules/`](modules/)** — submodules: [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines), [perf-report](https://github.com/homer6/perf-report)
 
 Every area on cppreference's main page has pages, and every snippet compiles
@@ -123,6 +123,45 @@ The reference tells you what each feature *is*;
 Sources and edition dates are in [sources.md](docs/guidelines/sources.md). To
 refresh them or import a new reference, ask Claude to use the
 `refresh-guidelines` skill.
+
+## Use it while you write C++ (Claude Code)
+
+The [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) skill makes Claude Code
+check this reference before writing C++. It:
+- looks up the page for a facility and follows its gotchas and version notes;
+- checks that the feature is supported on your compilers;
+- applies the guidelines and validates the result.
+
+**Start with `/modern-cpp`.** It's the preferred entry point for writing,
+modernizing or reviewing C++, and it calls `/cpp-guidelines` itself when the
+guidelines matter. Use `/cpp-guidelines` directly only for:
+
+- **Reviewing or auditing existing code against the Core Guidelines**, where
+  you want findings with rule IDs (**R.11**, **C.13**) and no new code.
+- **A question about a specific rule** ("what does F.16 say, and does this
+  code follow it?") or about one guidelines page.
+- **A focused ownership, lifetime or memory-safety fix** in code that already
+  uses the right facilities.
+- **Measuring the guidelines skill** with the case suite in `evals/`.
+
+**Install it once for all your projects:** clone this repo and run
+`make install`. That links `modern-cpp` and
+[`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (review C++ against
+the Core Guidelines, citing rule IDs) into `~/.claude/skills`.
+
+```bash
+git clone https://github.com/homer6/cpp-docs.git
+cd cpp-docs && make install        # make uninstall removes the links
+```
+
+Then ask for it by name (`/modern-cpp`), or just ask for modern C++.
+
+**Upgrading:** run `make update`. It pulls the latest release (stay on `main`)
+and re-links. The links point back at your checkout, so a plain `git pull`
+upgrades the skills too. `make install` also upgrades an older install: it
+re-points a link to another checkout, and moves an older copied folder to
+`~/.claude/skills-backup/` before linking. `SKILLS_DIR=… make install`
+installs somewhere else.
 
 ## How to use these notes
 
@@ -216,7 +255,7 @@ style is in [`CLAUDE.md`](CLAUDE.md).
 
 ## Progress
 
-**Latest release: [v0.2.0](docs/releases/v0.2.0.md)** (2026-11-01). All
+**Latest release: [v0.2.1](docs/releases/v0.2.1.md)** (2026-11-01). All
 releases are listed in [`docs/releases/`](docs/releases/README.md).
 
 See [`docs/examples/README.md`](docs/examples/README.md) for the full index and

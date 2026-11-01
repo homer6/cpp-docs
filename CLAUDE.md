@@ -16,6 +16,16 @@ verification on all three toolchains, placement, snippet and test.
 To write C++ with this reference (here or in another project), use the
 `modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
 right pages, toolchain support, the guidelines, validation.
+It's the preferred entry point and calls `cpp-guidelines` itself. Use
+`cpp-guidelines` directly only for a Core Guidelines review or audit with rule
+IDs, a question about one rule, a focused ownership or lifetime fix, or the
+evals.
+`make install` links it (and `cpp-guidelines`) into `~/.claude/skills`, upgrading
+an older link or copied install; `make update` pulls and re-links; `make
+uninstall` removes the links.
+Add a skill to the Makefile's `SKILLS` only if it works outside the repo.
+Never run `make install` from a worktree: the link would point at a
+directory that's deleted after the merge.
 
 ## Source of truth
 

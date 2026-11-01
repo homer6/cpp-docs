@@ -1,9 +1,15 @@
 ---
 name: modern-cpp
-description: Write, modernize or review C++ using the cpp-docs repo's verified reference (docs/examples/, C++11 to C++26) and its guidelines (docs/guidelines/). Before writing, it learns the project's standard and toolchains, looks up the facility's page for usage, gotchas and version notes, checks that the feature is supported where the code must build, and then applies the guidelines and validates the result. Use for "/modern-cpp", "write this in modern C++", "what's the modern way to …", "should I use X or Y", "is <feature> supported on GCC/Clang/MSVC", "modernize this", or any C++ task where getting the standard library and language right matters.
+description: The preferred entry point for C++ work with the cpp-docs repo. It writes, modernizes or reviews C++ using the repo's verified reference (docs/examples/, C++11 to C++26) and calls the cpp-guidelines skill for the guidelines. Before writing, it learns the project's standard and toolchains, looks up the facility's page for usage, gotchas and version notes, checks that the feature is supported where the code must build, and then applies the guidelines and validates the result. Use for "/modern-cpp", "write this in modern C++", "what's the modern way to …", "should I use X or Y", "is <feature> supported on GCC/Clang/MSVC", "modernize this", or any C++ task where getting the standard library and language right matters.
 ---
 
 # Write modern C++ with the cpp-docs reference
+
+**This is the entry point for C++ work.** It covers the reference, toolchain
+support and validation, and it calls `cpp-guidelines` (step 5) when the
+guidelines matter. Send the user to `/cpp-guidelines` directly only for a
+review or audit against the Core Guidelines with rule IDs, a question about a
+specific rule, a focused ownership or lifetime fix, or the evals.
 
 This repo is a verified reference. Every snippet compiles, and the tests in
 `tests/` check what each page claims on GCC 15, GCC 16 and Clang 22 (libc++).
@@ -11,10 +17,11 @@ Use it as the first source when writing C++, not memory. A page also says
 when *not* to use a feature, and which compilers have it.
 
 **Finding the repo.** Inside a cpp-docs checkout, paths are relative to its
-root. From another project, use `$CPP_DOCS` if it's set, otherwise
-`~/dev/homer6/cpp-docs`. Read the pages from there. To make the skill available
-everywhere, link it into your user skills:
-`ln -s ~/dev/homer6/cpp-docs/.claude/skills/modern-cpp ~/.claude/skills/modern-cpp`.
+root. From another project, find the checkout from the skill's real path,
+because `make install` links the skill back into it (`<repo>/.claude/skills/modern-cpp`):
+`realpath ~/.claude/skills/modern-cpp/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
+`$CPP_DOCS` overrides that if it's set. Read the pages from there. To install
+the skill for every project, run `make install` in the checkout.
 
 ## 1. Learn the project's constraints
 
@@ -85,7 +92,8 @@ or guard it:
 ## 5. Apply the guidelines
 
 Use the `cpp-guidelines` skill for ownership, lifetime, safety, idioms and
-design. It loads only the guideline pages that matter, and its findings cite
+design. `make install` installs it too. Without it, read
+`<repo>/.claude/skills/cpp-guidelines/SKILL.md` and follow it. It loads only the guideline pages that matter, and its findings cite
 Core Guidelines rule IDs. Prefer what the reference pages recommend
 over habits from older standards, unless the project's constraints say
 otherwise.
