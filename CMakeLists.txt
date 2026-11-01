@@ -78,6 +78,14 @@ set(CMAKE_CXX_STANDARD 26)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_CXX_STANDARD 23)
 endif()
+# Older compilers (GCC 13, for one) have no C++26 flag CMake knows about, so
+# configuring would fail outright. Build them as C++23 instead: the tests gate
+# every newer feature on its feature-test macro, so those tests skip.
+if(NOT CMAKE_CXX_STANDARD EQUAL 23 AND NOT "cxx_std_26" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+  message(STATUS "cpp-docs: CMake knows no C++26 flag for ${CMAKE_CXX_COMPILER_ID} "
+                 "${CMAKE_CXX_COMPILER_VERSION}; building as C++23 (C++26 tests skip)")
+  set(CMAKE_CXX_STANDARD 23)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
