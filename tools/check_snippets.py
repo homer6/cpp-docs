@@ -304,6 +304,28 @@ def strip_comments(code: str) -> str:
     return re.sub(r"//[^\n]*", "", code)
 
 
+def std_flag_for(cxx: str, flags: list[str]) -> str:
+    """c++26, or the newest mode an older compiler accepts.
+
+    Some releases know only the pre-standard spelling -std=c++2c; older ones
+    (GCC 13, for one) have nothing past -std=c++23. Tries c++26, c++2c, then
+    c++23, and prints a note when it falls back.
+    """
+    for std in ("c++26", "c++2c", "c++23"):
+        with tempfile.NamedTemporaryFile("w", suffix=".cpp", delete=False) as f:
+            f.write("int main() {}\n")
+        try:
+            r = subprocess.run([cxx, f"-std={std}", "-fsyntax-only", *flags, f.name],
+                               capture_output=True, text=True)
+        finally:
+            os.unlink(f.name)
+        if r.returncode == 0:
+            if std != "c++26":
+                print(f"note: {cxx} doesn't accept -std=c++26; using -std={std}", file=sys.stderr)
+            return std
+    return "c++26"
+
+
 class ModuleToolchain:
     """Per-compiler commands for module units. Builds std modules lazily, once."""
 
@@ -460,6 +482,8 @@ def main() -> int:
 
     cxx = args.cxx or DEFAULT_CXX.get(args.toolchain) or os.environ.get("CXX") or "c++"
     name = detect_toolchain(cxx) if args.toolchain == "auto" else args.toolchain
+    if name in ("gcc", "clang") and args.std == "c++26":
+        args.std = std_flag_for(cxx, args.flag)
     tc_plain = Toolchain(name, cxx, args.std, args.flag)
 
     files: list[pathlib.Path] = []

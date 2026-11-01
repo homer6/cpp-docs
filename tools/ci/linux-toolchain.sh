@@ -67,6 +67,14 @@ clang-apt-llvm|clang-ubuntu)
     fi
     apt_install "${pkgs[@]}"
     env+=("CC=clang-$ver" "CXX=clang++-$ver" "CPPDOCS_COMPILER=clang-$ver-$stdlib")
+    # Ubuntu 26.04 also installs a copy of libc++.modules.json in the multiarch
+    # directory, and clang reports that one; its relative paths
+    # (../share/libc++/v1/std.cppm) don't resolve from there, so `import std`
+    # can't find its sources. The copy under /usr/lib/llvm-N/lib resolves.
+    json="/usr/lib/llvm-$ver/lib/libc++.modules.json"
+    if [[ "$stdlib" == libcxx && -f "$json" ]]; then
+        env+=("CPPDOCS_CMAKE_ARGS=-DCMAKE_CXX_STDLIB_MODULES_JSON=$json")
+    fi
     ;;
 *)
     echo "linux-toolchain.sh: unknown kind '$kind'" >&2
