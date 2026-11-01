@@ -125,6 +125,32 @@ def label_of(path: pathlib.Path) -> str:
     return re.sub(r"-(tests|snippets)$", "", stem)
 
 
+def unpack(d, where: str) -> list[dict]:
+    """The tests/snippets documents in one result.
+
+    A platform workflow job (tools/ci/cppdocs_ci.py collect) writes one
+    document of kind "run" with the tests and snippets documents nested
+    inside (#160); local runs write the two kinds directly. A run's snippet
+    mode ("enforced" or "report-only", #159) is carried onto its snippets
+    document as "mode".
+    """
+    if isinstance(d, dict) and d.get("kind") == "run":
+        if d.get("schema") != SCHEMA:
+            raise SchemaError(f"{where}: schema is {d.get('schema')!r}, expected {SCHEMA!r}")
+        out = []
+        for sub in ("tests", "snippets"):
+            if d.get(sub) is not None:
+                doc = validate(d[sub], f"{where} ({sub})")
+                if sub == "snippets":
+                    doc = {**doc, "mode": d.get("snippets_mode", "enforced")}
+                out.append(doc)
+        if not out:
+            raise SchemaError(f"{where}: a 'run' result with neither tests nor snippets "
+                              "(the job's configure or build step probably failed)")
+        return out
+    return [validate(d, where)]
+
+
 def load_dir(folder: pathlib.Path) -> dict[str, dict[str, dict]]:
     """{label: {kind: doc}} for every results-*.json under folder."""
     rows: dict[str, dict[str, dict]] = {}
@@ -136,12 +162,13 @@ def load_dir(folder: pathlib.Path) -> dict[str, dict[str, dict]]:
             raise SchemaError(f"{f}: not readable JSON ({e})") from None
         docs = data if isinstance(data, list) else [data]
         for i, d in enumerate(docs):
-            doc = validate(d, f"{f}" + (f"[{i}]" if isinstance(data, list) else ""))
+            where = f"{f}" + (f"[{i}]" if isinstance(data, list) else "")
             row = rows.setdefault(label_of(f), {})
-            if doc["kind"] in row:
-                raise SchemaError(f"{f}: a second {doc['kind']!r} result for row {label_of(f)!r}; "
-                                  "give each job's file a unique name")
-            row[doc["kind"]] = doc
+            for doc in unpack(d, where):
+                if doc["kind"] in row:
+                    raise SchemaError(f"{f}: a second {doc['kind']!r} result for row {label_of(f)!r}; "
+                                      "give each job's file a unique name")
+                row[doc["kind"]] = doc
     return rows
 
 
@@ -239,6 +266,8 @@ def snippets_cell(doc: dict | None) -> str:
     c = doc["counts"]
     known = (doc["baseline"] or {}).get("known_failing", 0)
     cell = f"{c['checked'] - c['failed']} / {c['failed']} / {c['skipped']}"
+    if doc.get("mode") == "report-only":
+        return cell + " (report-only)"
     return cell + (f" ({known} in baseline)" if known else "")
 
 
@@ -346,6 +375,10 @@ def render(runs: list[dict], local: dict | None, today: str) -> str:
            "only, and runs only with the owner's consent, at a release. The badges in the README and "
            "the tables below show the **last consented run**, not the current tip of any branch.",
            f"- **Last consented run:** {last or 'none yet'}.",
+           "- **Report-only snippets.** Snippet runs are enforced against a reviewed baseline only for "
+           "GCC 15/16 and Clang/LLVM 22 with libc++ (off Windows). Every other toolchain's snippet "
+           "results are marked *(report-only)*: listed here, but they don't fail the run until that "
+           "toolchain's baseline is seeded from a consented run and reviewed (#159).",
            "- **Local runs are the primary proof.** The owner's machine (GCC 15, Clang 22) and the "
            "GCC 16 Docker image are checked for every release; their results are labelled *local*.",
            "- **Skipped** means a test or snippet didn't run on that toolchain, for the reason given: "
