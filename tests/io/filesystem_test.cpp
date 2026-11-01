@@ -3,14 +3,19 @@
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
+#include <format>
 #include <fstream>
+#include <sstream>
 #include <set>
 #include <string>
 #include <system_error>
 #include <type_traits>
+#include <version>
 
 #include <gtest/gtest.h>
 #include <unistd.h>
+
+#include "support/feature.hpp"
 
 namespace fs = std::filesystem;
 
@@ -109,4 +114,24 @@ TEST(FilesystemPath, U8String) {
     fs::path p{u8"café.txt"};
     static_assert(std::is_same_v<decltype(p.u8string()), std::u8string>);
     EXPECT_EQ(p.u8string(), u8"café.txt");
+}
+
+// "Formatting a path (C++26)": default unquoted, ? escaped, width/align, g generic.
+TEST(FilesystemPath, Formatter) {
+    CPPDOCS_REQUIRE(__cpp_lib_format_path);
+#ifdef __cpp_lib_format_path
+    fs::path p = "dir/sub/file.txt";
+    EXPECT_EQ(std::format("{}", p), "dir/sub/file.txt");
+    EXPECT_EQ(std::format("{:?}", p), "\"dir/sub/file.txt\"");
+    EXPECT_EQ(std::format("{:>20}", p), "    dir/sub/file.txt");
+    EXPECT_EQ(std::format("{:?}", fs::path{"a\nb"}), "\"a\\nb\"");
+    EXPECT_EQ(std::format("{:g}", p), "dir/sub/file.txt");
+#endif
+}
+
+// "Gotchas": operator<< quotes the path (it goes through std::quoted).
+TEST(FilesystemPath, StreamOutputIsQuoted) {
+    std::ostringstream os;
+    os << fs::path{"dir/file"};
+    EXPECT_EQ(os.str(), "\"dir/file\"");
 }

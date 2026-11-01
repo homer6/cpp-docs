@@ -1,7 +1,10 @@
 // Checks claims made by docs/examples/language/statements/selection.md.
+#include <charconv>
 #include <map>
 #include <string>
+#include <string_view>
 #include <type_traits>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -93,4 +96,24 @@ TEST(Selection, SwitchInitEnumAndBracedCase) {
     EXPECT_EQ(dispatch_with_init(8), "other 3");
     EXPECT_EQ(describe(Color::red), "warm");
     EXPECT_EQ(describe(Color::blue), "cool");
+}
+
+namespace {
+int parse_or(std::string_view s, int fallback) {
+    int value = 0;
+    if (auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value))
+        return ptr == s.data() + s.size() ? value : fallback;
+    else
+        return fallback;
+}
+template <class T>
+concept TestableAsCondition = requires(T t) { t ? 0 : 1; };
+}  // namespace
+
+// "Structured binding as a condition (C++26)": the whole object is tested, then bound.
+TEST(Selection, StructuredBindingAsCondition) {
+    EXPECT_EQ(parse_or("42", -1), 42);
+    EXPECT_EQ(parse_or("x", -1), -1);
+    EXPECT_EQ(parse_or("42x", -1), -1);  // parsed, but not all of the string
+    static_assert(!TestableAsCondition<std::pair<int, bool>>);  // pair has no operator bool
 }

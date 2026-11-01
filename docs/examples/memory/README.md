@@ -9,6 +9,7 @@ memory comes from (allocators). Mirrors
 | [`unique_ptr`](unique_ptr.md) | `<memory>` | C++11 | Sole ownership, zero overhead |
 | [`shared_ptr`](shared_ptr.md) | `<memory>` | C++11 | Shared ownership, reference-counted |
 | [`weak_ptr`](weak_ptr.md) | `<memory>` | C++11 | Non-owning observer of a `shared_ptr` |
+| [`indirect` / `polymorphic`](indirect-polymorphic.md) | `<memory>` | C++26 | Owning wrappers with value semantics (deep copy) |
 | [Allocators](allocators.md) | `<memory>` | C++11 | How containers obtain raw storage |
 | [Memory resources (PMR)](memory-resources.md) | `<memory_resource>` | C++17 | Runtime-polymorphic allocation strategies |
 | [Raw memory utilities](raw-memory.md) | `<memory>` | C++11+ | `addressof`, `construct_at`, `uninitialized_*` |
@@ -20,5 +21,6 @@ memory comes from (allocators). Mirrors
 - **Genuinely shared lifetime, last one out frees it** → [`shared_ptr`](shared_ptr.md).
   Only when ownership is truly shared — it's not free.
 - **Observe without owning / break a cycle** → [`weak_ptr`](weak_ptr.md).
+- **One owner, but copies should deep-copy** → [`indirect` / `polymorphic`](indirect-polymorphic.md) (C++26).
 - **Don't own at all (just point)** → a **raw pointer or reference**. Raw pointers
   are fine for non-owning parameters; smart pointers are about *ownership*.

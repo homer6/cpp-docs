@@ -56,7 +56,7 @@ void bindings() {
 }
 ```
 
-## Generic, mutable, constexpr
+## Generic, mutable, constexpr, consteval
 
 ```cpp
 auto add = [](auto a, auto b) { return a + b; };       // generic (C++14): templated operator()
@@ -66,6 +66,29 @@ auto counter = [n = 0]() mutable { return ++n; };       // mutable: modify by-va
 
 constexpr auto square = [](int x) { return x * x; };    // usable at compile time
 ```
+
+Since C++17 a lambda is **implicitly `constexpr`** whenever its body qualifies,
+so the `constexpr` keyword on the lambda is optional. Writing it makes the
+compiler reject a body that can't be constant. A `consteval` lambda (C++20) is
+an immediate function: every call must be a constant expression.
+
+```cpp
+auto twice = [](int x) { return 2 * x; };               // not marked constexpr...
+static_assert(twice(21) == 42);                         // ...but usable at compile time
+std::array<int, twice(2)> four{};                       // even as a template argument
+
+auto cube = [](int x) consteval { return x * x * x; };  // C++20: compile time only
+static_assert(cube(3) == 27);
+```
+
+```cpp compile-fail="consteval|immediate"
+auto cube = [](int x) consteval { return x * x * x; };
+int read();
+int bad = cube(read());     // error: the argument isn't a constant
+```
+
+What a lambda may do at compile time is the same as for any `constexpr`
+function: see [what constant evaluation allows](../expressions/constant-evaluation-rules.md).
 
 ## Where they shine
 

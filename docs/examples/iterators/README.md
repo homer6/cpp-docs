@@ -7,7 +7,7 @@ Mirrors [cppreference's iterator library](https://en.cppreference.com/w/cpp/iter
 |---|---|---|---|
 | [Categories & concepts](categories.md) | `<iterator>` | C++98 / C++20 | input → contiguous; the C++20 iterator concepts |
 | [Iterator adaptors](adaptors.md) | `<iterator>` | C++98+ | insert / reverse / move / stream / counted iterators |
-| [Operations & traits](operations.md) | `<iterator>` | C++98+ | `advance`, `next`, `distance`, `iterator_traits`, sentinels |
+| [Operations & traits](operations.md) | `<iterator>` | C++98+ | `advance`, `next`, `distance`, `ssize`, `iterator_traits`, sentinels |
 
 ## Why iterators
 

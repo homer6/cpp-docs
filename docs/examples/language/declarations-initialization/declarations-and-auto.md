@@ -59,6 +59,66 @@ auto& [a, b] = pt;                         // bind by reference to mutate
 auto [x, y, z] = std::array{1, 2, 3};
 ```
 
+A structured binding can also be the condition of an `if`, `while` or `switch`
+(C++26); see [selection statements](../statements/selection.md#structured-binding-as-a-condition-c26).
+
+### `_` — the placeholder name (C++26)
+
+A variable named `_` says "I don't need this". Unlike any other name, `_` can be
+declared again in the same scope, and an unused one draws no warning:
+
+```cpp body
+auto [x, _] = std::pair{1, 2.0};    // ignore the second element
+auto [y, _] = std::pair{3, 4.0};    // a second `_` in the same scope: fine
+static std::mutex m;
+std::lock_guard _{m};               // keep a guard alive without naming it
+```
+
+Once a scope holds two `_`s, using `_` is ambiguous:
+
+```cpp body compile-fail="ambiguous"
+int _ = 1;
+int _ = 2;
+int z = _;       // ERROR: which `_`?
+```
+
+### Binding a pack (C++26)
+
+`...name` binds any number of elements (zero or more) to a pack you can expand.
+It's allowed only inside a template (a function template or generic lambda), and
+needs GCC 16 or Clang 22; GCC 15 rejects it.
+
+```cpp needs=structured-binding-packs
+template <class Tuple>
+constexpr auto sum(const Tuple& t) {
+    auto [...xs] = t;                  // every element
+    return (xs + ... + 0);
+}
+static_assert(sum(std::tuple{1, 2, 3}) == 6);
+
+constexpr auto head_and_count = [](auto t) {
+    auto [head, ...rest] = t;          // the first, then the rest
+    return head * 100 + sizeof...(rest);
+};
+static_assert(head_and_count(std::tuple{1, 2, 3}) == 102);
+```
+
+### `constexpr` structured bindings (C++26)
+
+The bindings become constants. A `constexpr auto&` binding must refer to an
+object with static storage. GCC 16 and Clang 22 have it; GCC 15 doesn't.
+
+```cpp needs=constexpr-structured-bindings
+struct Point { int x, y; };
+constexpr Point origin{3, 4};
+constexpr auto [ox, oy] = origin;
+static_assert(ox + oy == 7);
+
+constexpr std::array table{1, 2, 3};
+constexpr auto& [t0, t1, t2] = table;  // refers to a static object
+static_assert(t2 == 3);
+```
+
 ## Gotchas
 
 - **`auto` drops references and top-level const.** `auto x = vec[0];` copies; use
@@ -71,6 +131,10 @@ auto [x, y, z] = std::array{1, 2, 3};
 - **Don't overuse `auto` where the type aids readability** — `auto total = 0;`
   hides that it's an `int` (and can cause integer/float surprises). It shines for
   iterators, lambdas, and verbose template types.
+- **A structured binding pack works only inside a template.** At namespace
+  scope or in a plain function, `auto [...xs] = t;` is an error.
+- **`_` is only special when it's declared again.** A single `_` is an ordinary
+  variable you can read; after a second `_` in the same scope, naming it is an error.
 - **Almost-Always-Auto vs clarity** is a style call; be consistent with the
   codebase.
 
@@ -79,3 +143,6 @@ auto [x, y, z] = std::array{1, 2, 3};
 - [auto specifier — cppreference](https://en.cppreference.com/w/cpp/language/auto)
 - [decltype — cppreference](https://en.cppreference.com/w/cpp/language/decltype)
 - [Structured bindings — cppreference](https://en.cppreference.com/w/cpp/language/structured_binding)
+- [P2169: a nice placeholder with no name](https://wg21.link/P2169) ·
+  [P1061: structured bindings can introduce a pack](https://wg21.link/P1061) ·
+  [P2686: constexpr structured bindings](https://wg21.link/P2686)

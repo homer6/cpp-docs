@@ -1,8 +1,12 @@
 // Checks claims made by docs/examples/concurrency/atomics.md.
 #include <atomic>
+#include <cstddef>
 #include <latch>
 #include <memory>
+#include <new>
+#include <stdatomic.h>
 #include <thread>
+#include <type_traits>
 #include <vector>
 #include <version>
 
@@ -93,4 +97,130 @@ TEST(Atomics, LockFreeness) {
     static_assert(!std::atomic<Big>::is_always_lock_free);
     std::atomic<Big> big{};
     EXPECT_FALSE(big.is_lock_free());
+}
+
+// "wait and notify (C++20)": wait blocks while the value equals old; a store
+// followed by notify_all wakes every waiter. Correct whichever runs first.
+TEST(Atomics, WaitNotifyAll) {
+    std::atomic<int> state{0};
+    std::atomic<int> woke{0};
+    std::vector<std::thread> ts;
+    for (int i = 0; i < 4; ++i)
+        ts.emplace_back([&] {
+            state.wait(0);
+            EXPECT_NE(state.load(), 0);
+            ++woke;
+        });
+    state.store(1);
+    state.notify_all();
+    for (auto& t : ts) t.join();
+    EXPECT_EQ(woke, 4);
+}
+
+// "wait and notify (C++20)": notify_one wakes a single waiter; wait returns at
+// once when the value already differs. atomic_flag and atomic_ref have them too.
+TEST(Atomics, WaitNotifyOne) {
+    std::atomic<int> state{0};
+    int seen = 0;
+    std::thread t{[&] { state.wait(0); seen = state.load(); }};
+    state.store(2);
+    state.notify_one();
+    t.join();
+    EXPECT_EQ(seen, 2);
+    state.wait(0);  // 2 != 0: returns immediately
+
+    std::atomic_flag f;
+    f.wait(true);  // clear != true: returns immediately
+    int plain = 1;
+    std::atomic_ref<int> r{plain};
+    r.wait(0);
+    r.notify_all();
+}
+
+// "fetch_max and fetch_min (C++26)": return the old value, keep the max/min.
+TEST(Atomics, FetchMaxMin) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_atomic_min_max, 202403L);
+#if __cpp_lib_atomic_min_max >= 202403L
+    std::atomic<int> peak{3};
+    EXPECT_EQ(peak.fetch_max(7), 3);
+    EXPECT_EQ(peak.fetch_max(5), 7);
+    EXPECT_EQ(peak, 7);
+    EXPECT_EQ(peak.fetch_min(1), 7);
+    EXPECT_EQ(peak, 1);
+
+    int x = 10;
+    std::atomic_ref<int> r{x};
+    r.fetch_min(4);
+    EXPECT_EQ(x, 4);
+
+    int arr[4]{};
+    std::atomic<int*> p{arr + 2};
+    p.fetch_max(arr + 3);
+    EXPECT_EQ(p.load(), arr + 3);
+
+    std::atomic<unsigned> u{5};
+    EXPECT_EQ(std::atomic_fetch_max(&u, 9u), 5u);
+    EXPECT_EQ(u, 9u);
+
+    std::atomic<int> best{0};  // racing threads: the largest sample wins
+    std::latch go{1};
+    std::vector<std::thread> ts;
+    for (int i = 1; i <= 8; ++i)
+        ts.emplace_back([&, i] { go.wait(); for (int j = 0; j < 1000; ++j) best.fetch_max(i * 1000 + j); });
+    go.count_down();
+    for (auto& t : ts) t.join();
+    EXPECT_EQ(best, 8999);
+#endif
+}
+
+// "fetch_max and fetch_min (C++26)": the pre-C++26 CAS loop gives the same result.
+TEST(Atomics, FetchMaxCasLoop) {
+    auto fetch_max = [](std::atomic<int>& a, int v) {
+        int cur = a.load();
+        while (v > cur && !a.compare_exchange_weak(cur, v)) {}
+        return cur;
+    };
+    std::atomic<int> a{3};
+    EXPECT_EQ(fetch_max(a, 7), 3);
+    EXPECT_EQ(fetch_max(a, 5), 7);
+    EXPECT_EQ(a, 7);
+}
+
+// "False sharing and interference sizes (C++17)": the padded counters sit a
+// destructive size apart; the standard requires both sizes >= alignof(max_align_t).
+TEST(Atomics, InterferenceSizes) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_hardware_interference_size, 201703L);
+#ifdef __cpp_lib_hardware_interference_size
+    constexpr auto destructive = std::hardware_destructive_interference_size;
+    constexpr auto constructive = std::hardware_constructive_interference_size;
+    static_assert(destructive >= alignof(std::max_align_t));
+    static_assert(constructive >= alignof(std::max_align_t));
+    struct Counters {
+        alignas(destructive) std::atomic<long> produced{0};
+        alignas(destructive) std::atomic<long> consumed{0};
+    };
+    static_assert(sizeof(Counters) >= 2 * destructive);
+    static_assert(offsetof(Counters, consumed) - offsetof(Counters, produced) >= destructive);
+    struct Hot { int key; int value; };
+    static_assert(sizeof(Hot) <= constructive);
+#if defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+    EXPECT_EQ(destructive, 64u);  // the page's x86-64 GCC values
+    EXPECT_EQ(constructive, 64u);
+#elif defined(__aarch64__) || defined(__arm64__)
+    EXPECT_EQ(destructive, 256u);  // the page's AArch64 values
+    EXPECT_EQ(constructive, 64u);
+#endif
+#endif
+}
+
+// "C compatibility: <stdatomic.h> (C++23)": the C names are the C++ types.
+TEST(Atomics, StdatomicH) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_stdatomic_h, 202011L);
+#ifdef __cpp_lib_stdatomic_h
+    static_assert(std::is_same_v<atomic_int, std::atomic<int>>);
+    static_assert(std::is_same_v<_Atomic(long), std::atomic<long>>);
+    atomic_int c = 0;
+    atomic_fetch_add_explicit(&c, 1, memory_order_relaxed);
+    EXPECT_EQ(atomic_load(&c), 1);
+#endif
 }

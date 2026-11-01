@@ -76,7 +76,10 @@ std::midpoint(a, b);                   // overflow-safe average (C++20)
 
 - **The accumulator/init type matters.** `accumulate(doubles, 0)` accumulates in
   `int` and loses fractions; pass `0.0`. Likewise watch for overflow — pick a
-  wide enough init type.
+  wide enough init type. C++23's
+  [`std::ranges::fold_left`](execution-and-ranges.md#folds-c23) deduces the
+  result from the operation instead, so `fold_left(doubles, 0, std::plus<>{})`
+  is a `double`.
 - **`reduce` may reorder operations** → wrong results for non-associative ops
   (e.g. subtraction) or floating-point where order changes rounding. Use
   `accumulate` when order matters.

@@ -38,6 +38,23 @@ Config a{100, 40};                       // positional aggregate init
 Config b{.width = 100, .wrap = true};    // designated initializers (C++20): height stays 25
 ```
 
+Since C++20 an aggregate can also be initialized with **parentheses**, so
+`emplace_back` and `std::make_unique` work on plain structs without a constructor:
+
+```cpp body
+struct Point { int x; int y; };
+Point p(1, 2);                     // C++20: same members as Point{1, 2}
+Point q(5);                        // missing members are value-initialized: q.y == 0
+int arr[](1, 2, 3);                // arrays too: int[3]
+
+std::vector<Point> pts;
+pts.emplace_back(3, 4);            // constructs Point(3, 4): needed a constructor before C++20
+```
+
+Unlike braces, parentheses **allow narrowing** (`Point(2.9, 1)` gives `x == 2`),
+don't elide braces of nested aggregates, and don't extend the lifetime of a
+temporary bound to a reference member.
+
 ## The `()` vs `{}` trap
 
 ```cpp
@@ -59,6 +76,8 @@ not "5 copies of 0." This is the most cited brace-init surprise.
   sizing/positional constructor.
 - **Designated initializers (C++20) must be in declaration order** and only work
   on aggregates — you can't reorder or skip-then-go-back.
+- **Parenthesized aggregate init (C++20) narrows silently.** `Point p(2.9, 1);`
+  compiles and truncates; `Point p{2.9, 1};` is an error.
 - **`= {}` vs `{}`:** copy-list vs direct-list init differ mainly around
   `explicit` constructors (copy-list can't call them).
 

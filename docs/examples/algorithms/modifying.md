@@ -90,6 +90,27 @@ void reorder(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& 
 }
 ```
 
+### shift_left / shift_right (C++20)
+
+`std::shift_left(first, last, n)` moves the elements `n` places toward the
+front and returns the new end; `shift_right` moves them toward the back and
+returns the new beginning. Unlike `rotate`, nothing wraps around: the vacated
+slots hold moved-from values.
+
+```cpp body
+std::vector<int> v{1, 2, 3, 4, 5};
+auto end = std::shift_left(v.begin(), v.end(), 2);     // v starts 3,4,5; end == v.begin() + 3
+
+std::vector<int> w{1, 2, 3, 4, 5};
+auto beg = std::shift_right(w.begin(), w.end(), 2);    // w ends 1,2,3; beg == w.begin() + 2
+
+auto same = std::shift_left(v.begin(), v.end(), 9);    // n >= size: nothing moves, returns v.begin()
+```
+
+The range forms `std::ranges::shift_left` / `shift_right` (C++23, P2440,
+`__cpp_lib_shift` `202202L`) return the shifted subrange. GCC 16 has them; GCC 15
+and Clang 22 don't.
+
 ## Gotchas
 
 - **`remove`/`unique` only mark, never resize.** Forgetting the `erase` leaves
@@ -99,6 +120,8 @@ void reorder(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& 
   duplicates.
 - **`transform` can write in place** (`out` == `in`), but writing into a *shorter*
   destination is UB — size the output (or use `back_inserter`).
+- **`shift_left`/`shift_right` leave a moved-from tail.** Only `[first, end)`
+  (or `[beg, last)`) holds meaningful values; erase or overwrite the rest.
 - **`std::move` (algorithm) leaves sources moved-from.** Don't reuse the source
   values afterward.
 
@@ -108,3 +131,4 @@ void reorder(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& 
 - [std::remove / remove_if — cppreference](https://en.cppreference.com/w/cpp/algorithm/remove)
 - [std::unique — cppreference](https://en.cppreference.com/w/cpp/algorithm/unique)
 - [std::rotate — cppreference](https://en.cppreference.com/w/cpp/algorithm/rotate)
+- [std::shift_left / shift_right — cppreference](https://en.cppreference.com/w/cpp/algorithm/shift)

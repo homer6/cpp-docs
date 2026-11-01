@@ -24,6 +24,9 @@ static_assert(square(4) == 16);
 Modern `constexpr` is powerful: loops, branches, local variables, most of the
 standard library (containers, `std::string`, algorithms) are `constexpr` in
 recent standards.
+What each standard allows inside constant evaluation (virtual calls, transient
+`new`, `goto`, placement `new`…) is on
+[what constant evaluation allows](constant-evaluation-rules.md).
 
 ## consteval — must run at compile time (C++20)
 
@@ -66,6 +69,67 @@ auto stringify(const T& v) {
 The false branch isn't compiled for that instantiation, so each branch only needs
 to be valid for the types that reach it.
 
+## `static_assert` with a computed message (C++26)
+
+The message can be any constant expression whose type has `size()` and
+`data()`, such as a `constexpr` `std::string`, so it can name the values that
+failed:
+
+```cpp compile-fail="Slots holds at most 4, got 7"
+template <std::size_t N>
+struct Slots {
+    static_assert(N <= 4, std::string("Slots holds at most 4, got ") + char('0' + N));
+};
+Slots<3> fine;
+Slots<7> bad;     // error: static assertion failed: Slots holds at most 4, got 7
+```
+
+Clang evaluates the message even when the assertion holds, so it must always be
+a constant expression (`std::to_string` isn't `constexpr`, so it can't be used).
+
+## Casting from `void*` (C++26)
+
+`static_cast` from `void*` back to the object's real type is allowed during
+constant evaluation, which lets type-erased code run at compile time:
+
+```cpp
+constexpr int through_void(int v) {
+    void* erased = &v;
+    return *static_cast<int*>(erased);   // ok in constexpr since C++26
+}
+static_assert(through_void(7) == 7);
+```
+
+Casting to the *wrong* type is still undefined, so in a constant expression it's
+an error instead of a silent bug.
+
+## Exceptions during constant evaluation (C++26)
+
+A `constexpr` function may `throw` and `catch` while being evaluated at compile
+time. An exception caught inside the evaluation is fine; one that escapes makes
+the expression non-constant, and the compiler reports it. Only GCC 16 has this
+(`__cpp_constexpr_exceptions` is `202411L`); GCC 15 and Clang 22 reject any
+`throw` reached at compile time.
+
+```cpp needs=constexpr-exceptions
+#include <stdexcept>
+
+constexpr int checked_div(int a, int b) {
+    if (b == 0) throw std::invalid_argument("divide by zero");
+    return a / b;
+}
+constexpr int div_or_zero(int a, int b) {
+    try { return checked_div(a, b); }
+    catch (const std::invalid_argument&) { return 0; }
+}
+static_assert(div_or_zero(10, 2) == 5);
+static_assert(div_or_zero(1, 0) == 0);   // thrown and caught at compile time
+// constexpr int r = checked_div(1, 0);  // error: uncaught exception of type 'std::invalid_argument'
+```
+
+The same function still throws normally at run time; see
+[throw / try / catch](../exceptions/throw-try-catch.md).
+
 ## Gotchas
 
 - **`constexpr` is a *permission*, not a guarantee** — a `constexpr` function
@@ -76,6 +140,11 @@ to be valid for the types that reach it.
   member — though it usually should be).
 - **`constinit` ≠ `constexpr`.** `constinit` only constrains *initialization*
   timing; the object remains mutable. `constexpr` makes the object a constant.
+- **A computed `static_assert` message must be a constant expression even when
+  the assertion passes** (Clang checks it every time).
+- **`static_cast` from `void*` must name the object's actual type.** Casting an
+  `int`'s address to `float*` is rejected during constant evaluation (GCC: "pointed-to
+  type 'int' is not similar to 'float'").
 - **`if constexpr` discards, it doesn't just skip.** The discarded branch must
   still parse, but needn't be valid for the current instantiation — that's what
   makes it more powerful than a runtime `if` in templates.
@@ -86,3 +155,8 @@ to be valid for the types that reach it.
 - [consteval — cppreference](https://en.cppreference.com/w/cpp/language/consteval)
 - [constinit — cppreference](https://en.cppreference.com/w/cpp/language/constinit)
 - [if constexpr — cppreference](https://en.cppreference.com/w/cpp/language/if)
+- [static_assert — cppreference](https://en.cppreference.com/w/cpp/language/static_assert) ·
+  [constant expressions — cppreference](https://en.cppreference.com/w/cpp/language/constant_expression)
+- [P2741: user-generated static_assert messages](https://wg21.link/P2741) ·
+  [P2738: constexpr cast from `void*`](https://wg21.link/P2738) ·
+  [P3068: allowing exception throwing in constant evaluation](https://wg21.link/P3068)

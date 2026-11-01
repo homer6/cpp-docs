@@ -62,7 +62,23 @@ double x = static_cast<double>(m);     // must ask explicitly
 `explicit` (and C++20's `explicit(bool)`) prevents surprising implicit
 conversions through your constructors/operators.
 
-## Gotchas
+## `auto(x)` — make a copy (C++23)
+
+`auto(x)` and `auto{x}` produce a **prvalue copy** of `x` with its type decayed:
+references and `const` dropped, arrays and functions turned into pointers. It's
+the spelled-out form of "decay-copy", and it's shorter and safer than naming the
+type:
+
+```cpp body
+std::vector<int> v{1, 2, 1, 3, 1};
+std::erase(v, auto(v.front()));    // erase every 1; v is {2, 3}
+// std::erase(v, v.front()) passes a reference to an element that erase
+// overwrites as it goes, so the value it compares against can change midway.
+
+const int& r = v[0];
+static_assert(std::is_same_v<decltype(auto(r)), int>);   // const and & dropped
+```
+
 
 - **Avoid C-style casts `(T)x`.** They silently pick whichever of
   static/const/reinterpret "works," hiding intent and danger. Use a named cast so
@@ -75,6 +91,9 @@ conversions through your constructors/operators.
   fits.
 - **Narrowing in `()` init is silent; in `{}` it's an error.** Prefer `{}` to
   catch `int x{someLong}` truncation at compile time.
+- **`auto(x)` copies an lvalue but adds nothing to a prvalue**: `auto(f())` is
+  just `f()`'s result, with no extra copy or move. Reach for it when a function
+  takes a reference that might alias what it modifies.
 - **`const_cast`-ing away const and then writing to a truly-const object is UB.**
   Only legitimate when the underlying object isn't actually const.
 
@@ -83,3 +102,5 @@ conversions through your constructors/operators.
 - [Implicit conversions — cppreference](https://en.cppreference.com/w/cpp/language/implicit_conversion)
 - [static_cast / dynamic_cast / etc. — cppreference](https://en.cppreference.com/w/cpp/language/expressions#Conversions)
 - [explicit specifier — cppreference](https://en.cppreference.com/w/cpp/language/explicit)
+- [Explicit type conversion, `auto(x)` — cppreference](https://en.cppreference.com/w/cpp/language/explicit_cast)
+- [P0849: `auto(x)`, decay-copy in the language](https://wg21.link/P0849)

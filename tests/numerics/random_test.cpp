@@ -5,6 +5,9 @@
 #include <numeric>
 #include <random>
 #include <vector>
+#include <version>
+
+#include "support/feature.hpp"
 
 #include <gtest/gtest.h>
 
@@ -66,4 +69,57 @@ TEST(Random, EngineWidths) {
     static_assert(std::mt19937::max() == 0xFFFFFFFFu);
     static_assert(std::mt19937_64::max() == 0xFFFFFFFFFFFFFFFFull);
     static_assert(std::uniform_random_bit_generator<std::minstd_rand>);
+}
+
+// "Counter-based streams: std::philox_engine (C++26)": the predefined engines,
+// their parameters, and the standard's 10000th-output check values.
+TEST(Random, PhiloxPredefined) {
+    CPPDOCS_REQUIRE(__cpp_lib_philox_engine);
+#ifdef __cpp_lib_philox_engine
+    static_assert(std::philox4x32::word_count == 4 && std::philox4x32::round_count == 10);
+    static_assert(std::philox4x64::word_count == 4 && std::philox4x64::round_count == 10);
+    static_assert(std::uniform_random_bit_generator<std::philox4x32>);
+    std::philox4x32 e32;
+    e32.discard(9999);
+    EXPECT_EQ(e32(), 1955073260u);
+    std::philox4x64 e64;
+    e64.discard(9999);
+    EXPECT_EQ(e64(), 3409172418970261260ull);
+    EXPECT_LT(sizeof(std::philox4x32), sizeof(std::mt19937));  // a few words vs 5000 bytes
+#endif
+}
+
+// "Counter-based streams": set_counter jumps to a block (last element is the low
+// word); a different counter gives a different stream; works with distributions.
+TEST(Random, PhiloxSetCounter) {
+    CPPDOCS_REQUIRE(__cpp_lib_philox_engine);
+#ifdef __cpp_lib_philox_engine
+    std::philox4x32 gen{42};
+    std::uniform_int_distribution<int> die{1, 6};
+    int roll = die(gen);
+    EXPECT_GE(roll, 1);
+    EXPECT_LE(roll, 6);
+
+    std::philox4x32 a{42}, b{42};
+    a.discard(4 * 1000);
+    b.set_counter({0, 0, 0, 1000});
+    for (int i = 0; i < 8; ++i) EXPECT_EQ(a(), b());
+
+    // "Gotchas": {k, 0, 0, 0} is somewhere else entirely.
+    std::philox4x32 c{42}, d{42};
+    c.discard(4 * 1000);
+    d.set_counter({1000, 0, 0, 0});
+    EXPECT_NE(c(), d());
+
+    // Disjoint stream for a second worker.
+    std::philox4x32 w0{42}, w1{42};
+    w1.set_counter({0, 1, 0, 0});
+    EXPECT_NE(w0(), w1());
+
+    // "Gotchas": set_counter discards buffered outputs (the next call starts a block).
+    std::philox4x32 e{42}, f{42};
+    e();                          // e now has 3 buffered outputs of block 0
+    e.set_counter({0, 0, 0, 0});
+    for (int i = 0; i < 4; ++i) EXPECT_EQ(e(), f());
+#endif
 }

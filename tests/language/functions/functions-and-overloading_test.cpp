@@ -3,8 +3,11 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 std::string mutate(std::string& s) { return s += "!"; }
@@ -72,4 +75,18 @@ TEST(FunctionsAndOverloading, DefaultVersusDeleted) {
     static_assert(!std::is_copy_constructible_v<S>);
     static_assert(CallableF<int>);
     static_assert(!CallableF<double>);  // picks the deleted overload
+}
+
+namespace deleted_reason {
+void g(int) {}
+void g(double) = delete("would narrow; convert explicitly");
+template <class T>
+concept CallableG = requires(T t) { g(t); };
+}  // namespace deleted_reason
+
+// "`= delete(\"reason\")` (C++26)": the overload is deleted; the message is in the diagnostic.
+TEST(FunctionsAndOverloading, DeleteWithReason) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_deleted_function, 202403L);
+    static_assert(deleted_reason::CallableG<int>);
+    static_assert(!deleted_reason::CallableG<double>);
 }

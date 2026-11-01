@@ -18,6 +18,33 @@ T* real_address(T& obj) {
 }
 ```
 
+## std::to_address and std::assume_aligned (C++20)
+
+`std::to_address(p)` turns any pointer-like thing (a raw pointer, a fancy
+allocator pointer, a contiguous iterator) into a plain `T*` **without
+dereferencing it**, so it's fine on `end()` or on storage that has no object
+yet. It uses `std::pointer_traits<P>::to_address` if provided, else
+`p.operator->()`.
+
+`std::assume_aligned<N>(p)` returns `p` unchanged and promises the optimizer
+that it's aligned to `N` bytes (a power of two), which can unlock aligned SIMD
+loads. It's a promise, not a check: if `p` isn't aligned, the behaviour is
+undefined.
+
+```cpp
+#include <memory>
+#include <vector>
+
+void demo() {
+    std::vector<int> v{1, 2, 3};
+    int* end = std::to_address(v.end());   // v.data() + 3; *v.end() would be UB
+    // (&*v.end() dereferences the past-the-end iterator; to_address doesn't)
+
+    alignas(64) float buf[16]{};
+    float* a = std::assume_aligned<64>(buf);   // same address; compiler may assume 64-byte alignment
+}
+```
+
 ## Constructing into raw storage
 
 `std::construct_at` / `std::destroy_at` (C++17/20) placement-construct and
@@ -35,6 +62,51 @@ void in_place(Args&&... args) {
     std::destroy_at(p);              // run the destructor (does not free buf)
 }
 ```
+
+## std::launder (C++17)
+
+`std::launder(p)` (`<new>`) returns a pointer to the object that now lives at
+`p`'s address, for when `p` itself still points to an older object there. You
+need it only when the old object isn't *transparently replaceable* by the new
+one:
+
+- the new object has a different type, or you reach it through a pointer that
+  `reinterpret_cast` made from the buffer rather than the one placement `new`
+  returned;
+- the old object was a `const` complete object;
+- the old object was a base-class subobject.
+
+```cpp
+#include <new>
+
+int reuse() {
+    alignas(int) std::byte buf[sizeof(int)];
+    new (buf) int{7};                                    // result thrown away
+    int a = *std::launder(reinterpret_cast<int*>(buf));  // 7; without launder, UB
+    int* p = new (buf) int{8};                           // simpler: keep this pointer
+    return a + *p;                                       // 15
+}
+```
+
+You **don't** need it when you use the pointer that placement `new` or
+`construct_at` returned, or when you replace a non-`const` object with one of
+the same type. Since C++20 (P1971R0), that includes classes with `const` or
+reference members, so the old name keeps working:
+
+```cpp
+struct Id { const int n; };
+
+int replace() {
+    Id id{1};
+    std::destroy_at(&id);
+    std::construct_at(&id, 2);   // same type, storage exactly overlaid
+    return id.n;                 // 2, no launder needed since C++20
+}
+```
+
+`launder` doesn't create an object (that's `construct_at` or
+`start_lifetime_as`), and it doesn't make a strict-aliasing violation legal: an
+object of type `T` must already be at the address.
 
 ## Bulk uninitialized algorithms
 
@@ -67,6 +139,12 @@ alignas(PacketHeader) std::byte buffer[512];              // filled by I/O
 auto* hdr = std::start_lifetime_as<PacketHeader>(buffer); // no ctor, defined behavior
 ```
 
+It is the explicit form of [implicit object
+creation](../language/basic-concepts/object-model.md#implicit-lifetime-types),
+for bytes that arrived without `malloc` or `memcpy`. The object keeps the bytes
+already in the buffer. GCC 16 ships it (`__cpp_lib_start_lifetime_as`
+`202207L`); GCC 15 and Clang 22 with libc++ don't.
+
 ## Gotchas
 
 - **`construct_at`/placement `new` do not allocate**, and `destroy_at` does not
@@ -77,12 +155,20 @@ auto* hdr = std::start_lifetime_as<PacketHeader>(buffer); // no ctor, defined be
 - **`reinterpret_cast`-ing a byte buffer to a `T*` and reading is UB** until an
   object of `T` exists there — that's why `start_lifetime_as` / `construct_at`
   / `std::bit_cast` exist. Reach for those instead.
+- **Reusing storage through the old pointer may need `std::launder`.** Keep
+  the pointer that placement `new` returns and you never will.
 - **Alignment matters.** Raw storage must satisfy `alignof(T)` (use `alignas` or
   `std::aligned_storage`'s successor patterns) before constructing a `T` in it.
 
 ## See also
 
 - [std::construct_at — cppreference](https://en.cppreference.com/w/cpp/memory/construct_at)
+- [std::to_address — cppreference](https://en.cppreference.com/w/cpp/memory/to_address) · [std::assume_aligned — cppreference](https://en.cppreference.com/w/cpp/memory/assume_aligned)
 - [std::uninitialized_copy — cppreference](https://en.cppreference.com/w/cpp/memory/uninitialized_copy)
 - [std::start_lifetime_as — cppreference](https://en.cppreference.com/w/cpp/memory/start_lifetime_as)
+- [std::launder — cppreference](https://en.cppreference.com/w/cpp/utility/launder)
+- [Lifetime: storage reuse — cppreference](https://en.cppreference.com/w/cpp/language/lifetime#Storage_reuse)
+- [\[ptr.launder\] — C++ draft](https://eel.is/c++draft/ptr.launder)
+- [\[basic.life\]/9: transparently replaceable — C++ draft](https://eel.is/c++draft/basic.life#9)
+- [P1971R0: Core NB comment resolutions (RU007: const and reference members)](https://wg21.link/p1971r0)
 - [std::addressof — cppreference](https://en.cppreference.com/w/cpp/memory/addressof)

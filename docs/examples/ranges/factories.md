@@ -29,6 +29,25 @@ for (int sq : rv::iota(1) | rv::transform([](int n){ return n*n; }) | rv::take(1
 `iota` + `take` is the idiomatic bounded counter; `iota` alone is infinite, so
 always bound it before iterating to completion.
 
+### views::indices — 0 to n of n's type (C++26)
+
+`iota` refuses to mix a signed start with an unsigned bound, so the obvious
+loop over a container's indices doesn't compile:
+
+```cpp body compile-fail="iota|no match|no matching"
+std::vector<double> v{1.5, 2.5, 3.5};
+for (auto i : std::views::iota(0, v.size())) {}   // error: int vs std::size_t
+```
+
+`views::indices(n)` is `views::iota(T(0), n)` where `T` is `n`'s type, so it
+counts from zero in the right type. The macro is `__cpp_lib_ranges_indices`
+(`202506L`); GCC 16 and Clang 22 have it, GCC 15 doesn't:
+
+```cpp body needs=indices
+std::vector<double> v{1.5, 2.5, 3.5};
+for (auto i : std::views::indices(v.size())) { /* i = 0, 1, 2 as std::size_t */ }
+```
+
 ## ranges::to — view → container (C++23)
 
 Collect a lazy pipeline into a real container in one call:
@@ -62,6 +81,8 @@ from the range — the bridge from lazy views back to owning storage.
 - **`ranges::to` is C++23.** Pre-C++23, materialize manually:
   `std::vector<int> out(view.begin(), view.end());` (needs a `common_range`, or
   wrap with `rv::common`).
+- **`iota(0, v.size())` doesn't compile** — start and bound must agree on
+  signedness. Use `iota(0uz, v.size())` or, in C++26, `indices(v.size())`.
 - **`views::istream` is single-pass** (input range) — you can't restart it.
 - **Materializing re-runs the pipeline once.** That's the point of `to` — to pay
   the lazy cost a single time and keep the results.

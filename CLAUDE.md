@@ -10,6 +10,12 @@ We mirror how cppreference organizes the reference. Every library area and
 language area on cppreference's main page now has pages (see
 `docs/examples/README.md`); new work fills in detail, fixes mistakes, and keeps
 up with new standards.
+To add a feature, facility or gotcha to a topic, use the `add-to-topic`
+skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl research,
+verification on all three toolchains, placement, snippet and test.
+To write C++ with this reference (here or in another project), use the
+`modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
+right pages, toolchain support, the guidelines, validation.
 
 ## Source of truth
 
@@ -20,15 +26,25 @@ up with new standards.
   runs and does what the page says.
 - Local toolchains: `g++-15` (Homebrew GCC 15.2),
   `/opt/homebrew/opt/llvm/bin/clang++` (Homebrew Clang 22, use
-  `-stdlib=libc++`), and Docker (`docker run --rm -v "$PWD":/w -w /w gcc:16 …`)
-  for GCC 16 features such as contracts and reflection.
+  `-stdlib=libc++`), and Docker (`docker run --rm --platform linux/arm64 -v "$PWD":/w -w /w gcc:16 …`)
+  for GCC 16 features such as contracts and reflection. Always run the image for
+  the host's architecture (`linux/arm64` on Apple silicon): under emulation,
+  results change (#130). `tools/run_tests.sh` and `probe.py` pass it for you.
 - If something can't be verified locally (no local compiler implements it
   yet), say so on the page and tag the snippet `needs=<feature>`.
-- **See also** links to what you used: cppreference first, then papers or
-  vendor docs where they add something. No unsourced blogs or AI summaries.
-- cppreference blocks automated fetches (HTTP 403 from WebFetch); query it with
-  the `perplexity` MCP tools (`search_domain_filter: ["cppreference.com"]`) or
-  read other sources with Firecrawl.
+- **Compiler support beyond the local toolchains** (MSVC, other releases,
+  partial support): read the vendors' status pages. The `add-to-topic` skill's
+  "Checking compiler support" section lists them (GCC, libstdc++, Clang,
+  libc++, MSVC, MS STL, cppreference) and explains how to read a level of
+  support. Say where a vendor-only claim comes from.
+- **See also** links to what you used: cppreference first, then papers, the
+  draft, vendor docs, articles or talks where they add something. Don't cite
+  AI summaries; cite the source they came from.
+- cppreference blocks WebFetch (HTTP 403). Query it with the `perplexity` MCP
+  tools (`search_domain_filter: ["cppreference.com"]`), or read the page itself
+  with the Firecrawl CLI (`firecrawl scrape <url> --only-main-content`), which
+  also reads papers (`wg21.link`) and finds implementation PRs
+  (`firecrawl developer`).
 - `docs/guidelines/` records each page's sources in `docs/guidelines/sources.md`.
 
 ## Guidelines section
@@ -104,7 +120,7 @@ Short, focused snippets. Prefer modern C++ (CTAD, structured bindings, ranges,
 The non-obvious traps.
 
 ## See also
-Links to the relevant cppreference pages (cppreference.com only).
+Links to the relevant cppreference pages first, then the other sources used.
 ```
 
 ## Conventions
@@ -148,7 +164,10 @@ Clang too: `--cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++
 --enable private-module-fragment`.
 
 Prefer making a snippet self-contained over tagging it `nocompile`, and
-`compile-fail` over `nocompile` for type errors. Run:
+`compile-fail` over `nocompile` for type errors. For an issue, check only the
+pages you changed (`python3 tools/check_snippets.py <pages> --cxx …` with
+both compilers). The full runs below are for a release (see "Running the
+tests"):
 
 ```bash
 python3 tools/check_snippets.py docs/guidelines --cxx g++-15
@@ -179,7 +198,25 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 ## Running the tests
 
 `tests/` is a GoogleTest suite that turns each page's claims into assertions
-(#41). It's the only thing CMake builds. There's no CI; run it locally:
+(#41). It's the only thing CMake builds. There's no CI; run it locally.
+
+**Run only the tests that apply to an issue.** The full suite runs only
+before a release.
+
+| When | What to run |
+|---|---|
+| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, and the link and index checks. The counts go in the release notes. |
+
+One area, without building the rest of the suite:
+
+```bash
+cmake --preset gcc-15 && cmake --build --preset gcc-15 --target examples_<area>_tests
+ctest --preset gcc-15 -L '^<area>$'
+```
+
+The area is the top folder under `tests/`; hyphens become underscores in the
+target name. The full-suite commands:
 
 ```bash
 tools/run_tests.sh              # gcc-15 (default)
@@ -223,7 +260,8 @@ Writing tests:
   file that imports them goes in that file's `_mod_tests` list so CMake scans
   it. Guard imports with `#ifdef CPPDOCS_NAMED_MODULES` and start each test
   with `CPPDOCS_REQUIRE_NAMED_MODULES()` (`language/modules/named_modules.hpp`).
-- `gcc-15` and `clang-22` must both pass (or skip with a reason) before a PR.
+- The affected test areas must pass on `gcc-15` and `clang-22` (or skip with a
+  reason) before a PR. The PR's Tested section names what was run.
 
 ## Git / commits
 
@@ -247,6 +285,15 @@ Writing tests:
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`.
 - **Open PRs ready for review, never as drafts.**
+- **Every PR keeps `README.md` and `CLAUDE.md` current.**
+  - `README.md`: regenerate the clickable index (`python3 tools/gen_index.py`)
+    whenever a page is added, moved or retitled. Edit the prose when the change
+    touches it: a new area, tool, skill, check or workflow.
+  - `CLAUDE.md`: update it when the change adds or alters a convention, a fence
+    tag, a tool, a skill or a workflow step.
+
+  The PR description says which of the two were updated, or why neither
+  needed it. `python3 tools/gen_index.py --check` must pass.
 - **Close the issue as soon as its PR is opened — automatically, as part of
   shipping the PR.** Opening the PR *is* the signal that the feature is done;
   don't wait for the merge, close it even if the PR says "Part of #n", and

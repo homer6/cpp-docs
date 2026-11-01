@@ -16,11 +16,11 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Algorithms](algorithms/README.md) | ✅ | `<algorithm>`, `<numeric>`, parallel & ranges algos |
 | [Ranges](ranges/README.md) | ✅ | views, adaptors, factories, pipelines (C++20) |
 | [Iterators](iterators/README.md) | ✅ | categories, adaptors, `iterator_traits` |
-| [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects |
-| [Memory](memory/README.md) | ✅ | smart pointers, allocators, memory resources |
-| [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, `ratio`, `integer_sequence` |
-| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg |
-| [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
+| [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects, callable wrappers (`function_ref` …) |
+| [Memory](memory/README.md) | ✅ | smart pointers, `indirect`/`polymorphic`, allocators, memory resources |
+| [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, constant evaluation, reflection (`<meta>`), `ratio`, `integer_sequence` |
+| [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, saturation arithmetic, SIMD, linalg |
+| [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones; `<ctime>` |
 | [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
 | [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures, RCU & hazard pointers |
 | [Execution](execution/README.md) | ✅ | senders/receivers (C++26) |

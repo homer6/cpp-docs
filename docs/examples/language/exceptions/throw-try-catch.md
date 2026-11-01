@@ -83,6 +83,13 @@ void example() {
 }
 ```
 
+## Throwing at compile time (C++26)
+
+Since C++26 a `constexpr` function may `throw` and `catch` during constant
+evaluation, as long as nothing escapes the evaluation. Only GCC 16 implements it
+so far; the example is in
+[constant expressions](../expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26).
+
 ## Gotchas
 
 - **Catch by `const&`, throw by value.** Catching by value slices derived

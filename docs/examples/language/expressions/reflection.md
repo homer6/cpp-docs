@@ -72,9 +72,42 @@ int main() {
 This is what previously required macros or external code generators: enumerate
 members, get their names, access them — all in the language.
 
+## Annotations (C++26)
+
+An **annotation** `[[=expr]]` attaches a constant value to a declaration, for
+reflection to read back (P3394). It looks like an attribute but means nothing to
+the compiler on its own: it's data for your own `consteval` code, such as a
+serializer's field name or a validator's range.
+
+```cpp needs=reflection
+#include <meta>
+
+struct Range { int lo, hi; };               // annotation values must be structural types
+
+struct Config {
+    [[=Range{1, 65535}]] int port;          // one annotation
+    [[=1, =2]]           int level;         // several in one list: each starts with =
+                         int plain;         // none
+};
+
+namespace meta = std::meta;
+static_assert(meta::annotations_of(^^Config::level).size() == 2);   // in declaration order
+static_assert(meta::annotations_of(^^Config::plain).empty());
+
+// constant_of turns an annotation into a reflection of its value; splice or extract it:
+static_assert([: meta::constant_of(meta::annotations_of(^^Config::level)[1]) :] == 2);
+// annotations_of_with_type filters by type; extract<T> reads the value:
+constexpr auto r = meta::annotations_of_with_type(^^Config::port, ^^Range)[0];
+static_assert(meta::extract<Range>(r).hi == 65535);
+```
+
+Types, aliases, variables, functions, parameters, namespaces, enumerators, base
+specifiers and non-static data members can all be annotated.
+
 ## What it unlocks
 
-- Automatic serialization / printing / hashing of any struct.
+- Automatic serialization / printing / hashing of any struct, steered by
+  annotations (`[[=Name{...}]]`, `[[=skip]]`).
 - Enum ↔ string conversion without hand-maintained tables
   (`std::meta::enumerators_of`).
 - Generating types (`std::meta::define_aggregate`) and calling templates by
@@ -89,14 +122,22 @@ members, get their names, access them — all in the language.
 - **Splicers are context-sensitive:** use `typename[: r :]` in type position and
   `template[: r :]` in template-name position; a bare `[: r :]` is for
   value/expression contexts.
-- **Brand-new (C++26), very limited support.** Feature-test with the library
-  facilities; early compilers shipped it experimentally (often via a `-freflection`
-  flag and the P2996 reference implementation). The examples here were checked
-  with GCC 16 (`-std=c++26 -freflection`); Clang 22 doesn't implement it yet.
+- **Annotations aren't attributes.** One `[[...]]` list holds either attributes or
+  annotations: `[[nodiscard, =1]]` is an error ("mixing annotations and attributes
+  in the same list"); write `[[nodiscard]] [[=1]]`. Every annotation is distinct, so
+  `[[=42, =42]]` gives two, and annotations on redeclarations add up.
+- **Brand-new (C++26), one local compiler.** Only GCC 16 implements P2996, and only
+  with `-std=c++26 -freflection` (`__cpp_impl_reflection` and
+  `__cpp_lib_reflection` are both `202603L` there). GCC 15 and Clang 22 have no
+  `<meta>`; Clang's reflection work lives in a separate upstream branch, not in
+  the Homebrew Clang 22 release. The examples here were checked with GCC 16.
 - The reflection *functions* live in the library — see
   [`<meta>`](../../metaprogramming/reflection.md).
 
 ## See also
 
 - [Metaprogramming library / `<meta>` — cppreference](https://en.cppreference.com/w/cpp/meta)
+- [Annotations (C++26) — cppreference](https://en.cppreference.com/w/cpp/language/annotations)
 - [`<meta>` reflection library (this repo)](../../metaprogramming/reflection.md)
+- [P2996 Reflection for C++26](https://wg21.link/P2996) ·
+  [P3394 Annotations for reflection](https://wg21.link/P3394)

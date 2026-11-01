@@ -6,8 +6,11 @@
 #include <numeric>
 #include <random>
 #include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "Copy / move / transform": copy appends, copy_if filters, transform maps and zips.
 TEST(Modifying, CopyAndTransform) {
@@ -125,4 +128,33 @@ TEST(Modifying, Reorder) {
     std::sort(out.begin(), out.end());
     EXPECT_EQ(std::adjacent_find(out.begin(), out.end()), out.end());  // 5 distinct picks
     EXPECT_TRUE(std::includes(in.begin(), in.end(), out.begin(), out.end()));
+}
+
+// "shift_left / shift_right": the kept elements move by n; the return value marks the new end / beginning.
+TEST(Modifying, ShiftLeftRight) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    auto end = std::shift_left(v.begin(), v.end(), 2);
+    EXPECT_EQ(end, v.begin() + 3);
+    EXPECT_EQ(std::vector<int>(v.begin(), end), (std::vector<int>{3, 4, 5}));
+    std::vector<int> w{1, 2, 3, 4, 5};
+    auto beg = std::shift_right(w.begin(), w.end(), 2);
+    EXPECT_EQ(beg, w.begin() + 2);
+    EXPECT_EQ(std::vector<int>(beg, w.end()), (std::vector<int>{1, 2, 3}));
+    std::vector<int> before = v;
+    EXPECT_EQ(std::shift_left(v.begin(), v.end(), 9), v.begin());  // n >= size: nothing moves
+    EXPECT_EQ(v, before);
+}
+
+// "shift_left / shift_right": the C++23 range forms return the shifted subrange.
+TEST(Modifying, RangesShift) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_shift, 202202L);
+#if __cpp_lib_shift >= 202202L
+    std::vector<int> v{1, 2, 3, 4, 5};
+    auto r = std::ranges::shift_left(v, 2);
+    EXPECT_EQ(r.begin(), v.begin());
+    EXPECT_EQ(r.size(), 3u);
+    auto r2 = std::ranges::shift_right(v, 1);
+    EXPECT_EQ(r2.begin(), v.begin() + 1);
+    EXPECT_EQ(r2.size(), 4u);
+#endif
 }

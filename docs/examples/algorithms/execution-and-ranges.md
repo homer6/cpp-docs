@@ -91,6 +91,31 @@ auto it = std::ranges::find(make_vector(), 1);   // it is std::ranges::dangling 
 static_assert(std::same_as<decltype(it), std::ranges::dangling>);
 ```
 
+### Folds (C++23)
+
+`std::ranges::fold_left` is the ranges version of `std::accumulate`, with the
+result type deduced from the operation rather than from `init` (so
+`fold_left(doubles, 0, std::plus<>{})` is a `double`, where `accumulate` gives
+an `int`). It has five siblings:
+
+```cpp body
+std::vector<int> v{1, 2, 3, 4};
+
+int sum   = std::ranges::fold_left(v, 0, std::plus<>{});     // ((((0+1)+2)+3)+4) = 10
+int left  = std::ranges::fold_left(v, 0, std::minus<>{});    // ((((0-1)-2)-3)-4) = -10
+int right = std::ranges::fold_right(v, 0, std::minus<>{});   // 1-(2-(3-(4-0)))  = -2
+auto first = std::ranges::fold_left_first(v, std::plus<>{}); // std::optional<int>{10}, no init
+auto [it, total] = std::ranges::fold_left_with_iter(v, 0, std::plus<>{});  // it == v.end(), total == 10
+```
+
+`fold_right` calls `f(element, acc)`, so the arguments swap order.
+`fold_left_first` and `fold_right_last` use the first or last element as the
+initial value and return an empty `optional` for an empty range, and
+`fold_left_first_with_iter` combines the two variations. The macro is
+`__cpp_lib_ranges_fold` (`202207L`). GCC 15 and 16 have all six; libc++ in
+Clang 22 has `fold_left` and `fold_left_with_iter` but not the others, so it
+doesn't define the macro.
+
 ## Gotchas
 
 - **`par` requires race-free element ops.** Shared mutable state without
@@ -99,6 +124,9 @@ static_assert(std::same_as<decltype(it), std::ranges::dangling>);
   backend dependency; benchmark.
 - **Ranges algorithms can't all be parallelized** — execution policies are mostly
   on the classic iterator overloads. Mixing the two styles is fine.
+- **Folds take no projection.** Unlike most ranges algorithms, `fold_left`
+  and friends have no projection parameter; pipe through `views::transform`
+  first.
 - **Projections apply to the predicate, not the result** — `find` still returns
   an iterator to the *element*, not the projected value.
 
@@ -106,4 +134,6 @@ static_assert(std::same_as<decltype(it), std::ranges::dangling>);
 
 - [Execution policies — cppreference](https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t)
 - [Constrained (ranges) algorithms — cppreference](https://en.cppreference.com/w/cpp/algorithm/ranges)
+- [std::ranges::fold_left (C++23) — cppreference](https://en.cppreference.com/w/cpp/algorithm/ranges/fold_left)
+- [P2322R6: ranges::fold](https://wg21.link/P2322R6)
 - [std::ranges::dangling — cppreference](https://en.cppreference.com/w/cpp/ranges/dangling)

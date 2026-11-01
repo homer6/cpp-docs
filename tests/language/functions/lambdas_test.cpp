@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/language/functions/lambdas.md.
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <map>
 #include <memory>
@@ -43,6 +44,21 @@ TEST(Lambdas, GenericMutableConstexpr) {
 
     constexpr auto square = [](int x) { return x * x; };
     static_assert(square(4) == 16);
+}
+
+// "Generic, mutable, constexpr, consteval": lambdas are implicitly constexpr (C++17);
+// a consteval lambda (C++20) runs only at compile time.
+TEST(Lambdas, ImplicitConstexprAndConsteval) {
+    auto twice = [](int x) { return 2 * x; };
+    static_assert(twice(21) == 42);
+    std::array<int, twice(2)> four{};
+    static_assert(four.size() == 4);
+    volatile int n = 5;
+    EXPECT_EQ(twice(n), 10);  // the same lambda at run time
+
+    auto cube = [](int x) consteval { return x * x * x; };
+    static_assert(cube(3) == 27);
+    EXPECT_EQ(cube(2), 8);  // a constant argument: evaluated at compile time
 }
 
 // "Gotchas": by-value captures are const unless mutable (the call operator is const).
