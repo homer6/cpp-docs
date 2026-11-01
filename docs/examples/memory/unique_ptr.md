@@ -71,6 +71,54 @@ std::unique_ptr<FILE, decltype(&std::fclose)> f{std::fopen("x","r"), &std::fclos
 // custom deleter → RAII for C resources (not called if fopen returned null)
 ```
 
+### C APIs that return through T**: out_ptr and inout_ptr (C++23)
+
+Many C APIs hand back a resource through an output parameter
+(`int create(handle** out)`). `std::out_ptr(p)` makes a temporary that converts
+to `T**` (or `void**`); when the full expression ends, it `reset()`s `p` with
+whatever the API wrote. `std::inout_ptr(p)` is for APIs that also *read* the
+old pointer and may free or replace it (`realloc`-style): it releases `p`
+first, passes the old value in, and adopts the result.
+
+```cpp
+#include <cstdlib>
+#include <memory>
+
+struct handle { int v; };
+int handle_create(handle** out, int v) {             // C API: fills *out
+    *out = static_cast<handle*>(std::malloc(sizeof(handle)));
+    (*out)->v = v;
+    return 0;
+}
+int handle_grow(handle** io) {                        // C API: frees *io, writes a new one
+    auto* n = static_cast<handle*>(std::malloc(sizeof(handle)));
+    n->v = (*io)->v * 10;
+    std::free(*io);
+    *io = n;
+    return 0;
+}
+struct handle_free { void operator()(handle* h) const { std::free(h); } };
+
+int demo() {
+    std::unique_ptr<handle, handle_free> h;
+    handle_create(std::out_ptr(h), 7);   // h owns the new handle; h->v == 7
+    handle_grow(std::inout_ptr(h));      // h owns the replacement; h->v == 70
+    return h->v;
+}
+```
+
+`out_ptr` works with `shared_ptr` too, but you must pass the deleter
+(`std::out_ptr(sp, handle_free{})`), because `shared_ptr` can't learn it later.
+`inout_ptr` refuses `shared_ptr` outright: other owners may share the old
+pointer, so it can't be released.
+
+```cpp compile-fail="inout_ptr"
+#include <memory>
+
+int api(int** io);
+void f(std::shared_ptr<int>& sp) { api(std::inout_ptr(sp)); }   // static_assert fires
+```
+
 ## Gotchas
 
 - **Always prefer `make_unique` over `new`.** It's exception-safe (no leak if an
@@ -83,8 +131,16 @@ std::unique_ptr<FILE, decltype(&std::fclose)> f{std::fopen("x","r"), &std::fclos
   keeps it pointer-sized.
 - **Don't build two owners from one raw pointer.** `unique_ptr<T> a{raw}, b{raw};`
   double-frees. One raw pointer, one owner.
+- **Don't keep an `out_ptr` temporary around.** It updates the smart pointer in
+  its destructor, at the end of the full expression; until then the smart
+  pointer doesn't hold the new value. Use it only as a call argument. It also
+  resets the smart pointer before the call, so the old object is freed first.
+- **Need a copyable `unique_ptr`?** That's [`std::indirect`](indirect-polymorphic.md)
+  (C++26): heap-allocated, but copies deep-copy.
 
 ## See also
 
 - [std::unique_ptr — cppreference](https://en.cppreference.com/w/cpp/memory/unique_ptr)
 - [std::make_unique — cppreference](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique)
+- [std::out_ptr — cppreference](https://en.cppreference.com/w/cpp/memory/out_ptr_t/out_ptr) · [std::inout_ptr — cppreference](https://en.cppreference.com/w/cpp/memory/inout_ptr_t/inout_ptr)
+- [P1132R8: out_ptr — a scalable output pointer abstraction](https://wg21.link/P1132R8)

@@ -6,6 +6,7 @@
 #include <new>
 #include <string>
 #include <type_traits>
+#include <vector>
 #include <version>
 
 #include <gtest/gtest.h>
@@ -139,4 +140,28 @@ TEST(RawMemory, ConstMemberReplacedWithoutLaunder) {
     std::destroy_at(&id);
     std::construct_at(&id, 2);
     EXPECT_EQ(id.n, 2);
+}
+
+// "std::to_address and std::assume_aligned (C++20)": to_address gives a raw
+// pointer from an iterator without dereferencing (fine on end()).
+TEST(RawMemory, ToAddressOnEndIterator) {
+    std::vector<int> v{1, 2, 3};
+    int* end = std::to_address(v.end());
+    EXPECT_EQ(end, v.data() + 3);
+    auto up = std::make_unique<int>(5);
+    EXPECT_EQ(std::to_address(up.get()), up.get());
+}
+
+// "std::to_address and std::assume_aligned (C++20)": assume_aligned returns the
+// same pointer and is usable in constexpr.
+TEST(RawMemory, AssumeAlignedReturnsSamePointer) {
+    alignas(64) float buf[16]{};
+    float* a = std::assume_aligned<64>(buf);
+    EXPECT_EQ(a, buf);
+    EXPECT_EQ(reinterpret_cast<std::uintptr_t>(a) % 64, 0u);
+    constexpr int x = [] {
+        int arr[2]{1, 2};
+        return *std::assume_aligned<alignof(int)>(arr);
+    }();
+    static_assert(x == 1);
 }
