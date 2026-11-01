@@ -1,9 +1,13 @@
 // Checks claims made by docs/examples/language/basic-concepts/object-model.md.
 
+#include <bit>
+#include <cstddef>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <functional>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -162,3 +166,46 @@ TEST(ObjectModel, MallocCreatesImplicitLifetimeObject) {
     std::free(p);
 }
 }  // namespace from_pr69
+
+// Tests for the strict aliasing and pointer provenance sections (#94).
+namespace from_issue94 {
+namespace {
+std::uint32_t via_bit_cast(float f) { return std::bit_cast<std::uint32_t>(f); }
+std::uint32_t via_memcpy(float f) {
+    std::uint32_t bits;
+    std::memcpy(&bits, &f, sizeof bits);
+    return bits;
+}
+}  // namespace
+
+// "Strict aliasing": bit_cast and memcpy copy the bits instead of punning; 1.0f is 0x3f800000.
+TEST(ObjectModel, BitCastAndMemcpyReplacePunning) {
+    static_assert(std::bit_cast<std::uint32_t>(1.0f) == 0x3f800000u);  // bit_cast is constexpr
+    EXPECT_EQ(via_bit_cast(1.0f), 0x3f800000u);
+    EXPECT_EQ(via_memcpy(1.0f), 0x3f800000u);
+    EXPECT_EQ(via_memcpy(-2.5f), via_bit_cast(-2.5f));
+}
+
+// "Strict aliasing": char types may read any object's bytes.
+TEST(ObjectModel, CharTypesMayAliasAnything) {
+    int n = 1;
+    const auto* bytes = reinterpret_cast<const unsigned char*>(&n);
+    const auto* sbytes = reinterpret_cast<const std::byte*>(&n);
+    unsigned char copy[sizeof n];
+    std::memcpy(copy, &n, sizeof n);
+    EXPECT_EQ(bytes[0], copy[0]);
+    EXPECT_EQ(std::to_integer<unsigned char>(sbytes[0]), copy[0]);
+}
+
+// "Pointer provenance": a one-past-the-end pointer can be formed, compared and subtracted;
+// std::less gives a strict total order even across unrelated objects.
+TEST(ObjectModel, PastTheEndAndTotalOrder) {
+    int a[3]{}, b = 0;
+    int* end = a + 3;
+    EXPECT_EQ(end - a, 3);
+    EXPECT_TRUE(a < end);  // same array: < is specified
+    std::less<int*> lt;
+    EXPECT_NE(lt(a, &b), lt(&b, a));  // exactly one holds for distinct pointers
+    EXPECT_FALSE(lt(&b, &b));
+}
+}  // namespace from_issue94
