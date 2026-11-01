@@ -1,34 +1,15 @@
 # Function objects (`<functional>`)
 
-> Storing, wrapping, and composing callables: `std::function`, `std::invoke`,
-> `std::bind`/lambdas, `std::ref`, and the standard operator functors.
+> Calling, adapting and composing callables: `std::invoke`, `bind_front` /
+> `bind_back`, `not_fn`, `mem_fn`, `std::ref`, and the standard operator
+> functors.
 > **Header:** `<functional>`
 
-## std::function — a type-erased callable
+## Callable wrappers
 
-Holds *any* callable matching a signature (free function, lambda, functor, bound
-member). Costs type erasure (often a heap allocation + indirect call), so use it
-where you genuinely need to store heterogeneous callables, not in hot loops.
-
-```cpp body
-#include <functional>
-
-std::function<int(int, int)> op = [](int a, int b){ return a + b; };
-op = std::multiplies<int>{};           // reassign to a different callable
-int r = op(6, 7);                       // 42
-if (op) { /* non-empty */ }             // empty std::function → calling it throws std::bad_function_call
-```
-
-### std::move_only_function (C++23)
-
-`std::function` requires the callable be *copyable*. `std::move_only_function`
-drops that — it can hold move-only callables (e.g. a lambda capturing a
-`unique_ptr`), and supports `const`/`noexcept`/ref qualifiers in its signature.
-
-```cpp
-std::move_only_function<void()> task =
-    [p = std::make_unique<int>(5)]{ /* uses *p */ };   // capture is move-only
-```
+`std::function`, `std::move_only_function` (C++23), `std::copyable_function`
+and `std::function_ref` (C++26) have their own page, with a "which wrapper?"
+table: [Callable wrappers](callable-wrappers.md).
 
 ## std::invoke — call anything uniformly (C++17)
 
@@ -70,10 +51,84 @@ std::greater<int>{};             // descending sort / min-heap
 //       equal_to, not_equal_to, logical_and/or/not, bit_and/or/xor
 ```
 
+## bind_front / bind_back (C++20 / C++23)
+
+`std::bind_front(f, args...)` returns a callable that calls `f(args..., rest...)`;
+`std::bind_back` (C++23) appends instead: `f(rest..., args...)`. Unlike
+`std::bind` there are no placeholders, and the result perfectly forwards its
+call arguments.
+
+```cpp body
+auto sub = [](int a, int b){ return a - b; };
+auto from10  = std::bind_front(sub, 10);   // from10(3)  == sub(10, 3) == 7
+auto minus10 = std::bind_back(sub, 10);    // minus10(3) == sub(3, 10) == -7
+
+struct Counter { int n = 0; int add(int k){ return n += k; } };
+Counter c;
+auto add_to_c = std::bind_front(&Counter::add, &c);   // member function + object
+add_to_c(5);                                           // c.n == 5
+```
+
+Bound arguments are stored by value (decayed); pass `std::ref(x)` to bind a
+reference.
+
+## not_fn (C++17)
+
+`std::not_fn(f)` returns a callable that returns `!f(args...)`. It replaces the
+deprecated (and in C++20 removed) `not1` / `not2`.
+
+```cpp body
+auto is_even = [](int x){ return x % 2 == 0; };
+std::vector<int> xs{1, 2, 3, 4, 5};
+auto odd = std::count_if(xs.begin(), xs.end(), std::not_fn(is_even));   // 3
+```
+
+## mem_fn (C++11)
+
+`std::mem_fn(&T::member)` turns a pointer to member into a callable that takes
+the object (by reference, pointer or smart pointer) as its first argument. A
+data member gives back the member's value.
+
+```cpp body
+struct Person { std::string name; int age; bool adult() const { return age >= 18; } };
+std::vector<Person> people{{"Ann", 30}, {"Bo", 10}};
+auto adults = std::count_if(people.begin(), people.end(), std::mem_fn(&Person::adult));  // 1
+auto age = std::mem_fn(&Person::age);
+age(people[0]);     // 30: through a reference
+age(&people[1]);    // 10: through a pointer
+```
+
+Algorithms and ranges already call through `std::invoke`, so
+`std::ranges::count_if(people, &Person::adult)` needs no `mem_fn`.
+
+## Constant-callable forms (C++26)
+
+P2714 adds overloads that take the callable as a template argument:
+`std::not_fn<f>()`, `std::bind_front<f>(args...)`, `std::bind_back<f>(args...)`.
+The target isn't stored, so the result is as small as its bound arguments, and
+the call isn't through a pointer.
+
+```cpp needs=nttp_callables
+#include <functional>
+
+bool is_even(int x) { return x % 2 == 0; }
+int  sub(int a, int b) { return a - b; }
+
+auto odd     = std::not_fn<is_even>();     // odd(3) == true
+auto from10  = std::bind_front<sub>(10);   // from10(3)  == 7; sizeof == sizeof(int)
+auto minus10 = std::bind_back<sub>(10);    // minus10(3) == -7
+```
+
+GCC 16 has all three. Clang 22's libc++ has `not_fn<f>()` but not the
+`bind_front<f>` overload, even though it defines `__cpp_lib_bind_front` as
+202306L, and its `bind_back` is still the C++23 version (202202L). GCC 15 has
+none.
+
 ## std::bind vs. lambdas
 
-`std::bind` (C++11) pre-binds arguments, but **lambdas are clearer and usually
-preferred** today:
+`std::bind` (C++11) pre-binds arguments with placeholders. Prefer a lambda, or
+`bind_front` / `bind_back` when you're fixing the leading or trailing
+arguments:
 
 ```cpp body
 auto add = [](int a, int b){ return a + b; };
@@ -84,11 +139,10 @@ auto add5b = std::bind(add, 5, std::placeholders::_1);
 
 ## Gotchas
 
-- **`std::function` is not free.** Type erasure usually means an allocation and an
-  indirect call; for known callable types, take a template parameter or
-  `auto&&`/a concept-constrained callable instead.
-- **Calling an empty `std::function` throws `std::bad_function_call`.** Check it
-  in a bool context first.
+- **`bind_front` copies its arguments.** `bind_front(&T::f, obj)` stores a copy
+  of `obj`; pass `&obj` or `std::ref(obj)` to act on the original.
+- **Don't trust `__cpp_lib_bind_front` alone on libc++ 22.** It says 202306L,
+  but `bind_front<f>(...)` doesn't compile there.
 - **Prefer lambdas to `std::bind`.** `bind`'s placeholders, nested binds, and
   argument-decay rules are error-prone; a lambda is explicit.
 - **Dangling captures / refs.** `std::ref` and reference-capturing lambdas don't
@@ -96,7 +150,10 @@ auto add5b = std::bind(add, 5, std::placeholders::_1);
 
 ## See also
 
-- [std::function — cppreference](https://en.cppreference.com/w/cpp/utility/functional/function)
-- [std::move_only_function — cppreference](https://en.cppreference.com/w/cpp/utility/functional/move_only_function)
+- [Callable wrappers](callable-wrappers.md): `function`, `move_only_function`, `copyable_function`, `function_ref`
 - [std::invoke — cppreference](https://en.cppreference.com/w/cpp/utility/functional/invoke)
 - [std::ref / std::cref — cppreference](https://en.cppreference.com/w/cpp/utility/functional/ref)
+- [std::bind_front, std::bind_back — cppreference](https://en.cppreference.com/w/cpp/utility/functional/bind_front)
+- [std::not_fn — cppreference](https://en.cppreference.com/w/cpp/utility/functional/not_fn)
+- [std::mem_fn — cppreference](https://en.cppreference.com/w/cpp/utility/functional/mem_fn)
+- [P2714R1: Bind front and back to NTTP callables](https://wg21.link/P2714R1)

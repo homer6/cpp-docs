@@ -13,7 +13,8 @@ The "vocabulary types" and core helpers modern C++ leans on everywhere. Mirrors
 | [`expected`](expected.md) | `<expected>` | C++23 | A value **or** an error |
 | [`any`](any.md) | `<any>` | C++17 | A value of *any* type |
 | [`bitset`](bitset.md) | `<bitset>` | C++98 | Fixed-size bit array |
-| [Function objects](functional.md) | `<functional>` | C++11+ | `function`, `bind`, `invoke`, `ref`, `move_only_function` |
+| [Function objects](functional.md) | `<functional>` | C++11+ | `invoke`, `bind_front`/`bind_back`, `not_fn`, `mem_fn`, `ref`, operator functors |
+| [Callable wrappers](callable-wrappers.md) | `<functional>` | C++11+ | `function`, `move_only_function`, `copyable_function`, `function_ref`, and which to use |
 
 ## The "sum type / product type" map
 
