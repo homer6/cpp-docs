@@ -142,9 +142,14 @@ git clone https://github.com/homer6/cpp-docs.git
 cd cpp-docs && make install        # make uninstall removes the links
 ```
 
-Then ask for it by name (`/modern-cpp`), or just ask for modern C++. The link
-points back at your checkout, so `git pull` keeps it current. Stay on `main`
-for the latest release. `SKILLS_DIR=… make install` installs somewhere else.
+Then ask for it by name (`/modern-cpp`), or just ask for modern C++.
+
+**Upgrading:** run `make update`. It pulls the latest release (stay on `main`)
+and re-links. The links point back at your checkout, so a plain `git pull`
+upgrades the skills too. `make install` also upgrades an older install: it
+re-points a link to another checkout, and moves an older copied folder to
+`~/.claude/skills-backup/` before linking. `SKILLS_DIR=… make install`
+installs somewhere else.
 
 ## How to use these notes
 
