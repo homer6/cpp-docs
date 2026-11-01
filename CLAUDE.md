@@ -30,6 +30,11 @@ right pages, toolchain support, the guidelines, validation.
   for GCC 16 features such as contracts and reflection.
 - If something can't be verified locally (no local compiler implements it
   yet), say so on the page and tag the snippet `needs=<feature>`.
+- **Compiler support beyond the local toolchains** (MSVC, other releases,
+  partial support): read the vendors' status pages. The `add-to-topic` skill's
+  "Checking compiler support" section lists them (GCC, libstdc++, Clang,
+  libc++, MSVC, MS STL, cppreference) and explains how to read a level of
+  support. Say where a vendor-only claim comes from.
 - **See also** links to what you used: cppreference first, then papers, the
   draft, vendor docs, articles or talks where they add something. Don't cite
   AI summaries; cite the source they came from.
