@@ -4,7 +4,9 @@
 #include <latch>
 #include <memory>
 #include <new>
+#include <stdatomic.h>
 #include <thread>
+#include <type_traits>
 #include <vector>
 #include <version>
 
@@ -208,5 +210,17 @@ TEST(Atomics, InterferenceSizes) {
     EXPECT_EQ(destructive, 256u);  // the page's AArch64 values
     EXPECT_EQ(constructive, 64u);
 #endif
+#endif
+}
+
+// "C compatibility: <stdatomic.h> (C++23)": the C names are the C++ types.
+TEST(Atomics, StdatomicH) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_stdatomic_h, 202011L);
+#ifdef __cpp_lib_stdatomic_h
+    static_assert(std::is_same_v<atomic_int, std::atomic<int>>);
+    static_assert(std::is_same_v<_Atomic(long), std::atomic<long>>);
+    atomic_int c = 0;
+    atomic_fetch_add_explicit(&c, 1, memory_order_relaxed);
+    EXPECT_EQ(atomic_load(&c), 1);
 #endif
 }

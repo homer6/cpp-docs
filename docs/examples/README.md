@@ -20,7 +20,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Memory](memory/README.md) | ✅ | smart pointers, `indirect`/`polymorphic`, allocators, memory resources |
 | [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, constant evaluation, `ratio`, `integer_sequence` |
 | [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, saturation arithmetic, SIMD, linalg |
-| [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
+| [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones; `<ctime>` |
 | [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
 | [Concurrency](concurrency/README.md) | ✅ | threads, mutexes, atomics, futures, RCU & hazard pointers |
 | [Execution](execution/README.md) | ✅ | senders/receivers (C++26) |
