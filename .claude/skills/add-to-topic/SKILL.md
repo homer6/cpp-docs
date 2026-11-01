@@ -128,7 +128,7 @@ the `TEST` naming the section. Assert what the page says (`EXPECT_EQ` on values
 or captured output, `static_assert` for types, `EXPECT_THROW`). Gate missing
 features:
 
-```cpp
+```cpp nocompile
 // "Saturation arithmetic (C++26)": saturating_add clamps instead of wrapping.
 TEST(Numeric, SaturatingAddClamps) {
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_saturation_arithmetic, 202603L);  // P4052 names
