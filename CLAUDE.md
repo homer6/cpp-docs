@@ -235,11 +235,17 @@ Writing tests:
 
 - **Create a GitHub issue first, for all work** — before starting, however
   small: pages, fixes, tooling, `CLAUDE.md`/README edits, and changes pushed
-  directly to `main` at the owner's request. Nothing lands without an issue
+  directly to a branch at the owner's request. Nothing lands without an issue
   reference (`Closes #n` in the PR, or `Closes #n` in a direct commit). Create
   issues with `gh issue create -R homer6/cpp-docs --assignee @me`.
-- Work each issue on its own feature branch (e.g. `docs/<issue>-<slug>`) and
-  open a PR that references the issue.
+- **Branches:** `dev` is the integration branch; `main` holds releases only.
+  Work each issue on its own feature branch from `origin/dev` (e.g.
+  `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
+  `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
+  out: GitHub's default branch is `main`, so a PR without it targets `main`.
+- **The only PR into `main` is the release PR** (`dev` → `main`), opened when
+  the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
+  GitHub release; the notes live in `docs/releases/vX.Y.Z.md`.
 - **Open PRs ready for review, never as drafts.**
 - **Close the issue as soon as its PR is opened — automatically, as part of
   shipping the PR.** Opening the PR *is* the signal that the feature is done;
@@ -281,8 +287,8 @@ Writing tests:
 
 ## Syncing and merging
 
-- **Sync a feature branch with `main` by rebasing**, never by merging `main`
-  into it: `git fetch && git rebase origin/main`, resolve, then
+- **Sync a feature branch with `dev` by rebasing**, never by merging `dev`
+  into it: `git fetch && git rebase origin/dev`, resolve, then
   `git push --force-with-lease`. Shared index files (`docs/guidelines/README.md`,
   `sources.md`): keep every row from both sides; if two PRs add the same source
   ID, combine them into one row.
@@ -296,10 +302,11 @@ Writing tests:
   one PR at a time (`/review-prs`).
 - **Merge PRs with a merge commit only** — never squash or rebase-merge — and
   **delete the feature branch** when merging:
-  `gh pr merge <n> --merge --delete-branch`. Then remove its worktree
+  `gh pr merge <n> --merge --delete-branch`. Never `--delete-branch` on the
+  release PR: its head is `dev`. Then remove its worktree
   (`git worktree remove <path>`) and the local branch.
 - Merge several PRs one at a time: merge one, rebase the next onto the new
-  `main`, check, merge, repeat.
+  `dev`, check, merge, repeat.
 - **Comment on the issue every time a PR for it ships** — when it's opened
   (the closing comment above) and again when it's merged, plus after any
   follow-up push such as a research import. Say what changed since the last

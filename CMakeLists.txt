@@ -12,11 +12,18 @@ elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 4.4 AND CMAKE_VERSION VERSION_LESS 4.
   set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
 endif()
 
-project(cpp_docs_tests LANGUAGES CXX)
+project(cpp_docs_tests VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_testing()
+
+# Every release has notes: this fails if docs/releases/v<PROJECT_VERSION>.md
+# is missing, so the version above and the notes can't drift apart.
+add_test(NAME release_notes_exist
+         COMMAND ${CMAKE_COMMAND} -E cat
+                 ${CMAKE_SOURCE_DIR}/docs/releases/v${PROJECT_VERSION}.md)
+set_tests_properties(release_notes_exist PROPERTIES LABELS release)
 add_subdirectory(tests)
