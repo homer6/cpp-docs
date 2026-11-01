@@ -124,6 +124,28 @@ Sources and edition dates are in [sources.md](docs/guidelines/sources.md). To
 refresh them or import a new reference, ask Claude to use the
 `refresh-guidelines` skill.
 
+## Use it while you write C++ (Claude Code)
+
+The [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) skill makes Claude Code
+check this reference before writing C++. It:
+- looks up the page for a facility and follows its gotchas and version notes;
+- checks that the feature is supported on your compilers;
+- applies the guidelines and validates the result.
+
+**Install it once for all your projects:** clone this repo and link the
+skill into your user skills.
+
+```bash
+git clone https://github.com/homer6/cpp-docs.git ~/dev/homer6/cpp-docs
+ln -s ~/dev/homer6/cpp-docs/.claude/skills/modern-cpp ~/.claude/skills/modern-cpp
+```
+
+Then ask for it by name (`/modern-cpp`), or just ask for modern C++. If your
+checkout lives somewhere else, link from there and set
+`export CPP_DOCS=/path/to/cpp-docs` so the skill can find the pages. Run
+`git pull` in the checkout to keep it up to date. It stays on `main`, which
+holds the latest release.
+
 ## How to use these notes
 
 Every reference page has the same shape:
