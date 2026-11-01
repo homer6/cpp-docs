@@ -1,7 +1,9 @@
 // Checks claims made by docs/examples/containers/views/mdspan.md.
 #include <cstddef>
+#include <memory>
 #include <numeric>
 #include <type_traits>
+#include <utility>
 #include <vector>
 #include <version>
 
@@ -21,6 +23,7 @@ template <class M>
 concept HasCallOperator = requires(M m) { m(0, 0); };
 }  // namespace
 #endif
+
 
 // "Declaration": default layout is layout_right, default accessor is default_accessor<T>.
 TEST(Mdspan, DeclarationDefaults) {
@@ -130,5 +133,103 @@ TEST(Mdspan, LibrarySupport) {
 #else
     (void)has_header;
     GTEST_SKIP() << "toolchain not covered by the page's support note";
+#endif
+}
+
+// "Slices: std::submdspan (C++26)": each slice kind, rank changes, result
+// layouts, and aliasing.
+TEST(Mdspan, Submdspan) {
+    CPPDOCS_REQUIRE(__cpp_lib_submdspan);
+#ifdef __cpp_lib_submdspan
+    int buf[12];
+    std::iota(buf, buf + 12, 0);
+    std::mdspan m{buf, 3, 4};
+
+    auto row1 = std::submdspan(m, 1, std::full_extent);
+    static_assert(decltype(row1)::rank() == 1);
+    static_assert(std::is_same_v<decltype(row1)::layout_type, std::layout_right>);
+    ASSERT_EQ(row1.extent(0), 4u);
+    for (std::size_t j = 0; j < 4; ++j) EXPECT_EQ(row1[j], 4 + static_cast<int>(j));
+
+    auto col2 = std::submdspan(m, std::full_extent, 2);
+    static_assert(std::is_same_v<decltype(col2)::layout_type, std::layout_stride>);
+    ASSERT_EQ(col2.extent(0), 3u);
+    EXPECT_EQ(col2[0], 2);
+    EXPECT_EQ(col2[1], 6);
+    EXPECT_EQ(col2[2], 10);
+    EXPECT_EQ(col2.stride(0), 4u);
+
+    auto blk = std::submdspan(m, std::pair{1, 3}, std::pair{1, 3});
+    static_assert(decltype(blk)::rank() == 2);
+    EXPECT_EQ(blk.extent(0), 2u);
+    EXPECT_EQ(blk.extent(1), 2u);
+    EXPECT_EQ((blk[0, 0]), 5);
+    EXPECT_EQ((blk[0, 1]), 6);
+    EXPECT_EQ((blk[1, 0]), 9);
+    EXPECT_EQ((blk[1, 1]), 10);
+
+    auto evens = std::submdspan(m, 0, std::extent_slice{.offset = 0, .extent = 2, .stride = 2});
+    ASSERT_EQ(evens.extent(0), 2u);  // extent = number of elements selected
+    EXPECT_EQ(evens[0], 0);
+    EXPECT_EQ(evens[1], 2);
+
+    auto odds = std::submdspan(m, 0, std::range_slice{.first = 1, .last = 4, .stride = 2});
+    ASSERT_EQ(odds.extent(0), 2u);
+    EXPECT_EQ(odds[0], 1);
+    EXPECT_EQ(odds[1], 3);
+
+    blk[0, 0] = 99;
+    EXPECT_EQ(buf[5], 99);  // aliases the buffer
+#endif
+}
+
+// "Promise alignment: std::aligned_accessor (C++26)": access through an aligned
+// mdspan, offset_policy is default_accessor, is_sufficiently_aligned checks the
+// pointer, and the aligned -> default conversion is implicit but not the reverse.
+TEST(Mdspan, AlignedAccessor) {
+    CPPDOCS_REQUIRE(__cpp_lib_aligned_accessor);
+#ifdef __cpp_lib_aligned_accessor
+    using Aligned = std::aligned_accessor<float, 32>;
+    static_assert(Aligned::byte_alignment == 32);
+    static_assert(std::is_same_v<Aligned::offset_policy, std::default_accessor<float>>);
+
+    alignas(32) float buf[16]{};
+    std::mdspan<float, std::dims<1>> v{buf, 16};
+    EXPECT_TRUE(std::is_sufficiently_aligned<32>(v.data_handle()));
+    EXPECT_FALSE(std::is_sufficiently_aligned<32>(buf + 1));
+
+    std::mdspan<float, std::dims<1>, std::layout_right, Aligned> a{
+        v.data_handle(), v.mapping(), Aligned{}};
+    buf[3] = 1.5f;
+    for (std::size_t i = 0; i < a.extent(0); ++i) a[i] *= 2;
+    EXPECT_EQ(buf[3], 3.0f);
+
+    using Plain = std::mdspan<float, std::dims<1>>;
+    using AlignedM = decltype(a);
+    static_assert(std::is_convertible_v<AlignedM, Plain>);
+    static_assert(!std::is_convertible_v<Plain, AlignedM>);
+    Plain back = a;
+    EXPECT_EQ(back[3], 3.0f);
+#endif
+}
+
+// "Gotchas" ("strided_slice is gone"): the 202603L submdspan has extent_slice
+// and range_slice instead.
+TEST(Mdspan, StridedSliceRenamed) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_submdspan, 202603L);
+#if __cpp_lib_submdspan >= 202603L
+    std::extent_slice<int, int, int> e{.offset = 1, .extent = 4, .stride = 3};
+    std::range_slice<int, int, int> r{.first = 1, .last = 11, .stride = 3};
+    int buf[11];
+    std::iota(buf, buf + 11, 0);
+    std::mdspan v{buf, 11};
+    auto se = std::submdspan(v, e);
+    auto sr = std::submdspan(v, r);
+    ASSERT_EQ(se.extent(0), 4u);  // indices 1, 4, 7, 10
+    ASSERT_EQ(sr.extent(0), 4u);
+    for (std::size_t i = 0; i < 4; ++i) {
+        EXPECT_EQ(se[i], 1 + 3 * static_cast<int>(i));
+        EXPECT_EQ(sr[i], se[i]);
+    }
 #endif
 }

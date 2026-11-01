@@ -72,6 +72,37 @@ void demo(std::vector<int>& v, const std::vector<int>& in, std::vector<int>& out
 std::mt19937 gen{12345};      // fixed seed → same sequence every run (tests/debug)
 ```
 
+### Counter-based streams: `std::philox_engine` (C++26)
+
+`philox_engine` (P2075) is a **counter-based** engine: each block of `n`
+outputs is a pure function of a key (from the seed) and a counter. Jumping
+anywhere in the sequence is just setting the counter, so parallel workers can
+each take their own stream from one seed, without sharing state.
+`std::philox4x32` and `std::philox4x64` are the predefined engines (4 words,
+10 rounds); the state is a few words (88 bytes in libstdc++), against 5000 for
+`mt19937`.
+
+```cpp needs=philox
+#include <random>
+
+int main() {
+    std::philox4x32 gen{42};                 // a normal engine: works with every distribution
+    std::uniform_int_distribution<int> die{1, 6};
+    int roll = die(gen);
+
+    std::philox4x32 a{42}, b{42};
+    a.discard(4 * 1000);                     // skip 1000 blocks of 4 outputs...
+    b.set_counter({0, 0, 0, 1000});          // ...or jump there: last element is the low word
+    bool same = a() == b();                  // true
+
+    std::philox4x32 worker1{42};
+    worker1.set_counter({0, 1, 0, 0});       // a disjoint stream for a second worker
+}
+```
+
+GCC 16 has it; GCC 15 and Clang 22 (libc++) don't (`__cpp_lib_philox_engine`,
+`202406L`).
+
 ## Gotchas
 
 - **Don't use `rand() % n`.** It's biased toward low values, low quality, and
@@ -87,9 +118,15 @@ std::mt19937 gen{12345};      // fixed seed → same sequence every run (tests/d
   thread its own `gen`, or synchronize.
 - **Distribution ranges differ:** `uniform_int_distribution{a,b}` is **inclusive**
   of `b`; `uniform_real_distribution{a,b}` is `[a, b)`.
+- **`set_counter` takes the counter most-significant word first.** For
+  `philox4x32`, `set_counter({0, 0, 0, k})` is block `k`; `{k, 0, 0, 0}` is a
+  very different place. It also discards any buffered outputs.
 
 ## See also
 
 - [Pseudo-random number generation — cppreference](https://en.cppreference.com/w/cpp/numeric/random)
 - [std::mt19937 — cppreference](https://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine)
 - [std::uniform_int_distribution — cppreference](https://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution)
+- [std::philox_engine — cppreference](https://en.cppreference.com/w/cpp/numeric/random/philox_engine)
+- [P2075R6: Philox as an extension of the C++ RNG engines](https://wg21.link/P2075R6)
+- [[rand.eng.philox] in the draft](https://eel.is/c++draft/rand.eng.philox)
