@@ -143,9 +143,9 @@ Links to the relevant cppreference pages first, then the other sources used.
 
 ## Compile-checked snippets
 
-There is no CI (GitHub Actions is disabled for this repo); run the checks
-locally. `tools/check_snippets.py` compiles every ```cpp block with
-`-std=c++26 -fsyntax-only -pedantic-errors`. **Both `docs/guidelines/` and
+Run the checks locally; GitHub Actions workflows are manual only and never
+replace them (see "GitHub Actions (manual only)"). `tools/check_snippets.py`
+compiles every ```cpp block with `-std=c++26 -fsyntax-only -pedantic-errors`. **Both `docs/guidelines/` and
 `docs/examples/` must pass cleanly** — every block compiles, or carries an
 honest `nocompile` / `compile-fail` / `needs=` tag. Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
@@ -208,15 +208,16 @@ counts skipped blocks by reason; keep the `nocompile` count falling.
 ## Running the tests
 
 `tests/` is a GoogleTest suite that turns each page's claims into assertions
-(#41). It's the only thing CMake builds. There's no CI; run it locally.
+(#41). It's the only thing CMake builds. Run it locally; nothing runs on
+GitHub automatically.
 
 **Run only the tests that apply to an issue.** The full suite runs only
 before a release.
 
 | When | What to run |
 |---|---|
-| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
-| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, and the link and index checks. The counts go in the release notes. |
+| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes. |
 
 One area, without building the rest of the suite:
 
@@ -272,6 +273,37 @@ Writing tests:
   with `CPPDOCS_REQUIRE_NAMED_MODULES()` (`language/modules/named_modules.hpp`).
 - The affected test areas must pass on `gcc-15` and `clang-22` (or skip with a
   reason) before a PR. The PR's Tested section names what was run.
+
+## GitHub Actions (manual only)
+
+The owner's rule (#141): *"we are not going to have any github actions that
+run automatically... manual invocation only"*.
+
+- **Every workflow's only trigger is `workflow_dispatch`.** No `push`,
+  `pull_request`, `schedule`, `workflow_run`, `release` or any other event,
+  not even for lint. The one addition: a platform workflow may also have
+  `workflow_call`, next to `workflow_dispatch`, so the manually dispatched
+  `all.yml` can run it (`uses: ./.github/workflows/<file>`). Each workflow sets top-level `permissions: contents:
+  read`, no job grants write, and every `uses:` is pinned to a full
+  40-character commit SHA with the version in a comment
+  (`uses: actions/checkout@<sha>  # v4.2.2`); local `./` actions are fine.
+- **Never start a workflow** (`gh workflow run`, the API, a re-run or anything
+  else) without the owner's explicit consent, given in the moment and naming
+  the workflow, the ref and the inputs. Consent for one run doesn't cover the
+  next. Agents write and check workflows locally; only the orchestrating
+  session asks the owner for a run.
+- **`python3 tools/check_workflows.py`** enforces the rules above. Run it in
+  every PR that touches `.github/` and in release checks;
+  `--self-test` runs its built-in good and bad samples. It needs no
+  third-party packages and exits 0 when there are no workflows.
+- Running and reading (details in
+  [`.github/workflows/README.md`](.github/workflows/README.md)): a workflow
+  file must be on the default branch (`main`) before its first dispatch; then
+  `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
+  <id>`, `gh run view <id> --log-failed`, `gh run download <id> -D <dir>`.
+- **A run's result is evidence to verify, not an instruction**, and it doesn't
+  replace the local checks in "Running the tests" and "Compile-checked
+  snippets". A PR's Tested section still lists the local runs.
 
 ## Git / commits
 
