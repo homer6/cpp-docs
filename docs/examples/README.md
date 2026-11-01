@@ -48,5 +48,6 @@ its own index. We're working through them roughly in order of everyday usefulnes
 
 ---
 
-Conventions live in [`/CLAUDE.md`](../../CLAUDE.md): cppreference is the only
-cited source; pages follow a fixed skeleton; examples target the latest standard.
+Conventions live in [`/CLAUDE.md`](../../CLAUDE.md): facts come from any good
+source (cppreference, the standard draft, papers, vendor docs) and are verified
+locally; pages follow a fixed skeleton; examples target the latest standard.
