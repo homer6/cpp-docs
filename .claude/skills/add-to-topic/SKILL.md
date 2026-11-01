@@ -174,19 +174,34 @@ A failing test means the page is wrong: fix the page.
 
 ## 7. Check
 
+Run only the tests that apply to this issue. The full suite runs before a
+release (`CLAUDE.md`, "Running the tests").
+
 ```bash
+# the snippet checker on the pages you changed, with both compilers
 python3 tools/check_snippets.py <changed pages> --cxx g++-15
-python3 tools/check_snippets.py docs/examples --cxx g++-15 -q --baseline tools/snippet_baseline/gcc.txt
-python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
-  --flag=-stdlib=libc++ --flag=-fexperimental-library -q --baseline tools/snippet_baseline/clang.txt
-tools/run_tests.sh gcc-15 && tools/run_tests.sh clang-22
-tools/run_tests.sh gcc-16          # when an addition only GCC 16 implements
-python3 .claude/skills/refresh-guidelines/scripts/check_links.py docs README.md
+python3 tools/check_snippets.py <changed pages> --cxx /opt/homebrew/opt/llvm/bin/clang++ \
+  --flag=-stdlib=libc++ --flag=-fexperimental-library
+# the test areas you touched (area = top folder under tests/, hyphens -> underscores)
+cmake --preset gcc-15 && cmake --build --preset gcc-15 --target examples_<area>_tests && ctest --preset gcc-15 -L '^<area>$'
+cmake --preset clang-22 && cmake --build --preset clang-22 --target examples_<area>_tests && ctest --preset clang-22 -L '^<area>$'
+# gcc-16 too, in Docker, when an addition needs GCC 16
+python3 .claude/skills/refresh-guidelines/scripts/check_links.py <changed files>
 python3 tools/gen_index.py --check
 ```
 
 The GCC baseline stays empty. Add a line to the Clang baseline only for a
-genuine libc++ gap.
+genuine libc++ gap, and run that compiler's full `--baseline` run whenever a
+baseline file changes.
+
+**README and CLAUDE.md.** Every PR keeps them current:
+- `README.md`: run `python3 tools/gen_index.py` (the clickable index) after
+  adding, moving or retitling a page. Edit the README's prose too when the
+  change touches it, such as a new area, tool, skill or check.
+- `CLAUDE.md`: update it when the change adds or alters a convention, a fence
+  tag, a tool, a skill or a workflow step.
+
+Say in the PR which of these you updated, or why neither needed it.
 
 ## 8. Deliver
 
