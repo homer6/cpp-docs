@@ -3,7 +3,9 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <new>
 #include <string>
+#include <type_traits>
 #include <version>
 
 #include <gtest/gtest.h>
@@ -105,4 +107,36 @@ TEST(RawMemory, StartLifetimeAs) {
     EXPECT_EQ(hdr->type, 7);
     EXPECT_EQ(hdr->length, 20);
 #endif
+}
+
+// "std::launder (C++17)": launder reaches the int built in a byte buffer through a
+// reinterpret_cast pointer; keeping placement new's result needs no launder.
+TEST(RawMemory, LaunderReusedBuffer) {
+    static_assert(__cpp_lib_launder >= 201606L);
+    alignas(int) std::byte buf[sizeof(int)];
+    new (buf) int{7};
+    int a = *std::launder(reinterpret_cast<int*>(buf));
+    EXPECT_EQ(a, 7);
+    int* p = new (buf) int{8};
+    EXPECT_EQ(a + *p, 15);
+    static_assert(std::is_same_v<decltype(std::launder(p)), int*>);
+}
+
+// "std::launder (C++17)": a const complete object replaced in place is reached only through launder.
+TEST(RawMemory, LaunderConstCompleteObject) {
+    struct X { int n; };
+    const X* p = new const X{3};
+    new (const_cast<X*>(p)) const X{5};
+    EXPECT_EQ(std::launder(p)->n, 5);
+    delete std::launder(p);
+}
+
+// "std::launder (C++17)": since C++20 a class with a const member is transparently replaceable,
+// so the old name refers to the new object.
+TEST(RawMemory, ConstMemberReplacedWithoutLaunder) {
+    struct Id { const int n; };
+    Id id{1};
+    std::destroy_at(&id);
+    std::construct_at(&id, 2);
+    EXPECT_EQ(id.n, 2);
 }
