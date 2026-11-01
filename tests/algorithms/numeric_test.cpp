@@ -1,4 +1,5 @@
 // Checks claims made by docs/examples/algorithms/numeric.md.
+#include <algorithm>
 #include <climits>
 #include <functional>
 #include <numeric>
@@ -90,4 +91,13 @@ TEST(Numeric, SmallButHandy) {
     EXPECT_EQ(std::lcm(4, 6), 12);
     EXPECT_EQ(std::midpoint(7, 10), 8);  // rounds toward the first argument
     EXPECT_EQ(std::midpoint(INT_MAX - 2, INT_MAX), INT_MAX - 1);  // (a+b)/2 would overflow
+}
+
+// "Gotchas": accumulate(doubles, 0) works in int; ranges::fold_left deduces double from the operation.
+TEST(Numeric, FoldLeftDeducesResultType) {
+    std::vector<double> d{0.5, 0.5};
+    EXPECT_EQ(std::accumulate(d.begin(), d.end(), 0), 0);
+    auto f = std::ranges::fold_left(d, 0, std::plus<>{});
+    static_assert(std::is_same_v<decltype(f), double>);
+    EXPECT_EQ(f, 1.0);
 }

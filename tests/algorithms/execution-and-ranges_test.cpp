@@ -3,6 +3,7 @@
 #include <concepts>
 #include <functional>
 #include <list>
+#include <optional>
 #include <ranges>
 #include <stdexcept>
 #include <string>
@@ -137,5 +138,38 @@ TEST(ExecutionAndRanges, RangesAlgorithmsTakeNoPolicy) {
     static_assert(!std::invocable<decltype(std::ranges::sort), const std::execution::parallel_policy&,
                                   std::vector<int>&>);
 #endif
+#endif
+}
+
+// "Folds (C++23)": fold_left and fold_left_with_iter (libc++ in Clang 22 has these two without the macro).
+TEST(ExecutionAndRanges, FoldLeft) {
+    std::vector<int> v{1, 2, 3, 4};
+    EXPECT_EQ(std::ranges::fold_left(v, 0, std::plus<>{}), 10);
+    EXPECT_EQ(std::ranges::fold_left(v, 0, std::minus<>{}), -10);
+    auto [it, total] = std::ranges::fold_left_with_iter(v, 0, std::plus<>{});
+    EXPECT_EQ(it, v.end());
+    EXPECT_EQ(total, 10);
+    std::vector<double> d{0.5, 0.5};
+    auto f = std::ranges::fold_left(d, 0, std::plus<>{});
+    static_assert(std::same_as<decltype(f), double>);  // deduced from the operation, not from init
+    EXPECT_EQ(f, 1.0);
+}
+
+// "Folds (C++23)": fold_right swaps the argument order; the _first/_last forms return optional.
+TEST(ExecutionAndRanges, FoldRightAndFirst) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_ranges_fold, 202207L);
+#ifdef __cpp_lib_ranges_fold
+    std::vector<int> v{1, 2, 3, 4};
+    EXPECT_EQ(std::ranges::fold_right(v, 0, std::minus<>{}), -2);
+    auto first = std::ranges::fold_left_first(v, std::plus<>{});
+    static_assert(std::same_as<decltype(first), std::optional<int>>);
+    EXPECT_EQ(first, 10);
+    EXPECT_EQ(std::ranges::fold_right_last(v, std::minus<>{}), -2);  // 1-(2-(3-4))
+    std::vector<int> empty;
+    EXPECT_FALSE(std::ranges::fold_left_first(empty, std::plus<>{}).has_value());
+    EXPECT_FALSE(std::ranges::fold_right_last(empty, std::plus<>{}).has_value());
+    auto [it, r] = std::ranges::fold_left_first_with_iter(v, std::plus<>{});
+    EXPECT_EQ(it, v.end());
+    EXPECT_EQ(r, 10);
 #endif
 }
