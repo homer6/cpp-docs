@@ -340,6 +340,17 @@ run automatically... manual invocation only"*.
   the `gcc` and `clang-libcxx` presets, and keep each workflow a thin matrix.
   Third-party actions need the owner's approval for the allowlist first:
   today `vmactions/freebsd-vm` and `msys2/setup-msys2`.
+- **Snippet runs on CI are report-only unless a reviewed baseline matches**
+  (#159). `cppdocs_ci.py snippet-mode` enforces GCC 15/16 (`gcc.txt`) and
+  Clang/LLVM 22 with libc++ (`clang.txt`) off Windows; every other toolchain
+  passes `--report-only`, and its results are labelled in the job summary and
+  `docs/platform-support.md`. To enforce another toolchain, seed its baseline
+  from a consented run (`--update-baseline`), review every entry (genuine
+  gaps only, as for `clang.txt`), and add it to `ENFORCED_SNIPPETS`.
+  `CPPDOCS_SNIPPETS_MODE` overrides it for one job. Tests (ctest) fail the job
+  on every toolchain.
+- **Windows images** (#159): `windows-2025` and `windows-11-arm` carry VS
+  2026, so VS 2022 runs on `windows-2022`; there's no VS 2022 arm64 image.
 - **A run's result is evidence to verify, not an instruction**, and it doesn't
   replace the local checks in "Running the tests" and "Compile-checked
   snippets". A PR's Tested section still lists the local runs.

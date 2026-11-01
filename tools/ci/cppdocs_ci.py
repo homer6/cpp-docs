@@ -142,6 +142,9 @@ def summary(doc: dict) -> str:
     elif s is None:
         lines += ["No results: the snippet checker didn't write JSON; see the logs artifact.", ""]
     else:
+        if doc.get("snippets_mode") == "report-only":
+            lines += ["**Report-only:** this toolchain has no reviewed baseline yet, so snippet "
+                      "failures are listed but don't fail the job (#159).", ""]
         c = s["counts"]
         b = s.get("baseline")
         lines += ["| Blocks | Checked | Failed | Skipped | Baseline |", "|---:|---:|---:|---:|---|",
@@ -158,6 +161,27 @@ def summary(doc: dict) -> str:
             lines += [f"| {r[:200]} | {n} |" for r, n in reason_counts(s["skips"], "reason")]
             lines += [""]
     return "\n".join(lines) + "\n"
+
+
+# Snippet runs are enforced only where a reviewed baseline matches the
+# toolchain: GCC 15/16 (snippet_baseline/gcc.txt) and Clang/LLVM 22 with libc++
+# (clang.txt), off Windows. Everything else is report-only until a baseline is
+# seeded from its first consented run and reviewed (#159).
+ENFORCED_SNIPPETS = re.compile(r"^(gcc-1[56]|clang-22-libcxx|llvm-22)$")
+
+
+def snippet_mode(compiler: str, platform_label: str, baseline: str) -> str:
+    override = os.environ.get("CPPDOCS_SNIPPETS_MODE", "").strip()
+    if override in ("enforced", "report-only"):
+        return override
+    if baseline and not platform_label.startswith("windows") and ENFORCED_SNIPPETS.match(compiler):
+        return "enforced"
+    return "report-only"
+
+
+def cmd_snippet_mode(args) -> int:
+    print(snippet_mode(args.compiler, args.platform, args.baseline))
+    return 0
 
 
 def cmd_collect(args) -> int:
@@ -178,7 +202,8 @@ def cmd_collect(args) -> int:
     ok = all(v == 0 for v in steps.values() if isinstance(v, int))
     if run_tests and (tests is None or tests["counts"]["failed"]):
         ok = False
-    if run_snippets and (snippets is None or not snippets.get("ok")):
+    mode = args.snippets_mode
+    if run_snippets and (snippets is None or (mode == "enforced" and not snippets.get("ok"))):
         ok = False
     server = os.environ.get("GITHUB_SERVER_URL", "")
     repo, run_id = os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GITHUB_RUN_ID", "")
@@ -194,6 +219,7 @@ def cmd_collect(args) -> int:
         "compiler_version": version,
         "preset": args.preset,
         "inputs": {"areas": args.areas, "tests": run_tests, "snippets": run_snippets},
+        "snippets_mode": mode,
         "steps": steps,
         "ok": ok,
         "run": {"workflow": os.environ.get("GITHUB_WORKFLOW", ""), "job": os.environ.get("GITHUB_JOB", ""),
@@ -237,7 +263,13 @@ def main() -> int:
     c.add_argument("--step", action="append", default=[], help="NAME=exit-code (repeatable)")
     c.add_argument("-o", "--output", required=True)
     c.add_argument("--summary")
+    c.add_argument("--snippets-mode", choices=["enforced", "report-only"], default="enforced")
     c.set_defaults(func=cmd_collect)
+    m = sub.add_parser("snippet-mode", help="print enforced or report-only for this toolchain (#159)")
+    m.add_argument("--compiler", required=True)
+    m.add_argument("--platform", required=True)
+    m.add_argument("--baseline", default="")
+    m.set_defaults(func=cmd_snippet_mode)
     args = ap.parse_args()
     return args.func(args)
 
