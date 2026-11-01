@@ -27,9 +27,9 @@ verification on all three toolchains, placement, snippet and test.
   for GCC 16 features such as contracts and reflection.
 - If something can't be verified locally (no local compiler implements it
   yet), say so on the page and tag the snippet `needs=<feature>`.
-- **See also** links to what you used and what a reader would want: the
-  cppreference page where one exists, papers, the draft, vendor docs, articles
-  and talks. Don't cite AI summaries; cite the source they came from.
+- **See also** links to what you used: cppreference first, then papers, the
+  draft, vendor docs, articles or talks where they add something. Don't cite
+  AI summaries; cite the source they came from.
 - cppreference blocks WebFetch (HTTP 403). Query it with the `perplexity` MCP
   tools (`search_domain_filter: ["cppreference.com"]`), or read the page itself
   with the Firecrawl CLI (`firecrawl scrape <url> --only-main-content`), which
@@ -110,7 +110,7 @@ Short, focused snippets. Prefer modern C++ (CTAD, structured bindings, ranges,
 The non-obvious traps.
 
 ## See also
-Links to the sources used: cppreference, papers, the draft, vendor docs, talks.
+Links to the relevant cppreference pages first, then the other sources used.
 ```
 
 ## Conventions

@@ -26,10 +26,11 @@ python3 .claude/skills/add-to-topic/scripts/find_gaps.py fold_left cartesian_pro
 so open the page and decide whether it's actually explained.
 
 **Finding gaps** ("what are we missing?"):
-1. Ask Perplexity for a list from whichever sources have one: the standard
-   draft's header and feature tables, compiler and library status pages
-   (GCC, libstdc++, Clang, libc++, MSVC), trip reports, cppreference's header
-   and `cpp/26` pages, or one header's synopsis.
+1. Ask Perplexity for a list. Start with cppreference (its header list, its
+   `cpp/23` and `cpp/26` pages, one header's members). Then widen to the
+   standard draft's tables, compiler and library status pages (GCC,
+   libstdc++, Clang, libc++, MSVC) and trip reports, to catch what
+   cppreference hasn't caught up with.
 2. Run the names through `find_gaps.py --file`.
 3. Probe the missing names' feature-test macros (step 3).
 
@@ -38,16 +39,17 @@ items as a checklist with the toolchains that implement them.
 
 ## 2. Research with Perplexity and Firecrawl
 
-**Use any source that gives good information.** That includes:
+**Start with cppreference, but don't stop there.** Add any other source that
+gives good information:
 - the standard draft (eel.is/c++draft) and WG21 papers;
 - compiler and standard-library docs, status pages, source code and PRs;
-- cppreference;
 - books, conference talks, and well-known blogs and articles by people who know
   the area.
 
 No source is trusted on its own, because everything is verified in step 3
-anyway. Pick whatever explains the idea best, and cross-check it against a
-second source when they might disagree.
+anyway. Use whatever explains the idea best, and cross-check it against a
+second source when they might disagree. That matters most for recent features
+cppreference may not have caught up with.
 
 Use both tools. Perplexity finds and summarises across sources. Firecrawl reads
 a page itself, which is how you check what a summary said. WebFetch gets a 403
@@ -55,8 +57,9 @@ from some sites, cppreference included, so use these two instead.
 
 | Need | Tool |
 |---|---|
-| A first overview, or "what's in `<header>` / C++26?" | `perplexity_ask`, unfiltered. Add a `search_domain_filter` only to pin one site, such as `["open-std.org"]` or `["gcc.gnu.org"]` |
-| One page itself: a reference entry, a vendor doc, a blog post, a talk's notes | `firecrawl scrape <url> --only-main-content -o <scratch>/x.md`, or add `-Q "<question>"` to ask about that page alone |
+| A first overview, or "what's in `<header>` / C++26?" | `perplexity_ask` with `search_domain_filter: ["cppreference.com"]` to start, then unfiltered, or pinned to another site such as `["open-std.org"]` or `["gcc.gnu.org"]` |
+| The cppreference page itself: declaration, macro, example | `firecrawl scrape <cppreference URL> --only-main-content -o <scratch>/x.md`, or add `-Q "<question>"` to ask about that page alone |
+| Any other page: a vendor doc, a blog post, a talk's notes | `firecrawl scrape <url> --only-main-content`, with `-Q` if you like |
 | The paper: wording, macro bump, what was renamed | `firecrawl scrape https://wg21.link/P4052R0 --only-main-content` |
 | Which library implements it, and in which release | `firecrawl developer "libc++ P4052 saturating_add"`, which finds the libc++ / libstdc++ PRs and issues |
 | Anything else (talks, articles, status pages, mailing lists) | `perplexity_search` or `firecrawl search "<query>"` |
@@ -146,9 +149,8 @@ of explaining the same thing twice.
   `compile-fail` to `nocompile` for a "this doesn't compile" point.
 - Put stated values in comments (`// 255, not 0: saturates`), so the test can
   assert them.
-- In `## See also`, link the sources a reader would want: the cppreference
-  page where one exists, the paper, the draft section, and the vendor doc,
-  article or talk you used.
+- In `## See also`, link cppreference first, then the other sources you used:
+  the paper, the draft section, and the vendor doc, article or talk.
 
 ## 6. Test the claim
 
