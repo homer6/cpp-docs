@@ -94,7 +94,7 @@ area has its own README.
 - **[`tests/`](tests/CMakeLists.txt)** — GoogleTest suite that checks the pages' claims (see [Running the tests](#running-the-tests))
 - **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) runs the tests
 - **[`evals/`](evals/README.md)** — test cases for the `cpp-guidelines` agent skill
-- **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (apply the guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current)
+- **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (apply the guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current), [`add-to-topic`](.claude/skills/add-to-topic/SKILL.md) (add a feature or gotcha to the reference), [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) (write C++ using this reference)
 - **[`modules/`](modules/)** — submodules: [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines), [perf-report](https://github.com/homer6/perf-report)
 
 Every area on cppreference's main page has pages, and every snippet compiles
