@@ -54,6 +54,7 @@ ninja --version
 Write-Output '::endgroup::'
 
 if ($runTests -eq 'true') {
+    $env:CPPDOCS_KEEP_GOING = '1'   # run_tests.ps1: build with -k 0, show every compile error
     # tools/run_tests.ps1 configures, builds every area and runs ctest (only
     # the areas' labels with -L), then writes the JSON. Native Windows builds
     # are fast enough that building all areas for an `areas` run is fine.

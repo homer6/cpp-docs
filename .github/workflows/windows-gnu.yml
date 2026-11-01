@@ -77,6 +77,7 @@ jobs:
           $ver = ((& $cxx --version | Select-Object -First 1) -replace '.*version (\d+)\..*', '$1')
           $os = Get-CimInstance Win32_OperatingSystem
           "CXX=$cxx" >> $env:GITHUB_ENV
+          "CC=$cxx" >> $env:GITHUB_ENV   # GoogleTest's project() needs C too; plain clang chokes on cl flags
           "CPPDOCS_COMPILER=clang-cl-$ver" >> $env:GITHUB_ENV
           "CPPDOCS_OS_VERSION=$($os.Caption) $($os.Version), VS $($env:VisualStudioVersion), MS STL from VC tools $($env:VCToolsVersion)" >> $env:GITHUB_ENV
 

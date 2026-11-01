@@ -17,11 +17,15 @@ kind="${1:?usage: macos-toolchain.sh apple-clang|homebrew-gcc|homebrew-llvm}"
 major() { sed -nE 's/.*version ([0-9]+)\..*/\1/p' | head -1; }
 
 macos="$(sw_vers -productVersion)"
-xcode="$(xcodebuild -version 2>/dev/null | head -1 || echo 'Command Line Tools only')"
+# Not `xcodebuild -version | head -1 || echo …`: with pipefail, head closing
+# the pipe makes the pipeline fail (SIGPIPE) and the fallback line was
+# appended too, a two-line value that broke $GITHUB_ENV on some runners.
+xcode="$( (xcodebuild -version 2>/dev/null || true) | sed -n 1p)"
+[[ -n "$xcode" ]] || xcode="Command Line Tools only"
 arch="$(uname -m)"
 env=(
     "CPPDOCS_PLATFORM=macos-${macos%%.*}-${arch}"
-    "CPPDOCS_OS_VERSION=macOS ${macos} ($(sw_vers -buildVersion)), ${xcode}"
+    "CPPDOCS_OS_VERSION=$(printf 'macOS %s (%s), %s' "$macos" "$(sw_vers -buildVersion)" "$xcode" | tr -d '\r\n')"
 )
 case "$kind" in
 apple-clang)
