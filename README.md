@@ -177,7 +177,7 @@ Every reference page has the same shape:
 
 ## Checking the snippets
 
-There's no CI; run the checker locally:
+Run the checker locally:
 
 ```bash
 python3 tools/check_snippets.py docs/guidelines --cxx g++-15
@@ -197,8 +197,8 @@ All three must pass cleanly. The GCC list of known failures
 
 The snippet checker proves the code **compiles**; the GoogleTest suite under
 [`tests/`](tests/) checks that it **does what the pages say** (printed output,
-values in comments, thrown exceptions, type claims). There's no CI; run it
-locally with CMake 3.25+ (presets) and Ninja:
+values in comments, thrown exceptions, type claims). Run it locally with CMake
+3.25+ (presets) and Ninja:
 
 ```bash
 tools/run_tests.sh              # gcc-15: Homebrew g++-15, libstdc++
@@ -245,6 +245,16 @@ them. `import std` is used where CMake provides it: CMake 4.3 and 4.4 with the
 experimental gate the top-level `CMakeLists.txt` sets, or 4.5+ without one.
 Elsewhere — the gcc-16 image's CMake 3.31, GCC 15 with CMake 4.5 on macOS —
 those tests skip and say why.
+
+## CI (manual)
+
+GitHub Actions workflows here are **manual only**: `workflow_dispatch` is the
+only trigger, nothing runs on push, pull request or a schedule, and a run
+needs the owner's go-ahead. Every workflow is read-only (`permissions:
+contents: read`) with actions pinned to commit SHAs;
+`python3 tools/check_workflows.py` checks that. How to run, watch and read a
+workflow is in [`.github/workflows/README.md`](.github/workflows/README.md).
+The local checks above remain the source of truth.
 
 ## Conventions
 
