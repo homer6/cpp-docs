@@ -23,6 +23,7 @@
 #   CPPDOCS_SNIPPET_ARGS       extra check_snippets.py arguments (word-split),
 #                              e.g. --flag=-stdlib=libc++ --flag=-fexperimental-library
 #   CPPDOCS_BASELINE    snippet baseline file; empty = none (every failure counts)
+#   CPPDOCS_SNIPPETS_MODE  enforced | report-only; default from cppdocs_ci.py snippet-mode (#159)
 #   CPPDOCS_OS_VERSION  OS description for the results (default: from CMake / uname)
 #   CPPDOCS_OUT         where logs and partial JSON go (default ci-out)
 #
@@ -97,6 +98,8 @@ if [[ "$run_tests" == true ]]; then
     fi
 fi
 
+snippets_mode="$("$py" tools/ci/cppdocs_ci.py snippet-mode --compiler "$CPPDOCS_COMPILER" \
+    --platform "$CPPDOCS_PLATFORM" --baseline "${CPPDOCS_BASELINE:-}")"
 if [[ "$run_snippets" == true ]]; then
     paths=(docs)
     if [[ -n "$areas" ]]; then
@@ -107,6 +110,10 @@ if [[ "$run_snippets" == true ]]; then
     args=(--toolchain "${CPPDOCS_SNIPPET_TOOLCHAIN:-auto}" -q --json "$out/snippets.json")
     [[ -n "${CXX:-}" ]] && args+=(--cxx "$CXX")
     [[ -n "${CPPDOCS_BASELINE:-}" ]] && args+=(--baseline "$CPPDOCS_BASELINE")
+    if [[ "$snippets_mode" == report-only ]]; then
+        args+=(--report-only)
+        echo "snippets: report-only for $CPPDOCS_COMPILER on $CPPDOCS_PLATFORM (no reviewed baseline; #159)"
+    fi
     if [[ ${#paths[@]} -gt 0 ]]; then
         group "snippets (${paths[*]})"
         # shellcheck disable=SC2086
@@ -122,7 +129,7 @@ fi
     --platform "$CPPDOCS_PLATFORM" --compiler "$CPPDOCS_COMPILER" --preset "$preset" \
     --os-version "${CPPDOCS_OS_VERSION:-}" --areas "$areas" \
     --run-tests "$run_tests" --run-snippets "$run_snippets" \
-    --tests "$out/tests.json" --snippets "$out/snippets.json" \
+    --tests "$out/tests.json" --snippets "$out/snippets.json" --snippets-mode "$snippets_mode" \
     ${steps[@]+"${steps[@]}"} -o "$results" --summary "$out/summary.md" || status=1
 if [[ -n "${GITHUB_STEP_SUMMARY:-}" && -f "$out/summary.md" ]]; then
     cat "$out/summary.md" >> "$GITHUB_STEP_SUMMARY"

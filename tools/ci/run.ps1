@@ -68,6 +68,8 @@ if ($runTests -eq 'true') {
     Copy-Item -ErrorAction SilentlyContinue "build/$preset/Testing/Temporary/LastTest.log" $out
 }
 
+$snippetsMode = (& $py tools/ci/cppdocs_ci.py snippet-mode --compiler $env:CPPDOCS_COMPILER `
+    --platform $env:CPPDOCS_PLATFORM --baseline (Env-Or 'CPPDOCS_BASELINE' '')).Trim()
 if ($runSnippets -eq 'true') {
     $paths = @('docs')
     if ($areas) {
@@ -77,6 +79,10 @@ if ($runSnippets -eq 'true') {
     $snipArgs = @('--toolchain', (Env-Or 'CPPDOCS_SNIPPET_TOOLCHAIN' 'auto'), '-q', '--json', "$out/snippets.json")
     if ($env:CXX) { $snipArgs += @('--cxx', $env:CXX) }
     if ($env:CPPDOCS_BASELINE) { $snipArgs += @('--baseline', $env:CPPDOCS_BASELINE) }
+    if ($snippetsMode -eq 'report-only') {
+        $snipArgs += '--report-only'
+        Write-Output "snippets: report-only for $($env:CPPDOCS_COMPILER) on $($env:CPPDOCS_PLATFORM) (no reviewed baseline; #159)"
+    }
     $snipArgs += Words $env:CPPDOCS_SNIPPET_ARGS
     if ($paths.Count -gt 0) {
         Write-Output "::group::snippets ($($paths -join ' '))"
@@ -91,7 +97,8 @@ if ($runSnippets -eq 'true') {
 & $py tools/ci/cppdocs_ci.py collect --platform $env:CPPDOCS_PLATFORM --compiler $env:CPPDOCS_COMPILER `
     --preset $preset --os-version (Env-Or 'CPPDOCS_OS_VERSION' '') --areas $areas `
     --run-tests $runTests --run-snippets $runSnippets `
-    --tests "$out/tests.json" --snippets "$out/snippets.json" @steps -o $results --summary "$out/summary.md"
+    --tests "$out/tests.json" --snippets "$out/snippets.json" --snippets-mode $snippetsMode `
+    @steps -o $results --summary "$out/summary.md"
 if ($LASTEXITCODE -ne 0) { $status = 1 }
 if ($env:GITHUB_STEP_SUMMARY -and (Test-Path "$out/summary.md")) {
     Get-Content "$out/summary.md" -Encoding utf8 | Add-Content $env:GITHUB_STEP_SUMMARY -Encoding utf8
