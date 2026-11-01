@@ -275,6 +275,15 @@ Writing tests:
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`.
 - **Open PRs ready for review, never as drafts.**
+- **Every PR keeps `README.md` and `CLAUDE.md` current.**
+  - `README.md`: regenerate the clickable index (`python3 tools/gen_index.py`)
+    whenever a page is added, moved or retitled. Edit the prose when the change
+    touches it: a new area, tool, skill, check or workflow.
+  - `CLAUDE.md`: update it when the change adds or alters a convention, a fence
+    tag, a tool, a skill or a workflow step.
+
+  The PR description says which of the two were updated, or why neither
+  needed it. `python3 tools/gen_index.py --check` must pass.
 - **Close the issue as soon as its PR is opened — automatically, as part of
   shipping the PR.** Opening the PR *is* the signal that the feature is done;
   don't wait for the merge, close it even if the PR says "Part of #n", and
