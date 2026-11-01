@@ -12,4 +12,5 @@ compile time). Mirrors
 | [Conversions & casts](conversions.md) | implicit conversions and the four named casts |
 | [Literals](literals.md) | integer/float/string literals and user-defined literals |
 | [Constant expressions](constant-expressions.md) | `constexpr`, `consteval`, `constinit` |
+| [What constant evaluation allows](constant-evaluation-rules.md) | C++20–26 relaxations, transient allocation, UB as a compile error, limits, the constexpr library |
 | [Reflection](reflection.md) | the `^^` operator and splicers (C++26) |

@@ -24,6 +24,9 @@ static_assert(square(4) == 16);
 Modern `constexpr` is powerful: loops, branches, local variables, most of the
 standard library (containers, `std::string`, algorithms) are `constexpr` in
 recent standards.
+What each standard allows inside constant evaluation (virtual calls, transient
+`new`, `goto`, placement `new`…) is on
+[what constant evaluation allows](constant-evaluation-rules.md).
 
 ## consteval — must run at compile time (C++20)
 
