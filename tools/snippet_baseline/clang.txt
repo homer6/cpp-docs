@@ -17,4 +17,4 @@ docs/examples/ranges/views.md#new-in-c23/2
 docs/examples/text-processing/text-encoding.md#looking-encodings-up-by-name/1
 docs/examples/text-processing/text-encoding.md#the-encoding-of-a-locale/1
 docs/examples/text-processing/text-encoding.md#what-am-i-running-with/1
-docs/examples/utilities/functional.md#stdmoveonlyfunction-c23/1
+docs/examples/utilities/callable-wrappers.md#stdmoveonlyfunction-c23/1

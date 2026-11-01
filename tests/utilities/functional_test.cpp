@@ -1,38 +1,15 @@
 // Checks claims made by docs/examples/utilities/functional.md.
+#include <algorithm>
 #include <functional>
-#include <memory>
+#include <ranges>
+#include <string>
 #include <type_traits>
+#include <vector>
 #include <version>
 
 #include <gtest/gtest.h>
 
 #include "support/feature.hpp"
-
-// "std::function": reassign to std::multiplies, 6 * 7 == 42; calling an empty one throws bad_function_call.
-TEST(Functional, StdFunction) {
-    std::function<int(int, int)> op = [](int a, int b) { return a + b; };
-    EXPECT_EQ(op(6, 7), 13);
-    op = std::multiplies<int>{};
-    EXPECT_EQ(op(6, 7), 42);
-    EXPECT_TRUE(static_cast<bool>(op));
-
-    std::function<int(int, int)> empty;
-    EXPECT_FALSE(static_cast<bool>(empty));
-    EXPECT_THROW(empty(1, 2), std::bad_function_call);
-}
-
-// "std::move_only_function (C++23)": holds a move-only callable and is itself move-only.
-TEST(Functional, MoveOnlyFunction) {
-    CPPDOCS_REQUIRE(__cpp_lib_move_only_function);
-#ifdef __cpp_lib_move_only_function
-    std::move_only_function<int()> task = [p = std::make_unique<int>(5)] { return *p; };
-    EXPECT_EQ(task(), 5);
-    static_assert(!std::is_copy_constructible_v<std::move_only_function<void()>>);
-    // A noexcept-qualified signature is accepted.
-    std::move_only_function<int() const noexcept> c = []() noexcept { return 1; };
-    EXPECT_EQ(c(), 1);
-#endif
-}
 
 // "std::invoke": calls a member function, reads a data member, calls a lambda.
 TEST(Functional, Invoke) {
@@ -88,4 +65,110 @@ TEST(Functional, BindVsLambda) {
     auto add5b = std::bind(add, 5, std::placeholders::_1);
     EXPECT_EQ(add5(10), 15);
     EXPECT_EQ(add5b(10), 15);
+}
+
+// "bind_front / bind_back": front prepends, back appends; a member function binds to an object pointer.
+TEST(Functional, BindFrontBack) {
+    auto sub = [](int a, int b) { return a - b; };
+    auto from10 = std::bind_front(sub, 10);
+    EXPECT_EQ(from10(3), 7);
+    CPPDOCS_REQUIRE(__cpp_lib_bind_back);
+#ifdef __cpp_lib_bind_back
+    auto minus10 = std::bind_back(sub, 10);
+    EXPECT_EQ(minus10(3), -7);
+#endif
+    struct Counter {
+        int n = 0;
+        int add(int k) { return n += k; }
+    };
+    Counter c;
+    auto add_to_c = std::bind_front(&Counter::add, &c);
+    add_to_c(5);
+    EXPECT_EQ(c.n, 5);
+}
+
+// Gotcha "bind_front copies its arguments": binding obj by value leaves the original alone.
+TEST(Functional, BindFrontCopies) {
+    struct Counter {
+        int n = 0;
+        int add(int k) { return n += k; }
+    };
+    Counter c;
+    auto on_copy = std::bind_front(&Counter::add, c);
+    EXPECT_EQ(on_copy(5), 5);
+    EXPECT_EQ(c.n, 0);
+    auto on_ref = std::bind_front(&Counter::add, std::ref(c));
+    on_ref(5);
+    EXPECT_EQ(c.n, 5);
+}
+
+// "not_fn (C++17)": counts the odd numbers in {1..5} == 3.
+TEST(Functional, NotFn) {
+    auto is_even = [](int x) { return x % 2 == 0; };
+    std::vector<int> xs{1, 2, 3, 4, 5};
+    EXPECT_EQ(std::count_if(xs.begin(), xs.end(), std::not_fn(is_even)), 3);
+}
+
+namespace {
+struct Person {
+    std::string name;
+    int age;
+    bool adult() const { return age >= 18; }
+};
+[[maybe_unused]] bool is_even_fn(int x) { return x % 2 == 0; }
+[[maybe_unused]] int sub_fn(int a, int b) { return a - b; }
+template <auto F>
+concept has_constant_bind_front = requires { std::bind_front<F>(10); };
+}  // namespace
+
+// "mem_fn (C++11)": member function predicate, data member through a reference and a pointer; ranges need no mem_fn.
+TEST(Functional, MemFn) {
+    std::vector<Person> people{{"Ann", 30}, {"Bo", 10}};
+    EXPECT_EQ(std::count_if(people.begin(), people.end(), std::mem_fn(&Person::adult)), 1);
+    auto age = std::mem_fn(&Person::age);
+    EXPECT_EQ(age(people[0]), 30);
+    EXPECT_EQ(age(&people[1]), 10);
+    EXPECT_EQ(std::ranges::count_if(people, &Person::adult), 1);
+}
+
+// "Constant-callable forms (C++26)": not_fn<f>() (GCC 16, libc++ 22).
+TEST(Functional, NotFnConstant) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_not_fn, 202306L);
+#if __cpp_lib_not_fn >= 202306L
+    auto odd = std::not_fn<is_even_fn>();
+    EXPECT_TRUE(odd(3));
+    EXPECT_FALSE(odd(4));
+#endif
+}
+
+// "Constant-callable forms (C++26)": bind_front<f> / bind_back<f> store only the bound int (GCC 16).
+TEST(Functional, BindConstant) {
+#ifdef _LIBCPP_VERSION
+    GTEST_SKIP() << "libc++ defines __cpp_lib_bind_front 202306L but lacks bind_front<f>() (the page says so)";
+#else
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_bind_front, 202306L);
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_bind_back, 202306L);
+#if __cpp_lib_bind_front >= 202306L && __cpp_lib_bind_back >= 202306L
+    auto from10 = std::bind_front<sub_fn>(10);
+    auto minus10 = std::bind_back<sub_fn>(10);
+    EXPECT_EQ(from10(3), 7);
+    EXPECT_EQ(minus10(3), -7);
+    static_assert(sizeof(from10) == sizeof(int));
+#endif
+#endif
+}
+
+// "Constant-callable forms (C++26)": libc++ 22 advertises 202306L for bind_front, but bind_back is still 202202L.
+TEST(Functional, LibcxxNttpGap) {
+#ifndef _LIBCPP_VERSION
+    GTEST_SKIP() << "libc++-specific claim";
+#else
+#if _LIBCPP_VERSION >= 220000 && _LIBCPP_VERSION < 230000
+    EXPECT_EQ(__cpp_lib_bind_front, 202306L);
+    EXPECT_EQ(__cpp_lib_bind_back, 202202L);
+    static_assert(!has_constant_bind_front<sub_fn>);
+#else
+    GTEST_SKIP() << "claim is about libc++ 22";
+#endif
+#endif
 }
