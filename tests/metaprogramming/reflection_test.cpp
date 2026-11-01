@@ -1,6 +1,7 @@
 // Checks claims made by docs/examples/metaprogramming/reflection.md.
 // GCC 16 builds this file with -freflection (see tests/CMakeLists.txt).
 #include <cstddef>
+#include <exception>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -26,6 +27,21 @@ struct Incomplete;
 consteval {
     meta::define_aggregate(^^Incomplete, {meta::data_member_spec(^^int, {.name = "x"}),
                                           meta::data_member_spec(^^int, {.name = "y"})});
+}
+
+consteval bool has_members(meta::info r) {
+    try {
+        (void)meta::members_of(r, meta::access_context::current());
+        return true;
+    } catch (const meta::exception&) {
+        return false;
+    }
+}
+
+consteval bool from_identifier_of() {
+    try { (void)meta::identifier_of(^^int); }
+    catch (const meta::exception& e) { return e.from() == ^^meta::identifier_of; }
+    return false;
 }
 
 template <class E>
@@ -59,8 +75,8 @@ TEST(Reflection, QueryingEntities) {
 #endif
 }
 
-// "Listing members, bases, enumerators": the counts and the layout queries.
-TEST(Reflection, ListingAndLayout) {
+// "Listing members, bases, enumerators": the counts.
+TEST(Reflection, Listing) {
     CPPDOCS_REQUIRE(__cpp_lib_reflection);
 #if defined(__cpp_impl_reflection) && defined(__cpp_lib_reflection)
     constexpr auto ctx = meta::access_context::current();
@@ -68,10 +84,6 @@ TEST(Reflection, ListingAndLayout) {
     static_assert(meta::nonstatic_data_members_of(^^refl::T, ctx).size() == 2);
     static_assert(meta::bases_of(^^refl::T, ctx).size() == 1);
     static_assert(meta::enumerators_of(^^refl::SomeEnum).size() == 2);
-    constexpr auto member = meta::nonstatic_data_members_of(^^refl::T, ctx)[1];
-    static_assert(meta::identifier_of(member) == "b");
-    static_assert(meta::offset_of(member).bytes == offsetof(refl::T, b));
-    static_assert(meta::size_of(^^refl::T) == sizeof(refl::T) && meta::alignment_of(^^refl::T) == alignof(refl::T));
 #endif
 }
 
@@ -110,5 +122,17 @@ TEST(Reflection, GeneratingAndSubstituting) {
     refl::Incomplete pt{1, 2};
     EXPECT_EQ(pt.x, 1);
     EXPECT_EQ(pt.y, 2);
+#endif
+}
+
+// "Errors: std::meta::exception": a failing meta function throws, and a
+// consteval function can catch it; from() names the function that failed.
+TEST(Reflection, MetaExceptionCaught) {
+    CPPDOCS_REQUIRE(__cpp_lib_reflection);
+#if defined(__cpp_impl_reflection) && defined(__cpp_lib_reflection)
+    static_assert(refl::has_members(^^refl::S));
+    static_assert(!refl::has_members(^^int));
+    static_assert(refl::from_identifier_of());
+    static_assert(std::is_base_of_v<std::exception, meta::exception>);
 #endif
 }

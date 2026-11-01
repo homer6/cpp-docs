@@ -33,7 +33,18 @@ template <class T> std::string dump(const T& obj) {  // the page's example, retu
 }
 
 enum class Color { red, green };
+
+struct Range { int lo, hi; };
+struct Config {
+    [[=Range{1, 65535}]] int port;
+    [[=1, =2]]           int level;
+                         int plain;
+};
 }  // namespace
+
+[[=42]] int reflection_annotated();
+[[=24]] int reflection_annotated();  // a redeclaration adds its annotations
+[[=42, =42]] int reflection_twice_annotated;
 #endif
 
 // "Reflecting and splicing": ^^ gives a std::meta::info; [: r :] splices it back.
@@ -79,5 +90,26 @@ TEST(Reflection, EnumeratorsOf) {
     template for (constexpr auto e : std::define_static_array(std::meta::enumerators_of(^^Color)))
         names += std::string(std::meta::identifier_of(e)) + ' ';
     EXPECT_EQ(names, "red green ");
+#endif
+}
+
+// "Annotations (C++26)": annotations_of, constant_of, annotations_of_with_type, extract.
+TEST(Reflection, Annotations) {
+    CPPDOCS_REQUIRE(__cpp_impl_reflection);
+    CPPDOCS_REQUIRE(__cpp_lib_reflection);
+#ifdef CPPDOCS_HAVE_REFLECTION
+    namespace meta = std::meta;
+    static_assert(meta::annotations_of(^^Config::level).size() == 2);
+    static_assert(meta::annotations_of(^^Config::plain).empty());
+    static_assert([:meta::constant_of(meta::annotations_of(^^Config::level)[0]):] == 1);
+    static_assert([:meta::constant_of(meta::annotations_of(^^Config::level)[1]):] == 2);  // in order
+    constexpr auto r = meta::annotations_of_with_type(^^Config::port, ^^Range)[0];
+    static_assert(meta::is_annotation(r));
+    constexpr Range range = meta::extract<Range>(r);
+    EXPECT_EQ(range.lo, 1);
+    EXPECT_EQ(range.hi, 65535);
+    // "Gotchas": every annotation is distinct, and redeclarations add up.
+    static_assert(meta::annotations_of(^^reflection_twice_annotated).size() == 2);
+    static_assert(meta::annotations_of(^^reflection_annotated).size() == 2);
 #endif
 }

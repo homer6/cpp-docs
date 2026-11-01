@@ -52,12 +52,11 @@ static_assert(meta::members_of(^^T, ctx).size() >= 2);             // all member
 static_assert(meta::nonstatic_data_members_of(^^T, ctx).size() == 2); // just the data members
 static_assert(meta::bases_of(^^T, ctx).size() == 1);                // base classes
 static_assert(meta::enumerators_of(^^SomeEnum).size() == 2);        // enum constants
-
-// layout:
-constexpr auto member = meta::nonstatic_data_members_of(^^T, ctx)[1];   // T::b
-static_assert(meta::offset_of(member).bytes == offsetof(T, b));
-static_assert(meta::size_of(^^T) == sizeof(T) && meta::alignment_of(^^T) == alignof(T));
 ```
+
+Function parameters, template arguments, operators, source locations, the
+predicate families and the layout queries (`offset_of`, `size_of`,
+`bit_size_of`…) are on [Reflection queries](reflection-queries.md).
 
 ### Enum ↔ string, generated
 
@@ -116,6 +115,41 @@ consteval {
 Incomplete pt{1, 2};                                                  // now complete: .x, .y
 ```
 
+## Errors: `std::meta::exception` (C++26)
+
+A meta function that can't answer (members of `int`, the name of something
+nameless) **throws `std::meta::exception`** during constant evaluation (P3560).
+Uncaught, that's a compile error naming the problem. Caught inside a `consteval`
+function, it lets you probe and fall back:
+
+```cpp needs=reflection
+#include <meta>
+namespace meta = std::meta;
+
+consteval bool has_members(meta::info r) {
+    try {
+        (void)meta::members_of(r, meta::access_context::current());
+        return true;
+    } catch (const meta::exception& e) {    // e.what(), e.from() (the failing function),
+        return false;                       // e.where() (a std::source_location)
+    }
+}
+
+struct S { int x; };
+static_assert(has_members(^^S));
+static_assert(!has_members(^^int));        // members_of(^^int) threw; we caught it
+
+consteval bool from_identifier_of() {
+    try { (void)meta::identifier_of(^^int); }  // int has no identifier
+    catch (const meta::exception& e) { return e.from() == ^^meta::identifier_of; }
+    return false;
+}
+static_assert(from_identifier_of());
+```
+
+Cheaper than catching: test first with the matching predicate
+(`has_identifier`, `has_template_arguments`, `is_complete_type`, `can_substitute`).
+
 ## Gotchas
 
 - **All `consteval`, all compile time.** `std::meta::info` and these functions
@@ -126,13 +160,17 @@ Incomplete pt{1, 2};                                                  // now com
   see here" rule.
 - **It's the function layer; the operator/splicers are the language layer** — you
   need both (see [reflection (language)](../language/expressions/reflection.md)).
-- **Reflection errors throw `std::meta::exception`** during constant evaluation
-  (e.g. querying something invalid).
-- **C++26, early/experimental support.** Expect flags, partial implementations,
-  and churn; the P2996 reference implementation is the proving ground.
+- **Reflection errors throw `std::meta::exception`** during constant evaluation;
+  the exception can't escape to run time, so catch it in a `consteval` function or
+  let it become a compile error.
+- **C++26, one local compiler.** Only GCC 16 with `-freflection` implements
+  P2996 (`__cpp_lib_reflection` is `202603L`); GCC 15 and Clang 22 have no
+  `<meta>`. Names changed late in C++26, so older articles may not match.
 
 ## See also
 
 - [Metaprogramming library / `<meta>` — cppreference](https://en.cppreference.com/w/cpp/meta)
 - [Standard library header `<meta>` — cppreference](https://en.cppreference.com/w/cpp/header/meta)
 - [Reflection (language operator & splicers)](../language/expressions/reflection.md)
+- [Reflection queries: parameters, templates, operators, layout](reflection-queries.md)
+- [P3560 Error handling in reflection](https://wg21.link/P3560)
