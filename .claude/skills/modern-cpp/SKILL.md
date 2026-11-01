@@ -1,9 +1,15 @@
 ---
 name: modern-cpp
-description: Write, modernize or review C++ using the cpp-docs repo's verified reference (docs/examples/, C++11 to C++26) and its guidelines (docs/guidelines/). Before writing, it learns the project's standard and toolchains, looks up the facility's page for usage, gotchas and version notes, checks that the feature is supported where the code must build, and then applies the guidelines and validates the result. Use for "/modern-cpp", "write this in modern C++", "what's the modern way to …", "should I use X or Y", "is <feature> supported on GCC/Clang/MSVC", "modernize this", or any C++ task where getting the standard library and language right matters.
+description: The preferred entry point for C++ work with the cpp-docs repo. It writes, modernizes or reviews C++ using the repo's verified reference (docs/examples/, C++11 to C++26) and calls the cpp-guidelines skill for the guidelines. Before writing, it learns the project's standard and toolchains, looks up the facility's page for usage, gotchas and version notes, checks that the feature is supported where the code must build, and then applies the guidelines and validates the result. Use for "/modern-cpp", "write this in modern C++", "what's the modern way to …", "should I use X or Y", "is <feature> supported on GCC/Clang/MSVC", "modernize this", or any C++ task where getting the standard library and language right matters.
 ---
 
 # Write modern C++ with the cpp-docs reference
+
+**This is the entry point for C++ work.** It covers the reference, toolchain
+support and validation, and it calls `cpp-guidelines` (step 5) when the
+guidelines matter. Send the user to `/cpp-guidelines` directly only for a
+review or audit against the Core Guidelines with rule IDs, a question about a
+specific rule, a focused ownership or lifetime fix, or the evals.
 
 This repo is a verified reference. Every snippet compiles, and the tests in
 `tests/` check what each page claims on GCC 15, GCC 16 and Clang 22 (libc++).
