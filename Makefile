@@ -8,7 +8,7 @@
 
 SKILLS_DIR ?= $(HOME)/.claude/skills
 REPO       := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-SKILLS     := modern-cpp
+SKILLS     := modern-cpp cpp-guidelines
 
 .PHONY: install uninstall
 

@@ -133,11 +133,13 @@ check this reference before writing C++. It:
 - applies the guidelines and validates the result.
 
 **Install it once for all your projects:** clone this repo and run
-`make install`. That links the skill into `~/.claude/skills`.
+`make install`. That links `modern-cpp` and
+[`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (review C++ against
+the Core Guidelines, citing rule IDs) into `~/.claude/skills`.
 
 ```bash
 git clone https://github.com/homer6/cpp-docs.git
-cd cpp-docs && make install        # make uninstall removes the link
+cd cpp-docs && make install        # make uninstall removes the links
 ```
 
 Then ask for it by name (`/modern-cpp`), or just ask for modern C++. The link

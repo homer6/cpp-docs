@@ -9,12 +9,14 @@ The guidance lives in `docs/guidelines/` of the cpp-docs repo (this skill's
 repo). The full C++ Core Guidelines are in `modules/CppCoreGuidelines/`. Treat
 them as the source; this file only says how to use them.
 
-**Repo-bound.** The paths below are relative to the cpp-docs repo root, not to
-this skill's folder, so the skill works only inside a cpp-docs checkout (with
-`git submodule update --init`). That keeps one copy of the guidance. To use it
-in another project, open that project alongside a cpp-docs checkout and read
-the pages from there; a self-contained copy (pages under `references/` plus a
-sync script) is a possible follow-up.
+**Finding the repo.** The paths below are relative to the cpp-docs repo root,
+not to this skill's folder. Inside a cpp-docs checkout, use them as they are.
+From another project, find the checkout from the skill's real path, because
+`make install` links the skill back into it (`<repo>/.claude/skills/cpp-guidelines`):
+`realpath ~/.claude/skills/cpp-guidelines/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
+`$CPP_DOCS` overrides that if it's set. Read every page from there. The
+full Core Guidelines need `git submodule update --init` in the checkout. There
+is one copy of the guidance, and `git pull` keeps it current.
 
 ## 1. Learn the project's constraints first
 

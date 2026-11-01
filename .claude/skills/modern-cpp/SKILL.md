@@ -86,8 +86,8 @@ or guard it:
 ## 5. Apply the guidelines
 
 Use the `cpp-guidelines` skill for ownership, lifetime, safety, idioms and
-design. Outside the repo, read `<repo>/.claude/skills/cpp-guidelines/SKILL.md`
-and follow it with the guideline paths taken from the repo. It loads only the guideline pages that matter, and its findings cite
+design. `make install` installs it too. Without it, read
+`<repo>/.claude/skills/cpp-guidelines/SKILL.md` and follow it. It loads only the guideline pages that matter, and its findings cite
 Core Guidelines rule IDs. Prefer what the reference pages recommend
 over habits from older standards, unless the project's constraints say
 otherwise.
