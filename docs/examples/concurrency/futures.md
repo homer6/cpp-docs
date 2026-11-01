@@ -88,3 +88,4 @@ void poll(std::future<int>& f) {
 - [std::async — cppreference](https://en.cppreference.com/w/cpp/thread/async)
 - [std::promise — cppreference](https://en.cppreference.com/w/cpp/thread/promise)
 - [std::packaged_task — cppreference](https://en.cppreference.com/w/cpp/thread/packaged_task)
+- [std::exception_ptr: moving an exception between threads](../diagnostics/exception-hierarchy.md#capture-and-rethrow-stdexception_ptr-c11)
