@@ -18,7 +18,7 @@ its own index. We're working through them roughly in order of everyday usefulnes
 | [Iterators](iterators/README.md) | ✅ | categories, adaptors, `iterator_traits` |
 | [Utilities](utilities/README.md) | ✅ | `optional`, `variant`, `tuple`, `expected`, function objects |
 | [Memory](memory/README.md) | ✅ | smart pointers, allocators, memory resources |
-| [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, `ratio`, `integer_sequence` |
+| [Metaprogramming](metaprogramming/README.md) | ✅ | `type_traits`, constant evaluation, `ratio`, `integer_sequence` |
 | [Numerics](numerics/README.md) | ✅ | `random`, `complex`, `<cmath>`, `<cfenv>`, `<bit>`, SIMD, linalg |
 | [Date & time](datetime/README.md) | ✅ | `<chrono>`: durations, clocks, calendars, time zones |
 | [Input/output](io/README.md) | ✅ | streams, files, string streams, filesystem, `syncstream`, `print` |
