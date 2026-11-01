@@ -13,6 +13,9 @@ up with new standards.
 To add a feature, facility or gotcha to a topic, use the `add-to-topic`
 skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl research,
 verification on all three toolchains, placement, snippet and test.
+To write C++ with this reference (here or in another project), use the
+`modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
+right pages, toolchain support, the guidelines, validation.
 
 ## Source of truth
 
