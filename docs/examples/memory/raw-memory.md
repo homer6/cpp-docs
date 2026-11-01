@@ -18,6 +18,33 @@ T* real_address(T& obj) {
 }
 ```
 
+## std::to_address and std::assume_aligned (C++20)
+
+`std::to_address(p)` turns any pointer-like thing (a raw pointer, a fancy
+allocator pointer, a contiguous iterator) into a plain `T*` **without
+dereferencing it**, so it's fine on `end()` or on storage that has no object
+yet. It uses `std::pointer_traits<P>::to_address` if provided, else
+`p.operator->()`.
+
+`std::assume_aligned<N>(p)` returns `p` unchanged and promises the optimizer
+that it's aligned to `N` bytes (a power of two), which can unlock aligned SIMD
+loads. It's a promise, not a check: if `p` isn't aligned, the behaviour is
+undefined.
+
+```cpp
+#include <memory>
+#include <vector>
+
+void demo() {
+    std::vector<int> v{1, 2, 3};
+    int* end = std::to_address(v.end());   // v.data() + 3; *v.end() would be UB
+    // (&*v.end() dereferences the past-the-end iterator; to_address doesn't)
+
+    alignas(64) float buf[16]{};
+    float* a = std::assume_aligned<64>(buf);   // same address; compiler may assume 64-byte alignment
+}
+```
+
 ## Constructing into raw storage
 
 `std::construct_at` / `std::destroy_at` (C++17/20) placement-construct and
@@ -136,6 +163,7 @@ already in the buffer. GCC 16 ships it (`__cpp_lib_start_lifetime_as`
 ## See also
 
 - [std::construct_at — cppreference](https://en.cppreference.com/w/cpp/memory/construct_at)
+- [std::to_address — cppreference](https://en.cppreference.com/w/cpp/memory/to_address) · [std::assume_aligned — cppreference](https://en.cppreference.com/w/cpp/memory/assume_aligned)
 - [std::uninitialized_copy — cppreference](https://en.cppreference.com/w/cpp/memory/uninitialized_copy)
 - [std::start_lifetime_as — cppreference](https://en.cppreference.com/w/cpp/memory/start_lifetime_as)
 - [std::launder — cppreference](https://en.cppreference.com/w/cpp/utility/launder)

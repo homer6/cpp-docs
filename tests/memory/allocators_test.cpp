@@ -1,12 +1,17 @@
 // Checks claims made by docs/examples/memory/allocators.md.
 #include <cstddef>
 #include <memory>
+#include <memory_resource>
 #include <new>
+#include <scoped_allocator>
 #include <string>
 #include <type_traits>
 #include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 int allocations = 0;
@@ -63,4 +68,59 @@ TEST(Allocators, VectorUsesCustomAllocator) {
 TEST(Allocators, AllocatorIsPartOfType) {
     static_assert(!std::is_same_v<std::vector<int>, std::vector<int, MyAlloc<int>>>);
     static_assert(!std::is_convertible_v<std::vector<int, MyAlloc<int>>, std::vector<int>>);
+}
+
+namespace {
+template <class T>
+struct Arena {
+    using value_type = T;
+    int id;
+    explicit Arena(int i) : id(i) {}
+    template <class U> Arena(const Arena<U>& o) noexcept : id(o.id) {}
+    T* allocate(std::size_t n) { return std::allocator<T>{}.allocate(n); }
+    void deallocate(T* p, std::size_t n) { std::allocator<T>{}.deallocate(p, n); }
+    template <class U> bool operator==(const Arena<U>& o) const noexcept { return id == o.id; }
+};
+using ArenaStr = std::basic_string<char, std::char_traits<char>, Arena<char>>;
+
+template <class T>
+struct Minimal {
+    using value_type = T;
+    T* allocate(std::size_t n) { return std::allocator<T>{}.allocate(n); }
+    void deallocate(T* p, std::size_t n) { std::allocator<T>{}.deallocate(p, n); }
+};
+}  // namespace
+
+// "scoped_allocator_adaptor": the vector passes its allocator down to each string.
+TEST(Allocators, ScopedAdaptorPropagatesToElements) {
+    using Outer = std::scoped_allocator_adaptor<Arena<ArenaStr>>;
+    std::vector<ArenaStr, Outer> v{Outer{Arena<ArenaStr>{7}}};
+    v.emplace_back("a string long enough to allocate");
+    EXPECT_EQ(v[0].get_allocator().id, 7);
+}
+
+// "scoped_allocator_adaptor": PMR containers pass their resource down by default.
+TEST(Allocators, PmrPropagatesWithoutAdaptor) {
+    std::pmr::monotonic_buffer_resource res;
+    std::pmr::vector<std::pmr::string> v{&res};
+    v.emplace_back("a string long enough to allocate");
+    EXPECT_EQ(v[0].get_allocator().resource(), &res);
+}
+
+// "allocate_at_least (C++23)": count >= n; allocator_traits falls back to
+// {allocate(n), n} for allocators without the member; no free function.
+TEST(Allocators, AllocateAtLeast) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_allocate_at_least, 202302L);
+#ifdef __cpp_lib_allocate_at_least
+    std::allocator<int> a;
+    using Tr = std::allocator_traits<std::allocator<int>>;
+    auto [p, count] = Tr::allocate_at_least(a, 5);
+    EXPECT_GE(count, 5u);
+    Tr::deallocate(a, p, count);
+
+    Minimal<int> m;
+    std::allocation_result<int*> r = std::allocator_traits<Minimal<int>>::allocate_at_least(m, 5);
+    EXPECT_EQ(r.count, 5u);
+    std::allocator_traits<Minimal<int>>::deallocate(m, r.ptr, r.count);
+#endif
 }
