@@ -1,6 +1,7 @@
 # Known snippet failures on Clang 22 + libc++ for tools/check_snippets.py --baseline.
 # Only genuine libc++ gaps (missing headers or features); a wrong snippet is fixed, never listed.
 # One block ID per line. Regenerate with --update-baseline; the list should only shrink.
+docs/examples/algorithms/execution-and-ranges.md#folds-c23/1
 docs/examples/concurrency/atomics.md#atomicref-and-atomicsharedptr-c20/1
 docs/examples/datetime/calendar-timezones.md#formatting-and-parsing/1
 docs/examples/datetime/calendar-timezones.md#time-zones/1
@@ -8,6 +9,9 @@ docs/examples/io/syncstream.md#when-does-the-text-arrive/1
 docs/examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win/1
 docs/examples/metaprogramming/type-traits.md#islayoutcompatible-and-iscorrespondingmember-c20/1
 docs/examples/numerics/math.md#special-functions-c17/1
+docs/examples/ranges/views.md#cachelatest--compute-each-element-once/1
+docs/examples/ranges/views.md#cartesianproduct--every-combination/1
+docs/examples/ranges/views.md#concat--one-range-after-another/1
 docs/examples/ranges/views.md#new-in-c23/1
 docs/examples/ranges/views.md#new-in-c23/2
 docs/examples/text-processing/text-encoding.md#looking-encodings-up-by-name/1

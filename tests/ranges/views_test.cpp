@@ -1,4 +1,5 @@
 // Checks claims made by docs/examples/ranges/views.md.
+#include <array>
 #include <concepts>
 #include <forward_list>
 #include <functional>
@@ -191,4 +192,75 @@ TEST(Views, FilterCachesBegin) {
     EXPECT_EQ(calls, 3);  // 1, 3, 4
     EXPECT_EQ(*f.begin(), 4);
     EXPECT_EQ(calls, 3);  // cached: no re-scan
+}
+
+// "join_with — flatten with a separator": a char or a string_view goes between the pieces.
+TEST(Views, JoinWith) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_join_with);
+#ifdef __cpp_lib_ranges_join_with
+    std::vector<std::string> words{"a", "bc", "d"};
+    EXPECT_EQ(words | rv::join_with(',') | std::ranges::to<std::string>(), "a,bc,d");
+    EXPECT_EQ(words | rv::join_with(std::string_view{", "}) | std::ranges::to<std::string>(), "a, bc, d");
+#endif
+}
+
+// "cartesian_product — every combination": last range varies fastest; size is the product.
+TEST(Views, CartesianProduct) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_cartesian_product);
+#ifdef __cpp_lib_ranges_cartesian_product
+    std::vector<int> xs{1, 2};
+    std::string ys = "ab";
+    std::vector<std::pair<int, char>> seen;
+    for (auto [x, y] : rv::cartesian_product(xs, ys)) seen.emplace_back(x, y);
+    EXPECT_EQ(seen, (std::vector<std::pair<int, char>>{{1, 'a'}, {1, 'b'}, {2, 'a'}, {2, 'b'}}));
+    EXPECT_EQ(rv::cartesian_product(xs, ys).size(), 4u);
+#endif
+}
+
+// "concat — one range after another": mixed range types; random access and sized; common reference.
+TEST(Views, Concat) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_concat);
+#ifdef __cpp_lib_ranges_concat
+    std::vector<int> a{1, 2};
+    std::array<int, 2> b{3, 4};
+    EXPECT_EQ(vec(rv::concat(a, b, rv::single(5))), (std::vector<int>{1, 2, 3, 4, 5}));
+    auto ab = rv::concat(a, b);
+    static_assert(std::ranges::random_access_range<decltype(ab)>);
+    EXPECT_EQ(ab.size(), 4u);
+    // "Gotchas": int + long ranges yield long values, not references.
+    std::vector<long> l{7};
+    static_assert(std::same_as<std::ranges::range_reference_t<decltype(rv::concat(a, l))>, long>);
+    static_assert(std::same_as<std::ranges::range_reference_t<decltype(rv::concat(a, a))>, int&>);
+#endif
+}
+
+// "cache_latest — compute each element once": 6 transform calls without it, 4 with; input range only.
+TEST(Views, CacheLatest) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_cache_latest);
+#ifdef __cpp_lib_ranges_cache_latest
+    std::vector<int> v{1, 2, 3, 4};
+    int calls = 0;
+    auto square = [&](int x) { ++calls; return x * x; };
+    auto even = [](int x) { return x % 2 == 0; };
+    for (int x : v | rv::transform(square) | rv::filter(even)) (void)x;
+    EXPECT_EQ(calls, 6);
+    calls = 0;
+    for (int x : v | rv::transform(square) | rv::cache_latest | rv::filter(even)) (void)x;
+    EXPECT_EQ(calls, 4);
+    using C = decltype(v | rv::cache_latest);
+    static_assert(std::ranges::input_range<C> && !std::ranges::forward_range<C>);
+#endif
+}
+
+// "as_input — downgrade to an input range": input-only (the P3828 name; GCC 15 has only to_input).
+TEST(Views, AsInput) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_as_input);
+#ifdef __cpp_lib_ranges_as_input
+    std::vector<int> v{1, 2, 3};
+    auto in = v | rv::as_input;
+    static_assert(std::ranges::input_range<decltype(in)>);
+    static_assert(!std::ranges::forward_range<decltype(in)>);
+    static_assert(!std::ranges::common_range<decltype(in)>);
+    EXPECT_EQ(vec(in), (std::vector<int>{1, 2, 3}));
+#endif
 }

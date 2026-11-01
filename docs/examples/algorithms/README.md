@@ -7,11 +7,11 @@ Mirrors [cppreference's algorithms library](https://en.cppreference.com/w/cpp/al
 | Page | Header | What |
 |---|---|---|
 | [Non-modifying](non-modifying.md) | `<algorithm>` | find, count, search, all/any/none, equal |
-| [Modifying](modifying.md) | `<algorithm>` | copy, transform, fill, replace, remove, unique, reverse, rotate |
+| [Modifying](modifying.md) | `<algorithm>` | copy, transform, fill, replace, remove, unique, reverse, rotate, shift_left/right |
 | [Sorting & searching](sorting-searching.md) | `<algorithm>` | sort, partial_sort, nth_element, binary search, merge, set ops |
 | [Partition, heap, min/max](partition-heap-minmax.md) | `<algorithm>` | partition, the heap functions, min/max/clamp |
 | [Numeric](numeric.md) | `<numeric>` | accumulate, reduce, scans, iota, gcd/lcm |
-| [Execution policies & ranges algorithms](execution-and-ranges.md) | `<execution>`, `<algorithm>` | parallel algorithms; `std::ranges::` versions + projections |
+| [Execution policies & ranges algorithms](execution-and-ranges.md) | `<execution>`, `<algorithm>` | parallel algorithms; `std::ranges::` versions + projections; folds |
 
 ## Two flavors of every algorithm (C++20)
 

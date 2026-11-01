@@ -23,6 +23,23 @@ auto d = std::distance(v.begin(), v.end());   // number of steps between
 Use `next`/`prev` where you'd want pointer arithmetic but the iterator might not
 be random-access — e.g. stepping through a `list` or `set`.
 
+### std::size / std::ssize (C++17 / C++20)
+
+`std::size(c)` works on containers and built-in arrays. `std::ssize(c)` (C++20,
+`__cpp_lib_ssize`) returns the same count as a **signed** type, so it compares
+and subtracts without unsigned wrap-around:
+
+```cpp body
+std::vector<int> v{1, 2, 3};
+int arr[4]{};
+
+auto n = std::ssize(v);         // std::ptrdiff_t, 3
+auto m = std::ssize(arr);       // 4
+for (auto i = std::ssize(v) - 1; i >= 0; --i) { /* 2, 1, 0 */ }   // with v.size() - 1, i >= 0 is always true
+```
+
+`std::ranges::ssize(r)` is the ranges customization point with the same idea.
+
 ## Swapping/moving the pointed-to elements
 
 ```cpp body
@@ -68,12 +85,26 @@ std::ranges::distance(rng);                   // size or counted distance
 `std::default_sentinel` marks "the end" for ranges whose end isn't a position
 (e.g. a counted iterator that stops after N, or a stream that stops at EOF).
 
+`std::unreachable_sentinel` is a sentinel that never compares equal to any
+iterator. `views::iota(0)` uses it for its end, and passing it to an algorithm
+drops the end check when you *know* the value is there:
+
+```cpp body
+std::vector<int> d{5, 3, 9, 1};
+auto it = std::ranges::find(d.begin(), std::unreachable_sentinel, 9);   // d.begin() + 2, no bounds test
+
+static_assert(std::same_as<std::ranges::sentinel_t<decltype(std::views::iota(0))>,
+                           std::unreachable_sentinel_t>);
+```
+
 ## Gotchas
 
 - **`std::distance` on input iterators consumes them.** For single-pass
   iterators (streams), measuring distance advances and exhausts the range.
 - **`advance`/`distance` with negative counts need bidirectional+** iterators;
   on forward-only iterators a negative step is undefined.
+- **`unreachable_sentinel` trusts you.** If the value isn't in the range, the
+  search runs off the end: undefined behaviour, not `end()`.
 - **Prefer `std::next(it, n)` to `it + n` in generic code** — `+` requires random
   access; `next` works (just slower) on weaker iterators.
 - **Specialize `iterator_traits`, not the iterator, for odd cases** — but in
@@ -85,3 +116,5 @@ std::ranges::distance(rng);                   // size or counted distance
 - [std::advance / next / prev / distance — cppreference](https://en.cppreference.com/w/cpp/iterator/advance)
 - [std::iterator_traits — cppreference](https://en.cppreference.com/w/cpp/iterator/iterator_traits)
 - [std::default_sentinel_t — cppreference](https://en.cppreference.com/w/cpp/iterator/default_sentinel_t)
+- [std::unreachable_sentinel_t — cppreference](https://en.cppreference.com/w/cpp/iterator/unreachable_sentinel_t)
+- [std::size / std::ssize — cppreference](https://en.cppreference.com/w/cpp/iterator/size)

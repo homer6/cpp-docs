@@ -1,4 +1,5 @@
 // Checks claims made by docs/examples/iterators/operations.md.
+#include <algorithm>
 #include <concepts>
 #include <cstddef>
 #include <forward_list>
@@ -8,6 +9,7 @@
 #include <sstream>
 #include <ranges>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -97,4 +99,29 @@ TEST(IteratorOperations, DefaultSentinelEndsCountedIterator) {
     EXPECT_EQ(std::ranges::distance(it, std::default_sentinel), 2);
     std::ranges::advance(it, 2);
     EXPECT_TRUE(it == std::default_sentinel);
+}
+
+// "std::size / std::ssize": signed count, works on arrays, safe in a countdown loop.
+TEST(IteratorOperations, Ssize) {
+    std::vector<int> v{1, 2, 3};
+    int arr[4]{};
+    auto n = std::ssize(v);
+    static_assert(std::same_as<decltype(n), std::ptrdiff_t>);
+    EXPECT_EQ(n, 3);
+    EXPECT_EQ(std::ssize(arr), 4);
+    std::vector<std::ptrdiff_t> seen;
+    for (auto i = std::ssize(v) - 1; i >= 0; --i) seen.push_back(i);
+    EXPECT_EQ(seen, (std::vector<std::ptrdiff_t>{2, 1, 0}));
+    static_assert(std::is_signed_v<decltype(std::ranges::ssize(v))>);
+    auto u = v.size() - 1;
+    static_assert(std::is_unsigned_v<decltype(u)>);  // so `u >= 0` would always hold
+}
+
+// "ranges::begin / end and sentinels": unreachable_sentinel drops the end test; iota(0) ends with it.
+TEST(IteratorOperations, UnreachableSentinel) {
+    std::vector<int> d{5, 3, 9, 1};
+    auto it = std::ranges::find(d.begin(), std::unreachable_sentinel, 9);
+    EXPECT_EQ(it, d.begin() + 2);
+    static_assert(std::same_as<std::ranges::sentinel_t<decltype(std::views::iota(0))>,
+                               std::unreachable_sentinel_t>);
 }

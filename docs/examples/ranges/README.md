@@ -8,8 +8,8 @@ Mirrors [cppreference's ranges library](https://en.cppreference.com/w/cpp/ranges
 | Page | What |
 |---|---|
 | [Range concepts & access](range-concepts.md) | what a *range* and a *view* are; `begin`/`end`/`size`; dangling |
-| [Views & pipelines](views.md) | `filter`, `transform`, `take`, `zip`, `enumerate`, the `\|` operator |
-| [Factories & `ranges::to`](factories.md) | `iota`, `repeat`, `single`; materializing a view back into a container |
+| [Views & pipelines](views.md) | `filter`, `transform`, `take`, `zip`, `enumerate`, `join_with`, `cartesian_product`, `concat`, `cache_latest`, the `\|` operator |
+| [Factories & `ranges::to`](factories.md) | `iota`, `indices`, `repeat`, `single`; materializing a view back into a container |
 
 ## The one-paragraph pitch
 

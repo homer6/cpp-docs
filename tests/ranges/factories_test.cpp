@@ -1,5 +1,6 @@
 // Checks claims made by docs/examples/ranges/factories.md.
 #include <concepts>
+#include <cstddef>
 #include <map>
 #include <ranges>
 #include <sstream>
@@ -99,4 +100,29 @@ TEST(RangeFactories, CommonForLegacyConstructor) {
     auto c = view | rv::common;
     std::vector<int> out(c.begin(), c.end());
     EXPECT_EQ(out, (std::vector<int>{1, 2, 3}));
+}
+
+namespace {
+template <class W, class B>
+concept IotaWorks = requires(W w, B b) { rv::iota(w, b); };
+}  // namespace
+
+// "views::indices": iota(0, v.size()) doesn't compile (signedness mismatch); 0uz does.
+TEST(RangeFactories, IotaRejectsMixedSignedness) {
+    static_assert(!IotaWorks<int, std::size_t>);
+    static_assert(IotaWorks<std::size_t, std::size_t>);
+    std::vector<double> v{1.5, 2.5, 3.5};
+    EXPECT_EQ(std::ranges::distance(rv::iota(0uz, v.size())), 3);
+}
+
+// "views::indices": counts 0..n-1 in n's type.
+TEST(RangeFactories, Indices) {
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_indices);
+#ifdef __cpp_lib_ranges_indices
+    std::vector<double> v{1.5, 2.5, 3.5};
+    auto ix = rv::indices(v.size());
+    static_assert(std::same_as<std::ranges::range_value_t<decltype(ix)>, std::size_t>);
+    std::vector<std::size_t> seen(ix.begin(), ix.end());
+    EXPECT_EQ(seen, (std::vector<std::size_t>{0, 1, 2}));
+#endif
 }
