@@ -16,6 +16,10 @@ verification on all three toolchains, placement, snippet and test.
 To write C++ with this reference (here or in another project), use the
 `modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
 right pages, toolchain support, the guidelines, validation.
+`make install` links it into `~/.claude/skills` (`make uninstall` removes it).
+Add a skill to the Makefile's `SKILLS` only if it works outside the repo.
+Never run `make install` from a worktree: the link would point at a
+directory that's deleted after the merge.
 
 ## Source of truth
 

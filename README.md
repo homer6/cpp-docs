@@ -132,19 +132,17 @@ check this reference before writing C++. It:
 - checks that the feature is supported on your compilers;
 - applies the guidelines and validates the result.
 
-**Install it once for all your projects:** clone this repo and link the
-skill into your user skills.
+**Install it once for all your projects:** clone this repo and run
+`make install`. That links the skill into `~/.claude/skills`.
 
 ```bash
-git clone https://github.com/homer6/cpp-docs.git ~/dev/homer6/cpp-docs
-ln -s ~/dev/homer6/cpp-docs/.claude/skills/modern-cpp ~/.claude/skills/modern-cpp
+git clone https://github.com/homer6/cpp-docs.git
+cd cpp-docs && make install        # make uninstall removes the link
 ```
 
-Then ask for it by name (`/modern-cpp`), or just ask for modern C++. If your
-checkout lives somewhere else, link from there and set
-`export CPP_DOCS=/path/to/cpp-docs` so the skill can find the pages. Run
-`git pull` in the checkout to keep it up to date. It stays on `main`, which
-holds the latest release.
+Then ask for it by name (`/modern-cpp`), or just ask for modern C++. The link
+points back at your checkout, so `git pull` keeps it current. Stay on `main`
+for the latest release. `SKILLS_DIR=… make install` installs somewhere else.
 
 ## How to use these notes
 
