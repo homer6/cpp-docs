@@ -16,6 +16,16 @@ auto f   = 3.14f;      // float
 auto ld  = 3.14L;      // long double
 auto big = 1'000'000;  // digit separators (C++14) — ignored, just readability
 auto sci = 6.022e23;   // scientific notation: a double (1e9 is a double too)
+auto n   = 42uz;       // std::size_t (C++23; also 42zu, 42UZ)
+auto sz  = 42z;        // the signed type matching std::size_t (C++23)
+```
+
+The `uz` suffix fixes the classic mixed-type loop and `auto` problems:
+
+```cpp body
+std::vector<int> v{1, 2, 3};
+for (auto i = 0uz; i < v.size(); ++i) {}   // i is std::size_t: no signed/unsigned compare
+auto smaller = std::min(v.size(), 2uz);    // both std::size_t, so std::min deduces
 ```
 
 ## Character & string literals
@@ -77,3 +87,4 @@ auto d = 5.0_km;          // 5000.0
 
 - [Integer / floating / string literals — cppreference](https://en.cppreference.com/w/cpp/language/integer_literal)
 - [User-defined literals — cppreference](https://en.cppreference.com/w/cpp/language/user_literal)
+- [P0330: literal suffix for `size_t`](https://wg21.link/P0330)

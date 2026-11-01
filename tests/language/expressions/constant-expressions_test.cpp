@@ -1,8 +1,13 @@
 // Checks claims made by docs/examples/language/expressions/constant-expressions.md.
+#include <cstddef>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 constexpr int square(int x) { return x * x; }
@@ -70,4 +75,52 @@ TEST(ConstantExpressions, ConstexprVariableIsConstMemberIsNot) {
     static_assert(std::is_same_v<decltype(c), const int>);
     static_assert(std::is_same_v<decltype(&S::get), int (S::*)()>);
     static_assert(!std::is_invocable_v<decltype(&S::get), const S&>);
+}
+
+namespace cpp26_constexpr {
+template <std::size_t N>
+struct Slots {
+    static_assert(N <= 4, std::string("Slots holds at most 4, got ") + char('0' + N));
+};
+constexpr std::string slots_message(std::size_t n) {
+    return std::string("Slots holds at most 4, got ") + char('0' + n);
+}
+constexpr int through_void(int v) {
+    void* erased = &v;
+    return *static_cast<int*>(erased);
+}
+#if __cpp_constexpr_exceptions >= 202411L
+constexpr int checked_div(int a, int b) {
+    if (b == 0) throw std::invalid_argument("divide by zero");
+    return a / b;
+}
+constexpr int div_or_zero(int a, int b) {
+    try { return checked_div(a, b); }
+    catch (const std::invalid_argument&) { return 0; }
+}
+#endif
+}  // namespace cpp26_constexpr
+
+// "static_assert with a computed message (C++26)": the message is a constexpr std::string.
+TEST(ConstantExpressions, ComputedStaticAssertMessage) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_static_assert, 202306L);
+    [[maybe_unused]] cpp26_constexpr::Slots<3> fine;
+    static_assert(cpp26_constexpr::slots_message(7) == "Slots holds at most 4, got 7");
+}
+
+// "Casting from void* (C++26)": static_cast back to the real type in a constant expression.
+TEST(ConstantExpressions, ConstexprCastFromVoidPointer) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_constexpr, 202306L);
+    static_assert(cpp26_constexpr::through_void(7) == 7);
+}
+
+// "Exceptions during constant evaluation (C++26)": thrown and caught at compile time.
+TEST(ConstantExpressions, ConstexprExceptions) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_constexpr_exceptions, 202411L);
+#if __cpp_constexpr_exceptions >= 202411L
+    static_assert(cpp26_constexpr::div_or_zero(10, 2) == 5);
+    static_assert(cpp26_constexpr::div_or_zero(1, 0) == 0);
+    volatile int zero = 0;
+    EXPECT_THROW(cpp26_constexpr::checked_div(1, zero), std::invalid_argument);  // still throws at run time
+#endif
 }

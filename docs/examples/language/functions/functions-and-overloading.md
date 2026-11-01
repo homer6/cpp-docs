@@ -57,6 +57,21 @@ struct S {
 void f(double) = delete;               // ban an overload: beside f(int), f(2.5) no longer converts to int
 ```
 
+### `= delete("reason")` (C++26)
+
+A deleted function can carry a message, which the compiler prints when a call
+picks it. All three toolchains show it:
+
+```cpp compile-fail="would narrow; convert explicitly"
+void g(int);
+void g(double) = delete("would narrow; convert explicitly");
+
+void demo() { g(1.5); }  // error: use of deleted function 'void g(double)': would narrow; convert explicitly
+```
+
+The message must be a string literal (unlike a `static_assert` message, which
+since C++26 can be [computed](../expressions/constant-expressions.md#static_assert-with-a-computed-message-c26)).
+
 ## Gotchas
 
 - **`const&` to avoid copies, but `string_view`/`span` are often better** for
@@ -76,3 +91,5 @@ void f(double) = delete;               // ban an overload: beside f(int), f(2.5)
 - [Functions — cppreference](https://en.cppreference.com/w/cpp/language/functions)
 - [Overload resolution — cppreference](https://en.cppreference.com/w/cpp/language/overload_resolution)
 - [Attributes — cppreference](https://en.cppreference.com/w/cpp/language/attributes)
+- [Deleted functions — cppreference](https://en.cppreference.com/w/cpp/language/function#Deleted_functions)
+- [P2573: `= delete("should have a reason")`](https://wg21.link/P2573)

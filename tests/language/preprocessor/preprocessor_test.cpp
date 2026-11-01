@@ -1,10 +1,13 @@
 // Checks claims made by docs/examples/language/preprocessor/preprocessor.md.
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <string_view>
 #include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/capture.hpp"
 
 #define SQUARE(x) ((x) * (x))
 #define SQ_BAD(x) x*x
@@ -111,4 +114,45 @@ TEST(Preprocessor, AssertAndNdebug) {
     EXPECT_EQ(assert_with_ndebug(), 0);
     int x = 0;
     EXPECT_DEATH(assert(x == 1), "");
+}
+
+#define CPPDOCS_LOG(fmt, ...) std::printf(fmt __VA_OPT__(,) __VA_ARGS__)
+
+// "Variadic macros and __VA_OPT__ (C++20)": no dangling comma when the pack is empty.
+TEST(Preprocessor, VaOptDropsComma) {
+    auto out = cppdocs::capture_stdout([] {
+        CPPDOCS_LOG("starting\n");
+        CPPDOCS_LOG("%d items\n", 3);
+    });
+    EXPECT_EQ(out, "starting\n3 items\n");
+#ifdef __cpp_va_opt
+    ADD_FAILURE() << "the page says no toolchain defines __cpp_va_opt";
+#endif
+}
+
+#define CPPDOCS_SAFE_PATH
+// "Conditional compilation": #elifdef / #elifndef (C++23) and __has_include (C++17).
+TEST(Preprocessor, ElifdefAndHasInclude) {
+#ifdef CPPDOCS_FAST_PATH
+    constexpr int path = 1;
+#elifdef CPPDOCS_SAFE_PATH
+    constexpr int path = 2;
+#elifndef NDEBUG
+    constexpr int path = 3;
+#else
+    constexpr int path = 4;
+#endif
+    EXPECT_EQ(path, 2);
+#ifdef CPPDOCS_FAST_PATH
+    constexpr int second = 1;
+#elifndef CPPDOCS_NOT_DEFINED
+    constexpr int second = 2;
+#endif
+    EXPECT_EQ(second, 2);
+#if __has_include(<vector>) && !__has_include(<no_such_header_cppdocs.h>)
+    constexpr bool has_include_works = true;
+#else
+    constexpr bool has_include_works = false;
+#endif
+    EXPECT_TRUE(has_include_works);
 }

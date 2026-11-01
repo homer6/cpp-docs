@@ -53,6 +53,23 @@ class Vault {
 `friend` grants access without making the member public — most often used for
 non-member `operator<<`/`operator==` that need internals.
 
+Since C++26 a class template can befriend a whole **pack** of types with
+`friend Ts...;`. All three toolchains support it. A common use is the "passkey"
+idiom, where only the listed classes can construct the key:
+
+```cpp
+template <class... Ts>
+class Passkey {
+    friend Ts...;                 // C++26: every type in the pack is a friend
+    Passkey() = default;          // so only they can make one
+};
+
+class Registry {
+public:
+    void add(Passkey<class Loader, class Admin>);   // callable only by Loader or Admin
+};
+```
+
 ## Nested classes
 
 A class declared inside another is a **member** of it: it obeys the enclosing
@@ -114,4 +131,5 @@ struct Builder {
 - [Member access — cppreference](https://en.cppreference.com/w/cpp/language/access)
 - [static members — cppreference](https://en.cppreference.com/w/cpp/language/static)
 - [friend declaration — cppreference](https://en.cppreference.com/w/cpp/language/friend)
+- [P2893: variadic friends](https://wg21.link/P2893)
 - [Nested classes — cppreference](https://en.cppreference.com/w/cpp/language/nested_types)

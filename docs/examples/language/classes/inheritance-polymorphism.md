@@ -71,6 +71,39 @@ class Sealed final {};          // no class may derive from Sealed
 Always write `override` — it turns "oops, I didn't actually override anything"
 (typo, const mismatch) into a compile error.
 
+### Covariant return types
+
+An override may return a pointer or reference to a class **derived from** the
+base version's return type. Callers that know the derived type get it without a
+cast:
+
+```cpp
+struct Shape {
+    virtual ~Shape() = default;
+    virtual Shape* clone() const { return new Shape(*this); }
+};
+struct Circle : Shape {
+    Circle* clone() const override { return new Circle(*this); }   // covariant: Circle*, not Shape*
+};
+
+void demo(const Circle& c, const Shape& s) {
+    Circle* c2 = c.clone();       // no cast needed
+    Shape*  s2 = s.clone();       // through the base: dynamic dispatch, a Shape*
+    delete c2; delete s2;
+}
+```
+
+Only raw pointers and references are covariant, and the derived class must be
+complete at the override:
+
+```cpp compile-fail="covariant|different return type"
+struct Base { virtual std::unique_ptr<Base> clone() const; virtual ~Base() = default; };
+struct Derived : Base { std::unique_ptr<Derived> clone() const override; };   // ERROR
+```
+
+For smart pointers, use a non-virtual public `clone()` that wraps a covariant (or
+plain) virtual one.
+
 ## Abstract base classes & interfaces
 
 A class with a pure virtual (`= 0`) function can't be instantiated; it defines an
@@ -122,6 +155,9 @@ genuinely appear on several paths.
 - **Always use `override`.** Without it, a signature mismatch silently creates a
   *new* function instead of overriding, and virtual dispatch quietly calls the
   base.
+- **Covariance works only for raw pointers and references.** An override returning
+  `std::unique_ptr<Derived>` where the base returns `std::unique_ptr<Base>` is an
+  error.
 - **Don't call virtuals from constructors/destructors** expecting derived
   behavior — during base construction, the object *is* a base, so the base version
   is called.

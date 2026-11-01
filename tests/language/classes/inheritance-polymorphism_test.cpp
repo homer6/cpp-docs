@@ -127,3 +127,29 @@ TEST(InheritancePolymorphism, VirtualBaseBuiltByMostDerived) {
     EXPECT_EQ(Scanner{}.id, 1);
 }
 }  // namespace from_pr69
+
+namespace covariant {
+struct Shape {
+    virtual ~Shape() = default;
+    virtual Shape* clone() const { return new Shape(*this); }
+    virtual int id() const { return 1; }
+};
+struct Circle : Shape {
+    Circle* clone() const override { return new Circle(*this); }
+    int id() const override { return 2; }
+};
+}  // namespace covariant
+
+// "Covariant return types": the override returns Circle*, through the base a Shape*.
+TEST(InheritancePolymorphism, CovariantReturn) {
+    using covariant::Circle;
+    using covariant::Shape;
+    Circle c;
+    const Shape& s = c;
+    static_assert(std::is_same_v<decltype(c.clone()), Circle*>);
+    static_assert(std::is_same_v<decltype(s.clone()), Shape*>);
+    std::unique_ptr<Circle> c2{c.clone()};
+    std::unique_ptr<Shape> s2{s.clone()};  // dynamic dispatch: really a Circle
+    EXPECT_EQ(c2->id(), 2);
+    EXPECT_EQ(s2->id(), 2);
+}

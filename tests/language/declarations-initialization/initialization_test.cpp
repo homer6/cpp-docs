@@ -97,3 +97,36 @@ TEST(Initialization, BracesBanNarrowingAndCopyListSkipsExplicit) {
     static_assert(std::is_constructible_v<Explicit, int>);   // Explicit e{1}; is fine
     static_assert(!std::is_convertible_v<int, Explicit>);    // Explicit e = {1}; is not
 }
+
+namespace paren_agg {
+struct Point { int x; int y; };
+struct In { int a, b; };
+struct Out { In i; int c; };
+struct Ref { const int& r; };
+constexpr bool braces_extend() { Ref a{42}; return a.r == 42; }
+template <class T, class... A>
+concept ParenInit = requires(A... a) { T(a...); };
+}  // namespace paren_agg
+
+// "Aggregates & designated initializers": parenthesized aggregate init (C++20).
+TEST(Initialization, ParenthesizedAggregateInit) {
+    using paren_agg::Point;
+    Point p(1, 2);
+    EXPECT_EQ(p.x, 1);
+    EXPECT_EQ(p.y, 2);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"  // the omission is the point
+    Point q(5);
+#pragma GCC diagnostic pop
+    EXPECT_EQ(q.y, 0);
+    int arr[](1, 2, 3);
+    static_assert(sizeof arr / sizeof arr[0] == 3);
+    std::vector<Point> pts;
+    pts.emplace_back(3, 4);
+    EXPECT_EQ(pts[0].y, 4);
+    double d = 2.9;
+    Point n(d, 1);  // parentheses allow narrowing
+    EXPECT_EQ(n.x, 2);
+    static_assert(!paren_agg::ParenInit<paren_agg::Out, int, int, int>);  // no brace elision
+    static_assert(paren_agg::braces_extend());  // braces extend the temporary; parens don't
+}

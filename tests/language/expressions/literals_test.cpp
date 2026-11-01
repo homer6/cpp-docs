@@ -1,11 +1,17 @@
 // Checks claims made by docs/examples/language/expressions/literals.md.
+#include <algorithm>
 #include <chrono>
 #include <complex>
+#include <cstddef>
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 constexpr long double operator""_km(long double v) { return v * 1000.0; }
@@ -73,4 +79,16 @@ TEST(Literals, UserDefinedLiteral) {
     static_assert(std::is_same_v<decltype(d), long double>);
     static_assert(5.0_km == 5000.0L);
     EXPECT_EQ(d, 5000.0L);
+}
+
+// "Numeric literals": the uz / z suffixes (C++23).
+TEST(Literals, SizeTSuffix) {
+    CPPDOCS_REQUIRE_VERSION(__cpp_size_t_suffix, 202011L);
+    static_assert(std::is_same_v<decltype(42uz), std::size_t>);
+    static_assert(std::is_same_v<decltype(42zu), std::size_t>);
+    static_assert(std::is_same_v<decltype(42UZ), std::size_t>);
+    static_assert(std::is_same_v<decltype(42z), std::make_signed_t<std::size_t>>);
+    std::vector<int> v{1, 2, 3};
+    auto smaller = std::min(v.size(), 2uz);
+    EXPECT_EQ(smaller, 2uz);
 }
