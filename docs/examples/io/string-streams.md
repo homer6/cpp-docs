@@ -89,7 +89,10 @@ void fixed_buffer() {
 `std::strstream` (and `istrstream`, `ostrstream`), the `char*` streams from
 `<strstream>`, were deprecated in C++98 and removed in C++26
 ([P2867](https://wg21.link/P2867R2)): use `spanstream` for a fixed buffer or a
-string stream for a growing one.
+string stream for a growing one. Libraries may keep the header as an
+extension: libstdc++ (GCC 15 and 16) still compiles `std::ostrstream` with
+`-std=c++26`, while libc++ (Clang 22) has dropped it, so don't treat
+"it compiles" as "it's standard".
 
 ## Gotchas
 
