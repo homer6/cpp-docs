@@ -69,6 +69,32 @@ void demo() {
 }
 ```
 
+## C compatibility: `<stdbit.h>` (C++26)
+
+C23's bit utilities, for code shared with C: `stdc_count_ones`,
+`stdc_leading_zeros`, `stdc_bit_width`, `stdc_has_single_bit`,
+`stdc_bit_ceil` and the rest, each with `_uc` / `_us` / `_ui` / `_ul` / `_ull`
+variants, and a function template where C has a type-generic macro. They live
+in the **global namespace only** (there is no `<cstdbit>` and no `std::`
+spelling) and wrap the `<bit>` functions above.
+
+```cpp
+#include <stdbit.h>
+
+void demo() {
+    stdc_count_ones(0b1011u);        // 3   — like std::popcount
+    stdc_bit_width(13u);             // 4
+    stdc_leading_zeros_ui(1u);       // 31
+    stdc_has_single_bit(16u);        // true
+    stdc_bit_ceil(17u);              // 32
+}
+```
+
+libstdc++ ships it in C++26 mode: GCC 15 has the header without the feature
+macro, GCC 16 defines `__cpp_lib_stdbit_h` as `202603L`. libc++ (Clang 22)
+doesn't have it. Like `<bit>`, signed arguments are rejected
+(`stdc_count_ones(-1)` fails a `static_assert`). In C++-only code use `<bit>`.
+
 ## Gotchas
 
 - **The counting/rotate functions require *unsigned* integer types.** Pass
@@ -87,3 +113,4 @@ void demo() {
 - [std::bit_cast — cppreference](https://en.cppreference.com/w/cpp/numeric/bit_cast)
 - [std::popcount — cppreference](https://en.cppreference.com/w/cpp/numeric/popcount)
 - [std::endian — cppreference](https://en.cppreference.com/w/cpp/types/endian)
+- [`<stdbit.h>` — cppreference](https://en.cppreference.com/w/cpp/header/stdbit.h) · [P3370R1 — Add new library headers from C23](https://wg21.link/P3370R1)

@@ -11,6 +11,7 @@ Mirrors [cppreference's chrono library](https://en.cppreference.com/w/cpp/chrono
 | [Durations](durations.md) | C++11 | `seconds`, `milliseconds`, `duration_cast`, literals |
 | [Clocks & time points](clocks-timepoints.md) | C++11 | `steady_clock`, `system_clock`, measuring elapsed time |
 | [Calendar & time zones](calendar-timezones.md) | C++20 | `year_month_day`, `zoned_time`, formatting |
+| [C date and time](c-time.md) | C++98 | `<ctime>`: `time_t`, `localtime`/`gmtime`, `strftime`, and when to use chrono instead |
 
 ## Why chrono instead of `time_t`/`int`
 

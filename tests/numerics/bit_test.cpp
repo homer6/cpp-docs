@@ -1,7 +1,18 @@
 // Checks claims made by docs/examples/numerics/bit.md.
 #include <bit>
 #include <cstdint>
+#include <type_traits>
 #include <version>
+
+// libstdc++'s C++ <stdbit.h> (GCC 15+, C++26 mode); not glibc's C-only header.
+#if __has_include(<stdbit.h>) && defined(__GLIBCXX__) && __cplusplus > 202302L
+#include <stdbit.h>
+#endif
+#if defined(_GLIBCXX_STDBIT_H) || defined(__cpp_lib_stdbit_h)
+#define CPPDOCS_HAS_STDBIT 1
+#else
+#define CPPDOCS_HAS_STDBIT 0
+#endif
 
 #include <gtest/gtest.h>
 
@@ -74,4 +85,22 @@ TEST(Bit, NativeEndian) {
     std::uint32_t v = 1;
     bool little = *reinterpret_cast<unsigned char*>(&v) == 1;
     EXPECT_EQ(little, std::endian::native == std::endian::little);
+}
+
+// "C compatibility: <stdbit.h> (C++26)": global-namespace C23 bit functions.
+// GCC 15 ships the header without the feature macro; libc++ 22 lacks it.
+TEST(Bit, StdbitH) {
+#if CPPDOCS_HAS_STDBIT
+    static_assert(std::is_same_v<decltype(stdc_count_ones(0b1011u)), unsigned int>);
+    EXPECT_EQ(stdc_count_ones(0b1011u), 3u);
+    EXPECT_EQ(stdc_bit_width(13u), 4u);
+    EXPECT_EQ(stdc_leading_zeros_ui(1u), 31u);
+    EXPECT_TRUE(stdc_has_single_bit(16u));
+    EXPECT_EQ(stdc_bit_ceil(17u), 32u);
+#ifdef __cpp_lib_stdbit_h
+    EXPECT_GE(__cpp_lib_stdbit_h, 202603L);
+#endif
+#else
+    GTEST_SKIP() << "<stdbit.h> (C++26) not provided by this standard library";
+#endif
 }

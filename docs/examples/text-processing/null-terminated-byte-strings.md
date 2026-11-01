@@ -2,7 +2,7 @@
 
 > The C string library: `char` arrays ended by `'\0'`, with functions to
 > classify, copy, compare, search and convert them. **Header:** `<cstring>`,
-> `<cctype>`, `<cstdlib>` · **Since:** C++98 (inherited from C)
+> `<cctype>`, `<cstdlib>`, `<cinttypes>` · **Since:** C++98 (inherited from C)
 
 ## Mental model
 
@@ -27,6 +27,7 @@ these functions at C API boundaries (`c_str()`, `argv`, OS calls).
 |---|---|---|
 | Classify / map one character | `isalnum isalpha islower isupper isdigit isxdigit iscntrl isgraph isspace isblank isprint ispunct`, `tolower toupper` | `<cctype>` |
 | Convert to numbers | `atoi atol atoll atof`, `strtol strtoll strtoul strtoull strtof strtod strtold` | `<cstdlib>` |
+| Convert to `intmax_t` / `uintmax_t` (C++11) | `strtoimax strtoumax`, plus the `PRI…` / `SCN…` format macros | `<cinttypes>` |
 | Copy / concatenate | `strcpy strncpy strcat strncat strxfrm` | `<cstring>` |
 | Examine | `strlen strcmp strncmp strcoll strchr strrchr strspn strcspn strpbrk strstr strtok` | `<cstring>` |
 | Raw memory | `memchr memcmp memset memcpy memmove` | `<cstring>` |
@@ -111,6 +112,41 @@ int main() {
 `atoi` has no way to report failure (it returns 0, and overflow is undefined
 behaviour); prefer `strtol` or `std::from_chars`.
 
+### Fixed-width integers in `printf` / `scanf`: `<cinttypes>` (C++11)
+
+`%ld` or `%lld`? It depends on the platform (`int64_t` is `long long` on macOS
+and `long` on 64-bit Linux). `<cinttypes>` gives each `<cstdint>` type a
+string-literal macro for the right conversion: `PRId64`, `PRIu32`, `PRIx16`…
+for `printf`, `SCNd64`, `SCNu32`… for `scanf`. They're pasted into the format
+string by literal concatenation. It also has `strtoimax` / `strtoumax`, the
+`strtol` family for `intmax_t`.
+
+```cpp
+#include <cerrno>
+#include <cinttypes>
+#include <cstdio>
+
+int main() {
+    std::int64_t big = -9'000'000'000;
+    std::printf("%" PRId64 "\n", big);                 // -9000000000 ("lld" or "ld" underneath)
+
+    std::uint32_t u = 0;
+    std::sscanf("4000000000", "%" SCNu32, &u);         // reads into exactly a uint32_t
+    std::printf("%" PRIu32 " %" PRIx32 "\n", u, u);    // 4000000000 ee6b2800
+
+    char* end = nullptr;
+    errno = 0;
+    std::intmax_t m = std::strtoimax("  -123abc", &end, 10);
+    std::printf("%" PRIdMAX " rest='%s'\n", m, end);   // -123 rest='abc'
+}
+```
+
+In new C++ code, **`std::format` / `std::print` make these macros
+unnecessary**: `std::format("{} {:x}", big, u)` deduces the type, so there is
+no specifier to get wrong. `std::from_chars` ([charconv](charconv.md)) parses
+any integer type without a macro. The macros still matter for `printf`-style
+logging APIs and for code shared with C.
+
 ### `memmove` handles overlap, `memcpy` does not
 
 ```cpp
@@ -162,6 +198,7 @@ int main() {
 - [Null-terminated byte strings — cppreference](https://en.cppreference.com/w/cpp/string/byte)
 - [`std::strncpy` — cppreference](https://en.cppreference.com/w/cpp/string/byte/strncpy)
 - [`std::strtol` — cppreference](https://en.cppreference.com/w/cpp/string/byte/strtol)
+- [`<cinttypes>` format macros — cppreference](https://en.cppreference.com/w/cpp/types/integer#Format_macro_constants) · [`std::strtoimax` — cppreference](https://en.cppreference.com/w/cpp/string/byte/strtoimax)
 - [`std::isalpha` — cppreference](https://en.cppreference.com/w/cpp/string/byte/isalpha) (the `unsigned char` rule)
 - [Multibyte strings](null-terminated-multibyte-strings.md) · [Wide strings](null-terminated-wide-strings.md)
 - [`charconv`](charconv.md) — the modern number ↔ text tool

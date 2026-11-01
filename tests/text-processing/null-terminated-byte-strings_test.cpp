@@ -2,10 +2,12 @@
 #include <algorithm>
 #include <cctype>
 #include <cerrno>
+#include <cinttypes>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <format>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -143,4 +145,33 @@ TEST(NullTerminatedByteStrings, CctypeInCLocale) {
     EXPECT_FALSE(std::isalpha(0xE9));  // é in Latin-1: not alphabetic in the "C" locale
     EXPECT_TRUE(std::isblank('\t'));
     EXPECT_FALSE(std::isblank('\n'));
+}
+
+// "Fixed-width integers in printf / scanf": the values in the comments.
+TEST(NullTerminatedByteStrings, CinttypesMacros) {
+    auto out = cppdocs::capture_stdout([] {
+        std::int64_t big = -9'000'000'000;
+        std::printf("%" PRId64 "\n", big);
+        std::uint32_t u = 0;
+        std::sscanf("4000000000", "%" SCNu32, &u);
+        std::printf("%" PRIu32 " %" PRIx32 "\n", u, u);
+        char* end = nullptr;
+        errno = 0;
+        std::intmax_t m = std::strtoimax("  -123abc", &end, 10);
+        std::printf("%" PRIdMAX " rest='%s'\n", m, end);
+    });
+    EXPECT_EQ(out, "-9000000000\n4000000000 ee6b2800\n-123 rest='abc'\n");
+    // int64_t is long long on macOS, long on 64-bit Linux: the macro follows it.
+    if constexpr (std::is_same_v<std::int64_t, long>) {
+        EXPECT_STREQ(PRId64, "ld");
+    } else {
+        EXPECT_STREQ(PRId64, "lld");
+    }
+}
+
+// "Fixed-width integers in printf / scanf": std::format needs no macro.
+TEST(NullTerminatedByteStrings, FormatReplacesMacros) {
+    std::int64_t big = -9'000'000'000;
+    std::uint32_t u = 4'000'000'000u;
+    EXPECT_EQ(std::format("{} {:x}", big, u), "-9000000000 ee6b2800");
 }

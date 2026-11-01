@@ -9,6 +9,7 @@ docs/examples/io/string-streams.md#fixed-buffers-stdspanstream-c23/1
 docs/examples/io/syncstream.md#when-does-the-text-arrive/1
 docs/examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win/1
 docs/examples/metaprogramming/type-traits.md#islayoutcompatible-and-iscorrespondingmember-c20/1
+docs/examples/numerics/bit.md#c-compatibility-stdbith-c26/1
 docs/examples/numerics/math.md#special-functions-c17/1
 docs/examples/ranges/views.md#cachelatest--compute-each-element-once/1
 docs/examples/ranges/views.md#cartesianproduct--every-combination/1

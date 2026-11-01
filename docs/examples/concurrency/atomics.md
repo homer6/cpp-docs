@@ -151,6 +151,32 @@ struct laid out with it isn't a stable ABI. Clang doesn't warn. In a public
 header, define your own constant (`inline constexpr std::size_t cache_line = 64;`),
 or pin GCC's value with `--param destructive-interference-size=64`.
 
+## C compatibility: `<stdatomic.h>` (C++23)
+
+For headers shared with C11 code, C++23 lets you include `<stdatomic.h>` from
+C++. There, `_Atomic(T)` is a macro for `std::atomic<T>`, the C names
+(`atomic_int`, `memory_order_relaxed`, `atomic_fetch_add`…) refer to the C++
+ones, and `__cpp_lib_stdatomic_h` is `202011L`. GCC 15, GCC 16 and Clang 22
+all ship it.
+
+```cpp
+#include <stdatomic.h>
+#include <atomic>
+#include <type_traits>
+
+static_assert(std::is_same_v<atomic_int, std::atomic<int>>);
+static_assert(std::is_same_v<_Atomic(long), std::atomic<long>>);
+
+int bump(atomic_int* c) {
+    atomic_fetch_add_explicit(c, 1, memory_order_relaxed);   // C spelling, C++ semantics
+    return atomic_load(c);
+}
+```
+
+Only the `_Atomic(T)` macro form works: the C qualifier spelling
+`_Atomic int x;` doesn't compile in C++ (GCC: "'_Atomic' was not declared";
+Clang: a C11-extension error under `-pedantic-errors`).
+
 ## Gotchas
 
 - **Start with the default `seq_cst`** (or just a mutex). Hand-tuning to
@@ -184,3 +210,4 @@ or pin GCC's value with `--param destructive-interference-size=64`.
   [P0493R5: Atomic minimum/maximum](https://wg21.link/P0493R5)
 - [std::hardware_destructive_interference_size — cppreference](https://en.cppreference.com/w/cpp/thread/hardware_destructive_interference_size)
 - [GCC `-Winterference-size`](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Winterference-size)
+- [`<stdatomic.h>` — cppreference](https://en.cppreference.com/w/cpp/header/stdatomic.h) · [P0943R6 — Support C atomics in C++](https://wg21.link/P0943R6)
