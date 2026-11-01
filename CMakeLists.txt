@@ -12,9 +12,72 @@ elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 4.4 AND CMAKE_VERSION VERSION_LESS 4.
   set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
 endif()
 
+# The generic presets (gcc, clang, clang-libcxx, msvc, clang-cl, mingw) set
+# CPPDOCS_TOOLCHAIN and leave the compiler to the environment: CXX, or
+# -DCMAKE_CXX_COMPILER=... If neither is given, use the toolchain's usual
+# driver name from PATH. After project(), check the compiler really is that
+# toolchain, so a CI job can't silently test the wrong one (e.g. AppleClang
+# under the gcc preset).
+set(CPPDOCS_TOOLCHAIN "" CACHE STRING
+    "Toolchain a generic preset expects: gcc, clang, clang-libcxx, msvc, clang-cl or mingw (empty: no check)")
+if(CPPDOCS_TOOLCHAIN AND NOT CMAKE_CXX_COMPILER AND "$ENV{CXX}" STREQUAL "")
+  set(_cppdocs_default_cxx_gcc g++)
+  set(_cppdocs_default_cxx_clang clang++)
+  set(_cppdocs_default_cxx_clang-libcxx clang++)
+  set(_cppdocs_default_cxx_msvc cl)
+  set(_cppdocs_default_cxx_clang-cl clang-cl)
+  set(_cppdocs_default_cxx_mingw g++)
+  if(DEFINED _cppdocs_default_cxx_${CPPDOCS_TOOLCHAIN})
+    set(CMAKE_CXX_COMPILER ${_cppdocs_default_cxx_${CPPDOCS_TOOLCHAIN}})
+  endif()
+endif()
+
 project(cpp_docs_tests VERSION 0.2.1 LANGUAGES CXX)
 
+if(CPPDOCS_TOOLCHAIN)
+  set(_id "${CMAKE_CXX_COMPILER_ID}")
+  set(_ok FALSE)
+  if(CPPDOCS_TOOLCHAIN STREQUAL "gcc")
+    if(_id STREQUAL "GNU" AND NOT WIN32)
+      set(_ok TRUE)
+    endif()
+  elseif(CPPDOCS_TOOLCHAIN MATCHES "^clang(-libcxx)?$")
+    if(_id MATCHES "^(Clang|AppleClang)$" AND NOT MSVC)
+      set(_ok TRUE)
+    endif()
+  elseif(CPPDOCS_TOOLCHAIN STREQUAL "msvc")
+    if(_id STREQUAL "MSVC")
+      set(_ok TRUE)
+    endif()
+  elseif(CPPDOCS_TOOLCHAIN STREQUAL "clang-cl")
+    if(_id STREQUAL "Clang" AND MSVC)
+      set(_ok TRUE)
+    endif()
+  elseif(CPPDOCS_TOOLCHAIN STREQUAL "mingw")
+    if(_id STREQUAL "GNU" AND MINGW)
+      set(_ok TRUE)
+    endif()
+  else()
+    message(FATAL_ERROR "CPPDOCS_TOOLCHAIN='${CPPDOCS_TOOLCHAIN}': expected gcc, clang, clang-libcxx, msvc, clang-cl or mingw")
+  endif()
+  if(NOT _ok)
+    message(FATAL_ERROR "Preset toolchain '${CPPDOCS_TOOLCHAIN}' but the compiler is "
+                        "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} "
+                        "(${CMAKE_CXX_COMPILER}). Set CXX or -DCMAKE_CXX_COMPILER "
+                        "to a ${CPPDOCS_TOOLCHAIN} compiler and configure a fresh build "
+                        "directory (cmake --fresh --preset ${CPPDOCS_TOOLCHAIN}).")
+  endif()
+  message(STATUS "cpp-docs toolchain ${CPPDOCS_TOOLCHAIN}: ${CMAKE_CXX_COMPILER_ID} "
+                 "${CMAKE_CXX_COMPILER_VERSION} (${CMAKE_CXX_COMPILER})")
+endif()
+
 set(CMAKE_CXX_STANDARD 26)
+# CMake (through 4.3) knows no C++26 flag for MSVC (cl), only C++23, which it
+# maps to /std:c++latest, the newest mode cl has. clang-cl gets
+# -std:c++latest for 26 from CMake itself.
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  set(CMAKE_CXX_STANDARD 23)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

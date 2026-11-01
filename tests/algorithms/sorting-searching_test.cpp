@@ -112,8 +112,14 @@ TEST(SortingSearching, NthElementIsLinear) {
     EXPECT_EQ(v[n / 2], n / 2);  // the median of 0..n-1
     v = shuffled(n);
     std::sort(v.begin(), v.end(), [&](int a, int b) { ++sort_calls; return a < b; });
-    EXPECT_LT(nth_calls, 5L * n);             // a small multiple of n
     EXPECT_GT(sort_calls, 10L * n);           // ~n log2 n (log2 100000 ~ 17)
+#if defined(_MSVC_STL_VERSION) && _ITERATOR_DEBUG_LEVEL == 2
+    (void)nth_calls;
+    GTEST_SKIP() << "MS STL debug iterators call the comparator a second time to validate it "
+                    "(_DEBUG_LT_PRED), so nth_element's count isn't the algorithm's";
+#else
+    EXPECT_LT(nth_calls, 5L * n);             // a small multiple of n
+#endif
 }
 
 // "Binary search": O(log n) — about log2(n) comparisons on a sorted range.

@@ -128,6 +128,10 @@ TEST(NullTerminatedMultibyteStrings, Mbrtoc32AndC32rtomb) {
 #if defined(__cpp_char8_t)
 // "mbrtoc8 hands out one UTF-8 code unit per call": 2/C3, then -3/A9 without input.
 TEST(NullTerminatedMultibyteStrings, Mbrtoc8) {
+#if defined(_WIN32)
+    GTEST_SKIP() << "MS STL's <cuchar> declares no mbrtoc8/c8rtomb, and MinGW-w64's <uchar.h> "
+                    "isn't known to declare them either";
+#else
     Utf8Locale loc;
     REQUIRE_UTF8(loc);
     const char* e_acute = "\xC3\xA9";
@@ -137,6 +141,7 @@ TEST(NullTerminatedMultibyteStrings, Mbrtoc8) {
     EXPECT_EQ(c8, 0xC3);
     EXPECT_EQ(std::mbrtoc8(&c8, e_acute + 2, 0, &st), kStored);
     EXPECT_EQ(c8, 0xA9);
+#endif
 }
 #endif
 

@@ -50,7 +50,12 @@ TEST(Attributes, StandardAttributesAreRecognized) {
     static_assert(__has_cpp_attribute(nodiscard) >= 201907L);      // reason string: C++20
     static_assert(__has_cpp_attribute(likely) >= 201803L);         // C++20
     static_assert(__has_cpp_attribute(unlikely) >= 201803L);       // C++20
+#if defined(_MSC_VER) && !defined(__clang__)
+    GTEST_SKIP() << "MSVC doesn't implement [[assume]] (P1774R8: \"no\" in Microsoft's conformance table); "
+                    "the other attributes were checked";
+#else
     static_assert(__has_cpp_attribute(assume) >= 202207L);         // C++23
+#endif
 }
 
 // "The standard attributes": attributes don't change meaning — the functions behave normally.

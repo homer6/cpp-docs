@@ -203,7 +203,12 @@ TEST(Atomics, InterferenceSizes) {
     static_assert(offsetof(Counters, consumed) - offsetof(Counters, produced) >= destructive);
     struct Hot { int key; int value; };
     static_assert(sizeof(Hot) <= constructive);
-#if defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if defined(_MSVC_STL_VERSION)
+    // MS STL (MSVC and clang-cl) fixes both at 64 on x86, x64 and ARM64; checked first
+    // because clang-cl on ARM64 also defines __aarch64__.
+    EXPECT_EQ(destructive, 64u);
+    EXPECT_EQ(constructive, 64u);
+#elif defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
     EXPECT_EQ(destructive, 64u);  // the page's x86-64 GCC values
     EXPECT_EQ(constructive, 64u);
 #elif defined(__aarch64__) || defined(__arm64__)

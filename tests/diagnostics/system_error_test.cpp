@@ -4,17 +4,29 @@
 #include <string>
 #include <system_error>
 
+#if defined(_WIN32)
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <gtest/gtest.h>
 
 namespace fs = std::filesystem;
 
 namespace {
+int process_id() {
+#if defined(_WIN32)
+    return ::_getpid();
+#else
+    return ::getpid();
+#endif
+}
+
 // A unique temp directory, removed when the test ends.
 struct TempDir {
     fs::path path = fs::temp_directory_path() /
-                    ("cppdocs-system_error-" + std::to_string(::getpid()));
+                    ("cppdocs-system_error-" + std::to_string(process_id()));
     TempDir() { fs::create_directories(path); }
     ~TempDir() { std::error_code ec; fs::remove_all(path, ec); }
 };

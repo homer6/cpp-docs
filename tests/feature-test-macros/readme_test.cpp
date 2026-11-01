@@ -79,5 +79,9 @@ TEST(FeatureTestMacros, RangesBranch) {
 
 // "Gotchas": __cplusplus says which standard was requested (C++26 mode is newer than C++23).
 TEST(FeatureTestMacros, CplusplusReflectsRequestedStandard) {
+#if defined(_MSC_VER) && !defined(__clang__) && __cplusplus <= 202302L
+    GTEST_SKIP() << "MSVC has no C++26 mode; /std:c++latest sets __cplusplus to " << __cplusplus;
+#else
     EXPECT_GT(__cplusplus, 202302L);
+#endif
 }

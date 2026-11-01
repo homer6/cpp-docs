@@ -1,7 +1,9 @@
 // Checks claims made by docs/examples/language-support/type-info.md.
 #include <compare>
 #include <cstdlib>
-#include <cxxabi.h>
+#if __has_include(<cxxabi.h>)
+#include <cxxabi.h>  // Itanium C++ ABI only: not on MSVC or clang-cl
+#endif
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -17,12 +19,14 @@ struct Derived : Base {};
 struct Plain {};
 struct PlainDerived : Plain {};
 
+#if __has_include(<cxxabi.h>)
 std::string demangle(const char* mangled) {
     int status = 0;
     std::unique_ptr<char, decltype(&std::free)> p{
         abi::__cxa_demangle(mangled, nullptr, nullptr, &status), &std::free};
     return status == 0 ? p.get() : mangled;
 }
+#endif
 
 int calls = 0;
 // Only named in an unevaluated operand, hence [[maybe_unused]].
@@ -61,6 +65,12 @@ TEST(TypeInfo, MapKeyedByType) {
 
 // "name() is mangled on GCC and Clang" + "Gotchas": the exact spellings.
 TEST(TypeInfo, NameIsImplementationDefined) {
+#if defined(_MSC_VER)
+    // MSVC ABI (MSVC, clang-cl): name() is already the readable, undecorated name.
+    EXPECT_STREQ(typeid(int).name(), "int");
+    EXPECT_NE(std::string(typeid(std::string).name()).find("std::basic_string<char"), std::string::npos)
+        << typeid(std::string).name();
+#else
     EXPECT_STREQ(typeid(int).name(), "i");
 #if defined(_LIBCPP_VERSION)
     EXPECT_NE(demangle(typeid(std::string).name()).find("std::__1::basic_string"), std::string::npos);
@@ -70,6 +80,7 @@ TEST(TypeInfo, NameIsImplementationDefined) {
               "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >");
 #else
     GTEST_SKIP() << "spelling recorded only for libstdc++ and libc++";
+#endif
 #endif
 }
 

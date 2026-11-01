@@ -4,7 +4,8 @@
 namespace {
 int static_int;  // static storage: zero-initialized
 
-#if __has_cpp_attribute(indeterminate)
+// The helpers use GNU inline asm, which MSVC (x64/ARM64) doesn't accept.
+#if __has_cpp_attribute(indeterminate) && !(defined(_MSC_VER) && !defined(__clang__))
 [[gnu::noinline]] void dirty_stack() {
     volatile unsigned char buf[256];
     for (auto& c : buf) c = 0xAB;

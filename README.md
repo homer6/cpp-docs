@@ -92,7 +92,7 @@ area has its own README.
 
 - **[`docs/guidelines/`](docs/guidelines/README.md)** — how to use it well (see [Guidelines](#guidelines))
 - **[`tests/`](tests/CMakeLists.txt)** — GoogleTest suite that checks the pages' claims (see [Running the tests](#running-the-tests))
-- **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) runs the tests
+- **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) (or [`run_tests.ps1`](tools/run_tests.ps1) on Windows) runs the tests, [`tools/ctest_to_json.py`](tools/ctest_to_json.py) writes their results as JSON
 - **[`evals/`](evals/README.md)** — test cases for the `cpp-guidelines` agent skill
 - **[`.claude/skills/`](.claude/skills/)** — [`cpp-guidelines`](.claude/skills/cpp-guidelines/SKILL.md) (review against the Core Guidelines), [`refresh-guidelines`](.claude/skills/refresh-guidelines/SKILL.md) (keep them current), [`add-to-topic`](.claude/skills/add-to-topic/SKILL.md) (add a feature or gotcha to the reference), [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) (**start here**: write C++ using this reference)
 - **[`modules/`](modules/)** — submodules: [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines), [perf-report](https://github.com/homer6/perf-report)
@@ -193,6 +193,13 @@ All three must pass cleanly. The GCC list of known failures
 (`tools/snippet_baseline/clang.txt`) lists only libc++ gaps and only shrinks. Fence tags (`body`,
 `nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](CLAUDE.md).
 
+Other toolchains: `--toolchain msvc` drives `cl /Zs` (syntax only, the prelude
+via `/FI`) and `--toolchain clang-cl` drives `clang-cl /Zs`, both from a VS
+Developer shell; each has its own baseline (`tools/snippet_baseline/msvc.txt`,
+`clang-cl.txt`). Module blocks are checked with GCC and Clang only for now; with
+the cl-style toolchains they skip with that reason. `--json FILE` also writes
+the results (platform, compiler, counts, failures, skips with reasons) as JSON.
+
 ## Running the tests
 
 The snippet checker proves the code **compiles**; the GoogleTest suite under
@@ -228,6 +235,54 @@ workflow directly: `cmake --workflow --preset gcc-15`.
   docker run --rm -v "$PWD":/w -w /w gcc:16 bash -c \
     'apt-get update -qq && apt-get install -y -qq --no-install-recommends cmake ninja-build && cmake --workflow --preset gcc-16'
   ```
+
+  The script re-runs itself in Docker only for `gcc-16`, and not when it's
+  already in a container (`/.dockerenv`, `/run/.containerenv`) or
+  `CPPDOCS_NO_DOCKER=1` is set (a host whose `g++` is GCC 16).
+
+### Portable presets (any machine, CI)
+
+The presets above are the owner's Mac. These take no paths: the compiler comes
+from `CXX` (or `-DCMAKE_CXX_COMPILER=…`), and without either they use the
+driver name in the table from `PATH`. They build into `build/<preset>/` with
+Ninja, and the configure step fails if the compiler isn't the preset's
+toolchain (say AppleClang under `gcc`), so a job can't test the wrong one.
+
+| Preset | Toolchain | Default `CXX` |
+|---|---|---|
+| `gcc` | GCC + libstdc++ (Linux, macOS, FreeBSD) | `g++` |
+| `clang` | Clang + the platform's library (libstdc++ on Linux, libc++ on macOS/FreeBSD) | `clang++` |
+| `clang-libcxx` | Clang + libc++ (`-stdlib=libc++` via `CMAKE_CXX_FLAGS_INIT`, so `CXXFLAGS`/`LDFLAGS` still apply) | `clang++` |
+| `msvc` | MSVC `cl` + MS STL (Windows) | `cl` |
+| `clang-cl` | `clang-cl` + MS STL (Windows) | `clang-cl` |
+| `mingw` | MinGW-w64 GCC + libstdc++ (MSYS2) | `g++` |
+
+```bash
+CXX=g++-14 tools/run_tests.sh gcc
+CXX=clang++-20 tools/run_tests.sh clang-libcxx
+CXX=/opt/homebrew/opt/llvm/bin/clang++ \
+  LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++" \
+  tools/run_tests.sh clang-libcxx      # Homebrew LLVM on macOS (import std skips:
+                                       # configure first with -DCMAKE_CXX_STDLIB_MODULES_JSON=
+                                       # /opt/homebrew/opt/llvm/lib/c++/libc++.modules.json)
+tools/run_tests.sh --json build/results-gcc.json gcc   # also write JSON results
+```
+
+**MSVC and clang-cl** use Ninja too, so they must run where `cl`, `link` and
+the Windows SDK are on `PATH`: a *Developer PowerShell / Command Prompt for
+VS* (or `vcvarsall.bat x64`; in GitHub Actions, a step that sets up the MSVC
+developer environment). From there, `tools/run_tests.ps1 msvc` (PowerShell) or
+`tools/run_tests.sh msvc` (Git Bash started from that shell) runs the
+workflow. The two presets show up in `cmake --list-presets` only on Windows.
+The tests are built with `/std:c++latest /permissive- /EHsc /utf-8
+/Zc:__cplusplus /bigobj /W4` (plus `/Zc:preprocessor` for `cl`), and
+GoogleTest with `gtest_force_shared_crt` so both use the DLL runtime. `mingw`
+runs from an MSYS2 MinGW shell (`tools/run_tests.sh mingw`).
+
+`tools/ctest_to_json.py --build-dir build/<preset>` turns any ctest run
+(`LastTest.log`, or a `ctest --output-junit` file with `--junit`) into JSON:
+platform, compiler and version, preset, counts, failures and skips with their
+reasons. `tools/check_snippets.py --json` writes the same shape for snippets.
 
 GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests
 mirror the pages: `docs/examples/<area>/.../<page>.md` is checked by

@@ -35,7 +35,10 @@ TEST(Debugging, BreakpointIfDebuggingIsNoOpUnwatched) {
 // "Gotchas": breakpoint() without a debugger ends the program with SIGTRAP.
 TEST(DebuggingDeathTest, BreakpointWithoutDebuggerTraps) {
     CPPDOCS_REQUIRE(__cpp_lib_debugging);
-#ifdef __cpp_lib_debugging
+#if defined(_WIN32)
+    GTEST_SKIP() << "Windows has no SIGTRAP (breakpoint() raises a breakpoint exception) and "
+                    "GoogleTest has no KilledBySignal there";
+#elif defined(__cpp_lib_debugging)
     GTEST_FLAG_SET(death_test_style, "threadsafe");
     EXPECT_EXIT(std::breakpoint(), testing::KilledBySignal(SIGTRAP), "");
 #endif

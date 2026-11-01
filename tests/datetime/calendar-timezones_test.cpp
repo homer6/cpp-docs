@@ -81,9 +81,17 @@ TEST(CalendarTimezones, ZonedTime) {
     zoned_time tokyo{"Asia/Tokyo", ny.get_sys_time()};
     EXPECT_EQ(ny.get_sys_time(), tokyo.get_sys_time());  // same instant
     EXPECT_EQ(ny.get_local_time().time_since_epoch(), (sys_days{2026y / May / 26d} + 12h).time_since_epoch());
+#if defined(_MSVC_STL_VERSION)
+    // MS STL takes %Z abbreviations from Windows' ICU (ucal_getTimeZoneDisplayName in the
+    // default locale), not from the IANA data, so they needn't be EDT/JST; check the times only.
+    EXPECT_EQ(std::format("{:%Y-%m-%d %H:%M:%S}", ny), "2026-05-26 12:00:00");
+    EXPECT_EQ(std::format("{:%H:%M}", tokyo), "01:00");
+    EXPECT_EQ(std::format("{:%H:%M}", zoned_time{"America/New_York", winter}), "12:00");
+#else
     EXPECT_EQ(std::format("{:%Y-%m-%d %H:%M:%S %Z}", ny), "2026-05-26 12:00:00 EDT");
     EXPECT_EQ(std::format("{:%H:%M %Z}", tokyo), "01:00 JST");
     EXPECT_EQ(std::format("{:%H:%M %Z}", zoned_time{"America/New_York", winter}), "12:00 EST");
+#endif
     EXPECT_EQ(locate_zone("Asia/Tokyo")->name(), "Asia/Tokyo");
     EXPECT_THROW((void)locate_zone("Not/AZone"), std::runtime_error);
     try {

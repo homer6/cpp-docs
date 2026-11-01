@@ -13,18 +13,32 @@
 #include <version>
 
 #include <gtest/gtest.h>
+#if defined(_WIN32)
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "support/feature.hpp"
 
 namespace fs = std::filesystem;
+
+namespace {
+int process_id() {
+#if defined(_WIN32)
+    return ::_getpid();
+#else
+    return ::getpid();
+#endif
+}
+}  // namespace
 
 class Filesystem : public testing::Test {
 protected:
     fs::path dir;
     void SetUp() override {
         dir = fs::temp_directory_path() /
-              ("cppdocs-filesystem-" + std::to_string(::getpid()) + "-" +
+              ("cppdocs-filesystem-" + std::to_string(process_id()) + "-" +
                testing::UnitTest::GetInstance()->current_test_info()->name());
         fs::create_directories(dir);
     }
@@ -41,7 +55,13 @@ TEST(FilesystemPath, Decomposition) {
     EXPECT_EQ(p.extension(), ".txt");
     EXPECT_EQ(p.parent_path(), "dir/sub");
     EXPECT_FALSE(p.is_absolute());
+#if defined(_WIN32)
+    // Windows: absolute needs a root name too; "/tmp" is relative to the current drive.
+    EXPECT_FALSE(fs::path("/tmp").is_absolute());
+    EXPECT_TRUE(fs::path("C:/tmp").is_absolute());
+#else
     EXPECT_TRUE(fs::path("/tmp").is_absolute());  // POSIX
+#endif
 }
 
 // "Querying the filesystem": exists, kinds, size, write time, absolute/canonical.

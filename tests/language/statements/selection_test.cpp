@@ -8,6 +8,8 @@
 
 #include <gtest/gtest.h>
 
+#include "support/feature.hpp"
+
 namespace {
 std::string trace;
 void handle_low() { trace += "low "; }
@@ -98,7 +100,14 @@ TEST(Selection, SwitchInitEnumAndBracedCase) {
     EXPECT_EQ(describe(Color::blue), "cool");
 }
 
+// Needs P0963 (MSVC has no C++26 core features yet) and from_chars_result's operator bool
+// (P2497; MS STL doesn't have it, so clang-cl can't build it either).
+#if __cpp_structured_bindings >= 202403L && !defined(_MSVC_STL_VERSION)
+#define SELECTION_SB_CONDITION 1
+#endif
+
 namespace {
+#ifdef SELECTION_SB_CONDITION
 int parse_or(std::string_view s, int fallback) {
     int value = 0;
     if (auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), value))
@@ -106,14 +115,21 @@ int parse_or(std::string_view s, int fallback) {
     else
         return fallback;
 }
+#endif
 template <class T>
 concept TestableAsCondition = requires(T t) { t ? 0 : 1; };
 }  // namespace
 
 // "Structured binding as a condition (C++26)": the whole object is tested, then bound.
 TEST(Selection, StructuredBindingAsCondition) {
+    static_assert(!TestableAsCondition<std::pair<int, bool>>);  // pair has no operator bool
+    CPPDOCS_REQUIRE_VERSION(__cpp_structured_bindings, 202403L);
+#if defined(_MSVC_STL_VERSION)
+    GTEST_SKIP() << "MS STL's std::from_chars_result has no operator bool (P2497)";
+#endif
+#ifdef SELECTION_SB_CONDITION
     EXPECT_EQ(parse_or("42", -1), 42);
     EXPECT_EQ(parse_or("x", -1), -1);
     EXPECT_EQ(parse_or("42x", -1), -1);  // parsed, but not all of the string
-    static_assert(!TestableAsCondition<std::pair<int, bool>>);  // pair has no operator bool
+#endif
 }

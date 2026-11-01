@@ -63,6 +63,9 @@ constexpr int sum_to(int n) {
     return std::accumulate(v.begin(), v.end(), 0);
 }
 
+// The definitions below use C++23/26 constant-evaluation rules, so each is guarded by its
+// macro: MSVC (no P2448) rejects a constexpr function body it can't evaluate.
+#if __cpp_constexpr >= 202211L  // P2647 static constexpr locals, P2242 goto/non-literal locals
 constexpr char hex_digit(int n) {
     static constexpr char digits[] = "0123456789abcdef";
     return digits[n];
@@ -76,10 +79,14 @@ fail:
     ++failures;
     return -1;
 }
+#endif
 
+#if __cpp_consteval >= 202211L  // P2564 consteval propagation
 consteval int checked(int x) { return x; }
 template <class T> constexpr int forward_checked(T x) { return checked(x); }
+#endif
 
+#if __cpp_constexpr >= 202406L  // P2747 constexpr placement new
 struct Point {
     int x, y;
 };
@@ -93,7 +100,9 @@ constexpr int build() {
     alloc.deallocate(p, 2);
     return r;
 }
+#endif
 
+#if __cpp_lib_constexpr_algorithms >= 202306L  // P2562 constexpr stable_sort
 struct Rec {
     int key;
     char tag;
@@ -103,6 +112,7 @@ constexpr bool keeps_order() {
     std::stable_sort(r.begin(), r.end(), [](Rec x, Rec y) { return x.key < y.key; });
     return r[0].tag == 'b' && r[1].tag == 'd' && r[2].tag == 'a' && r[3].tag == 'c';
 }
+#endif
 
 constexpr long spin(long n) {
     long s = 0;
@@ -134,30 +144,40 @@ TEST(ConstantEvaluationRules, TransientAllocation) {
 // at run time.
 TEST(ConstantEvaluationRules, Cxx23Relaxations) {
     CPPDOCS_REQUIRE_VERSION(__cpp_constexpr, 202211L);
+#if __cpp_constexpr >= 202211L
     static_assert(hex_digit(11) == 'b');
     static_assert(parse_digit('7') == 7);
     EXPECT_EQ(parse_digit('x'), -1);  // the goto path, at run time
+#endif
 }
 
 // "consteval propagation (C++23)": a template calling a consteval function becomes immediate.
 TEST(ConstantEvaluationRules, ConstevalPropagation) {
     CPPDOCS_REQUIRE_VERSION(__cpp_consteval, 202211L);
+#if __cpp_consteval >= 202211L
     static_assert(forward_checked(5) == 5);
     EXPECT_EQ(forward_checked(6), 6);  // constant argument: fine
+#endif
 }
 
 // "Placement new (C++26) and std::construct_at (C++20)".
 TEST(ConstantEvaluationRules, PlacementNew) {
     CPPDOCS_REQUIRE_VERSION(__cpp_constexpr, 202406L);
+#if __cpp_constexpr >= 202406L
     static_assert(build() == 5);
     EXPECT_EQ(build(), 5);
+#endif
 }
 
 // "Evaluation limits": two million iterations exceed both defaults at compile time, but run
 // fine at run time.
 TEST(ConstantEvaluationRules, LimitsApplyOnlyAtCompileTime) {
+#if defined(_WIN32)
+    GTEST_SKIP() << "Windows is LLP64: long is 32 bits, so the page's sum (1'999'999'000'000) overflows long";
+#else
     volatile long n = 2'000'000;
     EXPECT_EQ(spin(n), 1'999'999'000'000L);
+#endif
 }
 
 // "The constexpr standard library": stable_sort (C++26), containers and utilities.
@@ -191,6 +211,10 @@ TEST(ConstantEvaluationRules, ConstexprCmath) {
     static_assert(std::fabs(-2.5) == 2.5);
     static_assert(std::sqrt(4.0) == 2.0);
     SUCCEED();
+#elif defined(_MSVC_STL_VERSION)
+    // MS STL takes std::isnan/std::signbit(double) from the UCRT, which doesn't make them constexpr
+    // (microsoft/STL stl/inc/cmath: only the integer overloads and Clang builtins are _CONSTEXPR23).
+    GTEST_SKIP() << "MS STL: <cmath> isn't constexpr for floating point (no __cpp_lib_constexpr_cmath)";
 #else
     static_assert(!std::isnan(1.0) && std::signbit(-1.0));  // these do work
     GTEST_SKIP() << "std::fabs isn't constexpr in this library (no __cpp_lib_constexpr_cmath)";

@@ -193,6 +193,17 @@ lists only genuine libc++ gaps (a header or feature libc++ doesn't ship yet):
 a snippet that fails on Clang because it's wrong or uses a GCC extension gets
 fixed so it compiles on both. Delete a line when libc++ catches up.
 
+Toolchains: `--toolchain` is `auto` (GCC or Clang, told apart by
+`--cxx --version`), `gcc`, `clang`, `msvc` (`cl /Zs`, prelude via `/FI`) or
+`clang-cl`. Fence tags mean the same everywhere, except that on `msvc` a
+`compile-fail="regex"` block only has to fail (the regexes are GCC/Clang
+wording), and module blocks skip with a reason on `msvc` and `clang-cl` (a
+separate step). Each toolchain has its own baseline in
+`tools/snippet_baseline/` (`gcc.txt`, `clang.txt`, `msvc.txt`, `clang-cl.txt`).
+`--json FILE` writes the results as JSON (schema `cpp-docs/results/1`, kind
+`snippets`) for the results collector; keep the text output and its counts
+unchanged for GCC and Clang.
+
 Each block has a stable ID, `<file>#<heading-slug>/<n>`, shown next to every
 failure. `tools/snippet_baseline/gcc.txt` (the list of known failures) is
 **empty** and must stay that way: fix a failing block or tag it honestly —
@@ -238,7 +249,15 @@ tools/run_tests.sh gcc-15 -L containers   # one area; args after the preset go t
 
 The script runs `cmake --workflow --preset <preset>` (configure, build and
 test into `build/<preset>/`) and then prints every skipped test with its
-reason. The presets live in `CMakePresets.json`; README.md explains each one
+reason. `gcc-15`, `clang-22` and `gcc-16` are the owner's local presets. The
+portable presets `gcc`, `clang`, `clang-libcxx`, `msvc`, `clang-cl` and
+`mingw` (for CI and other machines) take the compiler from `CXX` and set
+`CPPDOCS_TOOLCHAIN`, which makes the configure step fail if the compiler is
+the wrong toolchain; README.md has the table and the VS Developer shell
+setup for `msvc`/`clang-cl`. `tools/run_tests.ps1` is the PowerShell
+counterpart; `tools/run_tests.sh --json FILE <preset>` (or
+`tools/ctest_to_json.py --build-dir build/<preset>`) writes the results as
+JSON (kind `tests`). The presets live in `CMakePresets.json`; README.md explains each one
 and the Docker recipe (the `gcc:16` image needs `apt-get install cmake
 ninja-build`, which the script does for you).
 
@@ -263,6 +282,15 @@ Writing tests:
   `CPPDOCS_REQUIRE_VERSION(__cpp_lib_x, 202306L)`) first, and wrap the code that
   needs the feature in `#ifdef __cpp_lib_x`. Implementation-defined results get
   `GTEST_SKIP() << "reason"` or a per-toolchain expectation.
+- **Tests must build on MSVC too** (`/std:c++latest /permissive- /EHsc
+  /utf-8 /Zc:__cplusplus`, MS STL, LLP64: 4-byte `long`, 2-byte `wchar_t`,
+  `long double` = `double`, signed `char`) and on clang-cl and MinGW. No POSIX
+  headers or GCC builtins without an `#if`; locale names differ (`de-DE` on
+  Windows); a toolchain chain (`#if defined(__clang__) … #elif
+  defined(__GNUC__)`) needs a branch for `_MSC_VER` / `_MSVC_STL_VERSION`
+  (clang-cl defines both `__clang__` and `_MSC_VER`). Gate what differs with
+  `CPPDOCS_REQUIRE`, `#ifdef` or a per-toolchain expectation, never by deleting
+  the test.
 - **A failing test means the page is wrong:** fix the page in the same PR and
   list it in the PR description.
 - **Module tests:** module units live in `tests/language/modules/units/` and

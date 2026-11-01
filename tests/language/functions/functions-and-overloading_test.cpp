@@ -77,16 +77,20 @@ TEST(FunctionsAndOverloading, DefaultVersusDeleted) {
     static_assert(!CallableF<double>);  // picks the deleted overload
 }
 
+#if __cpp_deleted_function >= 202403L  // MSVC has no C++26 core features yet
 namespace deleted_reason {
 void g(int) {}
 void g(double) = delete("would narrow; convert explicitly");
 template <class T>
 concept CallableG = requires(T t) { g(t); };
 }  // namespace deleted_reason
+#endif
 
 // "`= delete(\"reason\")` (C++26)": the overload is deleted; the message is in the diagnostic.
 TEST(FunctionsAndOverloading, DeleteWithReason) {
     CPPDOCS_REQUIRE_VERSION(__cpp_deleted_function, 202403L);
+#if __cpp_deleted_function >= 202403L
     static_assert(deleted_reason::CallableG<int>);
     static_assert(!deleted_reason::CallableG<double>);
+#endif
 }

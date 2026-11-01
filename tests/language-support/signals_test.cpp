@@ -68,10 +68,21 @@ TEST(Signals, SixStandardSignals) {
 // "Gotchas": destructors don't run when the default action terminates the process.
 TEST(SignalsDeathTest, DefaultActionTerminates) {
     GTEST_FLAG_SET(death_test_style, "threadsafe");
+#if defined(_WIN32)
+    // The UCRT's default action ends the program with exit code 3 for every signal,
+    // and GoogleTest has no KilledBySignal on Windows.
+    EXPECT_EXIT(
+        {
+            std::signal(SIGTERM, SIG_DFL);
+            std::raise(SIGTERM);
+        },
+        testing::ExitedWithCode(3), "");
+#else
     EXPECT_EXIT(
         {
             std::signal(SIGTERM, SIG_DFL);
             std::raise(SIGTERM);
         },
         testing::KilledBySignal(SIGTERM), "");
+#endif
 }

@@ -49,7 +49,10 @@ TEST(SourceLocation, MemberTypes) {
 // the signature, Clang 22 too; the exact text differs.
 TEST(SourceLocation, FunctionNameIsImplementationDefined) {
     std::string name = body_current().function_name();
-#if defined(__clang__)
+#if defined(_MSC_VER)
+    GTEST_SKIP() << "MS STL fills function_name() from __builtin_FUNCSIG() (MSVC and clang-cl); "
+                    "spelling recorded only for GCC and Clang with their own libraries";
+#elif defined(__clang__)
     EXPECT_EQ(name, "std::source_location (anonymous namespace)::body_current()");
 #elif defined(__GNUC__)
     EXPECT_EQ(name, "std::source_location {anonymous}::body_current()");
