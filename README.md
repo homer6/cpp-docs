@@ -216,5 +216,8 @@ style is in [`CLAUDE.md`](CLAUDE.md).
 
 ## Progress
 
+**Latest release: [v0.1.0](docs/releases/v0.1.0.md)** (2026-10-31). All
+releases are listed in [`docs/releases/`](docs/releases/README.md).
+
 See [`docs/examples/README.md`](docs/examples/README.md) for the full index and
 status across every topic.
