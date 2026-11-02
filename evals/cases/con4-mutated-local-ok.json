@@ -1,0 +1,12 @@
+{
+  "id": "con4-mutated-local-ok",
+  "outcome": "compliant",
+  "rules": ["Con.4", "Con.1"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_not_flag": ["Con.4", "Con.1", "Con.3"],
+    "must_not_change": ["out stays non-const (it is built up in the loop); parts stays const&"]
+  },
+  "notes": "out changes after construction, so Con.4 (const for values that never change) does not apply. A reviewer that adds const everywhere would break it.",
+  "source": "held-out"
+}

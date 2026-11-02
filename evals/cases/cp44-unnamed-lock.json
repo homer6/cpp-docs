@@ -1,0 +1,12 @@
+{
+  "id": "cp44-unnamed-lock",
+  "outcome": "violation",
+  "rules": ["CP.44"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["CP.44"],
+    "fix": {"properties": ["the lock is a named variable that lives until after ++hits"]}
+  },
+  "notes": "The unnamed lock_guard is destroyed at the end of its statement, so ++hits runs unlocked.",
+  "source": "held-out"
+}

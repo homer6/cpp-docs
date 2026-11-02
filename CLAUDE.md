@@ -21,7 +21,8 @@ eval cases are in `evals/modern-cpp/` (#251); `evals/check.py` validates them.
 It's the preferred entry point and calls `cpp-guidelines` itself. Use
 `cpp-guidelines` directly only for a Core Guidelines review or audit with rule
 IDs, a question about one rule, a focused ownership or lifetime fix, or the
-evals.
+evals (`evals/cases/`, 31 cases; `python3 evals/check.py` validates them and
+picks a working compiler unless `CXX` is set, #252).
 `make install` links it (and `cpp-guidelines`) into `~/.claude/skills`, upgrading
 an older link or copied install; `make update` pulls and re-links; `make
 uninstall` removes the links.

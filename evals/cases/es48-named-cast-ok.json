@@ -1,0 +1,12 @@
+{
+  "id": "es48-named-cast-ok",
+  "outcome": "compliant",
+  "rules": ["ES.48", "ES.49"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_not_flag": ["ES.48", "ES.49", "Type.1"],
+    "must_not_change": ["the conversion stays explicit (static_cast or std::to_underlying)"]
+  },
+  "notes": "A named cast from a scoped enum to its underlying type is the intended use (ES.49). Suggesting std::to_underlying (C++23) is fine as an option, not a violation.",
+  "source": "held-out"
+}
