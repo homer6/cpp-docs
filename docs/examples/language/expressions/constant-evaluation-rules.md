@@ -64,6 +64,10 @@ constexpr bool check() {
 static_assert(check());
 ```
 
+MSVC needs VS 2026 (19.5x) for this: VS 2022 (19.44) rejects the virtual
+`area()` call through the base reference (C2131), as a
+[consented `windows-msvc` run](https://github.com/homer6/cpp-docs/actions/runs/41366612820) showed.
+
 ### `try`/`catch` and union members (C++20)
 
 A `try` block may appear, as long as nothing throws during constant evaluation

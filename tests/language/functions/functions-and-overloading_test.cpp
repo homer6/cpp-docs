@@ -66,7 +66,10 @@ TEST(FunctionsAndOverloading, OverloadResolution) {
 TEST(FunctionsAndOverloading, Attributes) {
     EXPECT_THROW(fail(), std::runtime_error);
     EXPECT_EQ(g(1), 0);
-    static_assert(__has_cpp_attribute(nodiscard) >= 201907L);  // nodiscard("reason"): C++20
+    // __has_cpp_attribute only works in #if / #elif ([cpp.cond]); MSVC rejects it elsewhere.
+#if __has_cpp_attribute(nodiscard) < 201907L  // nodiscard("reason"): C++20
+#error "[[nodiscard]] with a reason not recognized"
+#endif
 }
 
 // "Default vs deleted": = default / = delete members, and a deleted overload.
