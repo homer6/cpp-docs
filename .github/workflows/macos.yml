@@ -2,6 +2,12 @@
 # LLVM, on Apple silicon (macos-15, macos-26) and Intel (macos-15-intel,
 # macos-26-intel). Issue #145.
 #
+# Homebrew LLVM: Apple silicon gets the current release (23 since 2026-10),
+# Intel stays on 22. Homebrew builds no LLVM 23 bottle for Intel macOS (only
+# arm64 macOS and Linux; checked 2026-11-02, #253), and LLVM's own 23.1.x
+# releases have no Intel macOS build, so 23 there would mean compiling LLVM
+# from source on every run.
+#
 # Manual only: started by hand (or by all.yml through workflow_call), with the
 # owner's consent for each run. See .github/workflows/README.md.
 name: macOS

@@ -1,4 +1,4 @@
-# Linux: GCC 13-16 and Clang 18-22 (with libstdc++ and with libc++) on x86_64
+# Linux: GCC 13-16 and Clang 18-23 (with libstdc++ and with libc++) on x86_64
 # and native arm64. Issues #143 (x86_64) and #144 (arm64).
 #
 # Where each compiler comes from (checked 2026-11-01):
@@ -8,8 +8,10 @@
 #               stops at GCC 14 and the toolchain PPA has only a GCC 16
 #               snapshot, so the images are the one source for all four.
 #               gcc:13 is Debian bookworm (CMake 3.25.1), 14-16 trixie.
-#   Clang 18-22 apt.llvm.org on ubuntu-24.04 (noble has a suite for each
-#               version, amd64 and arm64), with clang-N and libc++-N-dev.
+#   Clang 18-23 apt.llvm.org on ubuntu-24.04 (noble has a suite for each
+#               version, amd64 and arm64), with clang-N, clang-tools-N and
+#               libc++-N-dev. 23 is LLVM's stable branch (checked 2026-11-02:
+#               llvm-toolchain-noble-23 ships 23.1.5 branch builds for both).
 #   26.04       ubuntu-26.04 / ubuntu-26.04-arm are public preview: GCC 15 and
 #               Clang 22 from Ubuntu's own archive (apt.llvm.org has no 18-20
 #               for 26.04).
@@ -104,12 +106,14 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-24.04]
-        clang: ["18", "19", "20", "21", "22"]
+        clang: ["18", "19", "20", "21", "22", "23"]
         stdlib: [libstdcxx, libcxx]
         include:
           # arm64 (#144)
           - {runner: ubuntu-24.04-arm, clang: "22", stdlib: libstdcxx}
           - {runner: ubuntu-24.04-arm, clang: "22", stdlib: libcxx}
+          - {runner: ubuntu-24.04-arm, clang: "23", stdlib: libstdcxx}
+          - {runner: ubuntu-24.04-arm, clang: "23", stdlib: libcxx}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:

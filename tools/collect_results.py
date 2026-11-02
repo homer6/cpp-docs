@@ -89,7 +89,7 @@ TOP_SKIPS = 3
 # The platform workflows (the shared contract in #140), in badge order.
 WORKFLOWS = [
     ("linux.yml", "Linux (x86_64 and arm64)",
-     "ubuntu-24.04/26.04 x64 and arm: GCC 13-16, Clang 18-22 with libstdc++ and libc++"),
+     "ubuntu-24.04/26.04 x64 and arm: GCC 13-16, Clang 18-23 with libstdc++ and libc++"),
     ("macos.yml", "macOS",
      "macos-15/26 arm64, macos-15-intel/26-intel: Apple Clang, Homebrew GCC and LLVM"),
     ("windows-msvc.yml", "Windows (MSVC)",
