@@ -124,11 +124,14 @@ For each bug:
    (github.com/microsoft/STL/issues), Apple Feedback for Apple Clang, the
    FreeBSD and MSYS2 trackers. The Perplexity MCP and `firecrawl search` find
    them quickly.
-2. **An issue here** with a minimal reproducer (a few lines that compile on
+2. **Its own issue here**, one bug per issue (the owner, #220: "each vendor
+   report should be its own issue"), titled `vendor: <toolchain> <bug>`, never
+   a list in a PR body or a shared issue. It holds a minimal reproducer (a few lines that compile on
    one toolchain and not the other), the exact compiler and image version,
-   the run link, the job, and the upstream bug if one exists.
+   the run link, the job, the upstream bug if one exists, where the suite
+   records it, and what to check before filing.
 3. **Add it to `docs/platform-support/known-bugs.json`**: upstream link (or
-   none yet), the repo issue, the affected toolchains and versions, and the
+   none yet), the repo issues (the one that found it and its `vendor:` issue), the affected toolchains and versions, and the
    test or snippet IDs whose skip reason names it.
 4. **A new upstream report is posting outside this repo**: draft it in the
    repo issue and file it only after the owner says yes. When it's filed,
