@@ -638,7 +638,7 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
            "only, and runs only with the owner's consent, given for each run: before a release (on "
            "`dev`), or to back a claim about a platform we can't run locally. The tables below show "
            "the **last consented run** of each workflow, not the current tip of any branch; the README "
-           "badges show the last run on `main`.",
+           "badges summarise these results and the local runs (✓ when every toolchain passes).",
            f"- **Last consented run:** {last or 'none yet'}.",
            "- **Report-only snippets.** Snippet runs are enforced against a reviewed baseline only for "
            "GCC 15/16 and Clang/LLVM 22 with libc++ (off Windows). Every other toolchain's snippet "
@@ -825,6 +825,119 @@ def readme_block(runs: list[dict], local: dict | None) -> str:
         out.append(f"| {os_label(row)} | {compiler_label(row)} | {arch_of(row.get('tests') or row['snippets'])} "
                    f"| {readme_tests(row)} | {readme_snippets(row)} | {scope}{run_cell} |")
     return "\n".join(out)
+
+
+# --- the README's platform badges (#230) ---------------------------------------
+# Our own badges, from the report's results (consented runs and local runs), not
+# GitHub's workflow badges: those follow one branch and miss the local runs.
+BADGES_START, BADGES_END = "<!-- badges:start -->", "<!-- badges:end -->"
+BADGE_DIR = ROOT / "docs" / "platform-support" / "badges"
+BADGE_GROUPS = [("linux", "Linux"), ("macos", "macOS"), ("windows", "Windows"), ("freebsd", "FreeBSD"),
+                ("local", "Local")]
+GREEN, RED, GREY = "#2e7d32", "#c62828", "#555"
+
+
+def row_ok(row: dict[str, dict]) -> bool:
+    """No failing test, and no snippet failure outside the baseline where snippets are enforced."""
+    tests = row.get("tests")
+    if tests and tests["counts"]["failed"]:
+        return False
+    if not tests and missing_tests(row):
+        return False
+    snip = row.get("snippets")
+    if snip and snip.get("mode") != "report-only":
+        new = snip["baseline"]["new"] if snip.get("baseline") is not None else snip["counts"]["failed"]
+        if new:
+            return False
+    return True
+
+
+def badge_counts(runs: list[dict], local: dict | None) -> dict[str, tuple[int, int]]:
+    """{group: (toolchains, failing)} for each badge group with results."""
+    out: dict[str, list[int]] = {}
+    groups = [(r["rows"], False) for r in runs] + ([(local["rows"], True)] if local else [])
+    for rows, is_local in groups:
+        for label, row in rows.items():
+            g = "local" if is_local else label.split("-", 1)[0]
+            if g not in dict(BADGE_GROUPS):
+                continue
+            c = out.setdefault(g, [0, 0])
+            c[0] += 1
+            c[1] += 0 if row_ok(row) else 1
+    return {g: (c[0], c[1]) for g, c in out.items()}
+
+
+def badge_svg(label: str, message: str, color: str) -> str:
+    """A flat badge: grey label, coloured message (widths estimated, 11px Verdana)."""
+    def width(t: str) -> int:
+        return int(sum(7.5 if ch.isupper() or ch in "✓✗mwMW" else 6.6 for ch in t)) + 14
+    lw, mw = width(label), width(message)
+    w = lw + mw
+    message = message.replace("✓", "&#10003;").replace("✗", "&#10007;")  # ASCII-safe SVG
+    title = f"{label}: {message}"
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="20" role="img" aria-label="{title}">'
+            f'<title>{title}</title>'
+            f'<linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/>'
+            f'<stop offset="1" stop-opacity=".1"/></linearGradient>'
+            f'<clipPath id="r"><rect width="{w}" height="20" rx="3" fill="#fff"/></clipPath>'
+            f'<g clip-path="url(#r)"><rect width="{lw}" height="20" fill="{GREY}"/>'
+            f'<rect x="{lw}" width="{mw}" height="20" fill="{color}"/>'
+            f'<rect width="{w}" height="20" fill="url(#s)"/></g>'
+            f'<g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" '
+            f'font-size="11">'
+            f'<text x="{lw / 2:.1f}" y="15" fill="#010101" fill-opacity=".3">{label}</text>'
+            f'<text x="{lw / 2:.1f}" y="14">{label}</text>'
+            f'<text x="{lw + mw / 2:.1f}" y="15" fill="#010101" fill-opacity=".3">{message}</text>'
+            f'<text x="{lw + mw / 2:.1f}" y="14">{message}</text></g></svg>\n')
+
+
+def badges(runs: list[dict], local: dict | None) -> dict[str, str]:
+    """{file name: SVG} for docs/platform-support/badges/."""
+    out = {}
+    for g, (n, bad) in badge_counts(runs, local).items():
+        name = dict(BADGE_GROUPS)[g]
+        tc = "toolchain" if n == 1 else "toolchains"
+        msg, color = (f"✓ {n} {tc}", GREEN) if not bad else (f"✗ {bad} of {n} failing", RED)
+        out[f"{g}.svg"] = badge_svg(name, msg, color)
+    return out
+
+
+def badges_block(runs: list[dict], local: dict | None) -> str:
+    """The README's badge row: one badge per platform, linking the platform support notes."""
+    counts = badge_counts(runs, local)
+    out = ["<!-- Generated by tools/collect_results.py from the report's results (consented runs and "
+           "local runs); don't edit by hand (see CLAUDE.md). -->"]
+    for g, name in BADGE_GROUPS:
+        if g not in counts:
+            continue
+        n, bad = counts[g]
+        alt = f"{name}: {n - bad} of {n} toolchains passing"
+        out.append(f"[![{alt}](docs/platform-support/badges/{g}.svg)](docs/platform-support/notes.md)")
+    return "\n".join(out)
+
+
+def sync_badges(folder: pathlib.Path, svgs: dict[str, str], write: bool) -> list[str]:
+    stale = []
+    for name, text in svgs.items():
+        f = folder / name
+        if not f.is_file() or f.read_text(encoding="utf-8") != text:
+            stale.append(f"badges/{name}")
+            if write:
+                folder.mkdir(parents=True, exist_ok=True)
+                f.write_text(text, encoding="utf-8")
+    for f in sorted(folder.glob("*.svg")) if folder.is_dir() else []:
+        if f.name not in svgs:
+            stale.append(f"badges/{f.name} (no longer produced)")
+            if write:
+                f.unlink()
+    return stale
+
+
+def update_block(text: str, start: str, end: str, block: str) -> str:
+    pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.S)
+    if not pattern.search(text):
+        raise SchemaError(f"README.md is missing the {start} / {end} markers")
+    return pattern.sub(lambda _: f"{start}\n{block}\n{end}", text)
 
 
 def update_readme(text: str, block: str) -> str:
@@ -1194,7 +1307,9 @@ def main() -> int:
     if not args.summary and not args.no_readme:
         try:
             current = args.readme.read_text(encoding="utf-8")
-            readme = (current, update_readme(current, readme_block(runs, local)))
+            updated = update_readme(current, readme_block(runs, local))
+            updated = update_block(updated, BADGES_START, BADGES_END, badges_block(runs, local))
+            readme = (current, updated)
         except (OSError, SchemaError) as e:
             print(f"collect_results.py: {e}", file=sys.stderr)
             return 2
@@ -1208,7 +1323,9 @@ def main() -> int:
         if args.output.is_file() and args.output.read_text(encoding="utf-8") != page:
             stale.append(str(args.output))
         if readme and readme[0] != readme[1]:
-            stale.append(f"{args.readme} ({README_START} block)")
+            stale.append(f"{args.readme} ({README_START} or {BADGES_START} block)")
+        if readme:
+            stale += sync_badges(BADGE_DIR, badges(runs, local), write=False)
         print("out of date: " + ", ".join(stale) if stale else "up to date")
         return 1 if stale else 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -1223,7 +1340,9 @@ def main() -> int:
     if readme:
         if readme[0] != readme[1]:
             args.readme.write_text(readme[1], encoding="utf-8")
-        print(f"{'updated' if readme[0] != readme[1] else 'unchanged'}: {args.readme} platform table")
+        print(f"{'updated' if readme[0] != readme[1] else 'unchanged'}: {args.readme} platform table and badges")
+        changed = sync_badges(BADGE_DIR, badges(runs, local), write=True)
+        print(f"badges: {len(changed)} changed or removed in {BADGE_DIR.relative_to(ROOT)}")
     return 0
 
 
@@ -1404,6 +1523,20 @@ def self_test() -> int:
         expect("notes: body without title or marker, headings down a level (#226)",
                notes_body(nf) == ["### In short", "All good."])
         expect("notes: current", notes_stale([new], nf) == "")
+        good = {"tests": tests(30)}
+        bad = {"tests": tests(28, failed=2)}
+        ro = {"tests": tests(30), "snippets": {**snippets(10, failed=3), "mode": "report-only"}}
+        bc = badge_counts([{"rows": {"linux-a": good, "linux-b": bad, "macos-a": ro}}],
+                          {"rows": {"macos-arm64-gcc-15": good}})
+        expect("badges: counts per platform, local apart (#230)",
+               bc == {"linux": (2, 1), "macos": (1, 0), "local": (1, 0)})
+        svgs = badges([{"rows": {"linux-a": good, "linux-b": bad, "macos-a": ro}}], None)
+        expect("badges: failing is red, passing green with a checkmark",
+               RED in svgs["linux.svg"] and "&#10007; 1 of 2 failing" in svgs["linux.svg"]
+               and GREEN in svgs["macos.svg"] and "&#10003; 1 toolchain" in svgs["macos.svg"])
+        blk = badges_block([{"rows": {"linux-a": good}}], None)
+        expect("badges: README block links the notes",
+               "(docs/platform-support/badges/linux.svg)](docs/platform-support/notes.md)" in blk)
         expect("notes: stale when a newer run is in the report",
                "newest run in the report is 12" in notes_stale([{"url": "https://x/runs/12"}], nf))
         expect("archive: inputs and digest", rec["inputs"] == [{"areas": "^strings$", "tests": True, "snippets": True}]
