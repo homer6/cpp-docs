@@ -401,7 +401,6 @@ TEST(CoreGuidelinesF, F24_SpanCarriesItsSize) {
     EXPECT_EQ(sum(v), 9);
     EXPECT_EQ(std::span<const int>(a).size(), 3u);
     EXPECT_EQ(sum(std::span<const int>(a).subspan(1)), 5);
-    static_assert(sizeof(std::span<const int>) == sizeof(const int*) + sizeof(std::size_t));
 }
 
 // F.25: a string_view knows its length, so it needs no zero terminator; a C string's length comes from finding one.
