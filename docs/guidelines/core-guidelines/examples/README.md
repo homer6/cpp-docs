@@ -27,7 +27,8 @@ The index links each rule's example and test, and counts what's still to do
     `needs=<feature>` for what not every compiler has.
 - **A rule that isn't about code** (philosophy, naming advice, FAQ entries)
   gets one line instead of code: `*No example: <reason>.*`. The index shows
-  the reason.
+  the reason, copied into a page one folder up, so keep links out of it: put
+  a "See …" line with the link under the heading instead.
 - **Tested:** when the rule's claim can be checked at run time or with a
   `static_assert`, a test in `tests/guidelines/<page>_test.cpp` checks it, and
   the rule's section ends with a "Tested by" line linking that file.
