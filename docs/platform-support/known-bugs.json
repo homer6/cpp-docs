@@ -28,6 +28,13 @@
   "match": "nested_exception doesn't capture current_exception"
  },
  {
+  "toolchain": "MSVC 19.51 (VS 2026), amd64 and arm64",
+  "summary": "defines __cpp_range_based_for as 202211L (P2718) but destroys the temporary in for (int x : Holder{{1, 2, 3}}.items()) before the loop runs, so the loop reads a destroyed vector",
+  "upstream": [],
+  "issues": [195],
+  "match": "MSVC 19\\.51 bug: defines __cpp_range_based_for"
+ },
+ {
   "toolchain": "MSVC 19.44 (VS 2022)",
   "summary": "rejects a constexpr virtual call through a base reference (C2131; valid since C++20, P1064) and a call inside if consteval (C7595; C++23, P1938); VS 2026 (19.51) accepts both",
   "upstream": [],

@@ -84,10 +84,14 @@ TEST(TypeInfo, NameIsImplementationDefined) {
 #endif
 }
 
-// "Gotchas": before() order differs — false with libstdc++, true with libc++.
+// "Gotchas": before() order differs — false with libstdc++, true with libc++ on ELF and
+// Mach-O (it compares the addresses of the type names), false with libc++ on Windows
+// (COFF can't merge type_infos, so it strcmp()s the mangled names: "i" > "d").
 TEST(TypeInfo, BeforeIsImplementationDefined) {
     bool b = typeid(int).before(typeid(double));
-#if defined(_LIBCPP_VERSION)
+#if defined(_LIBCPP_VERSION) && defined(_WIN32)
+    EXPECT_FALSE(b);
+#elif defined(_LIBCPP_VERSION)
     EXPECT_TRUE(b);
 #elif defined(__GLIBCXX__)
     EXPECT_FALSE(b);

@@ -32,8 +32,8 @@ int main() {
     std::cout.imbue(std::locale{""});
     std::cout << std::fixed << std::setprecision(2);   // grouping needs fixed notation
     std::cout << 1234567.89 << '\n';             // e.g. "1,234,567.89" (en_US) or
-                                                  //      "1.234.567,89" (de_DE, glibc;
-                                                  //      macOS's de_DE: "1234567,89")
+                                                  //      "1.234.567,89" (de_DE: glibc,
+                                                  //      macOS 15+; macOS 14: "1234567,89")
 
     std::cout.imbue(std::locale::classic());      // the "C" locale: no grouping
     std::cout << 1234567.89 << '\n';             // "1234567.89"
@@ -63,6 +63,12 @@ char dec = std::use_facet<std::numpunct<char>>(loc).decimal_point();
   doesn't have it installed.
   GCC's libstdc++ on macOS supports only the `"C"`/`"POSIX"` locales, so even
   `std::locale{""}` throws there; libc++ (Clang) and glibc-based Linux work.
+- **The same locale name formats differently across OS releases.** The
+  formatting rules come from the OS's locale data, not the C++ library:
+  `de_DE.UTF-8` printed `1234567,89` on macOS 14 (its `LC_NUMERIC` has an
+  empty thousands separator) but `1.234.567,89` on macOS 15 and 26, with
+  Apple Clang and Homebrew LLVM alike ([run 41368084884](https://github.com/homer6/cpp-docs/actions/runs/41368084884)).
+  Don't hard-code a locale's output in tests or golden files.
 - **For data interchange, do NOT use locales.** Locale-formatted numbers aren't
   round-trippable (`,` vs `.`). Use [`charconv`](charconv.md) or `std::format`
   (locale-independent by default) for files, protocols, and logs; reserve

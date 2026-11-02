@@ -148,6 +148,12 @@ TEST(ObjectModel, MemberAccessExtendsTemporary) {
 // "Temporary objects & lifetime extension": C++23 range-for keeps every temporary in the range initializer alive.
 TEST(ObjectModel, RangeForExtendsTemporaries) {
     CPPDOCS_REQUIRE_VERSION(__cpp_range_based_for, 202211L);
+#if defined(_MSC_VER) && !defined(__clang__) && _MSC_VER < 1952
+    // Running the loop would read a destroyed vector, so there's no run-time half to keep.
+    GTEST_SKIP() << "MSVC 19.51 bug: defines __cpp_range_based_for 202211L (P2718) but destroys "
+                    "the Holder temporary in Holder{...}.items() before the loop runs "
+                    "(the loop saw an empty vector in run 41368084884, amd64 and arm64)";
+#else
     holder_destroyed = false;
     int sum = 0;
     for (int x : Holder{{1, 2, 3}}.items()) {
@@ -156,6 +162,7 @@ TEST(ObjectModel, RangeForExtendsTemporaries) {
     }
     EXPECT_TRUE(holder_destroyed);
     EXPECT_EQ(sum, 6);
+#endif
 }
 
 // "Implicit-lifetime types": malloc implicitly creates an implicit-lifetime object.
