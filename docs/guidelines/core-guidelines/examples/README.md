@@ -53,4 +53,7 @@ One or two sentences, in our words.
 
 ## Pages
 
-- [Con: Constants and immutability](const.md)
+Every page here is linked, rule by rule, from the
+[index of every rule](../README.md), whose coverage table shows which
+sections are done. That index is generated, so it never goes stale; this
+folder has no hand-kept list.
