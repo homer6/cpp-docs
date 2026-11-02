@@ -72,8 +72,11 @@ replace the local checks in `CLAUDE.md` ("Running the tests").
 | `macos.yml` | macos-15, macos-26 (arm64), macos-15-intel, macos-26-intel | Apple Clang (the runner's Xcode), Homebrew `gcc`, Homebrew `llvm` (its own libc++) |
 | `windows-msvc.yml` | windows-2022 (VS 2022), windows-2025-vs2026, windows-11-arm (VS 2026) | MSVC `cl`, `msvc` preset, `run_tests.ps1`, `check_snippets.py --toolchain msvc` |
 | `windows-gnu.yml` | windows-2025-vs2026 | clang-cl (VS's LLVM, `clang-cl` preset); MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++) |
-| `freebsd.yml` | ubuntu-24.04 + a FreeBSD VM (`vmactions/freebsd-vm`) | 14.5 and 15.1 x86_64: base Clang (libc++) and pkg GCC; 15.1 aarch64 (emulated): base Clang |
-| `qemu.yml` | ubuntu-24.04 + QEMU user mode (Ubuntu's `qemu-user-static`) | riscv64, s390x (big-endian), ppc64le: Debian trixie GCC 14 |
+| `freebsd.yml` | ubuntu-24.04 + a FreeBSD VM (`vmactions/freebsd-vm`) | 14.5 and 15.1 x86_64: base Clang (libc++) and pkg GCC |
+
+**No emulated platforms for now** (the owner, #207): QEMU user-mode runs
+(riscv64, s390x, ppc64le) and FreeBSD aarch64 under QEMU were removed. Every
+job runs natively or in a KVM-accelerated VM.
 
 Each takes three inputs, from `workflow_dispatch` or from `all.yml` through
 `workflow_call`:
@@ -81,8 +84,8 @@ Each takes three inputs, from `workflow_dispatch` or from `all.yml` through
 - `areas`: a ctest label regex (empty = all areas). Only the matching
   `examples_<area>_tests` targets are built (on Windows, `run_tests.ps1`
   builds all and runs the matching labels), and only their
-  `docs/examples/<area>` folders are snippet-checked. Use it for the slow
-  QEMU and emulated FreeBSD runs.
+  `docs/examples/<area>` folders are snippet-checked. Use it to prove
+  plumbing or a fix cheaply; published runs use every area.
 - `tests` and `snippets`: booleans, default true.
 
 Every job runs `tools/ci/run.sh` (or `tools/ci/run.ps1` with a VS Developer

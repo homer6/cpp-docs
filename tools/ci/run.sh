@@ -3,7 +3,7 @@
 # portable preset, run the snippet checker, then write
 # results-<platform>-<compiler>.json and a Markdown summary.
 #
-# Used by .github/workflows/{linux,macos,windows-gnu,freebsd,qemu}.yml (on the
+# Used by .github/workflows/{linux,macos,windows-gnu,freebsd}.yml (on the
 # runner, inside a container, a FreeBSD VM or MSYS2) and runnable by hand:
 #
 #   CPPDOCS_PLATFORM=macos-arm64 CPPDOCS_COMPILER=gcc-15 CPPDOCS_PRESET=gcc \

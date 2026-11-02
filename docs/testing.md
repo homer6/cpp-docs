@@ -30,8 +30,8 @@ a whole, supports modern C++. That's why:
   bug or paper), never as a deleted test, so the skip reasons in
   [`platform-support.md`](platform-support.md) read as a support map;
 - the workflows cover native Linux, macOS and Windows (MSVC, clang-cl,
-  MinGW), FreeBSD VMs and QEMU for other architectures, and grow as new
-  toolchains become available.
+  MinGW) and FreeBSD VMs, and grow as new toolchains become available.
+  Emulated platforms (QEMU) are out for now (#207).
 
 Keeping the results current (asking for runs, processing every log,
 capturing findings as tests, vendor bugs, re-running what failed and
@@ -225,7 +225,7 @@ platform's latest consented run in one command:
 
 ```bash
 tools/collect_results.py <linux-run> <macos-run> <windows-msvc-run> \
-  <windows-gnu-run> <freebsd-run> <qemu-run> [--local <folder>]
+  <windows-gnu-run> <freebsd-run> [--local <folder>]
 ```
 
 (or one `all.yml` run ID), then commit the entry page, the toolchain pages,
@@ -258,7 +258,7 @@ contents: read`) with actions pinned to commit SHAs;
 `python3 tools/check_workflows.py` checks that. How to run, watch and read a
 workflow is in [`.github/workflows/README.md`](../.github/workflows/README.md).
 The platform workflows (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
-`windows-gnu.yml`, `freebsd.yml`, `qemu.yml`) build and run the suite and the
+`windows-gnu.yml`, `freebsd.yml`) build and run the suite and the
 snippet checker with the portable presets on each platform, through the
 scripts in [`tools/ci/`](../tools/ci/), and upload one
 `results-<platform>-<compiler>.json` per job. A release needs a green

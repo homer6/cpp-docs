@@ -2,7 +2,7 @@
 """Helpers for the platform workflows in .github/workflows/ (#143-#149).
 
 tools/ci/run.sh and tools/ci/run.ps1 call it; it runs anywhere Python 3.8+
-does (Linux, macOS, FreeBSD, Windows, MSYS2, QEMU containers).
+does (Linux, macOS, FreeBSD, Windows, MSYS2).
 
     cppdocs_ci.py areas --regex 'containers|ranges' --targets
         CMake targets for the test areas whose name matches the ctest label

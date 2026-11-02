@@ -91,7 +91,6 @@ WORKFLOWS = [
      "windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang"),
     ("freebsd.yml", "FreeBSD",
      "FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC"),
-    ("qemu.yml", "Other architectures (QEMU)", "riscv64, s390x (big-endian), ppc64le under QEMU"),
 ]
 NOT_RUN = "not run yet (each run needs the owner's consent)"
 

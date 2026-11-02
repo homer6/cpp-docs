@@ -5,8 +5,8 @@
 # cross-platform-actions/action, 2026-11-01): one step with `prepare` and
 # `run`, runs as root (pkg needs no sudo), uses every host core by default,
 # rsyncs the workspace in and copies it back after `run`, so the host uploads
-# the results; supports 14.0-15.1 on x86_64 (KVM-accelerated) and aarch64
-# (emulated with QEMU, slow; neither action has a fast arm64 path).
+# the results; x86_64 only (KVM-accelerated). The action's aarch64 runs under
+# QEMU emulation, and emulated platforms are out for now (#207).
 #
 # Releases: 14.5 (base Clang 21.1) and 15.1 (base Clang 19.1), the newest of
 # each supported branch (https://www.freebsd.org/security/).
@@ -57,11 +57,6 @@ jobs:
         release: ["14.5", "15.1"]
         arch: [x86_64]
         toolchain: [clang, gcc]
-        include:
-          # aarch64 runs under emulation: one job, base Clang only.
-          - release: "15.1"
-            arch: aarch64
-            toolchain: clang
     env:
       CPPDOCS_AREAS: ${{ inputs.areas }}
       CPPDOCS_TESTS: ${{ inputs.tests }}

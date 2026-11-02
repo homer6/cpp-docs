@@ -8,7 +8,7 @@ The goal is every documented feature and every example on every supported platfo
 
 ## Toolchains
 
-54 pages. **Tests**: GoogleTest cases passed / total; **snippets**: compile-checked blocks passed / checked (*report-only*: no reviewed baseline yet, so snippet failures don't fail that run).
+50 pages. **Tests**: GoogleTest cases passed / total; **snippets**: compile-checked blocks passed / checked (*report-only*: no reviewed baseline yet, so snippet failures don't fail that run).
 
 | Page | Platform | Compiler | Arch | Tests | Snippets | Run |
 |---|---|---|---|---|---|---|
@@ -60,12 +60,8 @@ The goal is every documented feature and every example on every supported platfo
 | [windows-server-2025-x86_64-clang-cl-22](windows-server-2025-x86_64-clang-cl-22.md) | Windows Server 2025 | clang-cl 22.1.3 | x86_64 | ✅ 30/30 | ✅ 12/12 (report-only) | [windows-gnu.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
 | [freebsd-14.5-x86_64-clang-21-libcxx](freebsd-14.5-x86_64-clang-21-libcxx.md) | FreeBSD 14.5 | Clang 21.1.8, libc++ | x86_64 | ✅ 30/30 | ✅ 12/12 (report-only) | [freebsd.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
 | [freebsd-14.5-x86_64-gcc-14](freebsd-14.5-x86_64-gcc-14.md) | FreeBSD 14.5 | GCC 14.2.0 | x86_64 | ✅ 30/30 | ✅ 12/12 (report-only) | [freebsd.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| [freebsd-15.1-arm64-clang-19-libcxx](freebsd-15.1-arm64-clang-19-libcxx.md) | FreeBSD 15.1 | Clang 19.1.7, libc++ | arm64 | ✅ 30/30 | ✅ 12/12 (report-only) | [freebsd.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
 | [freebsd-15.1-x86_64-clang-19-libcxx](freebsd-15.1-x86_64-clang-19-libcxx.md) | FreeBSD 15.1 | Clang 19.1.7, libc++ | x86_64 | ✅ 30/30 | ✅ 12/12 (report-only) | [freebsd.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
 | [freebsd-15.1-x86_64-gcc-14](freebsd-15.1-x86_64-gcc-14.md) | FreeBSD 15.1 | GCC 14.2.0 | x86_64 | ✅ 30/30 | ✅ 12/12 (report-only) | [freebsd.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| [linux-debian-13-qemu-ppc64le-gcc-14](linux-debian-13-qemu-ppc64le-gcc-14.md) | Debian 13 (QEMU user-mode) | GCC 14.2.0 | ppc64le | ✅ 30/30 | ✅ 12/12 (report-only) | [qemu.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
-| [linux-debian-13-qemu-riscv64-gcc-14](linux-debian-13-qemu-riscv64-gcc-14.md) | Debian 13 (QEMU user-mode) | GCC 14.2.0 | riscv64 | ✅ 30/30 | ✅ 12/12 (report-only) | [qemu.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
-| [linux-debian-13-qemu-s390x-gcc-14](linux-debian-13-qemu-s390x-gcc-14.md) | Debian 13 (QEMU user-mode) | GCC 14.2.0 | s390x | ✅ 30/30 | ✅ 12/12 (report-only) | [qemu.yml · 2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
 
 ## What's in this folder
 
@@ -73,7 +69,7 @@ The goal is every documented feature and every example on every supported platfo
 |---|---|---|
 | `<platform>-<arch>-<compiler>.md` | One toolchain's results (names stay the same across runs) | generated |
 | `local-<platform>-<arch>-<compiler>.md` | The same for a local run | generated |
-| [`runs/<run-id>/`](runs/) | Each consented run's `results-*.json` and `run.json` (date, commit, inputs, jobs); never logs. The report is rebuilt from here after GitHub's retention runs out (runs: 41357988143, 41357990400, 41358257575, 41365429121, 41366615444, 41367352135) | the collector |
+| [`runs/<run-id>/`](runs/) | Each consented run's `results-*.json` and `run.json` (date, commit, inputs, jobs); never logs. The report is rebuilt from here after GitHub's retention runs out (runs: 41357988143, 41358257575, 41365429121, 41366615444, 41367352135) | the collector |
 | [`local/`](local/) | The local results used, with `local.json` (date, commit) | you, then the collector |
 | [`known-bugs.json`](known-bugs.json) | Compiler and platform bugs: upstream link, repo issue, affected toolchains | by hand, validated |
 | `README.md` | This index | generated |
