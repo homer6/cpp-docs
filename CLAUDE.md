@@ -508,6 +508,7 @@ docs/platform-support/
                      local-macos-arm64-gcc-15.md (local results)
   runs/<run-id>/     the archive of each consented run: results-*.json, run.json
   local/             the archived local results: results-*.json, local.json
+  badges/            the README's platform badges (generated SVGs)
   known-bugs.json    compiler and platform bugs found (maintained by hand)
   notes.md           the platform support notes (maintained by hand)
 ```
@@ -537,10 +538,16 @@ block between `<!-- platforms:start -->` and `<!-- platforms:end -->`: one
 row per platform × compiler × arch with ✅/❌ and counts for tests and
 snippets, the local runs first, then each run's link. Never edit that block
 by hand either (`gen_index.py` leaves it alone, and the collector leaves the
-index alone). The README's badge row has one badge per platform workflow file
-(`linux.yml`, `macos.yml`, `windows-msvc.yml`, `windows-gnu.yml`,
-`freebsd.yml`) on `branch=main&event=workflow_dispatch`, linked to
-each workflow's page. Right under the badges, a bold link points to the
+index alone). **The README's badges are ours, not GitHub's** (#230): the
+collector writes one SVG per platform (Linux, macOS, Windows, FreeBSD) and one
+for the local runs into `docs/platform-support/badges/`, from the same results
+as the report, and the badge row between `<!-- badges:start -->` and
+`<!-- badges:end -->`. Each says "✓ N toolchains" (green) when no toolchain
+has a failing test or a snippet failure outside its baseline where snippets
+are enforced, else "✗ n of N failing" (red), and links the platform support
+notes. Report-only snippet failures don't count. GitHub's workflow badges
+follow one branch and miss the local runs, so they aren't used. Never edit the
+block or the SVGs by hand; `--check` covers both. Right under the badges, a bold link points to the
 platform support notes (`docs/platform-support/notes.md`; #226), and under it
 a bold link to the full support per platform, compiler and architecture
 (`docs/platform-support/README.md`, which indexes every toolchain page; #215).
@@ -619,8 +626,8 @@ a bold link to the full support per platform, compiler and architecture
 ## Keeping the README neat
 
 The owner's rule (#175): the README is a front page, not a manual. It holds
-only, in this order: the intro, the badges with one line saying runs are
-manual, the generated clickable index, Guidelines, "Use it while you write
+only, in this order: the intro, the generated platform badges, the links to
+the platform support notes and the full support, the generated clickable index, Guidelines, "Use it while you write
 C++ (Claude Code)", a short "How to use these notes", short pointers ("How
 it's tested"), Conventions/Progress, and **last** the generated "Tested
 platforms" table (the owner: it "needs to be the last section in the
@@ -735,8 +742,8 @@ A release (the owner names the version) needs all of these, in order:
    every claim re-read against its results, the marker on that run (#226).
    The release notes link them.
 4. **Switch the default branch back to `main`** (the owner does it, or
-   consents to it) before opening the release PR, so the README badges
-   (`branch=main`) and the front page point at releases again.
+   consents to it) before opening the release PR, so the front page points
+   at releases again.
 5. **The owner's explicit approval** of the release. Then open the release
    PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
    merge commit `vX.Y.Z` and publish the GitHub release.

@@ -96,7 +96,7 @@ it; MSVC isn't tested yet).
 | Page | Platform | Compiler | Arch | Tests | Snippets | Run |
 |---|---|---|---|---|---|---|
 | [local-linux-docker-arm64-gcc-16](local-linux-docker-arm64-gcc-16.md) | Linux (Docker) | GCC 16.2.0 | arm64 | ✅ 1066/1102 (36 skipped) | ✅ 691/691 (129 skipped) | local, 2026-11-02 |
-| [local-macos-arm64-clang-22-libcxx](local-macos-arm64-clang-22-libcxx.md) | macOS (Darwin 23.6.0) | Clang 22.1.8, libc++ | arm64 | ✅ 971/1099 (128 skipped) | ❌ 672/691 (129 skipped) | local, 2026-11-02 |
+| [local-macos-arm64-clang-22-libcxx](local-macos-arm64-clang-22-libcxx.md) | macOS (Darwin 23.6.0) | Clang 22.1.8, libc++ | arm64 | ✅ 971/1099 (128 skipped) | ✅ 672/691 (19 baselined, 129 skipped) | local, 2026-11-02 |
 | [local-macos-arm64-gcc-15](local-macos-arm64-gcc-15.md) | macOS (Darwin 23.6.0) | GCC 15.2.0 | arm64 | ✅ 988/1099 (111 skipped) | ✅ 691/691 (129 skipped) | local, 2026-11-02 |
 | [freebsd-14.5-x86_64-clang-21-libcxx](freebsd-14.5-x86_64-clang-21-libcxx.md) | FreeBSD 14.5 | Clang 21.1.8, libc++ | x86_64 | ✅ 954/1102 (148 skipped) | ❌ 670/691 (19 baselined, 129 skipped, report-only) | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778) |
 | [freebsd-14.5-x86_64-gcc-14](freebsd-14.5-x86_64-gcc-14.md) | FreeBSD 14.5 | GCC 14.2.0 | x86_64 | ✅ 948/1102 (154 skipped) | ❌ 656/691 (129 skipped, report-only) | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778) |

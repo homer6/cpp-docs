@@ -187,6 +187,9 @@ not named on the command line (git history keeps them; the removal shows in
 per-toolchain file (removing files for toolchains no longer present) and the
 README table. Check `tools/collect_results.py --help` for the current flags.
 
+The same run writes the README's platform badges (`docs/platform-support/badges/*.svg`
+and the `<!-- badges:start -->` block, #230): commit them with the report.
+
 Then **update the platform support notes** (`docs/platform-support/notes.md`,
 #226), which the collector shows at the top of the folder README. Re-read the
 new results (per-toolchain counts, the skip reasons grouped by feature-test
@@ -206,11 +209,19 @@ L=docs/platform-support/local
 tools/run_tests.sh --json $L/results-macos-arm64-gcc-15.json gcc-15
 tools/run_tests.sh --json $L/results-macos-arm64-clang-22.json clang-22
 tools/run_tests.sh --json $L/results-linux-arm64-gcc-16.json gcc-16
-python3 tools/check_snippets.py docs --cxx g++-15 -q --json $L/results-macos-arm64-gcc-15-snippets.json
+python3 tools/check_snippets.py docs --cxx g++-15 -q --baseline tools/snippet_baseline/gcc.txt \
+  --json $L/results-macos-arm64-gcc-15-snippets.json
 python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++ \
-  --flag=-fexperimental-library -q --json $L/results-macos-arm64-clang-22-snippets.json
-# GCC 16 snippets: in the gcc:16 image (see docs/testing.md), --json $L/results-linux-arm64-gcc-16-snippets.json
+  --flag=-fexperimental-library -q --baseline tools/snippet_baseline/clang.txt \
+  --json $L/results-macos-arm64-clang-22-snippets.json
+docker run --rm --platform linux/arm64 -v "$PWD":/w -w /w gcc:16 \
+  python3 tools/check_snippets.py docs --cxx g++ -q --baseline tools/snippet_baseline/gcc.txt \
+  --json $L/results-linux-arm64-gcc-16-snippets.json
 ```
+
+Always pass `--baseline`: without it the known gaps (Clang's libc++ list) are
+recorded as new failures, and the report, the README table and the Local
+badge show the toolchain as failing (#230).
 
 Then update `local.json`'s `date` and `commit`, and regenerate with
 `--local docs/platform-support/local`. Check `tools/collect_results.py --help`
