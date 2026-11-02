@@ -328,6 +328,32 @@ language support and feature support in the entire industry"*. So:
 - **New platforms, compilers and architectures** that are supported and
   can run on GitHub's runners (natively, in a VM or under QEMU) belong in
   the workflows; widening the matrix is part of the goal.
+- **Every every-area run is read in full, captured and archived** (the
+  owner, #186: *"these full action runs (and logs) are pretty useful for
+  archiving exactly the level of support and for each feature ... we'll need
+  to read each of them fully (and capture them in test pass/fail unit tests)
+  and report those in the platform_support full report"*). After each one:
+  1. **Read every job's log in full**, not just the failed ones: build
+     errors, test failures, every skip and its reason, snippet failures, and
+     warnings that show a toolchain gap.
+  2. **Capture each finding in the suite.** A wrong page claim is fixed
+     (an issue and a PR each, the fix loop). A missing feature or a compiler
+     bug becomes a skip whose reason names the compiler, the version and the
+     paper or bug (`CPPDOCS_REQUIRE`, a version gate, `needs=`), so the
+     result is recorded as a test outcome and shows in the report. Never
+     leave a finding only in a log or a chat.
+  3. **Re-run only what failed**, on `dev`, after the fixes merge (a new
+     dispatch of the failing workflows, since a GitHub re-run reuses the old
+     commit), until every combination is green.
+  4. **Archive:** the results JSON and run metadata go in the repo under
+     `docs/platform-support/runs/<run-id>/` (`tools/collect_results.py`,
+     #184); the raw logs, compressed, are attached to the release (#185).
+     The report links the run IDs.
+  5. **Regenerate `docs/platform-support.md`**, the single full report
+     (platform summary, the per-feature support matrix, known gaps), and the
+     README's "Tested platforms" table from the archive, and commit them in
+     a PR. Keep both current: a page, test or toolchain change that alters
+     a result means the report is regenerated after the next consented run.
 
 The owner's rule (#141): *"we are not going to have any github actions that
 run automatically... manual invocation only"*.
