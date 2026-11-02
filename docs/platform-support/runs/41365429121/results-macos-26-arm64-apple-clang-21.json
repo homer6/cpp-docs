@@ -1,0 +1,178 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "macos-26-arm64",
+ "arch": "arm64",
+ "os_version": "macOS 26.6.2 (25G83), Xcode 26.6",
+ "byte_order": "little",
+ "compiler": "apple-clang-21",
+ "compiler_version": "21.0.0.21000101",
+ "preset": "clang",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "report-only",
+ "steps": {
+  "configure": 0,
+  "build": 0,
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "macOS",
+  "job": "macos",
+  "run_id": "41365429121",
+  "sha": "3c864fabbe19be7e30df77db7c1a2ceac6e9e2e9",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41365429121"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "clang",
+  "toolchain": "clang",
+  "platform": {
+   "system": "Darwin",
+   "version": "25.6.0",
+   "arch": "arm64",
+   "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "compiler": {
+   "id": "AppleClang",
+   "version": "21.0.0.21000101",
+   "path": "/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+   "frontend": "GNU",
+   "stdlib": "libc++"
+  },
+  "cmake": "4.4.4",
+  "source": "LastTest.log",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-02T00:07:33Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "clang",
+  "platform": {
+   "system": "Darwin",
+   "version": "25.6.0",
+   "arch": "arm64",
+   "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "compiler": {
+   "id": "clang",
+   "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+   "path": "/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+  },
+  "command": [
+   "/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++",
+   "-std=c++26",
+   "-fsyntax-only",
+   "-pedantic-errors"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 12,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [
+   {
+    "id": "docs/examples/strings/char_traits.md#interface-static-functions/1",
+    "where": "docs/examples/strings/char_traits.md:19",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpcz8j_gw2.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/char_traits.md#example-a-case-insensitive-string/1",
+    "where": "docs/examples/strings/char_traits.md:40",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpzzad4xtd.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string.md#the-basicstring-family/1",
+    "where": "docs/examples/strings/string.md:24",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpjtsz5x1k.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string.md#construction--growth/1",
+    "where": "docs/examples/strings/string.md:57",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpvzyoybbl.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string.md#access--c-interop/1",
+    "where": "docs/examples/strings/string.md:75",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmp2vzj06dx.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string.md#searching--substrings/1",
+    "where": "docs/examples/strings/string.md:85",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpuqt_f4uv.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string.md#numeric-conversions/1",
+    "where": "docs/examples/strings/string.md:99",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpdvxph6af.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string_view.md#declaration/1",
+    "where": "docs/examples/strings/string_view.md:25",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpu_rll50g.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string_view.md#why-it-exists/1",
+    "where": "docs/examples/strings/string_view.md:39",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpz8nu5tpi.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string_view.md#cheap-slicing/1",
+    "where": "docs/examples/strings/string_view.md:55",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpzhprntuw.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string_view.md#same-read-api-as-string/1",
+    "where": "docs/examples/strings/string_view.md:69",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmpm0fpsnaz.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   },
+   {
+    "id": "docs/examples/strings/string_view.md#gotchas/1",
+    "where": "docs/examples/strings/string_view.md:81",
+    "known": false,
+    "message": "In file included from /var/folders/n6/hn37q6pj7sj_9dmqqc2113800000gn/T/tmp53i1y2ri.cpp:1:\n/Users/runner/work/cpp-docs/cpp-docs/tools/snippet_prelude.hpp:6:10: fatal error: 'algorithm' file not found\n    6 | #include <algorithm>\n      |          ^~~~~~~~~~~\n1 error generated."
+   }
+  ],
+  "skips": [],
+  "baseline": null,
+  "ok": false,
+  "generated": "2026-11-02T00:07:33Z"
+ },
+ "generated": "2026-11-02T00:07:33Z"
+}

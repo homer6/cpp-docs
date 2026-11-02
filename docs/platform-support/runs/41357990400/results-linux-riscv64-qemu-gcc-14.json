@@ -1,0 +1,111 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "linux-riscv64-qemu",
+ "arch": "riscv64",
+ "os_version": "Debian 13.7 riscv64 under QEMU user-mode",
+ "byte_order": "little",
+ "compiler": "gcc-14",
+ "compiler_version": "14.2.0",
+ "preset": "gcc",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "report-only",
+ "steps": {
+  "configure": 0,
+  "build": 0,
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "",
+  "job": "",
+  "run_id": "",
+  "sha": "",
+  "url": ""
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "gcc",
+  "toolchain": "gcc",
+  "platform": {
+   "system": "Linux",
+   "version": "7.0.0-1017-azure",
+   "arch": "riscv64",
+   "host": "Linux-7.0.0-1017-azure-riscv64-with-glibc2.41"
+  },
+  "compiler": {
+   "id": "GNU",
+   "version": "14.2.0",
+   "path": "/usr/bin/g++",
+   "frontend": "GNU",
+   "stdlib": "libstdc++"
+  },
+  "cmake": "3.31.6",
+  "source": "junit",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-01T22:39:34Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "gcc",
+  "platform": {
+   "system": "Linux",
+   "version": "7.0.0-1017-azure",
+   "arch": "riscv64",
+   "host": "Linux-7.0.0-1017-azure-riscv64-with-glibc2.41"
+  },
+  "compiler": {
+   "id": "gcc",
+   "version": "g++ (Debian 14.2.0-19) 14.2.0",
+   "path": "g++"
+  },
+  "command": [
+   "g++",
+   "-std=c++26",
+   "-fsyntax-only",
+   "-pedantic-errors"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/gcc.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-01T22:40:21Z"
+ },
+ "generated": "2026-11-01T22:40:22Z"
+}

@@ -1,0 +1,115 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "windows-2025-x64",
+ "arch": "AMD64",
+ "os_version": "Microsoft Windows Server 2025 Datacenter 10.0.26100, VS 18.0, VC tools 14.51.36231",
+ "byte_order": "little",
+ "compiler": "msvc-14.51.36231",
+ "compiler_version": "19.51.36260.0",
+ "preset": "msvc",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "report-only",
+ "steps": {
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "Windows (MSVC)",
+  "job": "msvc",
+  "run_id": "41367352135",
+  "sha": "37198cd136fcda5171448172a68c62f7ca804b65",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41367352135"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "msvc",
+  "toolchain": "msvc",
+  "platform": {
+   "system": "Windows",
+   "version": "10.0.26100",
+   "arch": "AMD64",
+   "host": "Windows-2025Server-10.0.26100-SP0"
+  },
+  "compiler": {
+   "id": "MSVC",
+   "version": "19.51.36260.0",
+   "path": "C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe",
+   "frontend": "MSVC",
+   "stdlib": "MS STL"
+  },
+  "cmake": "4.4.5",
+  "source": "LastTest.log",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-02T00:32:32Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "msvc",
+  "platform": {
+   "system": "Windows",
+   "version": "2025Server",
+   "arch": "AMD64",
+   "host": "Windows-2025Server-10.0.26100-SP0"
+  },
+  "compiler": {
+   "id": "msvc",
+   "version": "Microsoft (R) C/C++ Optimizing Compiler Version 19.51.36260 for x64",
+   "path": "cl"
+  },
+  "command": [
+   "cl",
+   "/nologo",
+   "/std:c++latest",
+   "/permissive-",
+   "/EHsc",
+   "/Zs",
+   "/utf-8",
+   "/Zc:__cplusplus",
+   "/Zc:preprocessor",
+   "/FID:\\a\\cpp-docs\\cpp-docs\\tools\\snippet_prelude.hpp"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/msvc.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-02T00:32:43Z"
+ },
+ "generated": "2026-11-02T00:32:44Z"
+}

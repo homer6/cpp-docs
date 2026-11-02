@@ -1,0 +1,111 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "freebsd-15.1-x86_64",
+ "arch": "amd64",
+ "os_version": "FreeBSD 15.1-RELEASE-p3 amd64",
+ "byte_order": "little",
+ "compiler": "gcc-14",
+ "compiler_version": "14.2.0",
+ "preset": "gcc",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "report-only",
+ "steps": {
+  "configure": 0,
+  "build": 0,
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "FreeBSD",
+  "job": "freebsd",
+  "run_id": "41357988143",
+  "sha": "b3d13a9930052c063809fcc226158784c3be0a52",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41357988143"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "gcc",
+  "toolchain": "gcc",
+  "platform": {
+   "system": "FreeBSD",
+   "version": "15.1-RELEASE-p3",
+   "arch": "amd64",
+   "host": "FreeBSD-15.1-RELEASE-p3-amd64-64bit-ELF"
+  },
+  "compiler": {
+   "id": "GNU",
+   "version": "14.2.0",
+   "path": "/usr/local/bin/g++",
+   "frontend": "GNU",
+   "stdlib": "libstdc++"
+  },
+  "cmake": "3.31.12",
+  "source": "LastTest.log",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-01T22:37:54Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "gcc",
+  "platform": {
+   "system": "FreeBSD",
+   "version": "15.1-RELEASE-p3",
+   "arch": "amd64",
+   "host": "FreeBSD-15.1-RELEASE-p3-amd64-64bit-ELF"
+  },
+  "compiler": {
+   "id": "gcc",
+   "version": "g++ (FreeBSD Ports Collection) 14.2.0",
+   "path": "g++"
+  },
+  "command": [
+   "g++",
+   "-std=c++26",
+   "-fsyntax-only",
+   "-pedantic-errors"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/gcc.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-01T22:38:03Z"
+ },
+ "generated": "2026-11-01T22:38:03Z"
+}

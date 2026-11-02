@@ -971,7 +971,10 @@ def main() -> int:
         if args.summary:
             page = summary(runs, local)
         else:
-            page = render(runs, local, os.environ.get("CPPDOCS_DATE") or dt.date.today().isoformat(),
+            # The newest result's date, not today's, so --check stays stable on later days.
+            newest = max([str(r.get("date") or "")[:10] for r in runs]
+                         + [str((local or {}).get("date") or "")[:10]])
+            page = render(runs, local, os.environ.get("CPPDOCS_DATE") or newest or dt.date.today().isoformat(),
                           matrix_rows=not args.no_matrix)
     except SchemaError as e:
         print(f"collect_results.py: schema mismatch: {e}", file=sys.stderr)
