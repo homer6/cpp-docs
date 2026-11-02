@@ -660,7 +660,7 @@ The owner's rule (#175): the README is a front page, not a manual. It holds
 only, in this order: the intro, the generated platform badges, the links to
 the platform support notes and the full support, the generated clickable index, Guidelines, "Use it while you write
 C++ (Claude Code)", a short "How to use these notes", short pointers ("How
-it's tested"), Conventions/Progress, and **last** the generated "Tested
+it's tested"), Conventions/Progress, License, and **last** the generated "Tested
 platforms" table (the owner: it "needs to be the last section in the
 readme, not up high").
 
@@ -677,6 +677,14 @@ readme, not up high").
   only (see "Platform support page and badges"). Its intro links the report,
   the feature support matrix and the toolchain pages; the matrix and the
   per-feature detail stay in `docs/`, never in the README.
+
+## License
+
+The repo is MIT-licensed, `Copyright (c) 2026 Steve Sperandeo` (`LICENSE`,
+#236); new files and contributions fall under it. Third-party text isn't
+copied in beyond what its own licence allows: the submodules under `modules/`
+keep their licences, and the C++ Core Guidelines (copies for personal or
+internal business use only) are linked and cited, never copied (#233).
 
 ## Git / commits
 

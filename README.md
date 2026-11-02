@@ -216,6 +216,15 @@ releases are listed in [`docs/releases/`](docs/releases/README.md).
 See [`docs/examples/README.md`](docs/examples/README.md) for the full index and
 status across every topic.
 
+## License
+
+[MIT](LICENSE), © 2026 Steve Sperandeo: the notes, snippets, tests, tools
+and skills in this repo. PRs are welcome under the same licence. The
+submodules in [`modules/`](modules/) keep their own licences: the
+[C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/LICENSE)
+allow copies for personal or internal business use only, so this repo links
+to them instead of copying their text.
+
 ## Tested platforms
 
 <!-- platforms:start -->
