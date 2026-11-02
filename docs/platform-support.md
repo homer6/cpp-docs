@@ -15,7 +15,7 @@ The goal is every documented feature and every example on every supported platfo
 - **Skipped** means a test or snippet didn't run on that toolchain, for the reason given: a missing library feature (`CPPDOCS_REQUIRE`, `needs=`), a `nocompile` snippet, or an implementation-defined result. A skip isn't a pass or a failure; it's a known gap.
 - **Tests** are the GoogleTest suite (`tests/`); **snippets** are the compile-checked blocks in `docs/` (`tools/check_snippets.py`). Snippet *passed* = checked − failed; baselined failures are counted as failed and noted. The top skip reasons leave out `nocompile` snippets, which skip on every toolchain alike.
 - **Per feature:** the [feature support matrix](#feature-support-matrix) below summarizes every area per toolchain; **each toolchain has its own page** in [`platform-support/`](platform-support/) (linked from every table row and column) with every area, page, feature and example. The [bugs found](#compiler-and-platform-bugs-found) close this page.
-- **Archived:** each consented run's results and metadata are kept in [`platform-support/runs/<run-id>/`](platform-support/runs/) and the local results in [`platform-support/local/`](platform-support/local/), so this page and the toolchain pages can be rebuilt after GitHub's artifact retention runs out.
+- **Archived:** the results and metadata of the runs this page uses are kept in [`platform-support/runs/<run-id>/`](platform-support/runs/) and the local results in [`platform-support/local/`](platform-support/local/), so this page and the toolchain pages can be rebuilt after GitHub's artifact retention runs out.
 
 Generated 2026-11-02.
 

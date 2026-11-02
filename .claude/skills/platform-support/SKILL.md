@@ -177,7 +177,10 @@ files before committing.
 
 The collector archives each run under `docs/platform-support/runs/<run-id>/`
 the first time and reads the archive after that, so the report can be rebuilt
-after GitHub's retention runs out. It writes the entry page, every
+after GitHub's retention runs out. It keeps only what the report uses (#214):
+compact JSON, and it removes job files a newer run superseded and run folders
+not named on the command line (git history keeps them; the removal shows in
+`git status`). So always pass every run the report should show. It writes the entry page, every
 per-toolchain file (removing files for toolchains no longer present) and the
 README table. Check `tools/collect_results.py --help` for the current flags.
 

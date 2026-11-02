@@ -230,7 +230,10 @@ tools/collect_results.py <linux-run> <macos-run> <windows-msvc-run> \
 ```
 
 (or one `all.yml` run ID), then commit the entry page, the toolchain pages,
-the README and any new `runs/` or `local/` files. The collector removes
+the README and the `runs/` and `local/` changes. The archive holds only what
+the report uses: compact JSON, without job files a newer run superseded or
+run folders not named on the command line (git history keeps them), so it
+stays at about one full run. The collector removes
 toolchain pages it no longer produces, and `--check` covers them all.
 
 GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests

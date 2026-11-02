@@ -69,7 +69,7 @@ The goal is every documented feature and every example on every supported platfo
 |---|---|---|
 | `<platform>-<arch>-<compiler>.md` | One toolchain's results (names stay the same across runs) | generated |
 | `local-<platform>-<arch>-<compiler>.md` | The same for a local run | generated |
-| [`runs/<run-id>/`](runs/) | Each consented run's `results-*.json` and `run.json` (date, commit, inputs, jobs); never logs. The report is rebuilt from here after GitHub's retention runs out (runs: 41380889279, 41393465801) | the collector |
+| [`runs/<run-id>/`](runs/) | The `results-*.json` this report uses and each run's `run.json` (date, commit, inputs, jobs, counts); never logs. Older files are in git history. The report is rebuilt from here after GitHub's retention runs out (runs: 41380889279, 41393465801) | the collector |
 | [`local/`](local/) | The local results used, with `local.json` (date, commit) | you, then the collector |
 | [`known-bugs.json`](known-bugs.json) | Compiler and platform bugs: upstream link, repo issue, affected toolchains | by hand, validated |
 | `README.md` | This index | generated |

@@ -371,6 +371,10 @@ language support and feature support in the entire industry"*. So:
   5. **Archive the results, not the logs:** the results JSON and run
      metadata go in the repo under `docs/platform-support/runs/<run-id>/`
      (`tools/collect_results.py`, #184). The report links the run IDs.
+     The archive holds only what the report uses (#214): compact JSON, and
+     the collector removes a job file a newer run superseded and any run
+     folder not named on its command line (git history keeps them). So
+     always pass every run the report should show.
   6. **Regenerate `docs/platform-support.md`**, the full report's entry
      page (platform summary, the feature support matrix, known gaps), its
      per-toolchain pages in `docs/platform-support/` (every feature and
@@ -553,7 +557,13 @@ each workflow's page, next to a line saying runs are manual.
   of the counts; never logs). After that it reads the run from the archive,
   so the report can be rebuilt once GitHub's retention has deleted the
   artifacts; commit the archive with the page (`--no-archive` skips writing
-  it). It exits 1 naming the file and field when a result doesn't match
+  it). It keeps the archive to what the report uses (#214): files are written
+  as compact JSON (the local ones too), a job file that a newer run
+  superseded is removed from the older run's folder (`run.json` keeps its
+  counts), and a run folder not named on the command line is removed. Both
+  stay in git history (`git log -- docs/platform-support/runs/<id>`), and the
+  archive stays at about one full run (about 9 MB) instead of growing by
+  11 MB per run. It exits 1 naming the file and field when a result doesn't match
   schema `cpp-docs/results/1`.
 - **The matrix's rows come from the checkout**, not from the results: the
   test names and section comments in `tests/`, and the snippet IDs from
