@@ -142,7 +142,7 @@ private:
     T value_{};
 };
 
-// CP.51-53: a minimal lazy coroutine that produces a string.
+// A minimal lazy coroutine that produces a string, for the CP.51-CP.53 tests.
 struct Task {
     struct promise_type {
         std::string value;
