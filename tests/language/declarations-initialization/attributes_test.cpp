@@ -43,18 +43,31 @@ int sum_unused(int x [[maybe_unused]], int y) { return y; }
 
 // "The standard attributes": each one the page lists is known, at the version its "since" implies.
 TEST(Attributes, StandardAttributesAreRecognized) {
-    static_assert(__has_cpp_attribute(noreturn) >= 200809L);       // C++11
-    static_assert(__has_cpp_attribute(deprecated) >= 201309L);     // C++14
-    static_assert(__has_cpp_attribute(fallthrough) >= 201603L);    // C++17
-    static_assert(__has_cpp_attribute(maybe_unused) >= 201603L);   // C++17
-    static_assert(__has_cpp_attribute(nodiscard) >= 201907L);      // reason string: C++20
-    static_assert(__has_cpp_attribute(likely) >= 201803L);         // C++20
-    static_assert(__has_cpp_attribute(unlikely) >= 201803L);       // C++20
+    // __has_cpp_attribute is only defined in #if / #elif ([cpp.cond]); GCC and
+    // Clang also accept it in a static_assert, MSVC doesn't (C3861).
+#if __has_cpp_attribute(noreturn) < 200809L          // C++11
+#error "[[noreturn]] not recognized"
+#endif
+#if __has_cpp_attribute(deprecated) < 201309L        // C++14
+#error "[[deprecated]] not recognized"
+#endif
+#if __has_cpp_attribute(fallthrough) < 201603L       // C++17
+#error "[[fallthrough]] not recognized"
+#endif
+#if __has_cpp_attribute(maybe_unused) < 201603L      // C++17
+#error "[[maybe_unused]] not recognized"
+#endif
+#if __has_cpp_attribute(nodiscard) < 201907L         // reason string: C++20
+#error "[[nodiscard]] with a reason not recognized"
+#endif
+#if __has_cpp_attribute(likely) < 201803L || __has_cpp_attribute(unlikely) < 201803L  // C++20
+#error "[[likely]] / [[unlikely]] not recognized"
+#endif
 #if defined(_MSC_VER) && !defined(__clang__)
     GTEST_SKIP() << "MSVC doesn't implement [[assume]] (P1774R8: \"no\" in Microsoft's conformance table); "
                     "the other attributes were checked";
-#else
-    static_assert(__has_cpp_attribute(assume) >= 202207L);         // C++23
+#elif __has_cpp_attribute(assume) < 202207L          // C++23
+#error "[[assume]] not recognized"
 #endif
 }
 
