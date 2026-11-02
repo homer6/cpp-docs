@@ -450,10 +450,12 @@ each workflow's page, next to a line saying runs are manual.
 ## Keeping the README neat
 
 The owner's rule (#175): the README is a front page, not a manual. It holds
-only the intro, the badges with one line saying runs are manual, the
-generated "Tested platforms" table, the generated clickable index,
-Guidelines, "Use it while you write C++ (Claude Code)", a short "How to use
-these notes", short pointers ("How it's tested") and Conventions/Progress.
+only, in this order: the intro, the badges with one line saying runs are
+manual, the generated clickable index, Guidelines, "Use it while you write
+C++ (Claude Code)", a short "How to use these notes", short pointers ("How
+it's tested"), Conventions/Progress, and **last** the generated "Tested
+platforms" table (the owner: it "needs to be the last section in the
+readme, not up high").
 
 - **Detailed how-to lives in `docs/`:** checking the snippets, running the
   tests, presets and toolchains (VS Developer shell, Docker), the results
