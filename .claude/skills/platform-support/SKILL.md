@@ -17,7 +17,7 @@ What it produces:
 | `docs/platform-support.md` | The entry page (the README links here): how to read it, the platform × compiler × arch table, the summary matrix (areas × toolchains), known gaps, and the compiler and platform bugs found | generated |
 | `docs/platform-support/<platform>-<arch>-<compiler>.md` | One file per toolchain, local ones too: every area → page → feature with ✅ / ❌ / ⏭ (reason) / —, and the examples per section | generated |
 | `docs/platform-support/runs/<run-id>/` | The archive: each run's `results-*.json` and its metadata (no logs) | written by the collector |
-| `docs/platform-support/local/` | The local results used (GCC 15, Clang 22, GCC 16) | written by you, step 7 |
+| `docs/platform-support/local/` | The local results used (GCC 15, Clang 22, GCC 16): `results-*.json` and `local.json` (date, commit) | written by you, step 7 |
 | `docs/platform-support/known-bugs.json` | Compiler and platform bugs: upstream link, repo issue, affected toolchains | edited by hand, validated |
 | README "Tested platforms" | The last README section, between `<!-- platforms:start -->` and `<!-- platforms:end -->` | generated |
 
@@ -156,11 +156,17 @@ When the runs are in, regenerate from the latest consented run of **every**
 platform workflow at once, plus the local results:
 
 ```bash
-tools/collect_results.py <linux-id> <macos-id> <windows-msvc-id> <windows-gnu-id> <freebsd-id> <qemu-id> \
-  --local docs/platform-support/local
-tools/collect_results.py <ids…> --local docs/platform-support/local --check   # nothing stale
+tools/collect_results.py <linux-id> <macos-id> <windows-msvc-id> <windows-gnu-id> <freebsd-id> <qemu-id>
+tools/collect_results.py <the same ids> --check     # nothing stale
 tools/collect_results.py --self-test
 ```
+
+Without `--local` it reuses the archived local results in
+`docs/platform-support/local/`; pass `--local <folder>` after refreshing them
+(step 7). The archived `results-*.json` files are committed on purpose:
+`.gitignore` ignores `results-*.json` everywhere except under
+`docs/platform-support/`, so check `git status` shows the new `runs/<id>/`
+files before committing.
 
 The collector archives each run under `docs/platform-support/runs/<run-id>/`
 the first time and reads the archive after that, so the report can be rebuilt
@@ -174,15 +180,19 @@ The local toolchains are part of the report. Before regenerating for a
 release (or when the suite changed), refresh them into the archive:
 
 ```bash
-tools/run_tests.sh --json docs/platform-support/local/results-gcc-15.json gcc-15
-tools/run_tests.sh --json docs/platform-support/local/results-clang-22.json clang-22
-tools/run_tests.sh --json docs/platform-support/local/results-gcc-16.json gcc-16
-python3 tools/check_snippets.py docs --cxx g++-15 -q --json docs/platform-support/local/results-gcc-15-snippets.json
+L=docs/platform-support/local
+tools/run_tests.sh --json $L/results-macos-arm64-gcc-15.json gcc-15
+tools/run_tests.sh --json $L/results-macos-arm64-clang-22.json clang-22
+tools/run_tests.sh --json $L/results-linux-arm64-gcc-16.json gcc-16
+python3 tools/check_snippets.py docs --cxx g++-15 -q --json $L/results-macos-arm64-gcc-15-snippets.json
 python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++ \
-  --flag=-fexperimental-library -q --json docs/platform-support/local/results-clang-22-snippets.json
+  --flag=-fexperimental-library -q --json $L/results-macos-arm64-clang-22-snippets.json
+# GCC 16 snippets: in the gcc:16 image (see docs/testing.md), --json $L/results-linux-arm64-gcc-16-snippets.json
 ```
 
-Follow the layout `collect_results.py` documents for `--local` if it differs.
+Then update `local.json`'s `date` and `commit`, and regenerate with
+`--local docs/platform-support/local`. Check `tools/collect_results.py --help`
+for the `--local` layout if it changes.
 
 ## 8. The PR
 
