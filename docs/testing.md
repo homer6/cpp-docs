@@ -131,6 +131,24 @@ CXX=/opt/homebrew/opt/llvm/bin/clang++ \
 tools/run_tests.sh --json build/results-gcc.json gcc   # also write JSON results
 ```
 
+**Extra link libraries** are found at configure time, not hard-coded:
+`tests/CMakeLists.txt` try-links a small program without, then with, each
+candidate and links the first that works into every test target (the
+configure output says `cpp-docs: linking the tests with -l…`):
+
+- `atomic`, when `std::atomic<T>` for a `T` too big to be lock-free needs
+  `__atomic_is_lock_free` and friends (GCC 13–15, Clang on Linux with
+  libstdc++ or libc++, GCC on FreeBSD, MinGW);
+- `stdc++exp` (GCC 14+) or `stdc++_libbacktrace` (GCC 13), when
+  `<stacktrace>`, `<debugging>` or, on Windows, `std::print`'s terminal output
+  (`vprint_unicode`) need libstdc++'s experimental library.
+
+Where FindThreads uses `-pthread` (FreeBSD, for one), every target is
+compiled with it, so the module BMIs match their importers (Clang rejects a
+BMI built without it: `-Wmodule-file-config-mismatch`). Clang without
+`clang-scan-deps` (apt.llvm.org's `clang-N` without `clang-tools-N`) skips
+the named-module tests with that reason.
+
 **MSVC and clang-cl** use Ninja too, so they must run where `cl`, `link` and
 the Windows SDK are on `PATH`: a *Developer PowerShell / Command Prompt for
 VS* (or `vcvarsall.bat x64`; in GitHub Actions, a step that sets up the MSVC
