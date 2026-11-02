@@ -111,7 +111,11 @@ TEST(BitFields, UnnamedFieldsAreSkipped) {
 
 // "Gotchas": no address; const& binds a copy; structured bindings name the field itself.
 TEST(BitFields, NoAddressReferencesAndBindings) {
+#if !defined(_MSC_VER) || defined(__clang__)
+    // MSVC treats `&t.a` on a bit-field as valid inside a requires-expression
+    // (ordinary code still errors), so the concept is true there.
     static_assert(!AddressableA<F>);
+#endif
 
     Flags f;
     const unsigned& r = f.mode;  // bound to a temporary copy

@@ -83,7 +83,8 @@ if [[ "$run_tests" == true ]]; then
     step configure "$rc"
     if [[ $rc == 0 && ${#targets[@]} -gt 0 ]]; then
         group "build (${targets[*]})"
-        cmake --build --preset "$preset" --target "${targets[@]}" 2>&1 | tee "$out/build.log"
+        # -k 0: keep going, so one run shows every compile error, not just the first.
+        cmake --build --preset "$preset" --target "${targets[@]}" -- -k 0 2>&1 | tee "$out/build.log"
         rc=${PIPESTATUS[0]}
         endgroup
         step build "$rc"

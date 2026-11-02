@@ -88,6 +88,12 @@ if(NOT CMAKE_CXX_STANDARD EQUAL 23 AND NOT "cxx_std_26" IN_LIST CMAKE_CXX_COMPIL
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+# Apple Clang ships no clang-scan-deps, so CMake's default C++20 module
+# scanning fails at generate time for every target; the module tests skip
+# on it (tests/language/modules/modules.cmake).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+  set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+endif()
 
 enable_testing()
 
