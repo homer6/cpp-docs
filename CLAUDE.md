@@ -692,6 +692,24 @@ internal business use only) are linked and cited, never copied (#233).
   include any `Co-Authored-By: Claude` (or similar) trailer. Commits are authored
   solely by the repository owner.
 
+## The work queue
+
+The owner's rule (#238): *"always complete the existing work queue before
+working on the new messages.... new messages go to the end of the work queue
+unless they directly modify the work queue"*.
+
+- **Finish the queue in order.** The work in hand and the work already asked
+  for come first; don't drop or interleave them for a newer message.
+- **A new message goes to the end of the queue.** Acknowledge it with where it
+  went ("added after #228 and the release"), then carry on with the current
+  item.
+- **The exception: a message that changes the queue itself** takes effect at
+  once: it reorders, cancels or adds to queued work, or changes how the
+  queue is worked (like this rule). A question about the work in hand is
+  answered right away, without starting new work.
+- **Report the queue** when a session ends or the owner asks: what's done,
+  what's in progress, what's next.
+
 ## Issues and pull requests
 
 - **Create a GitHub issue first, for all work** — before starting, however
