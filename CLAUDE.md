@@ -23,6 +23,10 @@ evals.
 `make install` links it (and `cpp-guidelines`) into `~/.claude/skills`, upgrading
 an older link or copied install; `make update` pulls and re-links; `make
 uninstall` removes the links.
+To run, read and report the platform runs (consent, every log processed,
+findings captured as tests, vendor bugs, re-running what failed, the
+archive, regenerating `docs/platform-support.md`), use the
+`platform-support` skill (`.claude/skills/platform-support/`).
 Add a skill to the Makefile's `SKILLS` only if it works outside the repo.
 Never run `make install` from a worktree: the link would point at a
 directory that's deleted after the merge.
@@ -328,7 +332,9 @@ language support and feature support in the entire industry"*. So:
 - **New platforms, compilers and architectures** that are supported and
   can run on GitHub's runners (natively, in a VM or under QEMU) belong in
   the workflows; widening the matrix is part of the goal.
-- **Every every-area run is read in full, captured and archived** (the
+- **Every every-area run is read in full, captured and archived**, with the
+  `platform-support` skill, which has the commands and the
+  `digest_run.py` log digest (the
   owner, #186: *"these full action runs (and logs) are pretty useful for
   archiving exactly the level of support and for each feature ... we'll need
   to read each of them fully (and capture them in test pass/fail unit tests)
@@ -418,8 +424,9 @@ run automatically... manual invocation only"*.
 - **The fix loop:** each failure gets its own issue (the workflow, job, run
   link and failing test or snippet ID) and a PR into `dev` that fixes the
   page, the test or the script, with the local runs in its Tested section.
-  After it merges, ask for consent to re-run the failed job (`gh run rerun
-  <id> --failed`) or a new run on `dev`. Repeat until that workflow is green.
+  After it merges, start a new dispatch on `dev` of only the workflows that
+  failed (with the owner's consent; not `gh run rerun`, which reuses the old
+  commit). Repeat until that workflow is green.
   A wrong page claim is fixed on the page, not hidden in a baseline.
 - **How results feed the repo:**
   - **Pages:** a claim about MSVC, FreeBSD or another non-local toolchain can
