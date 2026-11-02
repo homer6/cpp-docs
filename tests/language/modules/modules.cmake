@@ -23,6 +23,11 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSI
   set(_skip "GCC ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with GCC 14 and newer")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
   set(_skip "Clang ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with Clang 16 and newer")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC"
+       AND NOT CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS)
+  # apt.llvm.org ships clang-scan-deps-N in clang-tools-N, not with clang-N;
+  # without it every scan step fails at build time.
+  set(_skip "Clang ${CMAKE_CXX_COMPILER_VERSION}: clang-scan-deps not found (install clang-tools), so CMake can't scan it for modules")
 elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|MSVC")
   set(_skip "compiler ${CMAKE_CXX_COMPILER_ID}: CMake can't scan it for modules")
 endif()
@@ -68,6 +73,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
                COMPILE_DEFINITIONS CPPDOCS_PRIVATE_MODULE_FRAGMENT)
 endif()
 
+# A BMI and its importers must be compiled with the same flags: where
+# FindThreads uses -pthread, tests/CMakeLists.txt adds it to every target.
 target_link_libraries(examples_language_tests PRIVATE cppdocs_modules)
 set_property(TARGET examples_language_tests APPEND PROPERTY
              COMPILE_DEFINITIONS CPPDOCS_NAMED_MODULES)

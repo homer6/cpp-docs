@@ -20,6 +20,19 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   set(cppdocs_warnings -Wall -Wextra)
 endif()
 
+# GTest links Threads::Threads, which carries -pthread as a compile option
+# wherever FindThreads uses the flag (FreeBSD, for one; not glibc 2.34+,
+# macOS or Windows). A module's BMI and its importers must be compiled alike,
+# or Clang rejects the BMI ("POSIX thread support was disabled in PCH file
+# but is currently enabled", -Wmodule-file-config-mismatch), and CMake builds
+# the BMIs, the std module's included, without the importer's usage
+# requirements. So compile everything with -pthread there.
+find_package(Threads REQUIRED)
+get_target_property(_cppdocs_thread_opts Threads::Threads INTERFACE_COMPILE_OPTIONS)
+if(_cppdocs_thread_opts MATCHES "-pthread")
+  string(APPEND CMAKE_CXX_FLAGS " -pthread")
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -41,6 +54,81 @@ include(GoogleTest)
 add_library(cppdocs_support INTERFACE)
 target_include_directories(cppdocs_support INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(cppdocs_support INTERFACE GTest::gtest_main)
+
+# Runtime libraries some toolchains need beyond the default link, found by
+# try-linking a small program without and then with each candidate, and
+# linked into every test target (through cppdocs_support) only when needed:
+# - libatomic: std::atomic<T> for a T too big to be lock-free calls
+#   __atomic_is_lock_free, __atomic_load, ... (GCC 13-15 and Clang with
+#   libstdc++ or libc++ on Linux, GCC on FreeBSD, MinGW).
+# - libstdc++'s experimental library: <stacktrace> (GCC 14+), <debugging> and,
+#   on Windows, std::print's terminal output (vprint_unicode) live in
+#   libstdc++exp; GCC 13 has <stacktrace> in libstdc++_libbacktrace.
+# A library that doesn't exist fails the try-link too, so nothing is added
+# and the link error stays visible.
+include(CheckCXXSourceCompiles)
+function(cppdocs_find_link_library out source)
+  set(CMAKE_REQUIRED_QUIET ON)
+  check_cxx_source_compiles("${source}" ${out}_NONE)
+  if(${out}_NONE)
+    set(${out} "" PARENT_SCOPE)
+    return()
+  endif()
+  foreach(lib IN LISTS ARGN)
+    string(MAKE_C_IDENTIFIER "${lib}" lib_id)
+    set(CMAKE_REQUIRED_LIBRARIES ${lib})
+    check_cxx_source_compiles("${source}" ${out}_${lib_id})
+    if(${out}_${lib_id})
+      set(${out} ${lib} PARENT_SCOPE)
+      return()
+    endif()
+  endforeach()
+  set(${out} "" PARENT_SCOPE)
+endfunction()
+
+cppdocs_find_link_library(cppdocs_atomic_lib [[
+#include <atomic>
+struct Big { char bytes[64]; };
+int main() {
+  std::atomic<Big> big{};
+  Big b = big.load();
+  big.store(b);
+  return big.is_lock_free() ? 1 : 0;
+}
+]] atomic)
+
+cppdocs_find_link_library(cppdocs_stdexp_lib [[
+#include <version>
+#include <cstdio>
+#include <string>
+#ifdef __cpp_lib_stacktrace
+#include <stacktrace>
+#endif
+#ifdef __cpp_lib_print
+#include <print>
+#endif
+#ifdef __cpp_lib_debugging
+#include <debugging>
+#endif
+int main(int argc, char**) {
+  int r = 0;
+#ifdef __cpp_lib_stacktrace
+  r += static_cast<int>(std::to_string(std::stacktrace::current()).size());
+#endif
+#ifdef __cpp_lib_print
+  if (argc > 1) std::print(stdout, "{}", argc);
+#endif
+#ifdef __cpp_lib_debugging
+  r += std::is_debugger_present() ? 1 : 0;
+#endif
+  return r == -1;
+}
+]] stdc++exp stdc++_libbacktrace)
+
+foreach(lib IN ITEMS ${cppdocs_stdexp_lib} ${cppdocs_atomic_lib})
+  message(STATUS "cpp-docs: linking the tests with -l${lib}")
+  target_link_libraries(cppdocs_support INTERFACE ${lib})
+endforeach()
 
 # Self-tests for tests/support/.
 add_executable(cppdocs_support_tests support/support_test.cpp)
@@ -94,11 +182,4 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_G
   set_source_files_properties(metaprogramming/reflection_test.cpp
                               metaprogramming/reflection-queries_test.cpp
                               PROPERTIES COMPILE_OPTIONS -freflection)
-endif()
-
-# <stacktrace> and <debugging> live in libstdc++'s experimental library on
-# GCC 16; link it into the diagnostics tests (#46).
-if(TARGET examples_diagnostics_tests AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16)
-  target_link_libraries(examples_diagnostics_tests PRIVATE stdc++exp)
 endif()
