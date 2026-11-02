@@ -93,6 +93,9 @@ Rules of thumb:
    - After moving the pin, **regenerate the index of every rule**
      (`python3 tools/gen_core_guidelines.py`, then `--check`) and commit it
      with the pin: a rule added, renamed or removed upstream changes it.
+     A renamed or removed rule also needs its heading in
+     `docs/guidelines/core-guidelines/examples/` and its test comment in
+     `tests/guidelines/` updated (`--check` names any unknown ID).
    - `OLD == NEW` → only bump "last checked".
    - Otherwise walk **every** commit in `OLD..NEW` and classify it: rule
      added/removed/renamed, wording or threshold change, example change,

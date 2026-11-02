@@ -8,6 +8,16 @@ The rule text itself isn't copied here: the Guidelines' licence permits copies f
 
 Worked examples for some rules are in [core-guidelines.md](../core-guidelines.md); more are welcome. Regenerate this index with `python3 tools/gen_core_guidelines.py` after moving the submodule.
 
+## Examples and tests
+
+Our own examples are in [`examples/`](examples/), one page per section, and the unit tests that check them in [`tests/guidelines/`](../../../tests/guidelines/) (#235). Each section page links them, rule by rule, where they exist.
+
+| Numbered rules | With an example | No example (not about code) | Still to do | With a unit test |
+|---|---|---|---|---|
+| 513 | 5 | 0 | 508 | 5 |
+
+## Sections
+
 | Section | Entries | Official |
 |---|---|---|
 | [C++ Core Guidelines](main.md) | 0 | [official](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#main) |

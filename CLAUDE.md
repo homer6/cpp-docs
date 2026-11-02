@@ -92,6 +92,22 @@ or a guidelines page changes, since the "ours" links come from our pages);
 its samples. Don't describe `core-guidelines.md` (the worked examples) as the
 important rules: it covers the rules someone has written an example for.
 
+**Every rule gets an example of our own and, where its claim can be checked,
+a unit test** (#235). Examples go in
+`docs/guidelines/core-guidelines/examples/<page>.md` (one page per section,
+named like its index page; the conventions and template are in that folder's
+`README.md`): a `## <ID>: <official title>` heading per rule in official
+order, our own BAD/GOOD code (`compile-fail="regex"` when the compiler
+rejects the mistake, `nocompile` when it compiles but is wrong), or
+`*No example: <reason>.*` for a rule that isn't about code. Never copy the
+Guidelines' text or examples. Tests go in `tests/guidelines/<page>_test.cpp`
+(the `guidelines` area), with a `// <ID>: <claim>` comment above each `TEST`
+(`tests/guidelines/README.md`). The generator reads both: each rule in the
+index links its example and test, the index README counts what's left, and
+`--check` fails on an ID the Guidelines don't have. Regenerate the index in
+every PR that adds examples or tests; after a rebase, regenerate it rather than
+merging its conflicts.
+
 `modules/perf-report` is the owner's Linux performance-analysis guide
 (https://github.com/homer6/perf-report, also perf-report.com: perf, bpftrace,
 flame graphs, CPU/memory/disk/network analysis). Link to it for profiling

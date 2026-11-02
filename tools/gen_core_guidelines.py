@@ -29,6 +29,8 @@ MODULE = ROOT / "modules" / "CppCoreGuidelines"
 SOURCE = MODULE / "CppCoreGuidelines.md"
 GUIDELINES = ROOT / "docs" / "guidelines"
 OUT = GUIDELINES / "core-guidelines"
+EXAMPLES = OUT / "examples"            # our examples, one page per section (#235)
+TESTS = ROOT / "tests" / "guidelines"  # our unit tests for the rules
 OFFICIAL = "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines"
 UPSTREAM = "https://github.com/isocpp/CppCoreGuidelines"
 
@@ -135,6 +137,54 @@ def link(anchor: str | None) -> str:
     return f"{OFFICIAL}#{anchor}" if anchor else OFFICIAL
 
 
+RULE_ID = re.compile(r"[A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9]+[a-z]?")
+# Test comments use the same IDs as the index, including named ones (GSL.ptr).
+TEST_COMMENT = re.compile(r"^// ([A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9A-Za-z?]+):", re.M)
+NO_EXAMPLE = re.compile(r"^\*No example: (.+?)\*\s*$", re.M)
+
+
+def github_slug(heading: str) -> str:
+    h = MDLINK.sub(r"\1", heading)
+    h = re.sub(r"[`*]", "", h).strip().lower()
+    h = re.sub(r"[^\w\- ]", "", h)
+    return h.replace(" ", "-")
+
+
+def rule_id(title: str) -> str | None:
+    m = ENTRY_ID.match(title)
+    return m.group(1) if m and "." in m.group(1) else None
+
+
+def coverage(examples: dict[str, str], tests: dict[str, str]) -> dict[str, dict]:
+    """Per rule ID: its example (page, anchor), its "no example" reason, its test files.
+
+    examples maps an examples page name to its text, tests a test file's
+    repo-relative path to its text."""
+    cov: dict[str, dict] = {}
+    for name, text in sorted(examples.items()):
+        parts = re.split(r"^## +(.+?)\s*$", text, flags=re.M)
+        for heading, body in zip(parts[1::2], parts[2::2]):
+            rid = rule_id(heading)
+            if not rid:
+                continue
+            c = cov.setdefault(rid, {"tests": []})
+            if m := NO_EXAMPLE.search(body):
+                c["none"] = m.group(1)
+            elif "```cpp" in body:
+                c["example"] = (name, github_slug(heading))
+    for path, text in sorted(tests.items()):
+        for rid in dict.fromkeys(TEST_COMMENT.findall(text)):
+            cov.setdefault(rid, {"tests": []})["tests"].append(path)
+    return cov
+
+
+def read_coverage() -> dict[str, dict]:
+    examples = {p.name: p.read_text(encoding="utf-8") for p in sorted(EXAMPLES.glob("*.md"))} if EXAMPLES.exists() else {}
+    tests = {p.relative_to(ROOT).as_posix(): p.read_text(encoding="utf-8")
+             for p in sorted(TESTS.rglob("*_test.cpp"))} if TESTS.exists() else {}
+    return coverage(examples, tests)
+
+
 def our_pages() -> dict[str, str]:
     skip = {"README.md", "sources.md"}  # the section index and the change log only mention IDs
     return {p.name: p.read_text(encoding="utf-8") for p in sorted(GUIDELINES.glob("*.md")) if p.name not in skip}
@@ -148,7 +198,8 @@ def cited_by(title: str, pages: dict[str, str]) -> list[str]:
     return [name for name, text in pages.items() if rid.search(text)]
 
 
-def entry_lines(e: dict, pages: dict[str, str], section_anchor: str | None) -> list[str]:
+def entry_lines(e: dict, pages: dict[str, str], section_anchor: str | None,
+                cov: dict[str, dict] | None = None) -> list[str]:
     if e.get("stub"):
         line = f"- {e['title']} — listed in the [official summary]({link(section_anchor)}), no text yet"
     else:
@@ -156,6 +207,13 @@ def entry_lines(e: dict, pages: dict[str, str], section_anchor: str | None) -> l
     refs = cited_by(e["title"], pages)
     if refs:
         line += " · ours: " + ", ".join(f"[{n.removesuffix('.md')}](../{n})" for n in refs)
+    c = (cov or {}).get(rule_id(e["title"]) or "", {})
+    if "example" in c:
+        line += f" · [example](examples/{c['example'][0]}#{c['example'][1]})"
+    elif "none" in c:
+        line += f" · no example: {c['none']}"
+    if c.get("tests"):
+        line += " · " + ", ".join(f"[test](../../../{t})" for t in c["tests"][:1])
     return [line] + [f"  - [{p['title']}]({link(p['anchor'])})" for p in e.get("points", [])]
 
 
@@ -164,7 +222,9 @@ def stamp(commit: str, edition: str) -> str:
             f"(commit {commit[:7]}, {edition} edition); don't edit by hand. -->")
 
 
-def render(sections: list[dict], commit: str, edition: str, pages: dict[str, str]) -> dict[str, str]:
+def render(sections: list[dict], commit: str, edition: str, pages: dict[str, str],
+           cov: dict[str, dict] | None = None) -> dict[str, str]:
+    cov = cov or {}
     files: dict[str, str] = {}
     rows = []
     total = 0
@@ -175,7 +235,8 @@ def render(sections: list[dict], commit: str, edition: str, pages: dict[str, str
         rows.append(f"| [{s['title']}]({name}) | {entries} | [official]({link(s['anchor'])}) |")
         out = [f"# {s['title']}", "", stamp(commit, edition), "",
                f"Every entry in this section of the official C++ Core Guidelines, in their order. "
-               f"Each link opens the official text. \"ours\" links the pages of this repo that cite the rule.",
+               f"Each link opens the official text. \"ours\" links the pages of this repo that cite the rule; "
+               f"\"example\" and \"test\" link our own example and unit test for it.",
                "", f"[Official section]({link(s['anchor'])}) · [All sections](README.md)", ""]
         if not entries:
             out += ["This section has no numbered entries; read it in the official text.", ""]
@@ -184,8 +245,12 @@ def render(sections: list[dict], commit: str, edition: str, pages: dict[str, str
                 out += [f"## {sub['title']}", "", f"[Official text]({link(sub['anchor'] or s['anchor'])})", ""]
             if sub["entries"]:
                 anchor = sub["anchor"] or s["anchor"]
-                out += [l for e in sub["entries"] for l in entry_lines(e, pages, anchor)] + [""]
+                out += [l for e in sub["entries"] for l in entry_lines(e, pages, anchor, cov)] + [""]
         files[name] = "\n".join(out).rstrip() + "\n"
+    ids = [rid for s in sections for sub in s["subs"] for e in sub["entries"] if (rid := rule_id(e["title"]))]
+    with_example = sum(1 for r in ids if "example" in cov.get(r, {}))
+    no_example = sum(1 for r in ids if "none" in cov.get(r, {}) and "example" not in cov.get(r, {}))
+    with_test = sum(1 for r in ids if cov.get(r, {}).get("tests"))
     readme = [
         "# C++ Core Guidelines — every rule", "", stamp(commit, edition), "",
         f"Every section and every rule of the official [C++ Core Guidelines]({OFFICIAL}) "
@@ -200,6 +265,14 @@ def render(sections: list[dict], commit: str, edition: str, pages: dict[str, str
         "Worked examples for some rules are in [core-guidelines.md](../core-guidelines.md); "
         "more are welcome. Regenerate this index with `python3 tools/gen_core_guidelines.py` "
         "after moving the submodule.", "",
+        "## Examples and tests", "",
+        "Our own examples are in [`examples/`](examples/), one page per section, and the unit "
+        "tests that check them in [`tests/guidelines/`](../../../tests/guidelines/) (#235). "
+        "Each section page links them, rule by rule, where they exist.", "",
+        "| Numbered rules | With an example | No example (not about code) | Still to do | With a unit test |",
+        "|---|---|---|---|---|",
+        f"| {len(ids)} | {with_example} | {no_example} | {len(ids) - with_example - no_example} | {with_test} |", "",
+        "## Sections", "",
         "| Section | Entries | Official |", "|---|---|---|", *rows,
     ]
     files["README.md"] = "\n".join(readme) + "\n"
@@ -218,13 +291,16 @@ def build() -> tuple[dict[str, str], int, int]:
     m = EDITION.search(text)
     edition = m.group(1) if m else "undated"
     sections = parse(text)
-    files = render(sections, commit_of_module(), edition, our_pages())
+    cov = read_coverage()
+    files = render(sections, commit_of_module(), edition, our_pages(), cov)
     listed = sum(len(sub["entries"]) for s in sections for sub in s["subs"])
-    return files, listed, count_source_entries(text)
+    known = {rid for s in sections for sub in s["subs"] for e in sub["entries"] if (rid := rule_id(e["title"]))}
+    unknown = sorted(set(cov) - known)
+    return files, listed, count_source_entries(text), unknown
 
 
-def check(files: dict[str, str], listed: int, expected: int) -> int:
-    bad = []
+def check(files: dict[str, str], listed: int, expected: int, unknown: list[str]) -> int:
+    bad = [f"{rid}: an examples heading or test comment names a rule the Guidelines don't have" for rid in unknown]
     if listed != expected:
         bad.append(f"the index lists {listed} entries but the official text has {expected}")
     for name, body in files.items():
@@ -329,6 +405,25 @@ def self_test() -> int:
         bad.append("render: summary-only rule missing")
     if "  - [Don't use `reinterpret_cast`]" not in files["profile.md"]:
         bad.append("render: profile sub-point missing")
+    ex = {"class.md": "# C\n\n## C.30: Define a destructor if needed\n\nText.\n\n```cpp\nstruct S {};\n```\n\n"
+                      "## SL.str.1: Use `std::string`\n\n*No example: shown elsewhere.*\n\n## C.31: no code yet\n"}
+    ts = {"tests/guidelines/class_test.cpp": "// C.30: the destructor runs\nTEST(A, B) {}\n// C.30: again\n",
+          "tests/guidelines/gsl_test.cpp": "// Checks claims made by x.\n// GSL.ptr: owner is an alias\n"}
+    cov = coverage(ex, ts)
+    if cov.get("C.30", {}).get("example") != ("class.md", "c30-define-a-destructor-if-needed") \
+            or cov["C.30"]["tests"] != ["tests/guidelines/class_test.cpp"]:
+        bad.append(f"coverage C.30: {cov.get('C.30')}")
+    if cov.get("GSL.ptr", {}).get("tests") != ["tests/guidelines/gsl_test.cpp"] or "Checks" in cov:
+        bad.append(f"named test ID: {cov.get('GSL.ptr')}")
+    if cov.get("SL.str.1", {}).get("none") != "shown elsewhere." or "example" in cov.get("C.31", {"x": 1}):
+        bad.append(f"coverage no-example / empty: {cov.get('SL.str.1')}, {cov.get('C.31')}")
+    files = render(sections, "0123456789abcdef", "June 14, 2026", pages, cov)
+    if "· [example](examples/class.md#c30-define-a-destructor-if-needed) · [test](../../../tests/guidelines/class_test.cpp)" not in files["class.md"]:
+        bad.append("render: example/test links missing")
+    if "· no example: shown elsewhere." not in files["class.md"]:
+        bad.append("render: no-example reason missing")
+    if "| 8 | 1 | 1 | 6 | 1 |" not in files["README.md"]:
+        bad.append("render: coverage totals wrong")
     for b in bad:
         print("FAIL", b)
     print(f"gen_core_guidelines self-test: {'OK' if not bad else 'FAILED'} ({len(bad)} failure(s))")
@@ -341,9 +436,11 @@ def main() -> int:
         return self_test()
     if "--upstream" in args:
         return upstream()
-    files, listed, expected = build()
+    files, listed, expected, unknown = build()
     if "--check" in args:
-        return check(files, listed, expected)
+        return check(files, listed, expected, unknown)
+    for rid in unknown:
+        print(f"warning: {rid} is not an official rule (examples heading or test comment)")
     if listed != expected:
         sys.exit(f"parsed {listed} entries but the official text has {expected}: fix the parser")
     OUT.mkdir(parents=True, exist_ok=True)
