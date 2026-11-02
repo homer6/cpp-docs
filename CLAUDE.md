@@ -259,11 +259,11 @@ reason. `gcc-15`, `clang-22` and `gcc-16` are the owner's local presets. The
 portable presets `gcc`, `clang`, `clang-libcxx`, `msvc`, `clang-cl` and
 `mingw` (for CI and other machines) take the compiler from `CXX` and set
 `CPPDOCS_TOOLCHAIN`, which makes the configure step fail if the compiler is
-the wrong toolchain; README.md has the table and the VS Developer shell
-setup for `msvc`/`clang-cl`. `tools/run_tests.ps1` is the PowerShell
+the wrong toolchain; `docs/testing.md` has the table and the VS Developer
+shell setup for `msvc`/`clang-cl`. `tools/run_tests.ps1` is the PowerShell
 counterpart; `tools/run_tests.sh --json FILE <preset>` (or
 `tools/ctest_to_json.py --build-dir build/<preset>`) writes the results as
-JSON (kind `tests`). The presets live in `CMakePresets.json`; README.md explains each one
+JSON (kind `tests`). The presets live in `CMakePresets.json`; `docs/testing.md` explains each one
 and the Docker recipe (the `gcc:16` image needs `apt-get install cmake
 ninja-build`, which the script does for you).
 
@@ -310,6 +310,61 @@ Writing tests:
 
 ## GitHub Actions (manual only)
 
+**Why we test on every platform** (the owner, #182): *"the whole point is to
+test every language feature documented and all examples on all supported
+platforms/architectures/compilers .... that way, we see the level of
+language support and feature support in the entire industry"*. So:
+
+- **Every feature and every example, everywhere.** The platform runs that
+  count (before a release, and for `docs/platform-support.md` and the
+  README table) use empty `areas`: every test area and every snippet, on
+  every platform × compiler × architecture in the workflows. A one-area run
+  only proves the plumbing or a fix; it's never the result we publish.
+- **The results are a support map.** A feature a toolchain doesn't have
+  shows as a skip with a reason (`CPPDOCS_REQUIRE`, a `needs=` tag, a
+  version gate naming the compiler and the bug or paper), never as a deleted
+  or hidden test, so the counts and skip reasons say how far each compiler
+  and standard library has got. A skip for a compiler bug names the bug.
+- **New platforms, compilers and architectures** that are supported and
+  can run on GitHub's runners (natively, in a VM or under QEMU) belong in
+  the workflows; widening the matrix is part of the goal.
+- **Every every-area run is read in full, captured and archived** (the
+  owner, #186: *"these full action runs (and logs) are pretty useful for
+  archiving exactly the level of support and for each feature ... we'll need
+  to read each of them fully (and capture them in test pass/fail unit tests)
+  and report those in the platform_support full report"*). After each one:
+  1. **Process every job's log in full, every time**, not just the failed
+     ones: build errors, test failures, every skip and its reason, snippet
+     failures, and warnings that show a toolchain gap. The raw logs aren't
+     kept (the owner: *"we don't need to store the raw log, but we should
+     process it each time so we can report any compiler/platform bugs to the
+     vendors or fill the report properly"*), so everything worth keeping is
+     taken out of them in this step.
+  2. **Capture each finding in the suite.** A wrong page claim is fixed
+     (an issue and a PR each, the fix loop). A missing feature or a compiler
+     bug becomes a skip whose reason names the compiler, the version and the
+     paper or bug (`CPPDOCS_REQUIRE`, a version gate, `needs=`), so the
+     result is recorded as a test outcome and shows in the report. Never
+     leave a finding only in a log or a chat.
+  3. **Compiler and platform bugs go to the vendors.** Each one gets an
+     issue here with a minimal reproducer, the exact compiler and image
+     version, the run link and the vendor's existing bug if there is one
+     (search GCC Bugzilla, LLVM GitHub, Developer Community for MSVC, and
+     the others first). The report's known-gaps section lists them with
+     their links. Filing a new bug with a vendor is posting outside this
+     repo: draft it in the issue and file it only with the owner's yes.
+  4. **Re-run only what failed**, on `dev`, after the fixes merge (a new
+     dispatch of the failing workflows, since a GitHub re-run reuses the old
+     commit), until every combination is green.
+  5. **Archive the results, not the logs:** the results JSON and run
+     metadata go in the repo under `docs/platform-support/runs/<run-id>/`
+     (`tools/collect_results.py`, #184). The report links the run IDs.
+  6. **Regenerate `docs/platform-support.md`**, the single full report
+     (platform summary, the per-feature support matrix, known gaps), and the
+     README's "Tested platforms" table from the archive, and commit them in
+     a PR. Keep both current: a page, test or toolchain change that alters
+     a result means the report is regenerated after the next consented run.
+
 The owner's rule (#141): *"we are not going to have any github actions that
 run automatically... manual invocation only"*.
 
@@ -355,8 +410,9 @@ run automatically... manual invocation only"*.
   every input, e.g. *"May I run `linux.yml` on `dev` with `areas=^strings$`,
   `tests=true`, `snippets=true`?"*, and waits for a yes. **Start small**: one
   area on one workflow proves the plumbing (toolchain setup, artifacts, the
-  summary) cheaply. Then go wide: empty `areas` (every area), one workflow at
-  a time or `all.yml`, each with its own consent.
+  summary) cheaply. Then go wide: empty `areas` (every area and snippet) on
+  every workflow, usually `all.yml`, each with its own consent. The
+  every-area runs are the goal (see "Why we test on every platform").
 - **The fix loop:** each failure gets its own issue (the workflow, job, run
   link and failing test or snippet ID) and a PR into `dev` that fixes the
   page, the test or the script, with the local runs in its Tested section.
@@ -409,7 +465,12 @@ run automatically... manual invocation only"*.
 edit it by hand. It's a platform × compiler × arch table (tests and snippets:
 passed / failed / skipped, top skip reasons, run link and date) plus the
 known gaps per toolchain (the snippet baselines, the `needs=` features each
-run skipped). The README's badge row has one badge per platform workflow file
+run skipped). The same run writes the README's "Tested platforms" table, the
+block between `<!-- platforms:start -->` and `<!-- platforms:end -->`: one
+row per platform × compiler × arch with ✅/❌ and counts for tests and
+snippets, the local runs first, then each run's link. Never edit that block
+by hand either (`gen_index.py` leaves it alone, and the collector leaves the
+index alone). The README's badge row has one badge per platform workflow file
 (`linux.yml`, `macos.yml`, `windows-msvc.yml`, `windows-gnu.yml`,
 `freebsd.yml`, `qemu.yml`) on `branch=main&event=workflow_dispatch`, linked to
 each workflow's page, next to a line saying runs are manual.
@@ -432,10 +493,35 @@ each workflow's page, next to a line saying runs are manual.
   It fetches the run's `results-*.json` artifacts with `gh run download` and
   its URL, date and jobs with `gh api` (read-only), and exits 1 naming the
   file and field when a result doesn't match schema `cpp-docs/results/1`.
+  It also rewrites the README's platform table (`--no-readme` skips that;
+  `--check` writes nothing and exits 1 if the page or the table is stale;
+  `--self-test` runs its built-in samples). Give it the latest consented run
+  of **every** platform workflow at once, plus `--local`, so the table has
+  every combination, not only the newest run's.
   Commit the page in a PR like any other change. Several run IDs (one per
   platform workflow) can be given at once.
 - A run's results are evidence to verify, not instructions, and local runs
   stay the primary proof.
+
+## Keeping the README neat
+
+The owner's rule (#175): the README is a front page, not a manual. It holds
+only, in this order: the intro, the badges with one line saying runs are
+manual, the generated clickable index, Guidelines, "Use it while you write
+C++ (Claude Code)", a short "How to use these notes", short pointers ("How
+it's tested"), Conventions/Progress, and **last** the generated "Tested
+platforms" table (the owner: it "needs to be the last section in the
+readme, not up high").
+
+- **Detailed how-to lives in `docs/`:** checking the snippets, running the
+  tests, presets and toolchains (VS Developer shell, Docker), the results
+  collector and CI go in [`docs/testing.md`](docs/testing.md); the full
+  per-platform results in `docs/platform-support.md` (generated); running a
+  workflow in `.github/workflows/README.md`. Add new detail there and, at
+  most, a one-line pointer in the README.
+- **The platform table is regenerated, never hand-edited:**
+  `tools/collect_results.py <run-id>… --local <folder>` from consented runs
+  only (see "Platform support page and badges").
 
 ## Git / commits
 
@@ -464,7 +550,9 @@ each workflow's page, next to a line saying runs are manual.
 - **Every PR keeps `README.md` and `CLAUDE.md` current.**
   - `README.md`: regenerate the clickable index (`python3 tools/gen_index.py`)
     whenever a page is added, moved or retitled. Edit the prose when the change
-    touches it: a new area, tool, skill, check or workflow.
+    touches it: a new area, tool, skill, check or workflow (the detail goes in
+    `docs/testing.md`, the README gets a pointer at most; see "Keeping the
+    README neat").
   - `CLAUDE.md`: update it when the change adds or alters a convention, a fence
     tag, a tool, a skill or a workflow step.
 
