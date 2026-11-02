@@ -18,19 +18,33 @@ guidelines matter. Use this skill directly for:
 - **Measuring the guidelines skill** with the case suite in `evals/`.
 
 The guidance lives in `docs/guidelines/` of the cpp-docs repo (this skill's
-repo). **Every rule of the C++ Core Guidelines** is indexed, section by section,
-in `docs/guidelines/core-guidelines/` (`README.md` lists the sections; each
-section page lists every rule with its official ID, title and link, and the
-pages of this repo that cite it). The full text is in
-`modules/CppCoreGuidelines/`. Treat it as the source; this file only says how
-to use it. No rule is out of scope because this repo has no example for it.
+repo):
+
+- **Every rule of the C++ Core Guidelines**, section by section, in
+  `docs/guidelines/core-guidelines/`. `README.md` lists the sections; each
+  section page (`class.md` for C, `expr.md` for ES, `resource.md` for R,
+  `profile.md` for Type/Bounds/Lifetime, …) lists every rule with its official
+  ID, title and link, the pages of ours that cite it, and links to its
+  example and test.
+- **Our BAD/GOOD example for every rule** (or the reason there's none) in
+  `docs/guidelines/core-guidelines/examples/<section page>.md`, compiled by the
+  snippet checker; the unit tests that check them are in `tests/guidelines/`.
+- **The official text** in `modules/CppCoreGuidelines/CppCoreGuidelines.md`.
+  It's the source; our pages explain and illustrate it.
+
+No rule is out of scope because it isn't in one of the topic pages.
 
 **Finding the repo.** The paths below are relative to the cpp-docs repo root,
 not to this skill's folder. Inside a cpp-docs checkout, use them as they are.
-From another project, find the checkout from the skill's real path, because
-`make install` links the skill back into it (`<repo>/.claude/skills/cpp-guidelines`):
-`realpath ~/.claude/skills/cpp-guidelines/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
-`$CPP_DOCS` overrides that if it's set. Read every page from there. The
+From another project, use `$CPP_DOCS` if it's set; otherwise follow the
+skill's link back to its checkout (`make install` links it there):
+
+```bash
+CPP_DOCS="${CPP_DOCS:-$(realpath ~/.claude/skills/cpp-guidelines/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname)}"
+test -f "$CPP_DOCS/docs/guidelines/core-guidelines/README.md" || echo "not a cpp-docs checkout: set CPP_DOCS"
+```
+
+Read every page from there. The
 full Core Guidelines need `git submodule update --init` in the checkout; if
 the submodule is empty and you can't initialize it, read the rule at the
 official link its index entry gives. There
@@ -69,11 +83,38 @@ the assumption you're making.
 Read a rule's **Exception** and **Note** paragraphs before calling something a
 violation.
 
+### Finding the right rule
+
+- **From an ID** (`C.21`, `ES.46`, `Type.1`, `GSL.ptr`): the section page in
+  `docs/guidelines/core-guidelines/` has its exact title, official link and
+  our example. For the full text, `grep -n 'C\.21:' modules/CppCoreGuidelines/CppCoreGuidelines.md`
+  (profile rules are bullets, not headings).
+- **From what the code does** (a smell, not an ID): search the rule titles,
+  then read the candidates' official text and pick the rule whose **Reason**
+  matches the risk, not just the words:
+  `grep -i -h '<keyword>' docs/guidelines/core-guidelines/*.md | grep '^- \['`
+  (e.g. `lock`, `narrow`, `destructor`, `catch`, `out` parameter).
+- **Several rules fit:** cite the most specific one (C.35 for a base-class
+  destructor, not C.20), and mention a broader one only if it adds something.
+- **A rule with no text yet** (the T section lists T.30 and T.31 with titles
+  only): say so; cite it by its title, not as settled guidance.
+
 ## 3. Report findings with rule IDs
 
-For each finding: the location, the rule ID (e.g. **R.11**, **C.13**, Abseil
-**#177**), one sentence on the concrete risk, and a minimal fix. Group by
-severity: bugs (leaks, dangling, data races, UB) before style.
+Write each finding in this shape, bugs (leaks, dangling, data races, UB)
+before style:
+
+```markdown
+- **<file>:<line> · <rule ID>: <official title>.** <the concrete risk, one sentence>.
+  Fix: <minimal change>. Example: docs/guidelines/core-guidelines/examples/<page>.md#<heading-slug>
+```
+
+The rule IDs are Core Guidelines IDs (**R.11**, **C.13**) or another source's
+(Abseil **#177**). The example link shows the reader the BAD and GOOD forms side by
+side; find it without reading the whole page:
+`grep -n '^## C\.21:' docs/guidelines/core-guidelines/examples/*.md` (the slug
+is the heading, lower-cased, punctuation dropped, spaces as hyphens). A
+compliant result is one line: what the code does right, with the rule IDs.
 
 Don't over-apply rules:
 
@@ -88,9 +129,15 @@ Don't over-apply rules:
   (factories returning `std::optional`/`std::expected`), never `throw`.
 - **When ownership or lifetime can't be determined from the code, say so** and
   ask, rather than rewriting the interface.
+- **Don't add `const` (or anything else) where the code relies on change**:
+  Con.4 is for values that don't change after construction.
+- **Code that already follows a rule is a result too**: say it's compliant
+  rather than inventing a finding.
 
 ## 4. Validate every change
 
+- Compare the fix with the rule's GOOD example in
+  `docs/guidelines/core-guidelines/examples/`; if they differ, know why.
 - Compile with the project's flags; warnings stay at zero.
 - Run the tests that cover the code.
 - Run clang-tidy if the project has a config. A check that names a rule
@@ -104,5 +151,9 @@ Report anything you couldn't validate.
 
 ## Measuring this skill
 
-`evals/` has a vendor-neutral case suite (ownership and lifetime pilot) for
-comparing an agent with and without this skill. See `evals/README.md`.
+`evals/cases/` has a vendor-neutral case suite for comparing an agent with and
+without this skill: ownership and lifetime (21 cases) plus classes,
+expressions, concurrency, errors, constants and functions (10 cases), with
+compliant traps as well as violations. `python3 evals/check.py` validates
+them (it picks a working compiler unless `CXX` is set). See
+`evals/README.md` for how to run and score them.

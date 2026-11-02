@@ -1,0 +1,12 @@
+{
+  "id": "cp20-manual-lock-unlock",
+  "outcome": "violation",
+  "rules": ["CP.20"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["CP.20", "R.1"],
+    "fix": {"properties": ["the mutex is held by a RAII lock (std::lock_guard / std::scoped_lock / std::unique_lock)", "the throw no longer leaves the mutex locked"]}
+  },
+  "notes": "The throw (and an exception from operator[]) exits with the mutex locked.",
+  "source": "held-out"
+}

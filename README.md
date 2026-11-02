@@ -158,7 +158,8 @@ guidelines matter. Use `/cpp-guidelines` directly only for:
   code follow it?") or about one guidelines page.
 - **A focused ownership, lifetime or memory-safety fix** in code that already
   uses the right facilities.
-- **Measuring the guidelines skill** with the case suite in `evals/` (which
+- **Measuring the guidelines skill** with the case suite in `evals/` (31
+  cases across ownership, classes, expressions, concurrency and errors; it
   also has a suite for `modern-cpp`).
 
 **Install it once for all your projects:** clone this repo and run

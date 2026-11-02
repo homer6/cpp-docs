@@ -1,0 +1,12 @@
+{
+  "id": "c128-override-ok",
+  "outcome": "compliant",
+  "rules": ["C.128"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_not_flag": ["C.128", "C.35", "C.127"],
+    "must_not_change": ["override stays; no redundant virtual added to Derived::id"]
+  },
+  "notes": "Virtual destructor in the base, override (not virtual) in the derived class: exactly what C.128 asks.",
+  "source": "held-out"
+}

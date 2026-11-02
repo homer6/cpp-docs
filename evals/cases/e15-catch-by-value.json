@@ -1,0 +1,12 @@
+{
+  "id": "e15-catch-by-value",
+  "outcome": "violation",
+  "rules": ["E.15"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["E.15"],
+    "fix": {"properties": ["catches by const reference (const std::exception&)"]}
+  },
+  "notes": "Catching std::exception by value slices a derived exception: what() comes from the copy of the base, and the dynamic type is lost.",
+  "source": "held-out"
+}

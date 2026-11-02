@@ -12,9 +12,16 @@ For every case in evals/modern-cpp/ (the modern-cpp suite):
 
 Usage: python3 evals/check.py            # from the repo root
        CXX=g++-15 python3 evals/check.py
+
+Without CXX it picks the first of g++-16, g++-15, Homebrew clang++ (libc++),
+g++, clang++ and c++ that compiles a C++20 probe using std::jthread: Apple's
+default c++ ships a libc++ without it, which would fail cases for the wrong
+reason.
 """
 import json
 import os
+import shutil
+import tempfile
 import re
 import subprocess
 import sys
@@ -40,7 +47,7 @@ def known_rule_ids() -> set[str]:
 
 
 def compile_ok(cxx: str, cpp: Path, context: dict) -> str:
-    cmd = [cxx, f"-std={context.get('std', 'c++20')}", "-fsyntax-only", str(cpp)]
+    cmd = [*cxx.split(), f"-std={context.get('std', 'c++20')}", "-fsyntax-only", str(cpp)]
     if context.get("exceptions") is False:
         cmd.insert(1, "-fno-exceptions")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -74,9 +81,28 @@ def check_modern(cxx: str) -> tuple[int, int]:
         failures += bool(problems)
     return len(cases), failures
 
+CANDIDATES = ["g++-16", "g++-15", "/opt/homebrew/opt/llvm/bin/clang++ -stdlib=libc++", "g++", "clang++", "c++"]
+PROBE = "#include <thread>\nint main() { std::jthread t([] {}); }\n"
+
+
+def pick_compiler() -> str:
+    if os.environ.get("CXX"):
+        return os.environ["CXX"]
+    with tempfile.TemporaryDirectory() as d:
+        probe = Path(d) / "probe.cpp"
+        probe.write_text(PROBE)
+        for cand in CANDIDATES:
+            exe, *flags = cand.split()
+            if not shutil.which(exe):
+                continue
+            r = subprocess.run([exe, *flags, "-std=c++20", "-fsyntax-only", str(probe)], capture_output=True)
+            if r.returncode == 0:
+                return cand
+    return "c++"
+
 
 def main() -> int:
-    cxx = os.environ.get("CXX", "c++")
+    cxx = pick_compiler()
     ids = known_rule_ids()
     failures = 0
     cases = sorted(CASES.glob("*.json"))
@@ -99,7 +125,7 @@ def main() -> int:
 
         cpp = meta_path.with_suffix(".cpp")
         std = meta.get("context", {}).get("std", "c++20")
-        cmd = [cxx, f"-std={std}", "-fsyntax-only", str(cpp)]
+        cmd = [*cxx.split(), f"-std={std}", "-fsyntax-only", str(cpp)]
         if meta.get("context", {}).get("exceptions") is False:
             cmd.insert(1, "-fno-exceptions")
         result = subprocess.run(cmd, capture_output=True, text=True)
