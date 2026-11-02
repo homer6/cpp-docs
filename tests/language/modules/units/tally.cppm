@@ -1,4 +1,4 @@
-// modules.md "The global and private module fragments" (Clang only: GCC 15/16 don't implement it).
+// modules.md "The global and private module fragments" (Clang and MSVC: GCC 15/16 don't implement it).
 export module tally;
 
 export int next();

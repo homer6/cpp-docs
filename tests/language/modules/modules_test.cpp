@@ -70,7 +70,11 @@ TEST(Modules, GlobalModuleFragmentMacrosDontLeak) {
 TEST(Modules, PrivateModuleFragment) {
     CPPDOCS_REQUIRE_NAMED_MODULES();
 #ifndef CPPDOCS_PRIVATE_MODULE_FRAGMENT
-    GTEST_SKIP() << "private module fragment: GCC 15/16 say \"sorry, unimplemented\"";
+#ifdef CPPDOCS_PRIVATE_MODULE_FRAGMENT_SKIP
+    GTEST_SKIP() << CPPDOCS_PRIVATE_MODULE_FRAGMENT_SKIP;
+#else
+    GTEST_SKIP() << "private module fragment not built";
+#endif
 #else
     EXPECT_EQ(next(), 1);
     EXPECT_EQ(next(), 2);
