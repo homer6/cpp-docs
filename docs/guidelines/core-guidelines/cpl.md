@@ -6,6 +6,6 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-cpl) · [All sections](README.md)
 
-- [CPL.1: Prefer C++ to C](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-c)
-- [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-subset)
-- [CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-interface)
+- [CPL.1: Prefer C++ to C](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-c) · [example](examples/cpl.md#cpl1-prefer-c-to-c) · [test](../../../tests/guidelines/cpl_test.cpp)
+- [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-subset) · [example](examples/cpl.md#cpl2-if-you-must-use-c-use-the-common-subset-of-c-and-c-and-compile-the-c-code-as-c) · [test](../../../tests/guidelines/cpl_test.cpp)
+- [CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcpl-interface) · [example](examples/cpl.md#cpl3-if-you-must-use-c-for-interfaces-use-c-in-the-calling-code-using-such-interfaces) · [test](../../../tests/guidelines/cpl_test.cpp)

@@ -10,30 +10,30 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-type)
 
-- [Type.1: Avoid casts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-avoidcasts) · ours: [safety](../safety.md)
+- [Type.1: Avoid casts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-avoidcasts) · ours: [safety](../safety.md) · [example](examples/profile.md#type1-avoid-casts) · [test](../../../tests/guidelines/profile_test.cpp)
   - [Don't use `reinterpret_cast`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-reinterpretcast)
   - [Don't use `static_cast` for arithmetic types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-arithmeticcast)
   - [Don't cast between pointer types where the source type and the target type are the same](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-identitycast)
   - [Don't cast between pointer types when the conversion could be implicit](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-implicitpointercast)
-- [Type.2: Don't use `static_cast` to downcast](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-downcast) · ours: [safety](../safety.md)
-- [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-constcast) · ours: [safety](../safety.md)
-- [Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-cstylecast) · ours: [safety](../safety.md)
-- [Type.5: Don't use a variable before it has been initialized](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-init) · ours: [safety](../safety.md)
-- [Type.6: Always initialize a data member](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-memberinit) · ours: [safety](../safety.md)
-- [Type.7: Avoid naked union](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-union) · ours: [safety](../safety.md)
-- [Type.8: Avoid varargs](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-varargs) · ours: [safety](../safety.md)
+- [Type.2: Don't use `static_cast` to downcast](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-downcast) · ours: [safety](../safety.md) · [example](examples/profile.md#type2-dont-use-static_cast-to-downcast) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.3: Don't use `const_cast` to cast away `const` (i.e., at all)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-constcast) · ours: [safety](../safety.md) · [example](examples/profile.md#type3-dont-use-const_cast-to-cast-away-const-ie-at-all) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.4: Don't use C-style `(T)expression` or functional `T(expression)` casts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-cstylecast) · ours: [safety](../safety.md) · [example](examples/profile.md#type4-dont-use-c-style-texpression-or-functional-texpression-casts) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.5: Don't use a variable before it has been initialized](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-init) · ours: [safety](../safety.md) · [example](examples/profile.md#type5-dont-use-a-variable-before-it-has-been-initialized) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.6: Always initialize a data member](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-memberinit) · ours: [safety](../safety.md) · [example](examples/profile.md#type6-always-initialize-a-data-member) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.7: Avoid naked union](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-union) · ours: [safety](../safety.md) · [example](examples/profile.md#type7-avoid-naked-union) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Type.8: Avoid varargs](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-type-varargs) · ours: [safety](../safety.md) · [example](examples/profile.md#type8-avoid-varargs) · [test](../../../tests/guidelines/profile_test.cpp)
 
 ## Pro.bounds: Bounds safety profile
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-bounds)
 
-- [Bounds.1: Don't use pointer arithmetic. Use `span` instead](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-arithmetic) · ours: [safety](../safety.md)
-- [Bounds.2: Only index into arrays using constant expressions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-arrayindex) · ours: [safety](../safety.md)
-- [Bounds.3: No array-to-pointer decay](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-decay) · ours: [safety](../safety.md)
-- [Bounds.4: Don't use standard-library functions and types that are not bounds-checked](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-stdlib) · ours: [safety](../safety.md)
+- [Bounds.1: Don't use pointer arithmetic. Use `span` instead](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-arithmetic) · ours: [safety](../safety.md) · [example](examples/profile.md#bounds1-dont-use-pointer-arithmetic-use-span-instead) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Bounds.2: Only index into arrays using constant expressions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-arrayindex) · ours: [safety](../safety.md) · [example](examples/profile.md#bounds2-only-index-into-arrays-using-constant-expressions) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Bounds.3: No array-to-pointer decay](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-decay) · ours: [safety](../safety.md) · [example](examples/profile.md#bounds3-no-array-to-pointer-decay) · [test](../../../tests/guidelines/profile_test.cpp)
+- [Bounds.4: Don't use standard-library functions and types that are not bounds-checked](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-bounds-stdlib) · ours: [safety](../safety.md) · [example](examples/profile.md#bounds4-dont-use-standard-library-functions-and-types-that-are-not-bounds-checked) · [test](../../../tests/guidelines/profile_test.cpp)
 
 ## Pro.lifetime: Lifetime safety profile
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-lifetime)
 
-- [Lifetime.1: Don't dereference a possibly invalid pointer](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-lifetime-invalid-deref) · ours: [safety](../safety.md)
+- [Lifetime.1: Don't dereference a possibly invalid pointer](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#pro-lifetime-invalid-deref) · ours: [safety](../safety.md) · [example](examples/profile.md#lifetime1-dont-dereference-a-possibly-invalid-pointer) · [test](../../../tests/guidelines/profile_test.cpp)
