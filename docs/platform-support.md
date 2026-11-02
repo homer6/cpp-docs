@@ -4,6 +4,8 @@
 
 > Which platforms, compilers and architectures the test suite and the snippet checker have run on, with passed, failed and skipped counts.
 
+The goal is every documented feature and every example on every supported platform, architecture and compiler, so the counts and skip reasons show how far each toolchain supports modern C++ (see [testing.md](testing.md#why-we-test-on-every-platform)).
+
 ## How to read this
 
 - **Workflows run only by hand.** Every GitHub Actions workflow here is `workflow_dispatch` only, and runs only with the owner's consent, given for each run: before a release (on `dev`), or to back a claim about a platform we can't run locally. The tables below show the **last consented run** of each workflow, not the current tip of any branch; the README badges show the last run on `main`.

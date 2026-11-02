@@ -16,6 +16,23 @@ the current tip. They stay "no status" until the first consented run on `main`
 architecture matrix, with counts, skip reasons, run links and dates, is in
 [`platform-support.md`](platform-support.md).
 
+## Why we test on every platform
+
+The goal is to check **every language and library feature the reference
+documents, and every example, on every supported platform, architecture and
+compiler**, so the results show how far each toolchain, and the industry as
+a whole, supports modern C++. That's why:
+
+- the platform runs that are published use every test area and every
+  snippet, never a sample;
+- a feature a toolchain lacks shows up as a **skip with a reason** (a
+  feature-test macro, a `needs=` tag, or a version gate naming the compiler
+  bug or paper), never as a deleted test, so the skip reasons in
+  [`platform-support.md`](platform-support.md) read as a support map;
+- the workflows cover native Linux, macOS and Windows (MSVC, clang-cl,
+  MinGW), FreeBSD VMs and QEMU for other architectures, and grow as new
+  toolchains become available.
+
 ## Checking the snippets
 
 Run the checker locally:

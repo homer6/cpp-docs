@@ -390,6 +390,9 @@ def render(runs: list[dict], local: dict | None, today: str) -> str:
            "Refresh it only from runs the owner consented to (see CLAUDE.md). -->", "",
            "> Which platforms, compilers and architectures the test suite and the snippet checker "
            "have run on, with passed, failed and skipped counts.", "",
+           "The goal is every documented feature and every example on every supported platform, "
+           "architecture and compiler, so the counts and skip reasons show how far each toolchain "
+           "supports modern C++ (see [testing.md](testing.md#why-we-test-on-every-platform)).", "",
            "## How to read this", "",
            "- **Workflows run only by hand.** Every GitHub Actions workflow here is `workflow_dispatch` "
            "only, and runs only with the owner's consent, given for each run: before a release (on "

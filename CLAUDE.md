@@ -310,6 +310,25 @@ Writing tests:
 
 ## GitHub Actions (manual only)
 
+**Why we test on every platform** (the owner, #182): *"the whole point is to
+test every language feature documented and all examples on all supported
+platforms/architectures/compilers .... that way, we see the level of
+language support and feature support in the entire industry"*. So:
+
+- **Every feature and every example, everywhere.** The platform runs that
+  count (before a release, and for `docs/platform-support.md` and the
+  README table) use empty `areas`: every test area and every snippet, on
+  every platform × compiler × architecture in the workflows. A one-area run
+  only proves the plumbing or a fix; it's never the result we publish.
+- **The results are a support map.** A feature a toolchain doesn't have
+  shows as a skip with a reason (`CPPDOCS_REQUIRE`, a `needs=` tag, a
+  version gate naming the compiler and the bug or paper), never as a deleted
+  or hidden test, so the counts and skip reasons say how far each compiler
+  and standard library has got. A skip for a compiler bug names the bug.
+- **New platforms, compilers and architectures** that are supported and
+  can run on GitHub's runners (natively, in a VM or under QEMU) belong in
+  the workflows; widening the matrix is part of the goal.
+
 The owner's rule (#141): *"we are not going to have any github actions that
 run automatically... manual invocation only"*.
 
@@ -355,8 +374,9 @@ run automatically... manual invocation only"*.
   every input, e.g. *"May I run `linux.yml` on `dev` with `areas=^strings$`,
   `tests=true`, `snippets=true`?"*, and waits for a yes. **Start small**: one
   area on one workflow proves the plumbing (toolchain setup, artifacts, the
-  summary) cheaply. Then go wide: empty `areas` (every area), one workflow at
-  a time or `all.yml`, each with its own consent.
+  summary) cheaply. Then go wide: empty `areas` (every area and snippet) on
+  every workflow, usually `all.yml`, each with its own consent. The
+  every-area runs are the goal (see "Why we test on every platform").
 - **The fix loop:** each failure gets its own issue (the workflow, job, run
   link and failing test or snippet ID) and a PR into `dev` that fixes the
   page, the test or the script, with the local runs in its Tested section.
