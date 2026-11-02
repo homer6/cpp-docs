@@ -139,7 +139,7 @@ def link(anchor: str | None) -> str:
 
 RULE_ID = re.compile(r"[A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9]+[a-z]?")
 # Test comments use the same IDs as the index, including named ones (GSL.ptr).
-TEST_COMMENT = re.compile(r"^// ([A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9A-Za-z?-]+):", re.M)
+TEST_COMMENT = re.compile(r"^// ([A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9A-Za-z?]+):", re.M)
 NO_EXAMPLE = re.compile(r"^\*No example: (.+?)\*\s*$", re.M)
 
 
