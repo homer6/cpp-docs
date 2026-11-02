@@ -28,22 +28,22 @@ $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
 $status = 0
-if ($CtestArgs.Count -gt 0) {
+if ($env:CPPDOCS_KEEP_GOING) {
+    # CI (tools/ci/run.ps1): build with Ninja's -k 0 so one run shows every
+    # compile error, then test whatever built (only the ctest arguments' areas).
+    cmake --preset $Preset
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    cmake --build --preset $Preset -- -k 0
+    $status = $LASTEXITCODE
+    ctest --preset $Preset @CtestArgs
+    if ($LASTEXITCODE -ne 0) { $status = $LASTEXITCODE }
+} elseif ($CtestArgs.Count -gt 0) {
     cmake --preset $Preset
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     cmake --build --preset $Preset
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     ctest --preset $Preset @CtestArgs
     $status = $LASTEXITCODE
-} elseif ($env:CPPDOCS_KEEP_GOING) {
-    # CI (tools/ci/run.ps1): build with Ninja's -k 0 so one run shows every
-    # compile error, then test whatever built.
-    cmake --preset $Preset
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    cmake --build --preset $Preset -- -k 0
-    $status = $LASTEXITCODE
-    ctest --preset $Preset
-    if ($LASTEXITCODE -ne 0) { $status = $LASTEXITCODE }
 } else {
     cmake --workflow --preset $Preset
     $status = $LASTEXITCODE

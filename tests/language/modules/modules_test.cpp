@@ -88,12 +88,22 @@ TEST(ModulePartitions, ReexportedInterfacePartitions) {
 }
 
 // "Module linkage, visibility and reachability": a global-module step() of our own doesn't clash with counter's module-linkage step().
+// clang-cl can't link it: Clang's Microsoft-ABI mangling leaves out module
+// attachment (llvm/llvm-project#174064), so both are ?step@@YAHXZ.
+#if defined(_MSC_VER) && defined(__clang__)
+#define CPPDOCS_MODULE_LINKAGE_MANGLED 0
+#else
+#define CPPDOCS_MODULE_LINKAGE_MANGLED 1
 int step() { return 100; }
+#endif
 
 // "Module linkage, visibility and reachability": module linkage — the program links, and each step() is its own function.
 TEST(ModuleLinkage, ModuleLinkageNamesDontClash) {
     CPPDOCS_REQUIRE_NAMED_MODULES();
-#ifdef CPPDOCS_NAMED_MODULES
+#if !CPPDOCS_MODULE_LINKAGE_MANGLED
+    GTEST_SKIP() << "clang-cl's Microsoft-ABI mangling leaves out module attachment "
+                    "(llvm/llvm-project#174064): a global step() would clash with counter's";
+#elif defined(CPPDOCS_NAMED_MODULES)
     EXPECT_EQ(next(1), 3);                    // counter.cpp uses counter's step() == 2
     EXPECT_EQ(step(), 100);                   // ours
     EXPECT_EQ(next(1) + step(), 103);
