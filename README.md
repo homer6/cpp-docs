@@ -122,7 +122,7 @@ claims at run time is in progress:
 The reference tells you what each feature *is*;
 [`docs/guidelines/`](docs/guidelines/README.md) tells you how to *use* it well:
 
-- [Core Guidelines digest](docs/guidelines/core-guidelines.md) — the rules that matter most
+- [C++ Core Guidelines](docs/guidelines/core-guidelines/README.md) — every official rule, by section, linked to the official text · [worked examples](docs/guidelines/core-guidelines.md)
 - [Memory & safety](docs/guidelines/safety.md) — profiles, ownership, dangling, C++26 hardening
 - [Modern idioms](docs/guidelines/modern-idioms.md) — C++17 → C++26 and when to reach for each
 - [Design principles](docs/guidelines/design-principles.md) — Ben Deane's composable, hard-to-misuse style
