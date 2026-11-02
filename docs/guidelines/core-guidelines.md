@@ -1,15 +1,20 @@
-# C++ Core Guidelines — digest
+# C++ Core Guidelines — examples
 
-> The rules from Stroustrup & Sutter's
-> [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
-> that pay off most often, with short examples. **Edition:** Jun 14, 2026 ·
-> **Targets:** C++20 baseline, C++23/26 noted inline
+> Worked examples for some of the rules in Stroustrup & Sutter's
+> [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
+> **Edition:** Jun 14, 2026 · **Targets:** C++20 baseline, C++23/26 noted inline
+
+**Every rule** of the Guidelines, section by section, is in the
+[index of every rule](core-guidelines/README.md), with links to the official
+text. This page only adds examples, and it covers the rules someone has
+written one for so far, not a ranking of which rules count. Examples for any
+other rule are welcome.
 
 Rule IDs match the Guidelines, so you can search the full text for any of them
 (e.g. "R.11"). Where a newer standard gives a better tool than the Guidelines
 mention, it's noted.
 
-## Philosophy (P) — read these first
+## Philosophy (P)
 
 - **P.1: Express ideas directly in code.** Compilers don't read comments.
 - **P.4: Ideally, a program should be statically type safe.** Avoid casts,
@@ -324,6 +329,7 @@ static_assert(factorial(5) == 120);
 
 ## See also
 
-- [Full C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+- [Every Core Guidelines rule, by section](core-guidelines/README.md) ·
+  [Full C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 - [Memory & safety](safety.md) · [Modern idioms](modern-idioms.md) ·
   [Design principles](design-principles.md)

@@ -66,8 +66,9 @@ directory that's deleted after the merge.
 
 ## Guidelines section
 
-`docs/guidelines/` is about *how to write* C++ well (Core Guidelines digest,
-safety, modern idioms, design principles, project conventions). To refresh it
+`docs/guidelines/` is about *how to write* C++ well (every Core Guidelines
+rule, worked examples, safety, modern idioms, design principles, project
+conventions). To refresh it
 against upstream or import a new reference, use the `refresh-guidelines` skill
 (`.claude/skills/refresh-guidelines/`). Keep `docs/guidelines/sources.md`
 updated whenever a guidelines page changes.
@@ -76,6 +77,20 @@ The full C++ Core Guidelines are a git submodule at `modules/CppCoreGuidelines`
 (pinned to the edition the pages track). Run
 `git submodule update --init` after cloning. Third-party sources go under
 `modules/`; don't edit them.
+
+**Every Core Guidelines rule is in our docs** (#233), never a selection:
+`docs/guidelines/core-guidelines/` is generated from the submodule by
+`python3 tools/gen_core_guidelines.py`, one page per official section listing
+every rule (the ### headings, the profiles' Type/Bounds/Lifetime rules and
+their sub-points, and rules the summaries list with no text yet) with its
+official ID, title and link, and the pages of ours that cite it. Never edit it
+by hand. It links instead of copying the rule text, because the Guidelines'
+licence permits copies for personal or internal business use only. `--check`
+fails if a rule is missing or a page is stale (run it whenever the submodule
+or a guidelines page changes, since the "ours" links come from our pages);
+`--upstream` fails if the pin is behind upstream `master`; `--self-test` runs
+its samples. Don't describe `core-guidelines.md` (the worked examples) as the
+important rules: it covers the rules someone has written an example for.
 
 `modules/perf-report` is the owner's Linux performance-analysis guide
 (https://github.com/homer6/perf-report, also perf-report.com: perf, bpftrace,
@@ -239,7 +254,7 @@ these local runs.
 
 | When | What to run |
 |---|---|
-| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
+| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `gen_core_guidelines.py --check` when the change touches `docs/guidelines/` or the submodule. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
 | Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
 | A claim about a platform we can't run locally (MSVC, FreeBSD, MinGW…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
 

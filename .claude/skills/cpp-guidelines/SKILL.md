@@ -1,6 +1,6 @@
 ---
 name: cpp-guidelines
-description: Review or audit C++ against this repo's guidelines (C++ Core Guidelines digest, safety, modern idioms, design principles, industry practice). It inspects the project's constraints, loads only the relevant guideline pages, cites rule IDs and validates fixes. For writing or modernizing C++, prefer the modern-cpp skill, which calls this one itself. Use this skill directly to review or audit existing code against the Core Guidelines with rule IDs, to answer a question about a specific rule ("what does R.11 say?"), to make a focused ownership, lifetime or memory-safety fix, or to run the guideline evals.
+description: Review or audit C++ against this repo's guidelines (every C++ Core Guidelines rule, safety, modern idioms, design principles, industry practice). It inspects the project's constraints, loads only the relevant guideline pages, cites rule IDs and validates fixes. For writing or modernizing C++, prefer the modern-cpp skill, which calls this one itself. Use this skill directly to review or audit existing code against the Core Guidelines with rule IDs, to answer a question about a specific rule ("what does R.11 say?"), to make a focused ownership, lifetime or memory-safety fix, or to run the guideline evals.
 ---
 
 # Apply the C++ guidelines
@@ -18,8 +18,12 @@ guidelines matter. Use this skill directly for:
 - **Measuring the guidelines skill** with the case suite in `evals/`.
 
 The guidance lives in `docs/guidelines/` of the cpp-docs repo (this skill's
-repo). The full C++ Core Guidelines are in `modules/CppCoreGuidelines/`. Treat
-them as the source; this file only says how to use them.
+repo). **Every rule of the C++ Core Guidelines** is indexed, section by section,
+in `docs/guidelines/core-guidelines/` (`README.md` lists the sections; each
+section page lists every rule with its official ID, title and link, and the
+pages of this repo that cite it). The full text is in
+`modules/CppCoreGuidelines/`. Treat it as the source; this file only says how
+to use it. No rule is out of scope because this repo has no example for it.
 
 **Finding the repo.** The paths below are relative to the cpp-docs repo root,
 not to this skill's folder. Inside a cpp-docs checkout, use them as they are.
@@ -27,7 +31,9 @@ From another project, find the checkout from the skill's real path, because
 `make install` links the skill back into it (`<repo>/.claude/skills/cpp-guidelines`):
 `realpath ~/.claude/skills/cpp-guidelines/SKILL.md | xargs dirname | xargs dirname | xargs dirname | xargs dirname`.
 `$CPP_DOCS` overrides that if it's set. Read every page from there. The
-full Core Guidelines need `git submodule update --init` in the checkout. There
+full Core Guidelines need `git submodule update --init` in the checkout; if
+the submodule is empty and you can't initialize it, read the rule at the
+official link its index entry gives. There
 is one copy of the guidance, and `git pull` keeps it current.
 
 ## 1. Learn the project's constraints first
@@ -50,13 +56,14 @@ the assumption you're making.
 
 | Topic in the code | Read |
 |---|---|
-| Ownership, `new`/`delete`, smart pointers, RAII, parameters | `docs/guidelines/core-guidelines.md` (R, F, C sections) |
+| Any Core Guidelines rule or section: find it by ID or topic | `docs/guidelines/core-guidelines/README.md`, then the section page (e.g. `resource.md` for R, `class.md` for C, `expr.md` for ES, `profile.md` for Type/Bounds/Lifetime) |
+| Worked examples for ownership, RAII, parameters, classes and more | `docs/guidelines/core-guidelines.md` |
 | Dangling, invalidation, bounds, uninitialized data, hardening | `docs/guidelines/safety.md` |
 | Which modern feature to use (C++17–26) | `docs/guidelines/modern-idioms.md` |
 | API shape, variants, strong types, error handling, loops | `docs/guidelines/design-principles.md` |
 | Naming, headers, tests, feature matrix | `docs/guidelines/project-conventions.md` |
 | A policy question (exceptions, `auto`, ranges) or an Abseil tip | `docs/guidelines/industry-practice.md` |
-| The exact text, exceptions, or enforcement notes of a rule | search `modules/CppCoreGuidelines/CppCoreGuidelines.md` for the rule ID |
+| The exact text, exceptions, or enforcement notes of a rule | search `modules/CppCoreGuidelines/CppCoreGuidelines.md` for the rule ID (`grep -n '^### .*R\.11:'`; profile rules are bullets: `grep -n 'Type\.1:'`), or open its official link |
 
 Read a rule's **Exception** and **Note** paragraphs before calling something a
 violation.
