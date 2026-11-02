@@ -147,7 +147,8 @@ Where FindThreads uses `-pthread` (FreeBSD, for one), every target is
 compiled with it, so the module BMIs match their importers (Clang rejects a
 BMI built without it: `-Wmodule-file-config-mismatch`). Clang without
 `clang-scan-deps` (apt.llvm.org's `clang-N` without `clang-tools-N`) skips
-the named-module tests with that reason.
+the named-module tests with that reason; the Linux workflow installs
+`clang-tools-N` with every Clang (#205), so this only happens elsewhere.
 
 **MSVC and clang-cl** use Ninja too, so they must run where `cl`, `link` and
 the Windows SDK are on `PATH`: a *Developer PowerShell / Command Prompt for

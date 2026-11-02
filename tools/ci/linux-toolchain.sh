@@ -55,7 +55,9 @@ clang-apt-llvm|clang-ubuntu)
         echo "deb [signed-by=/usr/share/keyrings/apt-llvm.gpg] https://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${ver} main" \
             | $sudo tee /etc/apt/sources.list.d/apt-llvm.list >/dev/null
     fi
-    pkgs=("${base[@]}" "clang-$ver")
+    # clang-tools-N carries clang-scan-deps-N, which CMake needs to scan C++
+    # modules; apt.llvm.org's clang-N doesn't include it (Clang 19/20, #205).
+    pkgs=("${base[@]}" "clang-$ver" "clang-tools-$ver")
     if [[ "$stdlib" == libcxx ]]; then
         pkgs+=("libc++-$ver-dev" "libc++abi-$ver-dev")
         env+=("CPPDOCS_PRESET=clang-libcxx" "CPPDOCS_BASELINE=tools/snippet_baseline/clang-linux.txt"
