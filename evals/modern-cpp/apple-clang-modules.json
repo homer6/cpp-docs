@@ -1,0 +1,12 @@
+{
+  "id": "apple-clang-modules",
+  "task": "Convert our math library's header to a C++20 named module, built with CMake.",
+  "context": {"std": "c++20", "compilers": ["Apple Clang 21 (Xcode)", "GCC 15"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["a module-only build without a header fallback"],
+    "must_use_any": ["keep the header", "a header plus an optional module behind a CMake option", "Homebrew LLVM for module builds on macOS"],
+    "must_cite_any": ["docs/platform-support/notes.md", "docs/examples/language/modules/building.md"],
+    "must_say": ["Apple Clang can't build named modules with CMake: Xcode ships no clang-scan-deps"]
+  },
+  "notes": "Notes: Apple Clang 17/21 have no named modules in our runs because Xcode ships no clang-scan-deps, so CMake can't scan. GCC 15 can."
+}

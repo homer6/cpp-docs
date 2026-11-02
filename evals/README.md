@@ -145,6 +145,49 @@ They're plans, not measured improvements:
 - Add arms for the comparison: minimal guidance, and irrelevant guidance of
   the same length, to check whether extra context alone explains any gain.
 
+## The modern-cpp suite
+
+`evals/modern-cpp/` measures the [`modern-cpp`](../.claude/skills/modern-cpp/SKILL.md)
+skill (#251). It doesn't test guideline review, but whether an agent picks a
+facility that **every compiler the project must build with** supports, and
+says why. Each case is a pair:
+
+- `<id>.json`: the `task`, the project `context` (`std`, `compilers`,
+  `exceptions`), and `expect`: `must_not_use` (what would break on one of the
+  compilers), `must_use_any` (acceptable answers), `must_cite_any` (pages or
+  results in this repo that settle it) and `must_say` (the limitation a good
+  answer names);
+- `<id>.cpp`: a reference answer that compiles at the case's standard.
+
+Every expectation comes from this repo's measured results
+(`docs/platform-support/notes.md`, `known-bugs.json`) or a page, so the suite
+checks that the skill leads an agent there. `cxx23-print-ok` is the control:
+nothing is missing, and a good answer doesn't invent a gap.
+
+Run it like the guidelines suite: give each arm the task and context only (no
+`expect`), with the same model, and score each answer on `must_not_use` (a
+hard fail), `must_say`, `must_use_any` and whether it cites the repo.
+
+### First results (2026-11-02, #251)
+
+One run per arm, the same model (Claude Opus 5.5 through Claude Code), the
+task and context only. Old skill: `modern-cpp` at `33319a5`; new skill: the
+#251 rewrite. Scored by hand against each case's `expect`.
+
+| Arm | Avoided what breaks (`must_not_use`, 8) | Named the limitation (`must_say`, 8) | Cited this repo | Tokens | Wall time |
+|---|---|---|---|---|---|
+| No skill (memory only) | 8 | 7: chose safe code for `libcxx20-contains-join` but couldn't name the libc++ 19/20 bug | no | 47k | 77 s |
+| Old skill | 8 | 8 | toolchain pages, `known-bugs.json`, pages | 132k | 292 s |
+| New skill | 8 | 8 | `notes.md` (7 answers), toolchain pages, `known-bugs.json`, pages | 111k | 213 s |
+
+What it shows, and doesn't: on these cases the model already knows most
+compiler gaps from memory, so both skills mainly add **evidence** (each claim
+traced to a measured result) and the one fact memory lacked (our libc++ bug).
+The rewrite matches the old skill's accuracy with about 16% fewer tokens and
+27% less time, because the support notes answer most questions in one read.
+One run of 8 cases is not significant; harder cases (a newer gap the model
+can't know, a wrong vendor status page) would separate the arms better.
+
 ## Checking the suite itself
 
 ```bash
@@ -154,7 +197,9 @@ CXX=g++-15 python3 evals/check.py
 ```
 
 This validates the metadata, checks every rule ID exists in the pinned
-Guidelines, and compiles each case with `-fsyntax-only`. It does **not** run an
+Guidelines, and compiles each case with `-fsyntax-only`. For the modern-cpp
+cases it checks the fields, that every cited page exists, and that each
+reference answer compiles at its standard. It does **not** run an
 agent.
 
 Tested: all 21 cases pass with GCC 15. Apple Clang 15's libc++ has no

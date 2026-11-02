@@ -144,7 +144,8 @@ refresh them or import a new reference, ask Claude to use the
 The [`modern-cpp`](.claude/skills/modern-cpp/SKILL.md) skill makes Claude Code
 check this reference before writing C++. It:
 - looks up the page for a facility and follows its gotchas and version notes;
-- checks that the feature is supported on your compilers;
+- checks that the feature is supported on every compiler you build with,
+  against this repo's measured results on about 50 toolchains;
 - applies the guidelines and validates the result.
 
 **Start with `/modern-cpp`.** It's the preferred entry point for writing,
@@ -157,7 +158,8 @@ guidelines matter. Use `/cpp-guidelines` directly only for:
   code follow it?") or about one guidelines page.
 - **A focused ownership, lifetime or memory-safety fix** in code that already
   uses the right facilities.
-- **Measuring the guidelines skill** with the case suite in `evals/`.
+- **Measuring the guidelines skill** with the case suite in `evals/` (which
+  also has a suite for `modern-cpp`).
 
 **Install it once for all your projects:** clone this repo and run
 `make install`. That links `modern-cpp` and
