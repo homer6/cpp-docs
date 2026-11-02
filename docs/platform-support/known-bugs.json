@@ -24,21 +24,21 @@
   "toolchain": "Homebrew GCC 15, macOS",
   "summary": "std::nested_exception doesn't capture current_exception(), so std::rethrow_if_nested would terminate",
   "upstream": [],
-  "issues": [98, 185],
+  "issues": [98, 221],
   "match": "nested_exception doesn't capture current_exception"
  },
  {
   "toolchain": "MSVC 19.51 (VS 2026), amd64 and arm64",
   "summary": "defines __cpp_range_based_for as 202211L (P2718) but destroys the temporary in for (int x : Holder{{1, 2, 3}}.items()) before the loop runs, so the loop reads a destroyed vector",
   "upstream": [],
-  "issues": [195],
+  "issues": [195, 222],
   "match": "MSVC 19\\.51 bug: defines __cpp_range_based_for"
  },
  {
   "toolchain": "MSVC 19.44 (VS 2022)",
   "summary": "rejects a constexpr virtual call through a base reference (C2131; valid since C++20, P1064) and a call inside if consteval (C7595; C++23, P1938); VS 2026 (19.51) accepts both",
   "upstream": [],
-  "issues": [179, 185],
+  "issues": [179, 223],
   "match": "_MSC_VER < 1950"
  },
  {
@@ -80,14 +80,14 @@
   "toolchain": "pkg GCC 14.2 on FreeBSD 15.1 (x86_64)",
   "summary": "internal compiler error (segfault) compiling every named-module unit; the same GCC 14.2.0 on FreeBSD 14.5 builds them",
   "upstream": [],
-  "issues": [209],
+  "issues": [209, 219],
   "match": "internal compiler error \\(segfault\\) on every module unit"
  },
  {
   "toolchain": "libc++ 19-20 (Clang 19/20, Apple Clang 17, FreeBSD 15.1 Clang 19)",
   "summary": "std::ranges::contains over views::join of a built-in 2-D array returns true for a value that isn't there; libc++ 21 and libstdc++ are correct",
   "upstream": [],
-  "issues": [209],
+  "issues": [209, 218],
   "match": "ranges::contains\\(grid \\| views::join, 10\\)"
  }
 ]

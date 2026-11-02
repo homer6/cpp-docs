@@ -358,12 +358,15 @@ language support and feature support in the entire industry"*. So:
      paper or bug (`CPPDOCS_REQUIRE`, a version gate, `needs=`), so the
      result is recorded as a test outcome and shows in the report. Never
      leave a finding only in a log or a chat.
-  3. **Compiler and platform bugs go to the vendors.** Each one gets an
-     issue here with a minimal reproducer, the exact compiler and image
+  3. **Compiler and platform bugs go to the vendors.** Each one gets its
+     own issue here (one bug per issue, titled `vendor: <toolchain> <bug>`,
+     never a list in a PR body or a shared issue; the owner, #220) with a
+     minimal reproducer, the exact compiler and image
      version, the run link and the vendor's existing bug if there is one
      (search GCC Bugzilla, LLVM GitHub, Developer Community for MSVC, and
      the others first). The report's known-gaps section lists them with
-     their links. Filing a new bug with a vendor is posting outside this
+     their links, and `docs/platform-support/known-bugs.json` names that
+     issue. Filing a new bug with a vendor is posting outside this
      repo: draft it in the issue and file it only with the owner's yes.
   4. **Re-run only what failed**, on `dev`, after the fixes merge (a new
      dispatch of the failing workflows, since a GitHub re-run reuses the old
