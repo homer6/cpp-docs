@@ -40,5 +40,12 @@
   "upstream": [],
   "issues": [179, 185],
   "match": "_MSC_VER < 1950"
+ },
+ {
+  "toolchain": "Clang 19-20 (and Apple Clang 17, LLVM 19)",
+  "summary": "#embed in a braced list counts as one element when deducing std::initializer_list (auto il = { #embed ... }), failing with 'excess elements in array initializer'; fixed in Clang 21",
+  "upstream": [{"label": "llvm/llvm-project#122306", "url": "https://github.com/llvm/llvm-project/issues/122306"}],
+  "issues": [194],
+  "match": "llvm/llvm-project#122306"
  }
 ]

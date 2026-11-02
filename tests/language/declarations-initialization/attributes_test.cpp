@@ -4,8 +4,11 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 enum class Status { ok, failed };
@@ -23,10 +26,12 @@ void rare_path() { trace += "rare "; }
 void setup() { trace += "setup "; }
 void run() { trace += "run "; }
 
+#ifdef __cpp_lib_expected  // Clang 18 with libstdc++ 14: <expected> needs __cpp_concepts 202002L
 [[nodiscard]] std::expected<int, Error> parse(std::string_view s) {
     if (s.empty()) return std::unexpected(Error{"empty"});
     return static_cast<int>(s.size());
 }
+#endif
 
 void dispatch(const int* ptr, int n) {  // the page's "Common uses" function
     if (ptr) [[likely]] { hot_path(); }
@@ -67,7 +72,9 @@ TEST(Attributes, StandardAttributesAreRecognized) {
     GTEST_SKIP() << "MSVC doesn't implement [[assume]] (P1774R8: \"no\" in Microsoft's conformance table); "
                     "the other attributes were checked";
 #elif __has_cpp_attribute(assume) < 202207L          // C++23
-#error "[[assume]] not recognized"
+    GTEST_SKIP() << "[[assume]] (P1774R8, C++23) not recognized: __has_cpp_attribute(assume) < "
+                    "202207L (GCC 13 and Clang 19 add it; Clang 18 ignores it); "
+                    "the other attributes were checked";
 #endif
 }
 
@@ -96,7 +103,9 @@ TEST(Attributes, StatementAttributes) {
     else       [[unlikely]] { branch = "else"; }
     EXPECT_EQ(branch, "then");
 
+#if __has_cpp_attribute(assume) >= 202207L
     [[assume(x > 0)]];
+#endif
     EXPECT_EQ(x, 2);
 }
 
@@ -110,14 +119,18 @@ TEST(Attributes, CommonUses) {
     dispatch(nullptr, 2);
     EXPECT_EQ(trace, "rare run ");
 
+    CPPDOCS_REQUIRE(__cpp_lib_expected);  // the likely/fallthrough checks above still ran
+#ifdef __cpp_lib_expected
     EXPECT_EQ(parse("abc").value(), 3);
     EXPECT_EQ(parse("").error().message, "empty");
+#endif
 }
 
 // Tests added with the page sections from #56 (#69); kept in their own
 // namespace so their helpers and test names can't clash with the ones above.
 namespace from_pr69 {
 namespace {
+#if __has_cpp_attribute(assume) >= 202207L
 int count_calls() {
     int count = 0;
 #pragma GCC diagnostic push
@@ -128,8 +141,16 @@ int count_calls() {
 #pragma GCC diagnostic pop
     return count;
 }
+#endif
 }  // namespace
 
 // "[[assume(expr)]]": the expression is never evaluated.
-TEST(Attributes, AssumeIsNotEvaluated) { EXPECT_EQ(count_calls(), 0); }
+TEST(Attributes, AssumeIsNotEvaluated) {
+#if __has_cpp_attribute(assume) >= 202207L
+    EXPECT_EQ(count_calls(), 0);
+#else
+    GTEST_SKIP() << "[[assume]] (P1774R8, C++23) not recognized by this compiler (an ignored "
+                    "attribute would pass trivially)";
+#endif
+}
 }  // namespace from_pr69

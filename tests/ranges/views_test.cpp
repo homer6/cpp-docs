@@ -89,7 +89,10 @@ TEST(Views, ZipFamily) {
     EXPECT_EQ(vec(rv::zip_transform(std::plus<>{}, a, b)), (std::vector<int>{11, 22, 33}));
     auto adj = a | rv::adjacent<2>;
     EXPECT_EQ(adj.size(), 5u);
-    EXPECT_EQ(*adj.begin(), std::make_tuple(1, 2));
+    // Compared element by element: libstdc++ 13 yields std::pair<int&, int&> for N == 2 and
+    // can't compare it with a std::tuple (P2165 made both tuples in C++23; GCC 14 has it).
+    EXPECT_EQ(std::get<0>(*adj.begin()), 1);
+    EXPECT_EQ(std::get<1>(*adj.begin()), 2);
 #endif
 }
 

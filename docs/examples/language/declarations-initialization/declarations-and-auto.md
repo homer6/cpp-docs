@@ -107,6 +107,10 @@ static_assert(head_and_count(std::tuple{1, 2, 3}) == 102);
 
 The bindings become constants. A `constexpr auto&` binding must refer to an
 object with static storage. GCC 16 and Clang 22 have it; GCC 15 doesn't.
+P2686 has no feature-test macro, and `__cpp_structured_bindings == 202411L` (the
+packs above) doesn't imply it: Clang 21 and Apple Clang 21 define that value but
+reject `constexpr auto [x, y]` ("decomposition declaration cannot be declared
+'constexpr'"), per the [platform runs](../../../platform-support.md).
 
 ```cpp needs=constexpr-structured-bindings
 struct Point { int x, y; };

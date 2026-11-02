@@ -194,6 +194,14 @@ TEST(ConstantEvaluationRules, ConstexprLibrary) {
     static_assert(__cpp_lib_constexpr_vector >= 201907L);
     static_assert(__cpp_lib_constexpr_string >= 201907L);
     static_assert(__cpp_lib_constexpr_memory >= 202202L);  // unique_ptr (P2273)
+    // constexpr optional/variant (P2231, 202106L) and to_chars/from_chars (P2291, 202207L).
+    // Clang 18 lacks them with both libraries: libstdc++ 14 enables P2231 only for
+    // __cpp_concepts >= 202002L (Clang 19), and libc++ 18 doesn't have it.
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_variant, 202106L);
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_optional, 202106L);
+    CPPDOCS_REQUIRE_VERSION(__cpp_lib_constexpr_charconv, 202207L);
+#if __cpp_lib_variant >= 202106L && __cpp_lib_optional >= 202106L && \
+    __cpp_lib_constexpr_charconv >= 202207L
     static_assert([] {
         std::optional<std::string> o = "abc";
         std::variant<int, std::string> v = std::string("de");
@@ -208,6 +216,7 @@ TEST(ConstantEvaluationRules, ConstexprLibrary) {
         return o->size() == 3 && std::get<1>(v).size() == 2 && *p == 42 && b.count() == 2 &&
                parsed == 42;
     }());
+#endif
 }
 
 // "<cmath>": no toolchain defines the macro yet; GCC folds its builtins, libc++ doesn't.
@@ -220,6 +229,12 @@ TEST(ConstantEvaluationRules, ConstexprCmath) {
     // MS STL takes std::isnan/std::signbit(double) from the UCRT, which doesn't make them constexpr
     // (microsoft/STL stl/inc/cmath: only the integer overloads and Clang builtins are _CONSTEXPR23).
     GTEST_SKIP() << "MS STL: <cmath> isn't constexpr for floating point (no __cpp_lib_constexpr_cmath)";
+#elif defined(__clang__) && __clang_major__ < 20
+    // Apple Clang 17 is LLVM 19, so the same check covers it.
+    static_assert(!std::isnan(1.0));
+    GTEST_SKIP() << "Clang " << __clang_major__ << " can't constant-evaluate __builtin_signbit "
+                    "(Clang 20 adds it), so std::signbit isn't constexpr; std::fabs isn't either "
+                    "(no __cpp_lib_constexpr_cmath)";
 #else
     static_assert(!std::isnan(1.0) && std::signbit(-1.0));  // these do work
     GTEST_SKIP() << "std::fabs isn't constexpr in this library (no __cpp_lib_constexpr_cmath)";

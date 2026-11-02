@@ -125,12 +125,12 @@ TEST(NullTerminatedByteStrings, StrcmpSign) {
     EXPECT_EQ(std::strcmp("same", "same"), 0);
 }
 
-// "Gotchas": C++ has const and non-const overloads of strchr — except libstdc++ on macOS,
-// where the C headers only declare C's char* strchr(const char*, int).
+// "Gotchas": C++ has const and non-const overloads of strchr — except libstdc++ on macOS and
+// FreeBSD, where the C headers only declare C's char* strchr(const char*, int).
 TEST(NullTerminatedByteStrings, StrchrOverloads) {
     const char* cs = "abc";
     char ms[] = "abc";
-#if defined(__GLIBCXX__) && defined(__APPLE__)
+#if defined(__GLIBCXX__) && (defined(__APPLE__) || defined(__FreeBSD__))
     static_assert(std::is_same_v<decltype(std::strchr(cs, 'b')), char*>);
 #elif defined(__GLIBCXX__) && defined(_WIN32)
     // MinGW-w64: whether its C headers declare the const overload isn't recorded.

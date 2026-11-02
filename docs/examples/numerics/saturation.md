@@ -93,7 +93,10 @@ std::uint8_t brighten(std::uint8_t px, std::uint8_t by) {
   (`saturating_add<std::uint8_t>(200, 100)`) or cast the operands.
 - **Not a checked operation.** You can't tell afterwards whether it clamped. To
   detect overflow, use `ckd_add` (`<stdckdint.h>`, C++26), which returns
-  `true` on overflow.
+  `true` on overflow. From C++ it needs a C++-aware header: libstdc++'s
+  (GCC 15, also GCC 14.4; GCC 16 defines `__cpp_lib_stdckdint_h`) or Clang's.
+  GCC 14.2's own `<stdckdint.h>` is the C one, and `ckd_add` fails with
+  "`_Bool` was not declared in this scope".
 
 ## See also
 
