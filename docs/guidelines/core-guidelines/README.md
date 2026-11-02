@@ -14,7 +14,7 @@ Our own examples are in [`examples/`](examples/), one page per section, and the 
 
 | Numbered rules | With an example | No example (not about code) | Still to do | With a unit test |
 |---|---|---|---|---|
-| 513 | 105 | 0 | 408 | 92 |
+| 513 | 482 | 31 | 0 | 360 |
 
 ## Sections
 
