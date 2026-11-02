@@ -163,6 +163,11 @@ tools/collect_results.py <the same ids> --check     # nothing stale
 tools/collect_results.py --self-test
 ```
 
+An `all.yml` run covers several workflows, and a fix-up run may re-run only
+the ones that failed, so pass both: `tools/collect_results.py <full-run-id>
+<fix-up-run-id>`. Each job is taken from the newest run that has it, and
+each workflow's result in the table comes from its own jobs (#190).
+
 Without `--local` it reuses the archived local results in
 `docs/platform-support/local/`; pass `--local <folder>` after refreshing them
 (step 7). The archived `results-*.json` files are committed on purpose:
@@ -172,7 +177,10 @@ files before committing.
 
 The collector archives each run under `docs/platform-support/runs/<run-id>/`
 the first time and reads the archive after that, so the report can be rebuilt
-after GitHub's retention runs out. It writes the entry page, every
+after GitHub's retention runs out. It keeps only what the report uses (#214):
+compact JSON, and it removes job files a newer run superseded and run folders
+not named on the command line (git history keeps them; the removal shows in
+`git status`). So always pass every run the report should show. It writes the entry page, every
 per-toolchain file (removing files for toolchains no longer present) and the
 README table. Check `tools/collect_results.py --help` for the current flags.
 

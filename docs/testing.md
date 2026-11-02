@@ -198,7 +198,8 @@ docs/platform-support/
 ```
 
 A toolchain page (built by `tools/feature_support.py`) has a header (OS or
-image, compiler and version, standard library, architecture and byte order,
+image, compiler and version, standard library (detected by `tests/CMakeLists.txt`
+from the library's own macros and cached as `CPPDOCS_STDLIB`), architecture and byte order,
 run link, date, commit, areas covered, whether its snippets are
 report-only), totals, then per area every page, every feature (each
 GoogleTest case, labelled by the `// "Section": claim` comment above its
@@ -229,7 +230,10 @@ tools/collect_results.py <linux-run> <macos-run> <windows-msvc-run> \
 ```
 
 (or one `all.yml` run ID), then commit the entry page, the toolchain pages,
-the README and any new `runs/` or `local/` files. The collector removes
+the README and the `runs/` and `local/` changes. The archive holds only what
+the report uses: compact JSON, without job files a newer run superseded or
+run folders not named on the command line (git history keeps them), so it
+stays at about one full run. The collector removes
 toolchain pages it no longer produces, and `--check` covers them all.
 
 GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests

@@ -33,7 +33,11 @@ run.json: id, URL, date, commit, inputs, jobs and conclusions, a digest of
 the counts), so the page can be rebuilt after GitHub's artifact retention runs
 out. A run ID that's archived is read from there; one that isn't is
 downloaded once and archived (`--no-archive` downloads without archiving;
-`--check` never writes).
+`--check` never writes). The archive holds only what the report uses (#214):
+the files are compact JSON, a job file a newer run superseded is removed from
+the older run's folder (its run.json keeps the counts), and a run folder not
+named on the command line is removed; git history keeps them all. So give
+every run the report should show.
 
 `--local DIR` adds results from local runs (the owner's machine, Docker) in
 their own table, labelled as local. Never start a workflow to refresh this
@@ -86,11 +90,11 @@ WORKFLOWS = [
     ("macos.yml", "macOS",
      "macos-15/26 arm64, macos-15-intel/26-intel: Apple Clang, Homebrew GCC and LLVM"),
     ("windows-msvc.yml", "Windows (MSVC)",
-     "windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC"),
+     "windows-2022 (VS 2022), windows-2025-vs2026 and windows-11-arm (VS 2026): MSVC"),
     ("windows-gnu.yml", "Windows (clang-cl, MinGW)",
-     "windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang"),
+     "windows-2025-vs2026: clang-cl, MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++)"),
     ("freebsd.yml", "FreeBSD",
-     "FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC"),
+     "FreeBSD 14.5 and 15.1 VMs, x86_64: base Clang/libc++, pkg GCC"),
 ]
 NOT_RUN = "not run yet (each run needs the owner's consent)"
 
@@ -204,7 +208,26 @@ def load_dir(folder: pathlib.Path) -> dict[str, dict[str, dict]]:
                     raise SchemaError(f"{f}: a second {doc['kind']!r} result for row {label_of(f)!r}; "
                                       "give each job's file a unique name")
                 row[doc["kind"]] = doc
+    for row in rows.values():
+        fix_stdlib(row)
     return rows
+
+
+# MSYS2's Clang environments (CLANG64, CLANGARM64) build with libc++.
+MSYS2_LIBCXX = re.compile(r"-CLANG(64|ARM64)$")
+
+
+def fix_stdlib(row: dict[str, dict]) -> None:
+    """Correct the standard library of results written before tests/CMakeLists.txt
+    detected it from the library's macros (#190): ctest_to_json.py guessed
+    libstdc++ for every Clang on Windows, but MSYS2 CLANG64 uses libc++."""
+    platform = (row.get("run") or {}).get("platform", "")
+    if not MSYS2_LIBCXX.search(platform):
+        return
+    for doc in docs(row):
+        comp = doc.get("compiler")
+        if isinstance(comp, dict) and comp.get("id") == "Clang" and comp.get("stdlib") == "libstdc++":
+            doc["compiler"] = {**comp, "stdlib": "libc++"}
 
 
 def gh_json(args: list[str]):
@@ -247,6 +270,35 @@ def from_record(rec: dict, rows: dict[str, dict[str, dict]]) -> dict:
             "jobs": [(j.get("name", ""), j.get("conclusion", "")) for j in rec.get("jobs", [])]}
 
 
+def run_number(r: dict) -> int:
+    tail = (r.get("url") or "").rstrip("/").rsplit("/", 1)[-1]
+    return int(tail) if tail.isdigit() else 0
+
+
+def supersede(runs: list[dict]) -> None:
+    """Keep each job only from the newest run that has it (#190).
+
+    The latest run of every platform workflow is what the report shows, but an
+    all.yml run covers several workflows, and a later fix-up run may re-run only
+    some of them. So a row (results label) seen in a newer run is dropped from
+    older ones, and so are an older run's caller jobs ("linux.yml / <job>") for a
+    workflow a newer run covered."""
+    order = sorted(runs, key=run_number, reverse=True)
+    seen_rows: set[str] = set()
+    seen_wf: set[str] = set()
+    for r in order:
+        if not run_number(r):
+            continue
+        covered = {j.split(" / ")[0].strip() for j, c in r["jobs"] if c != "skipped" and " / " in j}
+        if r.get("workflow") and r["workflow"] != "all.yml":
+            covered.add(r["workflow"])
+        r["rows"] = {k: v for k, v in r["rows"].items() if k not in seen_rows}
+        r["jobs"] = [(j, c) for j, c in r["jobs"]
+                     if not (" / " in j and j.split(" / ")[0].strip() in seen_wf)]
+        seen_rows |= set(r["rows"])
+        seen_wf |= covered
+
+
 def load_run(run_id: str, keep: pathlib.Path | None, archive: pathlib.Path | None = ARCHIVE,
              save: bool = True) -> dict:
     """A run's results: from the archive, else downloaded (never starts or re-runs anything)."""
@@ -278,9 +330,47 @@ def archive_run(folder: pathlib.Path, downloaded: pathlib.Path, rec: dict) -> No
     folder.mkdir(parents=True, exist_ok=True)
     for f in sorted(downloaded.rglob("results-*.json")):
         data = json.loads(f.read_text(encoding="utf-8"))
-        (folder / f.name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        write_compact(folder / f.name, data)
     (folder / "run.json").write_text(json.dumps(rec, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"archived run {rec['id']} in {folder.relative_to(ROOT) if ROOT in folder.parents else folder}")
+
+
+def write_compact(path: pathlib.Path, data) -> bool:
+    """Write an archived results file as one line of JSON (#214); True if it changed."""
+    text = json.dumps(data, separators=(",", ":"), ensure_ascii=False) + "\n"
+    if path.is_file() and path.read_text(encoding="utf-8") == text:
+        return False
+    path.write_text(text, encoding="utf-8")
+    return True
+
+
+def prune_archive(archive: pathlib.Path, runs: list[dict], keep: set[str]) -> list[str]:
+    """Keep only what the report uses (#214): each archived run's job files for the
+    rows that survived supersede(), and only the run folders named in keep. A
+    removed file or folder stays in git history; run.json keeps the counts of
+    every job. The kept files are rewritten compactly. Returns what was removed."""
+    removed: list[str] = []
+    if not archive.is_dir():
+        return removed
+    for r in runs:
+        rid = str(run_number(r))
+        folder = archive / rid
+        if rid not in keep or not (folder / "run.json").is_file():
+            continue
+        for f in sorted(folder.glob("results-*.json")):
+            if label_of(f) in r["rows"]:
+                write_compact(f, json.loads(f.read_text(encoding="utf-8")))
+            else:
+                f.unlink()
+                removed.append(f"{rid}/{f.name}")
+    for folder in sorted(archive.iterdir()):
+        if folder.is_dir() and folder.name.isdigit() and folder.name not in keep \
+                and (folder / "run.json").is_file():
+            for f in sorted(folder.iterdir()):
+                f.unlink()
+            folder.rmdir()
+            removed.append(f"{folder.name}/")
+    return removed
 
 
 def load_folder(folder: pathlib.Path, url: str, date: str) -> dict:
@@ -440,7 +530,8 @@ def load_bugs(path: pathlib.Path = BUGS) -> list[dict]:
 
 def recorded_in(rx: re.Pattern, root: pathlib.Path = ROOT) -> bool:
     """Whether a bug's gate or note is in tests/ or docs/examples/ in this checkout."""
-    for folder, pat in (("tests", "*.cpp"), ("tests", "*.hpp"), ("docs/examples", "*.md")):
+    for folder, pat in (("tests", "*.cpp"), ("tests", "*.hpp"), ("tests", "*.cmake"),
+                        ("tests", "CMakeLists.txt"), ("docs/examples", "*.md")):
         for f in (root / folder).rglob(pat):
             if rx.search(f.read_text(encoding="utf-8", errors="replace")):
                 return True
@@ -524,7 +615,11 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
             if head in known and concl != "skipped":
                 names.add(head)
         for w in names:
-            ran[w] = (r["date"], r["url"], r["conclusion"])
+            # An all.yml run's conclusion covers every workflow it ran; use this
+            # workflow's own jobs where the run has them (#190).
+            mine = [c for job, c in r["jobs"] if job.split(" / ")[0].strip() == w and c != "skipped"]
+            concl = ("failure" if any(c != "success" for c in mine) else "success") if mine else r["conclusion"]
+            ran[w] = (r["date"], r["url"], concl)
     last = max([r["date"] for r in consented if r["rows"] and r["date"]] + [d for d, _, _ in ran.values() if d],
                default="")
     out = ["# Platform support", "",
@@ -560,7 +655,7 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
            "[`platform-support/`](platform-support/) (linked from every table row and column) with "
            "every area, page, feature and example. The [bugs found](#compiler-and-platform-bugs-found) "
            "close this page.",
-           "- **Archived:** each consented run's results and metadata are kept in "
+           "- **Archived:** the results and metadata of the runs this page uses are kept in "
            "[`platform-support/runs/<run-id>/`](platform-support/runs/) and the local results in "
            "[`platform-support/local/`](platform-support/local/), so this page and the toolchain pages "
            "can be rebuilt after GitHub's artifact retention runs out.", "",
@@ -885,8 +980,8 @@ def folder_readme(runs: list[dict], local: dict | None) -> str:
             "| `<platform>-<arch>-<compiler>.md` | One toolchain's results (names stay the same across runs) "
             "| generated |",
             "| `local-<platform>-<arch>-<compiler>.md` | The same for a local run | generated |",
-            "| [`runs/<run-id>/`](runs/) | Each consented run's `results-*.json` and `run.json` (date, commit, "
-            "inputs, jobs); never logs. The report is rebuilt from here after GitHub's retention runs out"
+            "| [`runs/<run-id>/`](runs/) | The `results-*.json` this report uses and each run's `run.json` "
+            "(date, commit, inputs, jobs, counts); never logs. Older files are in git history. The report is rebuilt from here after GitHub's retention runs out"
             + (f" (runs: {', '.join(run_ids)})" if run_ids else "") + " | the collector |",
             "| [`local/`](local/) | The local results used, with `local.json` (date, commit) | you, then the collector |",
             "| [`known-bugs.json`](known-bugs.json) | Compiler and platform bugs: upstream link, repo issue, "
@@ -929,7 +1024,7 @@ def archive_local(src: pathlib.Path, dest: pathlib.Path) -> None:
     for f in sorted(src.rglob("results-*.json")):
         data = json.loads(f.read_text(encoding="utf-8"))
         stamps += [d.get("generated", "") for d in (data if isinstance(data, list) else [data])]
-        (dest / f.name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        write_compact(dest / f.name, data)
     r = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
     meta = {"schema": SCHEMA, "kind": "archived-local", "date": max(stamps, default="")[:10],
             "commit": r.stdout.strip() if r.returncode == 0 else "",
@@ -1009,6 +1104,13 @@ def main() -> int:
                                      save=not (args.no_archive or args.check)))
             else:
                 ap.error(f"{s}: neither a folder nor a run ID")
+        supersede(runs)
+        if not (args.no_archive or args.check or args.summary or args.stdout):
+            ids = {s for s in args.sources if s.isdigit() and not pathlib.Path(s).is_dir()}
+            if ids:
+                gone = prune_archive(args.archive, runs, ids)
+                if gone:
+                    print(f"pruned the archive (still in git history): {', '.join(gone)}")
         local = None
         if args.local and not args.no_local:
             if args.local.resolve() != LOCAL_ARCHIVE.resolve() and not args.check and not args.summary \
@@ -1016,6 +1118,10 @@ def main() -> int:
                 archive_local(args.local, LOCAL_ARCHIVE)
                 print(f"archived local results in {LOCAL_ARCHIVE.relative_to(ROOT)}")
                 args.local = LOCAL_ARCHIVE
+            elif args.local.resolve() == LOCAL_ARCHIVE.resolve() and not (args.check or args.summary
+                                                                          or args.stdout or args.no_archive):
+                for f in sorted(LOCAL_ARCHIVE.glob("results-*.json")):  # written there by run_tests.sh
+                    write_compact(f, json.loads(f.read_text(encoding="utf-8")))
             local = load_local(args.local)
     except SchemaError as e:
         print(f"collect_results.py: schema mismatch: {e}", file=sys.stderr)
@@ -1197,6 +1303,22 @@ def self_test() -> int:
         expect("job: MSVC major.minor", msvc["version"] == "19.51" and msvc["report_only"])
         clang = next(j for j in jobs if j["family"] == "Clang")
         expect("job: clang stdlib", clang["version"] == "22" and clang["stdlib"] == "libc++")
+        msys = {"run": {"platform": "windows-2025-x64-CLANG64"},
+                "tests": {"compiler": {"id": "Clang", "stdlib": "libstdc++"}}}
+        ucrt = {"run": {"platform": "windows-2025-x64-UCRT64"},
+                "tests": {"compiler": {"id": "Clang", "stdlib": "libstdc++"}}}
+        fix_stdlib(msys)
+        fix_stdlib(ucrt)
+        expect("CLANG64 is libc++ (#190)", msys["tests"]["compiler"]["stdlib"] == "libc++")
+        expect("UCRT64 Clang stays libstdc++", ucrt["tests"]["compiler"]["stdlib"] == "libstdc++")
+        old = {"url": "https://x/runs/10", "workflow": "all.yml", "rows": {"lin": {}, "msvc": {}},
+               "jobs": [("linux.yml / gcc", "failure"), ("windows-msvc.yml / msvc", "success")]}
+        new = {"url": "https://x/runs/11", "workflow": "all.yml", "rows": {"lin": {}},
+               "jobs": [("linux.yml / gcc", "success"), ("windows-msvc.yml", "skipped")]}
+        supersede([old, new])
+        expect("supersede: newer row wins", set(old["rows"]) == {"msvc"} and set(new["rows"]) == {"lin"})
+        expect("supersede: older job of a re-run workflow dropped",
+               old["jobs"] == [("windows-msvc.yml / msvc", "success")])
         expect("bugs table", "### Compiler and platform bugs found" in page)
         bad = pathlib.Path(tmp, "bugs.json")
         bad.write_text('[{"toolchain": "x", "summary": "y", "upstream": [{"label": "z", "url": "http://no"}], '
@@ -1219,6 +1341,15 @@ def self_test() -> int:
         expect("archive: rows", sorted(back["rows"]) == sorted(run["rows"]))
         expect("archive: metadata", back["url"].endswith("/7") and back["sha"] == "a" * 7
                and back["workflow"] == "linux.yml" and back["jobs"] == [("gcc", "success")])
+        old_dir = arch / "10"
+        old_dir.mkdir()
+        (old_dir / "run.json").write_text("{}", encoding="utf-8")
+        for lab in ("lin", "msvc"):
+            (old_dir / f"results-{lab}.json").write_text('{\n "a": 1\n}\n', encoding="utf-8")
+        gone = prune_archive(arch, [old], {"10"})
+        expect("prune: superseded job file removed, the rest compact (#214)",
+               gone == ["10/results-lin.json", "7/"] and not (arch / "7").exists()
+               and (old_dir / "results-msvc.json").read_text(encoding="utf-8") == '{"a":1}\n')
         expect("archive: inputs and digest", rec["inputs"] == [{"areas": "^strings$", "tests": True, "snippets": True}]
                and rec["digest"]["linux-x86_64-ubuntu-24.04-gcc-16"]["tests"]["passed"] == 30)
     failures += feature_support.self_test()

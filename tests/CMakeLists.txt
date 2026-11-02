@@ -90,6 +90,24 @@ function(cppdocs_find_link_library out source)
   set(${out} "" PARENT_SCOPE)
 endfunction()
 
+# The standard library the suite builds against, from its own macros, cached
+# as CPPDOCS_STDLIB for tools/ctest_to_json.py (#190). Guessing from the OS
+# got MSYS2 CLANG64 wrong: Clang on Windows there uses libc++.
+set(cppdocs_stdlib unknown)
+foreach(pair "libc++;_LIBCPP_VERSION" "libstdc++;__GLIBCXX__" "MS STL;_MSVC_STL_VERSION")
+  list(GET pair 0 name)
+  list(GET pair 1 macro)
+  string(MAKE_C_IDENTIFIER "CPPDOCS_STDLIB_IS_${macro}" var)
+  set(CMAKE_REQUIRED_QUIET ON)
+  check_cxx_source_compiles("#include <version>\n#ifndef ${macro}\n#error no\n#endif\nint main() { return 0; }" ${var})
+  if(${var})
+    set(cppdocs_stdlib "${name}")
+    break()
+  endif()
+endforeach()
+set(CPPDOCS_STDLIB "${cppdocs_stdlib}" CACHE INTERNAL "Standard library detected from its macros")
+message(STATUS "cpp-docs: standard library ${CPPDOCS_STDLIB}")
+
 cppdocs_find_link_library(cppdocs_atomic_lib [[
 #include <atomic>
 struct Big { char bytes[64]; };
