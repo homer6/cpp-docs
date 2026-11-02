@@ -1,8 +1,10 @@
 // Checks claims made by docs/examples/numerics/cfenv.md.
 //
 // Operands are volatile (as on the page) so nothing folds at compile time;
-// the harness builds at -O0 and doesn't use #pragma STDC FENV_ACCESS (GCC
-// warns that it ignores it).
+// the harness builds at -O0 and doesn't use #pragma STDC FENV_ACCESS at file
+// scope (GCC warns that it ignores it). Tests that call a <cmath> function
+// Clang may expand inline under a non-default mode use it at block scope,
+// for Clang only, as the page's examples do.
 #include <cfenv>
 #include <cmath>
 #include <cstdio>
@@ -72,15 +74,30 @@ TEST(Cfenv, FlagsAreSticky) {
 
 // "Changing the rounding mode": the rint values and the printed 1/3 column
 // (printed while the mode is active, as on the page).
+// MinGW-w64's own printf (__USE_MINGW_ANSI_STDIO, which libstdc++ turns on)
+// ignores the rounding mode and always prints the nearest decimal; glibc,
+// macOS, FreeBSD and the UCRT round the conversion in the current mode.
 TEST(Cfenv, RoundingModes) {
+#if defined(__clang__)
+#pragma STDC FENV_ACCESS ON
+#endif
     RoundGuard guard;
     struct Row { int mode; double up, down; const char* third; };
+#if defined(__MINGW32__) && defined(__USE_MINGW_ANSI_STDIO) && __USE_MINGW_ANSI_STDIO
+    const Row rows[] = {
+        {FE_TONEAREST, 2.0, -2.0, "0.33333333333333331483"},
+        {FE_UPWARD, 3.0, -2.0, "0.33333333333333337034"},
+        {FE_DOWNWARD, 2.0, -3.0, "0.33333333333333331483"},
+        {FE_TOWARDZERO, 2.0, -2.0, "0.33333333333333331483"},
+    };
+#else
     const Row rows[] = {
         {FE_TONEAREST, 2.0, -2.0, "0.33333333333333331483"},
         {FE_UPWARD, 3.0, -2.0, "0.33333333333333337035"},
         {FE_DOWNWARD, 2.0, -3.0, "0.33333333333333331482"},
         {FE_TOWARDZERO, 2.0, -2.0, "0.33333333333333331482"},
     };
+#endif
     volatile double h = 2.5;
     for (const auto& r : rows) {
         ASSERT_EQ(std::fesetround(r.mode), 0);
@@ -88,10 +105,28 @@ TEST(Cfenv, RoundingModes) {
         EXPECT_EQ(std::rint(h), r.up) << r.mode;
         EXPECT_EQ(std::rint(-h), r.down) << r.mode;
         EXPECT_EQ(std::nearbyint(h), r.up) << r.mode;
-        EXPECT_EQ(std::round(-h), -3.0);  // round and lround ignore the mode
-        EXPECT_EQ(std::lround(h), 3L);
+        EXPECT_EQ(std::round(-h), -3.0) << r.mode;  // round and lround ignore the mode
+        EXPECT_EQ(std::lround(h), 3L) << r.mode;
         EXPECT_EQ(third(), r.third) << r.mode;
     }
+}
+
+// "Gotchas": without FENV_ACCESS the compiler may assume round-to-nearest. On
+// x86-64 with SSE4.1 (the macOS default), Clang expands std::round inline as
+// trunc(x + copysign(0.49999999999999994, x)); the addition rounds in the
+// current mode, so under FE_UPWARD round(-2.5) gives -2. Elsewhere std::round
+// calls the C library (or a mode-independent instruction such as arm64 frinta).
+TEST(Cfenv, RoundWithoutFenvAccess) {
+    RoundGuard guard;
+    volatile double h = 2.5;
+    ASSERT_EQ(std::fesetround(FE_UPWARD), 0);
+    const double r = std::round(-h);
+    std::fesetround(FE_TONEAREST);
+#if defined(__clang__) && defined(__x86_64__) && defined(__SSE4_1__)
+    EXPECT_EQ(r, -2.0);
+#else
+    EXPECT_EQ(r, -3.0);
+#endif
 }
 
 // "Changing the rounding mode": the last digit of the 1/3 column is printf's

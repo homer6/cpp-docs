@@ -152,8 +152,12 @@ int main() {
 
 - **`name()` and `before()` are implementation-defined.** `name()` gave `i` for
   `int` on both GCC and Clang here. `typeid(int).before(typeid(double))` was
-  `false` with libstdc++ and `true` with libc++. Never persist or compare names
-  across builds.
+  `false` with libstdc++ and `true` with libc++ on macOS and Linux, where
+  libc++ orders by the address of the type's name. On Windows (MSYS2 CLANG64)
+  libc++ compares the mangled names with `strcmp` instead, because COFF
+  binaries can't merge `type_info`s, and the result was `false` (`"i"` sorts
+  after `"d"`). Never persist or compare names or `before()` order across
+  builds.
 - **The operand is evaluated only for polymorphic glvalues.** `typeid(f())` does
   not call `f` when `f` returns a non-polymorphic type, but does when it returns
   `Base&`. Clang warns: `expression with side effects will be evaluated despite

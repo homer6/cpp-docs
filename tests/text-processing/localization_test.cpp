@@ -11,7 +11,22 @@
 
 #include <gtest/gtest.h>
 
+#ifdef __APPLE__
+#include <cstdlib>
+#include <sys/sysctl.h>
+#endif
+
 namespace {
+
+#ifdef __APPLE__
+// The running macOS's major version (kern.osproductversion, e.g. "15.5"), or 0.
+int macos_major() {
+    char buf[32] = {};
+    std::size_t len = sizeof buf;
+    if (sysctlbyname("kern.osproductversion", buf, &len, nullptr, 0) != 0) return 0;
+    return std::atoi(buf);
+}
+#endif
 
 // Returns the first of `names` this toolchain can construct, or nullopt.
 std::optional<std::locale> try_locale(std::initializer_list<const char*> names) {
@@ -46,13 +61,17 @@ TEST(Localization, EnUsGrouping) {
     EXPECT_EQ(fixed2(*loc, 1234567.89), "1,234,567.89");
 }
 
-// "The classic vs. the user's locale": de_DE groups as "1.234.567,89" on glibc; macOS's
-// de_DE has an empty numeric thousands separator, so it prints "1234567,89".
+// "The classic vs. the user's locale": de_DE groups as "1.234.567,89" on glibc and on
+// macOS 15 and later; macOS 14's de_DE has an empty numeric thousands separator
+// (grouping CHAR_MAX), so it prints "1234567,89". The locale data comes from the
+// running OS, so the expectation follows the OS version, not the SDK.
 TEST(Localization, DeDeGrouping) {
     auto loc = try_locale({"de_DE.UTF-8", "de_DE.utf8", "de_DE"});
     if (!loc) GTEST_SKIP() << "de_DE locale not available to this C++ library";
 #ifdef __APPLE__
-    EXPECT_EQ(fixed2(*loc, 1234567.89), "1234567,89");
+    const int major = macos_major();
+    ASSERT_GT(major, 0) << "couldn't read kern.osproductversion";
+    EXPECT_EQ(fixed2(*loc, 1234567.89), major >= 15 ? "1.234.567,89" : "1234567,89") << "macOS " << major;
 #else
     EXPECT_EQ(fixed2(*loc, 1234567.89), "1.234.567,89");
 #endif

@@ -121,10 +121,14 @@ FE_DOWNWARD    rint(2.5)= 2.0 rint(-2.5)=-3.0 1/3=0.33333333333333331482
 FE_TOWARDZERO  rint(2.5)= 2.0 rint(-2.5)=-2.0 1/3=0.33333333333333331482
 ```
 
-`printf` also rounds its decimal conversion in the current mode, so the last
-digit of the `1/3` column is partly printf's: `FE_TONEAREST`, `FE_DOWNWARD`
-and `FE_TOWARDZERO` compute the same `double` (the nearest one is below 1/3),
-and only `FE_UPWARD` produces a different one.
+On glibc, macOS, FreeBSD and the Windows UCRT, `printf` also rounds its
+decimal conversion in the current mode, so the last digit of the `1/3` column
+is partly printf's: `FE_TONEAREST`, `FE_DOWNWARD` and `FE_TOWARDZERO` compute
+the same `double` (the nearest one is below 1/3), and only `FE_UPWARD`
+produces a different one. MinGW-w64's own `printf` (which libstdc++ selects
+with `__USE_MINGW_ANSI_STDIO`) ignores the mode and printed `…31483`,
+`…37034`, `…31483`, `…31483` (MSYS2 UCRT64 GCC 16 in
+[run 41368084884](https://github.com/homer6/cpp-docs/actions/runs/41368084884)).
 
 `std::rint` and `std::nearbyint` follow the current mode (`nearbyint` never
 raises `FE_INEXACT`); `std::round` always rounds halves away from zero and
@@ -210,7 +214,16 @@ after `std::log(0.0)` is therefore not portable.
   (and trapping is not part of `<cfenv>`).
 - **Changing modes without `FENV_ACCESS ON` (where the compiler honours it) is
   undefined behaviour** per C. Compile-time evaluation (`constexpr`) always uses
-  round-to-nearest and never sets runtime flags.
+  round-to-nearest and never sets runtime flags. It bites even functions that
+  "ignore the mode": on x86-64 with SSE4.1 (the macOS default), Clang expands
+  `std::round` inline as `trunc(x + copysign(0.49999999999999994, x))`, and
+  that addition rounds in the current mode. Without the pragma,
+  `std::round(-2.5)` under `FE_UPWARD` gave `-2` (Apple Clang 15 under
+  Rosetta, and Apple Clang 17/21 and Homebrew LLVM 22 on the macOS x86-64
+  runners); with the pragma, `-frounding-math` or `-ffp-model=strict`, Clang
+  calls the library's `round` and gets `-3`. arm64 has an exact instruction
+  (`frinta`), and on Linux x86-64 the default target lacks SSE4.1, so `round`
+  is a library call there.
 - **Flags are sticky.** Always `feclearexcept` before the code you want to test.
 - **Restore the rounding mode.** Other code, including the C library's
   `printf`, assumes round-to-nearest.
