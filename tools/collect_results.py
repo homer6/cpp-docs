@@ -754,7 +754,16 @@ def compiler_label(row: dict[str, dict]) -> str:
     stdlib = main["compiler"].get("stdlib") or ""
     if fam == "Clang" and stdlib and stdlib != "unknown":
         out += f", {stdlib}"
+    if san := sanitize_tag(main):
+        out += f", {san}"
     return out
+
+
+def sanitize_tag(main: dict) -> str:
+    """'ASan+UBSan', 'TSan', ... for a sanitized build (#263); '' otherwise."""
+    names = {"address": "ASan", "undefined": "UBSan", "thread": "TSan", "leak": "LSan", "memory": "MSan"}
+    san = (main.get("compiler") or {}).get("sanitize") or ""
+    return "+".join(names.get(s.strip(), s.strip()) for s in san.split(",") if s.strip())
 
 
 def readme_tests(row: dict[str, dict]) -> str:
@@ -977,6 +986,9 @@ def toolchain_slug(row: dict[str, dict], local: bool) -> str:
     stdlib = main["compiler"].get("stdlib") or ""
     if fam == "Clang" and stdlib in ("libc++", "libstdc++"):
         comp += "-" + stdlib.replace("+", "x")
+    san = (main["compiler"].get("sanitize") or "")
+    if san:  # a sanitized job gets its own page next to the plain one (#263)
+        comp += "-" + ("tsan" if "thread" in san else "asan")
     return re.sub(r"[^a-z0-9._]+", "-", f"{os_part}-{arch_of(main).lower()}-{comp}").strip("-")
 
 
@@ -1014,6 +1026,7 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
              ("Compiler", esc_cell(f"{fam} {version_of(main)}") + (f" (preset `{row['tests']['preset']}`)"
                                                                   if "tests" in row else "")),
              ("Standard library", esc_cell(stdlib or "unknown")),
+             *([("Sanitizers", sanitize_tag(main))] if sanitize_tag(main) else []),
              ("Architecture", arch_of(main) + (f", {run['byte_order']}-endian" if run.get("byte_order") else "")),
              ("Run", run_cell),
              ("Areas", ("all" if not areas else f"`{areas}`") if run else "all (local run)"),
@@ -1022,6 +1035,7 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
                            + ("**report-only**" if snip.get("mode") == "report-only" else "enforced"))
               if snip else "not run")]
     return {"family": fam, "version": major, "stdlib": "" if stdlib == "unknown" else stdlib,
+            "sanitize": main["compiler"].get("sanitize") or "",
             "report_only": bool(snip and snip.get("mode") == "report-only"),
             "compiler": compiler_label(row), "local": local, "title": title, "facts": facts,
             "file": row["page"], "where": f"{os_label(row)} · {arch_of(main)}",

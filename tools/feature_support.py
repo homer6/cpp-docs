@@ -351,9 +351,9 @@ def build_columns(jobs: list[dict], tests_u: list[Feature], universe_for) -> lis
         e = example_outcome(j.get("snippets"), universe_for)
         if t is None and e is None:
             continue
-        groups[(j["family"], j["version"], j["stdlib"], j["report_only"], j["local"])].append((j, t, e))
+        groups[(j["family"], j["version"], j["stdlib"], j.get("sanitize", ""), j["report_only"], j["local"])].append((j, t, e))
     cols = []
-    for (fam, ver, std, ro, loc), members in groups.items():
+    for (fam, ver, std, _san, ro, loc), members in groups.items():
         parts: dict[tuple, Column] = {}
         for j, t, e in members:
             sig = (_signature(t), _signature(e))

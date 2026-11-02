@@ -196,8 +196,9 @@ Every reference page has the same shape:
 ## How it's tested
 
 - **[Testing and CI](docs/testing.md)**: checking the snippets, running the
-  tests, the toolchain presets (local, portable, MSVC and clang-cl from a VS
-  Developer shell, GCC 16 in Docker) and the manual GitHub Actions workflows.
+  tests (also under AddressSanitizer, UBSan and ThreadSanitizer), the
+  toolchain presets (local, portable, MSVC and clang-cl from a VS Developer
+  shell, GCC 16 in Docker) and the manual GitHub Actions workflows.
 - **[Platform support](docs/platform-support.md)**: the full results behind
   the table below (counts, skip reasons, known gaps per toolchain), generated
   by [`tools/collect_results.py`](tools/collect_results.py).

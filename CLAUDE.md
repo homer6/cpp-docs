@@ -284,7 +284,7 @@ these local runs.
 | When | What to run |
 |---|---|
 | Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `gen_core_guidelines.py --check` when the change touches `docs/guidelines/` or the submodule. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
-| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets and the two `*-asan` presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
 | A claim about a platform we can't run locally (MSVC, FreeBSD, MinGW…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
 
 One area, without building the rest of the suite:
@@ -302,7 +302,19 @@ tools/run_tests.sh              # gcc-15 (default)
 tools/run_tests.sh clang-22     # Homebrew Clang 22 + libc++
 tools/run_tests.sh gcc-16       # GCC 16 via the gcc:16 Docker image
 tools/run_tests.sh gcc-15 -L containers   # one area; args after the preset go to ctest
+tools/run_tests.sh clang-22-asan  # the suite under ASan + UBSan (Clang 22 + libc++)
+tools/run_tests.sh gcc-16-asan    # the same with GCC 16, in the gcc:16 image
 ```
+
+**Sanitizers** (#263): `CPPDOCS_SANITIZE` (`address,undefined`, `thread`, or
+`address` on MSVC/clang-cl) builds the whole suite with the sanitizer; the
+`*-asan` presets set it, and in CI `CPPDOCS_SANITIZE` in a job's environment
+makes `tools/ci/run.sh` pass it, set the sanitizer options, add `-asan`/`-tsan`
+to the compiler label (its own results and toolchain page) and skip snippets.
+A test that can't work under a sanitizer skips with the reason (e.g. ASan's
+`operator new` can't throw `bad_alloc`). ThreadSanitizer runs on Linux with
+libstdc++ only: packaged libc++ isn't TSan-instrumented, so it reports false
+races and crashes in its unwinder. Details in `docs/testing.md`.
 
 The script runs `cmake --workflow --preset <preset>` (configure, build and
 test into `build/<preset>/`) and then prints every skipped test with its
