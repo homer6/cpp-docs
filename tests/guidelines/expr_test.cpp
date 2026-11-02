@@ -408,7 +408,11 @@ TEST(CoreGuidelinesES, ES103_CheckOrWidenBeforeOverflow) {
     ++top;
     EXPECT_EQ(top, 0u);
     CPPDOCS_REQUIRE(__cpp_lib_saturation_arithmetic);
-#ifdef __cpp_lib_saturation_arithmetic
+    // C++26 renamed add_sat to saturating_add (macro 202603L; GCC 16). Older
+    // libraries (202311L: GCC 15) have only the first name (#269).
+#if defined(__cpp_lib_saturation_arithmetic) && __cpp_lib_saturation_arithmetic >= 202603L
+    EXPECT_EQ(std::saturating_add(std::numeric_limits<int>::max(), 1), std::numeric_limits<int>::max());
+#elif defined(__cpp_lib_saturation_arithmetic)
     EXPECT_EQ(std::add_sat(std::numeric_limits<int>::max(), 1), std::numeric_limits<int>::max());
 #endif
 }
