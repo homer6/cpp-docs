@@ -14,12 +14,18 @@ constexpr int where() {
 
 int global_where = where();  // static storage: tried as constant initialization
 
+// VS 2022 (MSVC 19.44) rejects calling a consteval function with a parameter
+// inside if consteval (C7595); VS 2026 (19.5x) accepts it.
+#if defined(_MSC_VER) && !defined(__clang__) && _MSC_VER < 1950
+#define CPPDOCS_MSVC_IF_CONSTEVAL_BUG 1
+#else
 consteval int sq(int x) { return x * x; }
 
 constexpr int sq_or(int x) {
     if consteval { return sq(x); }
     else { return x * x; }
 }
+#endif
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -68,9 +74,14 @@ TEST(ConstantEvaluation, IsConstantEvaluated) {
 
 // "if consteval (C++23)": the compile-time branch may call a consteval function.
 TEST(ConstantEvaluation, IfConsteval) {
+#ifdef CPPDOCS_MSVC_IF_CONSTEVAL_BUG
+    GTEST_SKIP() << "VS 2022 (MSVC 19.44) rejects a consteval call with a parameter inside "
+                    "if consteval (C7595); VS 2026 (19.5x) accepts it";
+#else
     static_assert(sq_or(4) == 16);
     volatile int n = 5;
     EXPECT_EQ(sq_or(n), 25);
+#endif
 }
 
 // "Gotchas": if constexpr (std::is_constant_evaluated()) is always true.
