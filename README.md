@@ -16,9 +16,7 @@ verified locally (the snippet compiles, and behaves as described when run).
 [![Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml)
 [![FreeBSD](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml)
 
-GitHub Actions runs are **manual only**: each one needs the owner's consent,
-and local runs (GCC 15, Clang 22, GCC 16) stay the primary proof. The badges
-show the last consented run on `main`.
+**[Full platform / compiler / architecture support →](docs/platform-support/README.md)**
 
 ## Layout
 
