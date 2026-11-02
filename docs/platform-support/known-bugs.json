@@ -75,5 +75,19 @@
   "upstream": [{"label": "llvm/llvm-project#66466", "url": "https://github.com/llvm/llvm-project/issues/66466"}],
   "issues": [193],
   "match": "llvm/llvm-project#66466"
+ },
+ {
+  "toolchain": "pkg GCC 14.2 on FreeBSD 15.1 (x86_64)",
+  "summary": "internal compiler error (segfault) compiling every named-module unit; the same GCC 14.2.0 on FreeBSD 14.5 builds them",
+  "upstream": [],
+  "issues": [209],
+  "match": "internal compiler error \\(segfault\\) on every module unit"
+ },
+ {
+  "toolchain": "libc++ 19-20 (Clang 19/20, Apple Clang 17, FreeBSD 15.1 Clang 19)",
+  "summary": "std::ranges::contains over views::join of a built-in 2-D array returns true for a value that isn't there; libc++ 21 and libstdc++ are correct",
+  "upstream": [],
+  "issues": [209],
+  "match": "ranges::contains\\(grid \\| views::join, 10\\)"
  }
 ]

@@ -149,6 +149,8 @@ GCC 15, GCC 16 and Clang 22 all define them (`__cpp_lib_hardware_interference_si
 256 (destructive) / 64 (constructive) on AArch64 with all three toolchains.
 Clang 23 changed Apple AArch64 (Apple silicon) to 128 / 64, Apple's cache line
 size ([llvm/llvm-project#208716](https://github.com/llvm/llvm-project/pull/208716)).
+Apple Clang 17 (Xcode 16) uses 64 / 64 on Apple silicon; Apple Clang 21
+(Xcode 26) has the 256 / 64 above ([measured](../../platform-support.md)).
 **GCC warns** (`-Winterference-size`, on by default) when a header uses them,
 because the value can change with the compiler version or `-mtune`/`-mcpu`, so a
 struct laid out with it isn't a stable ABI. Clang doesn't warn. In a public

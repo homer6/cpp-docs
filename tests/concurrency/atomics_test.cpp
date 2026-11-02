@@ -221,6 +221,12 @@ TEST(Atomics, InterferenceSizes) {
     // Clang 23 uses Apple's 128-byte cache line on Apple AArch64 (llvm/llvm-project#208716).
     EXPECT_EQ(destructive, 128u);
     EXPECT_EQ(constructive, 64u);
+#elif (defined(__aarch64__) || defined(__arm64__)) && defined(__apple_build_version__) && \
+    __clang_major__ <= 17
+    // Apple Clang 17 (Xcode 16) uses 64 for both on Apple silicon; Apple Clang 21
+    // (Xcode 26) has the upstream AArch64 values (run 41380889279, #209).
+    EXPECT_EQ(destructive, 64u);
+    EXPECT_EQ(constructive, 64u);
 #elif defined(__aarch64__) || defined(__arm64__)
     EXPECT_EQ(destructive, 256u);  // the page's AArch64 values
     EXPECT_EQ(constructive, 64u);

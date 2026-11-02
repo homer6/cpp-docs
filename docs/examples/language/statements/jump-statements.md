@@ -117,6 +117,11 @@ bool contains2(const int (&grid)[3][3], int value) {
 }
 ```
 
+libc++ 19 and 20 (including Apple Clang 17's) get this wrong: `contains2(grid, 10)`
+returns `true` for a value that isn't in the grid. libc++ 21 and libstdc++ are
+right ([measured](../../../platform-support.md); the hand-written loop above is
+correct everywhere).
+
 ### `break` in an expansion statement (C++26)
 
 `break` and `continue` work in a `template for`. Every iteration is still

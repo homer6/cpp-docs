@@ -61,8 +61,9 @@ char dec = std::use_facet<std::numpunct<char>>(loc).decimal_point();
 - **`std::locale{""}` reads the environment; `std::locale{"de_DE.UTF-8"}` names
   one explicitly** — and the named one throws `std::runtime_error` if the OS
   doesn't have it installed.
-  GCC's libstdc++ on macOS supports only the `"C"`/`"POSIX"` locales, so even
-  `std::locale{""}` throws there; libc++ (Clang) and glibc-based Linux work.
+  GCC's libstdc++ on macOS and on Windows (MinGW) supports only the
+  `"C"`/`"POSIX"` locales, so even `std::locale{""}` throws there; libc++ (Clang),
+  MSVC's library and glibc-based Linux work.
 - **The same locale name formats differently across OS releases.** The
   formatting rules come from the OS's locale data, not the C++ library:
   `de_DE.UTF-8` printed `1234567,89` on macOS 14 (its `LC_NUMERIC` has an
