@@ -30,7 +30,11 @@ env=(
 case "$kind" in
 apple-clang)
     cxx="$(xcrun -f clang++)"
+    # Called by its full path, Xcode's clang++ doesn't find the SDK (the
+    # /usr/bin shim adds it), so the snippet checker saw no <algorithm> (#180).
+    # CMake passes -isysroot itself; SDKROOT covers every other caller.
     env+=("CC=$(xcrun -f clang)" "CXX=$cxx" "CPPDOCS_PRESET=clang" "CPPDOCS_BASELINE="
+          "SDKROOT=$(xcrun --show-sdk-path)"
           "CPPDOCS_COMPILER=apple-clang-$("$cxx" --version | major)")
     ;;
 homebrew-gcc)
