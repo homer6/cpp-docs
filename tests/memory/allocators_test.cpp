@@ -71,10 +71,15 @@ TEST(Allocators, AllocatorIsPartOfType) {
 }
 
 namespace {
+// Default-constructible on purpose: basic_string's constructors take
+// `const Allocator& a = Allocator()`, and Clang instantiates that default argument
+// while scoped_allocator_adaptor checks which constructor to call (a hard error
+// with libc++ and libstdc++ alike if Arena<char>() doesn't exist). GCC doesn't.
 template <class T>
 struct Arena {
     using value_type = T;
-    int id;
+    int id = 0;
+    Arena() = default;
     explicit Arena(int i) : id(i) {}
     template <class U> Arena(const Arena<U>& o) noexcept : id(o.id) {}
     T* allocate(std::size_t n) { return std::allocator<T>{}.allocate(n); }
@@ -110,8 +115,10 @@ TEST(Allocators, PmrPropagatesWithoutAdaptor) {
 // "allocate_at_least (C++23)": count >= n; allocator_traits falls back to
 // {allocate(n), n} for allocators without the member; no free function.
 TEST(Allocators, AllocateAtLeast) {
+    // libc++ 18 defines 202106L: the first version, with a free std::allocate_at_least
+    // and no allocator_traits member (P2652R2 made it 202302L).
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_allocate_at_least, 202302L);
-#ifdef __cpp_lib_allocate_at_least
+#if __cpp_lib_allocate_at_least >= 202302L
     std::allocator<int> a;
     using Tr = std::allocator_traits<std::allocator<int>>;
     auto [p, count] = Tr::allocate_at_least(a, 5);

@@ -2,7 +2,9 @@
 #include <cstdio>
 #include <format>
 #include <iostream>
+#if __has_include(<print>)  // GCC 13 has no <print>
 #include <print>
+#endif
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -18,43 +20,55 @@
 // line, and the <ostream> overload writes into the stream.
 TEST(Print, DestinationsOutput) {
     CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     auto out = cppdocs::capture_stdout([] {
         std::print("a={} ", 1);
         std::println("b={}", 2);
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 190000
+        std::println("");  // libc++ 18 has no println() (P3142R0, a C++26 DR in libc++ 19)
+#else
         std::println();
+#endif
         std::ostringstream os;
         std::println(os, "into a stream {}", 4);
         std::print(std::cout, "{}", os.str());
     });
     EXPECT_EQ(out, "a=1 b=2\n\ninto a stream 4\n");
+#endif
 }
 
 // "Unicode text": on macOS/Linux the UTF-8 bytes go out unchanged.
 TEST(Print, Utf8BytesUnchanged) {
     CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     auto out = cppdocs::capture_stdout([] { std::println("héllo ✓ — {}", "naïve"); });
     EXPECT_EQ(out, "héllo ✓ — naïve\n");
+#endif
 }
 
 // "Declaration" table: errors in a runtime format string passed to vprint_* throw std::format_error.
 TEST(Print, VprintBadFormatThrows) {
     CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     int x = 1;
     std::string bad = "{:d";
     EXPECT_THROW(
         { cppdocs::CaptureStdout c; std::vprint_unicode(stdout, bad, std::make_format_args(x)); },
         std::format_error);
+#endif
 }
 
 // "Gotchas": mixing std::print with std::cout keeps order while cout is synced (the default).
 TEST(Print, MixesWithSyncedCoutInOrder) {
     CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     auto out = cppdocs::capture_stdout([] {
         std::cout << "1 ";
         std::print("2 ");
         std::cout << "3";
     });
     EXPECT_EQ(out, "1 2 3");
+#endif
 }
 
 // "Compiler support": every local toolchain has at least the C++23 feature (202207L).
@@ -66,7 +80,8 @@ TEST(Print, FeatureMacroAtLeastCxx23) {
 // "Compiler support": the exact __cpp_lib_print value per toolchain.
 TEST(Print, FeatureMacroPerToolchain) {
     CPPDOCS_REQUIRE(__cpp_lib_print);
-#if defined(_LIBCPP_VERSION)
+#if !defined(__cpp_lib_print)
+#elif defined(_LIBCPP_VERSION)
     EXPECT_EQ(__cpp_lib_print, 202207L);
 #elif defined(__GNUC__) && __GNUC__ == 15
     EXPECT_EQ(__cpp_lib_print, 202211L);
@@ -78,6 +93,7 @@ TEST(Print, FeatureMacroPerToolchain) {
 }
 
 // "Your own print-like function": format_string + make_format_args + vprint_*.
+#ifdef __cpp_lib_print
 namespace {
 void log_impl(std::FILE* f, std::string_view fmt, std::format_args args) {
     std::fputs("[log] ", f);
@@ -89,13 +105,19 @@ void log_line(std::FILE* f, std::format_string<Args...> fmt, Args&&... args) {
     log_impl(f, fmt.get(), std::make_format_args(args...));
 }
 }  // namespace
+#endif
 TEST(Print, OwnPrintLikeFunction) {
+    CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     auto out = cppdocs::capture_stdout([] { log_line(stdout, "{} items in {} ms", 42, 3.5); });
     EXPECT_EQ(out, "[log] 42 items in 3.5 ms\n");
+#endif
 }
 
 // "Errors": a failed write to a FILE* throws std::system_error.
 TEST(Print, FailedWriteThrowsSystemError) {
+    CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
 #if defined(_WIN32)
     std::FILE* ro = std::fopen("NUL", "r");  // Windows' null device
 #else
@@ -104,14 +126,18 @@ TEST(Print, FailedWriteThrowsSystemError) {
     ASSERT_NE(ro, nullptr);
     EXPECT_THROW(std::println(ro, "x"), std::system_error);
     std::fclose(ro);
+#endif
 }
 
 // "Errors": the stream overloads set badbit like operator<< instead of throwing.
 TEST(Print, StreamOverloadSetsBadbit) {
+    CPPDOCS_REQUIRE(__cpp_lib_print);
+#ifdef __cpp_lib_print
     std::ostream os{nullptr};  // no buffer: every write fails
     os.clear();
     std::println(os, "{}", 1);
     EXPECT_TRUE(os.bad());
+#endif
 }
 
 // "Buffered variants (C++26)": vprint_unicode_buffered (GCC 16.2).

@@ -42,7 +42,7 @@ using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,
       std::riemann_zeta, std::sph_bessel;   // ... and more
 ```
 
-(libstdc++ has all of them; libc++ as of Clang 22 provides only `std::hermite`.)
+(libstdc++ has all of them; libc++ provides only `std::hermite`, since LLVM 19.)
 
 ## `<numbers>` — math constants (C++20)
 

@@ -70,13 +70,16 @@ TEST(Atomics, ReleaseAcquirePublishes) {
     }
 }
 
-// "atomic_ref and atomic<shared_ptr> (C++20)": atomic_ref works everywhere;
+// "atomic_ref and atomic<shared_ptr> (C++20)": atomic_ref (libc++ 19+);
 // atomic<shared_ptr> is missing from libc++ 22.
 TEST(Atomics, AtomicRef) {
+    CPPDOCS_REQUIRE(__cpp_lib_atomic_ref);  // libc++ 19+ (Clang 18 libc++ and Apple Clang 15 lack it)
+#ifdef __cpp_lib_atomic_ref
     int plain = 0;
     std::atomic_ref<int> ar{plain};
     ar.fetch_add(1);
     EXPECT_EQ(plain, 1);
+#endif
 }
 
 TEST(Atomics, AtomicSharedPtr) {
@@ -131,10 +134,12 @@ TEST(Atomics, WaitNotifyOne) {
 
     std::atomic_flag f;
     f.wait(true);  // clear != true: returns immediately
+#ifdef __cpp_lib_atomic_ref
     int plain = 1;
     std::atomic_ref<int> r{plain};
     r.wait(0);
     r.notify_all();
+#endif
 }
 
 // "fetch_max and fetch_min (C++26)": return the old value, keep the max/min.
@@ -210,6 +215,11 @@ TEST(Atomics, InterferenceSizes) {
     EXPECT_EQ(constructive, 64u);
 #elif defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
     EXPECT_EQ(destructive, 64u);  // the page's x86-64 GCC values
+    EXPECT_EQ(constructive, 64u);
+#elif (defined(__aarch64__) || defined(__arm64__)) && defined(__APPLE__) && \
+    defined(__clang__) && !defined(__apple_build_version__) && __clang_major__ >= 23
+    // Clang 23 uses Apple's 128-byte cache line on Apple AArch64 (llvm/llvm-project#208716).
+    EXPECT_EQ(destructive, 128u);
     EXPECT_EQ(constructive, 64u);
 #elif defined(__aarch64__) || defined(__arm64__)
     EXPECT_EQ(destructive, 256u);  // the page's AArch64 values
