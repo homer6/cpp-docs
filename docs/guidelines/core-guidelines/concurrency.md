@@ -6,40 +6,40 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-concurrency) · [All sections](README.md)
 
-- [CP.1: Assume that your code will run as part of a multi-threaded program](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-multi) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.2: Avoid data races](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-races) · ours: [core-guidelines](../core-guidelines.md), [tooling](../tooling.md)
-- [CP.3: Minimize explicit sharing of writable data](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-data) · ours: [core-guidelines](../core-guidelines.md), [tooling](../tooling.md)
-- [CP.4: Think in terms of tasks, rather than threads](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-task) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.8: Don't try to use `volatile` for synchronization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-volatile)
-- [CP.9: Whenever feasible use tools to validate your concurrent code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-tools)
+- [CP.1: Assume that your code will run as part of a multi-threaded program](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-multi) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp1-assume-that-your-code-will-run-as-part-of-a-multi-threaded-program) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.2: Avoid data races](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-races) · ours: [core-guidelines](../core-guidelines.md), [tooling](../tooling.md) · [example](examples/concurrency.md#cp2-avoid-data-races) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.3: Minimize explicit sharing of writable data](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-data) · ours: [core-guidelines](../core-guidelines.md), [tooling](../tooling.md) · [example](examples/concurrency.md#cp3-minimize-explicit-sharing-of-writable-data) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.4: Think in terms of tasks, rather than threads](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-task) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp4-think-in-terms-of-tasks-rather-than-threads) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.8: Don't try to use `volatile` for synchronization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-volatile) · [example](examples/concurrency.md#cp8-dont-try-to-use-volatile-for-synchronization) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.9: Whenever feasible use tools to validate your concurrent code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-tools) · no example: the rule is about running tools on the code (ThreadSanitizer, Clang's `-Wthread-safety` annotations, static analysers), not about how the code is written.
 
 ## CP.con: Concurrency
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#sscp-con)
 
-- [CP.20: Use RAII, never plain `lock()`/`unlock()`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-raii) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-lock)
-- [CP.22: Never call unknown code while holding a lock (e.g., a callback)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-unknown) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.23: Think of a joining `thread` as a scoped container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-join)
-- [CP.24: Think of a `thread` as a global container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-detach)
-- [CP.25: Prefer `gsl::joining_thread` over `std::thread`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-joining_thread) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.26: Don't `detach()` a thread](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-detached_thread) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-data-by-value)
-- [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-shared)
-- [CP.40: Minimize context switching](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-switch)
-- [CP.41: Minimize thread creation and destruction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-create)
-- [CP.42: Don't `wait` without a condition](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-wait)
-- [CP.43: Minimize time spent in a critical section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-time)
-- [CP.44: Remember to name your `lock_guard`s and `unique_lock`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-name) · ours: [core-guidelines](../core-guidelines.md)
-- [CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-mutex)
+- [CP.20: Use RAII, never plain `lock()`/`unlock()`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-raii) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp20-use-raii-never-plain-lockunlock) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.21: Use `std::lock()` or `std::scoped_lock` to acquire multiple `mutex`es](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-lock) · [example](examples/concurrency.md#cp21-use-stdlock-or-stdscoped_lock-to-acquire-multiple-mutexes) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.22: Never call unknown code while holding a lock (e.g., a callback)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-unknown) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp22-never-call-unknown-code-while-holding-a-lock-eg-a-callback) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.23: Think of a joining `thread` as a scoped container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-join) · [example](examples/concurrency.md#cp23-think-of-a-joining-thread-as-a-scoped-container) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.24: Think of a `thread` as a global container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-detach) · [example](examples/concurrency.md#cp24-think-of-a-thread-as-a-global-container)
+- [CP.25: Prefer `gsl::joining_thread` over `std::thread`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-joining_thread) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp25-prefer-gsljoining_thread-over-stdthread) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.26: Don't `detach()` a thread](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-detached_thread) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp26-dont-detach-a-thread) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.31: Pass small amounts of data between threads by value, rather than by reference or pointer](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-data-by-value) · [example](examples/concurrency.md#cp31-pass-small-amounts-of-data-between-threads-by-value-rather-than-by-reference-or-pointer) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.32: To share ownership between unrelated `thread`s use `shared_ptr`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-shared) · [example](examples/concurrency.md#cp32-to-share-ownership-between-unrelated-threads-use-shared_ptr) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.40: Minimize context switching](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-switch) · [example](examples/concurrency.md#cp40-minimize-context-switching)
+- [CP.41: Minimize thread creation and destruction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-create) · [example](examples/concurrency.md#cp41-minimize-thread-creation-and-destruction) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.42: Don't `wait` without a condition](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-wait) · [example](examples/concurrency.md#cp42-dont-wait-without-a-condition) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.43: Minimize time spent in a critical section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-time) · [example](examples/concurrency.md#cp43-minimize-time-spent-in-a-critical-section) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.44: Remember to name your `lock_guard`s and `unique_lock`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-name) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/concurrency.md#cp44-remember-to-name-your-lock_guards-and-unique_locks) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-mutex) · [example](examples/concurrency.md#cp50-define-a-mutex-together-with-the-data-it-guards-use-synchronized_valuet-where-possible) · [test](../../../tests/guidelines/concurrency_test.cpp)
 
 ## CP.coro: Coroutines
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#sscp-coro)
 
-- [CP.51: Do not use capturing lambdas that are coroutines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-capture)
-- [CP.52: Do not hold locks or other synchronization primitives across suspension points](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-locks)
-- [CP.53: Parameters to coroutines should not be passed by reference](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-reference-parameters)
+- [CP.51: Do not use capturing lambdas that are coroutines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-capture) · [example](examples/concurrency.md#cp51-do-not-use-capturing-lambdas-that-are-coroutines) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.52: Do not hold locks or other synchronization primitives across suspension points](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-locks) · [example](examples/concurrency.md#cp52-do-not-hold-locks-or-other-synchronization-primitives-across-suspension-points) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.53: Parameters to coroutines should not be passed by reference](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcoro-reference-parameters) · [example](examples/concurrency.md#cp53-parameters-to-coroutines-should-not-be-passed-by-reference) · [test](../../../tests/guidelines/concurrency_test.cpp)
 
 ## CP.par: Parallelism
 
@@ -49,8 +49,8 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#sscp-mess)
 
-- [CP.60: Use a `future` to return a value from a concurrent task](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-future)
-- [CP.61: Use `async()` to spawn concurrent tasks](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-async)
+- [CP.60: Use a `future` to return a value from a concurrent task](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-future) · [example](examples/concurrency.md#cp60-use-a-future-to-return-a-value-from-a-concurrent-task) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.61: Use `async()` to spawn concurrent tasks](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-async) · [example](examples/concurrency.md#cp61-use-async-to-spawn-concurrent-tasks) · [test](../../../tests/guidelines/concurrency_test.cpp)
 
 ## CP.vec: Vectorization
 
@@ -60,15 +60,15 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#sscp-free)
 
-- [CP.100: Don't use lock-free programming unless you absolutely have to](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-lockfree)
-- [CP.101: Distrust your hardware/compiler combination](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-distrust)
-- [CP.102: Carefully study the literature](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-literature)
-- [CP.110: Do not write your own double-checked locking for initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-double)
-- [CP.111: Use a conventional pattern if you really need double-checked locking](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-double-pattern)
+- [CP.100: Don't use lock-free programming unless you absolutely have to](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-lockfree) · [example](examples/concurrency.md#cp100-dont-use-lock-free-programming-unless-you-absolutely-have-to) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.101: Distrust your hardware/compiler combination](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-distrust) · [example](examples/concurrency.md#cp101-distrust-your-hardwarecompiler-combination) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.102: Carefully study the literature](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-literature) · no example: the rule is a reading list (memory models, lock-free algorithms, the ABA problem) to study before writing lock-free code, not a coding pattern.
+- [CP.110: Do not write your own double-checked locking for initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-double) · [example](examples/concurrency.md#cp110-do-not-write-your-own-double-checked-locking-for-initialization) · [test](../../../tests/guidelines/concurrency_test.cpp)
+- [CP.111: Use a conventional pattern if you really need double-checked locking](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-double-pattern) · [example](examples/concurrency.md#cp111-use-a-conventional-pattern-if-you-really-need-double-checked-locking) · [test](../../../tests/guidelines/concurrency_test.cpp)
 
 ## CP.etc: Etc. concurrency rules
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#sscp-etc)
 
-- [CP.200: Use `volatile` only to talk to non-C++ memory](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-volatile2)
-- [CP.201: ??? Signals](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-signal)
+- [CP.200: Use `volatile` only to talk to non-C++ memory](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-volatile2) · [example](examples/concurrency.md#cp200-use-volatile-only-to-talk-to-non-c-memory)
+- [CP.201: ??? Signals](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rconc-signal) · [example](examples/concurrency.md#cp201--signals) · [test](../../../tests/guidelines/concurrency_test.cpp)
