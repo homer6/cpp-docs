@@ -207,6 +207,9 @@ Toolchains: `--toolchain` is `auto` (GCC or Clang, told apart by
 wording), and module blocks skip with a reason on `msvc` and `clang-cl` (a
 separate step). Each toolchain has its own baseline in
 `tools/snippet_baseline/` (`gcc.txt`, `clang.txt`, `msvc.txt`, `clang-cl.txt`).
+`clang-linux.txt` is `clang.txt` for Linux's libc++ (Ubuntu's LLVM packages,
+glibc), which has a few things macOS's doesn't (the time zone database,
+`<stdbit.h>`); keep the two in step.
 `--json FILE` writes the results as JSON (schema `cpp-docs/results/1`, kind
 `snippets`) for the results collector; keep the text output and its counts
 unchanged for GCC and Clang.
@@ -455,7 +458,8 @@ run automatically... manual invocation only"*.
   today `vmactions/freebsd-vm` and `msys2/setup-msys2`.
 - **Snippet runs on CI are report-only unless a reviewed baseline matches**
   (#159). `cppdocs_ci.py snippet-mode` enforces GCC 15/16 (`gcc.txt`) and
-  Clang/LLVM 22 with libc++ (`clang.txt`) off Windows; every other toolchain
+  Clang/LLVM 22 with libc++ (`clang.txt` on macOS, `clang-linux.txt` on
+  Linux) off Windows; every other toolchain
   passes `--report-only`, and its results are labelled in the job summary and
   `docs/platform-support.md`. To enforce another toolchain, seed its baseline
   from a consented run (`--update-baseline`), review every entry (genuine

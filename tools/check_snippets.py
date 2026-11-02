@@ -356,9 +356,27 @@ class ModuleToolchain:
             if not os.path.isabs(js):  # e.g. Homebrew LLVM keeps it in lib/c++/
                 exe = pathlib.Path(shutil.which(self.cxx) or self.cxx).resolve()
                 js = str(exe.parent.parent / "lib" / "c++" / "libc++.modules.json")
-        path = pathlib.Path(js)
-        data = json.loads(path.read_text())
-        return {m["logical-name"]: (path.parent / m["source-path"]).resolve() for m in data["modules"]}
+        # Some distributions (Ubuntu's LLVM packages) report a copy of the JSON
+        # in the multiarch directory whose relative source paths don't resolve
+        # from there. Try the reported file, its real path, then the copy next
+        # to the compiler (/usr/lib/llvm-N/lib, Homebrew's lib/c++), and take
+        # the first whose std module source exists.
+        exe = pathlib.Path(shutil.which(self.cxx) or self.cxx).resolve()
+        candidates = [pathlib.Path(js), pathlib.Path(js).resolve(),
+                      exe.parent.parent / "lib" / "libc++.modules.json",
+                      exe.parent.parent / "lib" / "c++" / "libc++.modules.json"]
+        first = None
+        for path in candidates:
+            if not path.is_file():
+                continue
+            data = json.loads(path.read_text())
+            sources = {m["logical-name"]: (path.parent / m["source-path"]).resolve() for m in data["modules"]}
+            first = first or sources
+            if sources.get("std") and sources["std"].is_file():
+                return sources
+        if first is None:
+            raise FileNotFoundError(f"libc++.modules.json not found (tried {', '.join(map(str, candidates))})")
+        return first
 
     def std_module(self, name: str) -> pathlib.Path:
         """Build `std` or `std.compat` once; return the BMI path. Raises on failure."""
