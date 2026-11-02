@@ -333,23 +333,33 @@ language support and feature support in the entire industry"*. So:
   archiving exactly the level of support and for each feature ... we'll need
   to read each of them fully (and capture them in test pass/fail unit tests)
   and report those in the platform_support full report"*). After each one:
-  1. **Read every job's log in full**, not just the failed ones: build
-     errors, test failures, every skip and its reason, snippet failures, and
-     warnings that show a toolchain gap.
+  1. **Process every job's log in full, every time**, not just the failed
+     ones: build errors, test failures, every skip and its reason, snippet
+     failures, and warnings that show a toolchain gap. The raw logs aren't
+     kept (the owner: *"we don't need to store the raw log, but we should
+     process it each time so we can report any compiler/platform bugs to the
+     vendors or fill the report properly"*), so everything worth keeping is
+     taken out of them in this step.
   2. **Capture each finding in the suite.** A wrong page claim is fixed
      (an issue and a PR each, the fix loop). A missing feature or a compiler
      bug becomes a skip whose reason names the compiler, the version and the
      paper or bug (`CPPDOCS_REQUIRE`, a version gate, `needs=`), so the
      result is recorded as a test outcome and shows in the report. Never
      leave a finding only in a log or a chat.
-  3. **Re-run only what failed**, on `dev`, after the fixes merge (a new
+  3. **Compiler and platform bugs go to the vendors.** Each one gets an
+     issue here with a minimal reproducer, the exact compiler and image
+     version, the run link and the vendor's existing bug if there is one
+     (search GCC Bugzilla, LLVM GitHub, Developer Community for MSVC, and
+     the others first). The report's known-gaps section lists them with
+     their links. Filing a new bug with a vendor is posting outside this
+     repo: draft it in the issue and file it only with the owner's yes.
+  4. **Re-run only what failed**, on `dev`, after the fixes merge (a new
      dispatch of the failing workflows, since a GitHub re-run reuses the old
      commit), until every combination is green.
-  4. **Archive:** the results JSON and run metadata go in the repo under
-     `docs/platform-support/runs/<run-id>/` (`tools/collect_results.py`,
-     #184); the raw logs, compressed, are attached to the release (#185).
-     The report links the run IDs.
-  5. **Regenerate `docs/platform-support.md`**, the single full report
+  5. **Archive the results, not the logs:** the results JSON and run
+     metadata go in the repo under `docs/platform-support/runs/<run-id>/`
+     (`tools/collect_results.py`, #184). The report links the run IDs.
+  6. **Regenerate `docs/platform-support.md`**, the single full report
      (platform summary, the per-feature support matrix, known gaps), and the
      README's "Tested platforms" table from the archive, and commit them in
      a PR. Keep both current: a page, test or toolchain change that alters
