@@ -103,9 +103,12 @@ def toolchain_info(build: pathlib.Path) -> dict:
             "version": cxx.get("CMAKE_CXX_COMPILER_VERSION", ""),
             "path": cxx.get("CMAKE_CXX_COMPILER", cache.get("CMAKE_CXX_COMPILER", "")),
             "frontend": cxx.get("CMAKE_CXX_COMPILER_FRONTEND_VARIANT", ""),
-            "stdlib": guess_stdlib(cxx.get("CMAKE_CXX_COMPILER_ID", ""),
-                                   cxx.get("CMAKE_CXX_COMPILER_FRONTEND_VARIANT", ""),
-                                   system.get("CMAKE_SYSTEM_NAME", ""), flags),
+            # Detected by tests/CMakeLists.txt from the library's macros; the
+            # guess is for build trees configured before that (#190).
+            "stdlib": (cache.get("CPPDOCS_STDLIB", "").replace("unknown", "")) or guess_stdlib(
+                cxx.get("CMAKE_CXX_COMPILER_ID", ""),
+                cxx.get("CMAKE_CXX_COMPILER_FRONTEND_VARIANT", ""),
+                system.get("CMAKE_SYSTEM_NAME", ""), flags),
         },
         "cmake": files[-1].parent.name if files else "",
     }

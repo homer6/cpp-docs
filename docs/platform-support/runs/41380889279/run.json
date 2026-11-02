@@ -1,0 +1,1160 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41380889279,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41380889279",
+ "date": "2026-11-02",
+ "started": "2026-11-02T03:02:43Z",
+ "workflow": "all.yml",
+ "branch": "dev",
+ "sha": "2d25ca3528dde0ac1b82ea287676be29ef8082c2",
+ "event": "workflow_dispatch",
+ "conclusion": "failure",
+ "inputs": [
+  {
+   "areas": "",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "plan",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-msvc.yml / windows-2025-vs2026 · MSVC amd64",
+   "conclusion": "success"
+  },
+  {
+   "name": "freebsd.yml / FreeBSD 14.5 x86_64 · clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-gnu.yml / windows-2025-vs2026 · MSYS2 UCRT64 gcc",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / GCC 13 · ubuntu-24.04 (gcc:13 image)",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04 · clang-22-libcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-msvc.yml / windows-2022 · MSVC amd64",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-gnu.yml / windows-2025-vs2026 · MSYS2 CLANG64 clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / GCC 16 · ubuntu-24.04-arm (gcc:16 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-gnu.yml / windows-2025-vs2026 · MSYS2 UCRT64 clang",
+   "conclusion": "failure"
+  },
+  {
+   "name": "windows-gnu.yml / windows-2025-vs2026 · clang-cl",
+   "conclusion": "success"
+  },
+  {
+   "name": "freebsd.yml / FreeBSD 15.1 x86_64 · gcc",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / GCC 14 · ubuntu-24.04 (gcc:14 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-msvc.yml / windows-11-arm · MSVC arm64",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / GCC 15 · ubuntu-24.04 (gcc:15 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / GCC 15 · ubuntu-24.04-arm (gcc:15 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04-arm · clang-22-libstdcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04 · clang-22-libstdcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04-arm · gcc-15 (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "freebsd.yml / FreeBSD 15.1 x86_64 · clang",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / GCC 16 · ubuntu-24.04 (gcc:16 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-15-intel · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04-arm · clang-22-libcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / ubuntu-26.04 · gcc-15 (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-26-intel · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-15-intel · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 21 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-26 · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 22 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "freebsd.yml / FreeBSD 14.5 x86_64 · gcc",
+   "conclusion": "failure"
+  },
+  {
+   "name": "macos.yml / macos-26-intel · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-15 · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-26 · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 18 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 22 libstdcxx · ubuntu-24.04-arm (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 22 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-26-intel · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 19 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / Clang 19 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 18 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-15 · apple-clang",
+   "conclusion": "failure"
+  },
+  {
+   "name": "macos.yml / macos-15-intel · apple-clang",
+   "conclusion": "failure"
+  },
+  {
+   "name": "linux.yml / Clang 20 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 21 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 20 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "failure"
+  },
+  {
+   "name": "macos.yml / macos-15 · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 22 libcxx · ubuntu-24.04-arm (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos.yml / macos-26 · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "summary",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "freebsd-14.5-x86_64-clang-21": {
+   "tests": {
+    "total": 1102,
+    "passed": 954,
+    "failed": 0,
+    "skipped": 148
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 21,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "freebsd-14.5-x86_64-gcc-14": {
+   "tests": {
+    "total": 1102,
+    "passed": 948,
+    "failed": 4,
+    "skipped": 150
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 35,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "freebsd-15.1-x86_64-clang-19": {
+   "tests": {
+    "total": 1102,
+    "passed": 921,
+    "failed": 1,
+    "skipped": 180
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 33,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "freebsd-15.1-x86_64-gcc-14": {
+   "tests": {
+    "total": 825,
+    "passed": 707,
+    "failed": 4,
+    "skipped": 114
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 35,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "linux-aarch64-debian-13-gcc-15": {
+   "tests": {
+    "total": 1102,
+    "passed": 998,
+    "failed": 0,
+    "skipped": 104
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-debian-13-gcc-16": {
+   "tests": {
+    "total": 1102,
+    "passed": 1066,
+    "failed": 0,
+    "skipped": 36
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-24.04-clang-22-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 972,
+    "failed": 0,
+    "skipped": 130
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 17,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-24.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 969,
+    "failed": 0,
+    "skipped": 133
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 18,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-clang-22-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 975,
+    "failed": 0,
+    "skipped": 127
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 17,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 997,
+    "failed": 0,
+    "skipped": 105
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 5,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-gcc-15": {
+   "tests": {
+    "total": 1102,
+    "passed": 1005,
+    "failed": 0,
+    "skipped": 97
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-12-gcc-13": {
+   "tests": {
+    "total": 1102,
+    "passed": 896,
+    "failed": 2,
+    "skipped": 204
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 75,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "linux-x86_64-debian-13-gcc-14": {
+   "tests": {
+    "total": 1102,
+    "passed": 957,
+    "failed": 0,
+    "skipped": 145
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 34,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-13-gcc-15": {
+   "tests": {
+    "total": 1102,
+    "passed": 996,
+    "failed": 0,
+    "skipped": 106
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-13-gcc-16": {
+   "tests": {
+    "total": 1102,
+    "passed": 1064,
+    "failed": 0,
+    "skipped": 38
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-18-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 902,
+    "failed": 0,
+    "skipped": 200
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 37,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-18-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 934,
+    "failed": 0,
+    "skipped": 168
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 28,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-19-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 927,
+    "failed": 1,
+    "skipped": 174
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 29,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "linux-x86_64-ubuntu-24.04-clang-19-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 959,
+    "failed": 0,
+    "skipped": 143
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 18,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-20-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 947,
+    "failed": 1,
+    "skipped": 154
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 22,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "linux-x86_64-ubuntu-24.04-clang-20-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 963,
+    "failed": 0,
+    "skipped": 139
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 19,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-21-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 960,
+    "failed": 0,
+    "skipped": 142
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 17,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-21-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 965,
+    "failed": 0,
+    "skipped": 137
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 18,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-22-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 970,
+    "failed": 0,
+    "skipped": 132
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 17,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 967,
+    "failed": 0,
+    "skipped": 135
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 18,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-clang-22-libcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 973,
+    "failed": 0,
+    "skipped": 129
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 17,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 1102,
+    "passed": 995,
+    "failed": 0,
+    "skipped": 107
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 5,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-gcc-15": {
+   "tests": {
+    "total": 1102,
+    "passed": 1003,
+    "failed": 0,
+    "skipped": 99
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-arm64-apple-clang-17": {
+   "tests": {
+    "total": 1099,
+    "passed": 915,
+    "failed": 2,
+    "skipped": 182
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 54,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "macos-15-arm64-gcc-16": {
+   "tests": {
+    "total": 1099,
+    "passed": 1056,
+    "failed": 0,
+    "skipped": 43
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-arm64-llvm-23": {
+   "tests": {
+    "total": 1099,
+    "passed": 976,
+    "failed": 0,
+    "skipped": 123
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 15,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-x86_64-apple-clang-17": {
+   "tests": {
+    "total": 1099,
+    "passed": 914,
+    "failed": 1,
+    "skipped": 184
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 54,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "macos-15-x86_64-gcc-16": {
+   "tests": {
+    "total": 1099,
+    "passed": 1054,
+    "failed": 0,
+    "skipped": 45
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-x86_64-llvm-22": {
+   "tests": {
+    "total": 1099,
+    "passed": 969,
+    "failed": 0,
+    "skipped": 130
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 19,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-apple-clang-21": {
+   "tests": {
+    "total": 1099,
+    "passed": 949,
+    "failed": 0,
+    "skipped": 150
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 39,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-gcc-16": {
+   "tests": {
+    "total": 1099,
+    "passed": 1056,
+    "failed": 0,
+    "skipped": 43
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-llvm-23": {
+   "tests": {
+    "total": 1099,
+    "passed": 976,
+    "failed": 0,
+    "skipped": 123
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 15,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-apple-clang-21": {
+   "tests": {
+    "total": 1099,
+    "passed": 947,
+    "failed": 0,
+    "skipped": 152
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 39,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-gcc-16": {
+   "tests": {
+    "total": 1099,
+    "passed": 1054,
+    "failed": 0,
+    "skipped": 45
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 0,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-llvm-22": {
+   "tests": {
+    "total": 1099,
+    "passed": 969,
+    "failed": 0,
+    "skipped": 130
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 19,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-11-arm64-msvc-14.51.36231": {
+   "tests": {
+    "total": 1102,
+    "passed": 948,
+    "failed": 0,
+    "skipped": 154
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 672,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 20,
+    "skipped": 148,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 19
+   },
+   "ok": true
+  },
+  "windows-2022-x64-msvc-14.44.35207": {
+   "tests": {
+    "total": 1102,
+    "passed": 918,
+    "failed": 0,
+    "skipped": 184
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 672,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 32,
+    "skipped": 148,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 19
+   },
+   "ok": true
+  },
+  "windows-2025-x64-CLANG64-clang-23": {
+   "tests": {
+    "total": 1102,
+    "passed": 971,
+    "failed": 0,
+    "skipped": 131
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 13,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2025-x64-UCRT64-clang-23": {
+   "tests": {
+    "total": 1055,
+    "passed": 968,
+    "failed": 1,
+    "skipped": 86
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 9,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "windows-2025-x64-UCRT64-gcc-16": {
+   "tests": {
+    "total": 1055,
+    "passed": 1003,
+    "failed": 1,
+    "skipped": 51
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 691,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 3,
+    "skipped": 129,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 0
+   },
+   "ok": false
+  },
+  "windows-2025-x64-clang-cl-22": {
+   "tests": {
+    "total": 1102,
+    "passed": 969,
+    "failed": 0,
+    "skipped": 133
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 672,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 14,
+    "skipped": 148,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 19
+   },
+   "ok": true
+  },
+  "windows-2025-x64-msvc-14.51.36231": {
+   "tests": {
+    "total": 1102,
+    "passed": 948,
+    "failed": 0,
+    "skipped": 154
+   },
+   "snippets": {
+    "total": 820,
+    "checked": 672,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 20,
+    "skipped": 148,
+    "nocompile": 40,
+    "gated": 89,
+    "unsupported": 19
+   },
+   "ok": true
+  }
+ }
+}

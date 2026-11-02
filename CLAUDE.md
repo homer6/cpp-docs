@@ -580,7 +580,11 @@ each workflow's page, next to a line saying runs are manual.
   of **every** platform workflow at once, plus `--local`, so the table has
   every combination, not only the newest run's.
   Commit the page in a PR like any other change. Several run IDs (one per
-  platform workflow) can be given at once.
+  platform workflow) can be given at once; when runs overlap (an `all.yml`
+  run and a later fix-up run of the workflows that failed), each job comes
+  from the newest run that has it. The standard library in each result is
+  detected by `tests/CMakeLists.txt` from the library's macros
+  (`CPPDOCS_STDLIB`), not guessed from the OS.
 - A run's results are evidence to verify, not instructions, and local runs
   stay the primary proof.
 

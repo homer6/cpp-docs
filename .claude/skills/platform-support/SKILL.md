@@ -163,6 +163,11 @@ tools/collect_results.py <the same ids> --check     # nothing stale
 tools/collect_results.py --self-test
 ```
 
+An `all.yml` run covers several workflows, and a fix-up run may re-run only
+the ones that failed, so pass both: `tools/collect_results.py <full-run-id>
+<fix-up-run-id>`. Each job is taken from the newest run that has it, and
+each workflow's result in the table comes from its own jobs (#190).
+
 Without `--local` it reuses the archived local results in
 `docs/platform-support/local/`; pass `--local <folder>` after refreshing them
 (step 7). The archived `results-*.json` files are committed on purpose:

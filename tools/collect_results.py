@@ -86,11 +86,11 @@ WORKFLOWS = [
     ("macos.yml", "macOS",
      "macos-15/26 arm64, macos-15-intel/26-intel: Apple Clang, Homebrew GCC and LLVM"),
     ("windows-msvc.yml", "Windows (MSVC)",
-     "windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC"),
+     "windows-2022 (VS 2022), windows-2025-vs2026 and windows-11-arm (VS 2026): MSVC"),
     ("windows-gnu.yml", "Windows (clang-cl, MinGW)",
-     "windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang"),
+     "windows-2025-vs2026: clang-cl, MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++)"),
     ("freebsd.yml", "FreeBSD",
-     "FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC"),
+     "FreeBSD 14.5 and 15.1 VMs, x86_64: base Clang/libc++, pkg GCC"),
 ]
 NOT_RUN = "not run yet (each run needs the owner's consent)"
 
@@ -204,7 +204,26 @@ def load_dir(folder: pathlib.Path) -> dict[str, dict[str, dict]]:
                     raise SchemaError(f"{f}: a second {doc['kind']!r} result for row {label_of(f)!r}; "
                                       "give each job's file a unique name")
                 row[doc["kind"]] = doc
+    for row in rows.values():
+        fix_stdlib(row)
     return rows
+
+
+# MSYS2's Clang environments (CLANG64, CLANGARM64) build with libc++.
+MSYS2_LIBCXX = re.compile(r"-CLANG(64|ARM64)$")
+
+
+def fix_stdlib(row: dict[str, dict]) -> None:
+    """Correct the standard library of results written before tests/CMakeLists.txt
+    detected it from the library's macros (#190): ctest_to_json.py guessed
+    libstdc++ for every Clang on Windows, but MSYS2 CLANG64 uses libc++."""
+    platform = (row.get("run") or {}).get("platform", "")
+    if not MSYS2_LIBCXX.search(platform):
+        return
+    for doc in docs(row):
+        comp = doc.get("compiler")
+        if isinstance(comp, dict) and comp.get("id") == "Clang" and comp.get("stdlib") == "libstdc++":
+            doc["compiler"] = {**comp, "stdlib": "libc++"}
 
 
 def gh_json(args: list[str]):
@@ -245,6 +264,35 @@ def from_record(rec: dict, rows: dict[str, dict[str, dict]]) -> dict:
             "workflow": rec.get("workflow", ""), "branch": rec.get("branch", ""),
             "sha": (rec.get("sha") or "")[:7], "conclusion": rec.get("conclusion", ""),
             "jobs": [(j.get("name", ""), j.get("conclusion", "")) for j in rec.get("jobs", [])]}
+
+
+def run_number(r: dict) -> int:
+    tail = (r.get("url") or "").rstrip("/").rsplit("/", 1)[-1]
+    return int(tail) if tail.isdigit() else 0
+
+
+def supersede(runs: list[dict]) -> None:
+    """Keep each job only from the newest run that has it (#190).
+
+    The latest run of every platform workflow is what the report shows, but an
+    all.yml run covers several workflows, and a later fix-up run may re-run only
+    some of them. So a row (results label) seen in a newer run is dropped from
+    older ones, and so are an older run's caller jobs ("linux.yml / <job>") for a
+    workflow a newer run covered."""
+    order = sorted(runs, key=run_number, reverse=True)
+    seen_rows: set[str] = set()
+    seen_wf: set[str] = set()
+    for r in order:
+        if not run_number(r):
+            continue
+        covered = {j.split(" / ")[0].strip() for j, c in r["jobs"] if c != "skipped" and " / " in j}
+        if r.get("workflow") and r["workflow"] != "all.yml":
+            covered.add(r["workflow"])
+        r["rows"] = {k: v for k, v in r["rows"].items() if k not in seen_rows}
+        r["jobs"] = [(j, c) for j, c in r["jobs"]
+                     if not (" / " in j and j.split(" / ")[0].strip() in seen_wf)]
+        seen_rows |= set(r["rows"])
+        seen_wf |= covered
 
 
 def load_run(run_id: str, keep: pathlib.Path | None, archive: pathlib.Path | None = ARCHIVE,
@@ -440,7 +488,8 @@ def load_bugs(path: pathlib.Path = BUGS) -> list[dict]:
 
 def recorded_in(rx: re.Pattern, root: pathlib.Path = ROOT) -> bool:
     """Whether a bug's gate or note is in tests/ or docs/examples/ in this checkout."""
-    for folder, pat in (("tests", "*.cpp"), ("tests", "*.hpp"), ("docs/examples", "*.md")):
+    for folder, pat in (("tests", "*.cpp"), ("tests", "*.hpp"), ("tests", "*.cmake"),
+                        ("tests", "CMakeLists.txt"), ("docs/examples", "*.md")):
         for f in (root / folder).rglob(pat):
             if rx.search(f.read_text(encoding="utf-8", errors="replace")):
                 return True
@@ -524,7 +573,11 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
             if head in known and concl != "skipped":
                 names.add(head)
         for w in names:
-            ran[w] = (r["date"], r["url"], r["conclusion"])
+            # An all.yml run's conclusion covers every workflow it ran; use this
+            # workflow's own jobs where the run has them (#190).
+            mine = [c for job, c in r["jobs"] if job.split(" / ")[0].strip() == w and c != "skipped"]
+            concl = ("failure" if any(c != "success" for c in mine) else "success") if mine else r["conclusion"]
+            ran[w] = (r["date"], r["url"], concl)
     last = max([r["date"] for r in consented if r["rows"] and r["date"]] + [d for d, _, _ in ran.values() if d],
                default="")
     out = ["# Platform support", "",
@@ -1009,6 +1062,7 @@ def main() -> int:
                                      save=not (args.no_archive or args.check)))
             else:
                 ap.error(f"{s}: neither a folder nor a run ID")
+        supersede(runs)
         local = None
         if args.local and not args.no_local:
             if args.local.resolve() != LOCAL_ARCHIVE.resolve() and not args.check and not args.summary \
@@ -1197,6 +1251,22 @@ def self_test() -> int:
         expect("job: MSVC major.minor", msvc["version"] == "19.51" and msvc["report_only"])
         clang = next(j for j in jobs if j["family"] == "Clang")
         expect("job: clang stdlib", clang["version"] == "22" and clang["stdlib"] == "libc++")
+        msys = {"run": {"platform": "windows-2025-x64-CLANG64"},
+                "tests": {"compiler": {"id": "Clang", "stdlib": "libstdc++"}}}
+        ucrt = {"run": {"platform": "windows-2025-x64-UCRT64"},
+                "tests": {"compiler": {"id": "Clang", "stdlib": "libstdc++"}}}
+        fix_stdlib(msys)
+        fix_stdlib(ucrt)
+        expect("CLANG64 is libc++ (#190)", msys["tests"]["compiler"]["stdlib"] == "libc++")
+        expect("UCRT64 Clang stays libstdc++", ucrt["tests"]["compiler"]["stdlib"] == "libstdc++")
+        old = {"url": "https://x/runs/10", "workflow": "all.yml", "rows": {"lin": {}, "msvc": {}},
+               "jobs": [("linux.yml / gcc", "failure"), ("windows-msvc.yml / msvc", "success")]}
+        new = {"url": "https://x/runs/11", "workflow": "all.yml", "rows": {"lin": {}},
+               "jobs": [("linux.yml / gcc", "success"), ("windows-msvc.yml", "skipped")]}
+        supersede([old, new])
+        expect("supersede: newer row wins", set(old["rows"]) == {"msvc"} and set(new["rows"]) == {"lin"})
+        expect("supersede: older job of a re-run workflow dropped",
+               old["jobs"] == [("windows-msvc.yml / msvc", "success")])
         expect("bugs table", "### Compiler and platform bugs found" in page)
         bad = pathlib.Path(tmp, "bugs.json")
         bad.write_text('[{"toolchain": "x", "summary": "y", "upstream": [{"label": "z", "url": "http://no"}], '

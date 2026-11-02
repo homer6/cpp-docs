@@ -198,7 +198,8 @@ docs/platform-support/
 ```
 
 A toolchain page (built by `tools/feature_support.py`) has a header (OS or
-image, compiler and version, standard library, architecture and byte order,
+image, compiler and version, standard library (detected by `tests/CMakeLists.txt`
+from the library's own macros and cached as `CPPDOCS_STDLIB`), architecture and byte order,
 run link, date, commit, areas covered, whether its snippets are
 report-only), totals, then per area every page, every feature (each
 GoogleTest case, labelled by the `// "Section": claim` comment above its
