@@ -6,11 +6,11 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 
 | | |
 |---|---|
-| OS / image | Ubuntu 24.04.5 LTS x86_64, kernel 7.0.0-1017-azure |
+| OS / image | Ubuntu 24.04.5 LTS x86_64, kernel 7.0.0-1014-aws |
 | Compiler | Clang 20.1.8 (preset `clang`) |
 | Standard library | libstdc++ |
 | Architecture | x86_64, little-endian |
-| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41393465801), commit `0e9f9fe` |
+| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778), commit `a9fbaa7` |
 | Areas | all |
 | Tests | 1102 run |
 | Snippets | 820 blocks in `docs`, **report-only** |

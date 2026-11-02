@@ -10,16 +10,16 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | Clang 22.1.8 (preset `clang-22`) |
 | Standard library | libc++ |
 | Architecture | arm64 |
-| Run | local run, 2026-11-02, commit `9f6bd1f` |
+| Run | local run, 2026-11-02, commit `a9fbaa7` |
 | Areas | all (local run) |
-| Tests | 1097 run |
+| Tests | 1099 run |
 | Snippets | 820 blocks in `docs`, enforced |
 
 ## Totals
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1098) | 965 | 0 | 128 | 5 | 0 |
+| Features (1098) | 966 | 0 | 128 | 4 | 0 |
 | Examples (820) | 672 | 19 | 129 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout).
@@ -2539,7 +2539,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Clear, compute, test](../examples/numerics/cfenv.md#clear-compute-test): 1/0 raises FE_DIVBYZERO, 1/3 FE_INEXACT, sqrt(-1) FE_INVALI… | `Cfenv.ClearComputeTest` | ✅ |
 | [Mental model](../examples/numerics/cfenv.md#mental-model): flags are sticky until cleared; fetestexcept returns the set subset. | `Cfenv.FlagsAreSticky` | ✅ |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): the rint values and the printed 1/3 column (printed w… | `Cfenv.RoundingModes` | ✅ |
-| [Gotchas](../examples/numerics/cfenv.md#gotchas): without FENV_ACCESS the compiler may assume round-to-nearest. On x86-64… | `Cfenv.RoundWithoutFenvAccess` | — |
+| [Gotchas](../examples/numerics/cfenv.md#gotchas): without FENV_ACCESS the compiler may assume round-to-nearest. On x86-64… | `Cfenv.RoundWithoutFenvAccess` | ✅ |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): the last digit of the 1/3 column is printf's own roun… | `Cfenv.OneThirdDoublesPerMode` | ✅ |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): nearbyint never raises FE_INEXACT; rint does. | `Cfenv.NearbyintDoesNotRaiseInexact` | ✅ |
 | **Hiding intermediate flags**: r=0 and the caller doesn't see FE_DIVBYZERO, but other… | `Cfenv.HoldAndUpdateEnv` | ✅ |
