@@ -22,7 +22,7 @@ You `imbue` a stream with a locale, and the stream's `<<`/`>>` start obeying it.
 
 ### The classic vs. the user's locale
 
-```cpp run
+```cpp
 #include <iomanip>
 #include <iostream>
 #include <locale>
