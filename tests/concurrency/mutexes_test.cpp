@@ -192,8 +192,18 @@ TEST(Mutexes, CallOncePerObject) {
 
 // "Run something exactly once" + "Gotchas": a throwing callable leaves the flag
 // unset and the next call retries; libstdc++ off Linux breaks this (GCC PR 66146).
+#if defined(__SANITIZE_THREAD__)
+#  define CPPDOCS_TSAN 1
+#elif defined(__has_feature)
+#  if __has_feature(thread_sanitizer)
+#    define CPPDOCS_TSAN 1
+#  endif
+#endif
+
 TEST(Mutexes, CallOnceRetriesAfterThrow) {
-#if defined(__GLIBCXX__) && !defined(__linux__)
+#if defined(CPPDOCS_TSAN)
+    GTEST_SKIP() << "ThreadSanitizer: the second call_once after a throw deadlocks under TSan's once interceptor";
+#elif defined(__GLIBCXX__) && !defined(__linux__)
     GTEST_SKIP() << "libstdc++ off Linux: call_once with a throwing callable is broken (GCC PR 66146)";
 #else
     std::once_flag flag;

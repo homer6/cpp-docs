@@ -99,8 +99,21 @@ TEST(ExceptionHierarchy, BadCastAndBadAlloc) {
     B& rb = b;
     EXPECT_THROW((void)dynamic_cast<D&>(rb), std::bad_cast);
     std::vector<int> v;
-    EXPECT_THROW(v.reserve(v.max_size()), std::bad_alloc);
     EXPECT_THROW(v.reserve(v.max_size() + 1), std::length_error);  // a logic_error
+#if defined(__SANITIZE_ADDRESS__)
+#  define CPPDOCS_ASAN 1
+#elif defined(__has_feature)
+#  if __has_feature(address_sanitizer)
+#    define CPPDOCS_ASAN 1
+#  endif
+#endif
+#ifdef CPPDOCS_ASAN
+    // AddressSanitizer replaces operator new and reports out-of-memory
+    // instead of throwing bad_alloc for a huge request, whatever its options (#263).
+    GTEST_SKIP() << "bad_alloc from a huge reserve: AddressSanitizer reports out-of-memory instead of throwing";
+#else
+    EXPECT_THROW(v.reserve(v.max_size()), std::bad_alloc);
+#endif
 }
 
 // "Gotchas": catch blocks are tried in order, so a base handler first shadows a derived one.
