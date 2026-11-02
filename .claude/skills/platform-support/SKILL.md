@@ -15,6 +15,7 @@ What it produces:
 | Output | What | How it changes |
 |---|---|---|
 | `docs/platform-support.md` | The entry page (the README links here): how to read it, the platform × compiler × arch table, the summary matrix (areas × toolchains), known gaps, and the compiler and platform bugs found | generated |
+| `docs/platform-support/README.md` | The folder's index: every toolchain page with its results, the layout, how to regenerate | generated |
 | `docs/platform-support/<platform>-<arch>-<compiler>.md` | One file per toolchain, local ones too: every area → page → feature with ✅ / ❌ / ⏭ (reason) / —, and the examples per section | generated |
 | `docs/platform-support/runs/<run-id>/` | The archive: each run's `results-*.json` and its metadata (no logs) | written by the collector |
 | `docs/platform-support/local/` | The local results used (GCC 15, Clang 22, GCC 16): `results-*.json` and `local.json` (date, commit) | written by you, step 7 |

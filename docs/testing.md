@@ -169,6 +169,8 @@ docs/platform-support.md        entry page: how to read it, the platform table, 
                                 support matrix summary (rows = areas, columns = compilers),
                                 known gaps and the compiler/platform bugs found
 docs/platform-support/
+  README.md                     the folder's index: every toolchain page with its results,
+                                the layout and how to regenerate (generated)
   <slug>.md                     one per platform × arch × compiler (generated), e.g.
                                 linux-ubuntu-24.04-x86_64-gcc-13.md, local-macos-arm64-gcc-15.md
   runs/<run-id>/                archived consented runs: results-*.json and run.json
