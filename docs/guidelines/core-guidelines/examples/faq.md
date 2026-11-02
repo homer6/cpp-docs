@@ -93,7 +93,7 @@ No: they mark opposite things. The GSL's `owner<T*>` is only an alias for
 doesn't change, so it adds no run-time behaviour. In standard C++ you'd
 normally say ownership with a type instead, `std::unique_ptr`.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; nothing says that the caller must delete the result.
 Widget* make_widget() { return new Widget; }
 ```
@@ -136,7 +136,7 @@ nearest are `std::vector` (which can also grow) and
 `std::make_unique<T[]>(n)` (fixed size, but it doesn't remember the size).
 Either is better than a naked `new[]`.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the delete[] is skipped if fill() throws, and the size travels separately.
 void fill(int* p, std::size_t n);
 void work(std::size_t n) {
@@ -166,7 +166,7 @@ belongs in the function's declaration; `assert` is just a check somewhere in
 the body. C++26 adds language contracts, so a precondition can now be written
 with `pre`, where callers and tools can see it.
 
-```cpp nocompile
+```cpp bad
 #include <cassert>
 // BAD: compiles, but the precondition is hidden in the body, invisible to callers and tools.
 double ratio(double a, double b) {
@@ -189,7 +189,7 @@ No. `Ensures` marks a postcondition, a promise about the result. C++26
 writes it with `post`, which can name the return value, so it sits on the
 declaration instead of in front of every `return`.
 
-```cpp nocompile
+```cpp bad
 #include <cassert>
 // BAD: compiles, but the promise is checked only on this one return path, inside the body.
 int clamp_percent(int x) {

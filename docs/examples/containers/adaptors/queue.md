@@ -48,7 +48,7 @@ No iterators — you can't traverse a `queue`.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <queue>
 
 int main() {

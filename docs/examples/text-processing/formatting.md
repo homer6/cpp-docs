@@ -50,7 +50,7 @@ std::format("{:{}}", "x", 5);   // width taken from a nested argument
 
 ## Examples
 
-```cpp
+```cpp run
 #include <iterator>
 #include <string>
 #include <format>
@@ -70,7 +70,7 @@ int main() {
 
 ### Making your own type formattable
 
-```cpp
+```cpp run
 #include <format>
 #include <print>
 

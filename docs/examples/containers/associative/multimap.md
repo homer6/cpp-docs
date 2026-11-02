@@ -46,7 +46,7 @@ Equivalent keys preserve insertion order among themselves (since C++11).
 
 ## Examples
 
-```cpp
+```cpp run
 #include <map>
 
 int main() {

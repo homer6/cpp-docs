@@ -111,7 +111,7 @@ int* raw = v.data();             // contiguous block, for C APIs / spans
 
 ### Erase-remove, and the C++20 simplification
 
-```cpp
+```cpp run
 #include <algorithm>
 
 int main() {

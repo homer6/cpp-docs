@@ -52,7 +52,7 @@ Windows API boundary.
 
 ### Counting and classifying characters
 
-```cpp
+```cpp run
 #include <clocale>
 #include <cstdio>
 #include <cwchar>
@@ -81,7 +81,7 @@ UTF-8 locale: iswalpha(é)=1 towupper(é)=U+00C9
 
 ### Classification by name
 
-```cpp
+```cpp run
 #include <cassert>
 #include <cwctype>
 
@@ -95,7 +95,7 @@ int main() {
 
 ### Wide → UTF-8 (or whatever the locale encodes)
 
-```cpp
+```cpp run
 #include <clocale>
 #include <cstdio>
 #include <cwchar>

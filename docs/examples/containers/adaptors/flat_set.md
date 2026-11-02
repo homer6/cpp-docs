@@ -66,7 +66,7 @@ across modifications.
 
 ### Basics
 
-```cpp
+```cpp run
 #include <flat_set>
 
 int main() {
@@ -93,7 +93,7 @@ std::flat_set<int> s2(std::sorted_unique, sorted.begin(), sorted.end());
 
 ### flat_multiset keeps duplicates
 
-```cpp
+```cpp run
 #include <flat_set>
 
 int main() {

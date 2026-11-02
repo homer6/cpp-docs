@@ -9,7 +9,7 @@ Code that changes often (a file format, a vendor API, a business rule)
 should sit behind an interface that changes rarely, so the rest of the
 program doesn't change with it and can be tested without it.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles, but the report logic is tied to one storage format, so a new
 // format means editing (and re-testing) the report code too.

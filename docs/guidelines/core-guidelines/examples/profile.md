@@ -17,7 +17,7 @@ Reading an object's bytes as an unrelated type through `reinterpret_cast`
 breaks the aliasing rules. `std::bit_cast` (C++20) copies the bits into a new
 object of the target type, which is defined behaviour.
 
-```cpp nocompile
+```cpp bad
 #include <cstdint>
 // BAD: compiles, but reading a float through a uint32_t* breaks strict aliasing: UB.
 std::uint32_t bits_of(float f) {
@@ -40,7 +40,7 @@ initialization rejects a narrowing conversion at compile time; where a value
 really can be out of range, check it (`std::in_range`, C++20) or use a
 checked helper like the GSL's `narrow`.
 
-```cpp nocompile
+```cpp bad
 #include <cstdint>
 // BAD: compiles; 300 doesn't fit in int8_t, and the cast hides that.
 std::int8_t level(int x) { return static_cast<std::int8_t>(x); }
@@ -63,7 +63,7 @@ A cast to the type the expression already has does nothing except make the
 reader wonder what it was for, and it hides a real conversion if the source
 type changes later.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; w is already a Widget*, so the cast is noise.
 void run_all(Widget* w) { static_cast<Widget*>(w)->run(); }
 ```
@@ -79,7 +79,7 @@ Converting a derived pointer to a base pointer (or any pointer to
 nothing, and a cast written out of habit can later hide a conversion that
 isn't safe.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape {};
 // BAD: compiles; the upcast is implicit, so the static_cast is noise.
@@ -101,7 +101,7 @@ that derived type, using the result is undefined. `dynamic_cast` checks at run
 time and gives a null pointer (or throws, for references) when the object is
 something else. Better still, a virtual function avoids the downcast.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape { double r = 1; };
 struct Square : Shape { double side = 1; };
@@ -127,7 +127,7 @@ Writing to an object that was defined `const`, through a pointer you
 needs to update a cache, mark that member `mutable`; when you need both a
 `const` and a non-const overload, write the non-const one properly.
 
-```cpp nocompile
+```cpp bad
 const int limit = 10;
 // BAD: compiles, but limit is a const object, so this write is UB.
 void raise_limit() { *const_cast<int*>(&limit) = 20; }
@@ -156,7 +156,7 @@ turn until one works, so it can cast away `const` or reinterpret memory
 without saying so. A named cast does one thing and fails to compile when asked
 for something else; `T{x}` constructs and rejects narrowing.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the C-style cast quietly casts away const, so the write is UB.
 void shout(const char* msg) {
     char* p = (char*)msg;
@@ -190,7 +190,7 @@ Reading an uninitialized local is undefined behaviour (C++26 calls it
 it's declared; if the value depends on a condition, compute it with a lambda or
 a `?:` so the variable never exists without a value.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; when flag is false, x is read uninitialized.
 int choose(bool flag) {
     int x;
@@ -214,7 +214,7 @@ A class whose constructor forgets a member leaves it holding garbage. Give
 every member a default member initializer, so even a constructor added later
 can't leave it unset.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; Counter c; leaves c.count indeterminate.
 struct Counter {
     int count;
@@ -238,7 +238,7 @@ from reading the wrong one. `std::variant` keeps the tag for you and refuses
 (by throwing, or returning null from `get_if`) to hand out the wrong
 alternative.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the code must remember which member is live, and here it doesn't: UB.
 union Number { int i; double d; };
 double as_double() {
@@ -265,7 +265,7 @@ the caller and callee just agree, and a mismatch is undefined behaviour. A
 variadic template (or an `std::initializer_list`) keeps every argument's type,
 and a constraint rejects the wrong ones at compile time.
 
-```cpp nocompile
+```cpp bad
 #include <cstdarg>
 // BAD: compiles; sum(2, 1, 2.5) passes a double where va_arg reads an int: UB.
 int sum(int count, ...) {
@@ -293,7 +293,7 @@ A pointer plus an offset can point anywhere; nothing records where the array
 ends. `std::span` holds the pointer and the size together, so slicing with
 `subspan`, `first` and `last` keeps track of the bounds.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but nothing stops p + n from running past the end of the array.
 int sum_tail(const int* p, int n, int from) {
     int total = 0;
@@ -320,7 +320,7 @@ Iterate with a range-`for` or an algorithm, use `std::get<N>` (checked at
 compile time) for a fixed position, or `at()` (checked at run time) when the
 index really is dynamic.
 
-```cpp nocompile
+```cpp bad
 #include <array>
 // BAD: compiles; for i >= 3 this reads past the end: UB.
 int pick(const std::array<int, 3>& a, std::size_t i) { return a[i]; }
@@ -347,7 +347,7 @@ Passing a built-in array to a pointer parameter throws away its length.
 Pass a `std::span` instead: it's built from the array, keeps the length (in
 the type, for a fixed-size span), and costs the same as a pointer and a size.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; inside average the array has decayed to int*, so its length is gone.
 double average(const int* values) { return values[0]; }
 int data[4] = {1, 2, 3, 4};
@@ -374,7 +374,7 @@ them, whatever the size of the destination. Use types that manage their own
 size (`std::string`, `std::vector`), algorithms over ranges, and `at()` where
 an index might be out of range.
 
-```cpp nocompile
+```cpp bad
 #include <cstring>
 // BAD: compiles; a name longer than 15 characters overflows buf.
 void greet(const char* name) {
@@ -401,7 +401,7 @@ that went out of scope, a deleted object, or a vector element after the
 vector reallocated. Don't keep one past its object's life; return by value,
 and re-fetch (or hold an index) after an operation that can invalidate.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles; push_back may reallocate, leaving first dangling, so *first is UB.
 int first_then_grow(std::vector<int>& v) {

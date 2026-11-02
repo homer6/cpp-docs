@@ -10,7 +10,7 @@ its parameters. A hidden input, such as a global "mode" flag, makes the same
 call return different results, and a hidden output (a global error code) is
 easy to ignore.
 
-```cpp nocompile
+```cpp bad
 #include <cmath>
 bool round_up = false;                    // BAD: an invisible input
 int to_int(double d) { return round_up ? int(std::ceil(d)) : int(d); }
@@ -34,7 +34,7 @@ no function's behaviour can be understood on its own, and two threads that
 touch it race. Global constants are fine; state belongs to an object you pass
 around.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 std::string log_prefix = "app";           // BAD: who else writes it?
 void log(const std::string& msg) { use(log_prefix + ": " + msg); }
@@ -56,7 +56,7 @@ more code. Create the object where it's needed and pass it in. If what you
 want is initialization on first use, a function returning a function-local
 `static` does that, thread-safely, without a singleton class.
 
-```cpp nocompile
+```cpp bad
 class Settings {
 public:
     static Settings& instance() { static Settings s; return s; }   // BAD: global access
@@ -86,7 +86,7 @@ Types are checked documentation. An `int` timeout could be seconds or
 milliseconds, a `void*` could be anything, and three `bool`s in a row are
 easy to mix up. Give each parameter a type that says what it is.
 
-```cpp nocompile
+```cpp bad
 void set_timeout(int timeout);       // BAD: in what unit?
 void caller() { set_timeout(2); }    // 2 seconds? 2 milliseconds?
 ```
@@ -118,7 +118,7 @@ If a function only works for some argument values, say so where the caller
 will look, and check it. Then a misuse is a reported bug instead of silent
 garbage.
 
-```cpp nocompile
+```cpp bad
 #include <cmath>
 double side_of_square(double area) {   // BAD: what about a negative area?
     return std::sqrt(area);            // returns NaN, and the caller never knows
@@ -142,7 +142,7 @@ A precondition written as a precondition (GSL's `Expects(cond)`, or C++26's
 ordinary error handling, and tools can see it. An `if` that quietly returns,
 or a check deep in the body, reads like normal control flow.
 
-```cpp nocompile
+```cpp bad
 int area(int height, int width) {
     if (height <= 0 || width <= 0) return 0;   // BAD: a precondition disguised as logic
     return height * width;
@@ -167,7 +167,7 @@ buffer cleared, a lock released. A stated postcondition catches a wrong
 implementation and tells callers what they can rely on. Guarantees of the
 form "this resource is released" are best enforced with RAII.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 std::mutex m;
 int counter = 0;
@@ -195,7 +195,7 @@ Like I.6, for the result: GSL's `Ensures(cond)` at the end of the body, or
 C++26's `post(r: cond)` on the declaration, marks a guarantee as a
 guarantee, where tools and readers can find it.
 
-```cpp nocompile
+```cpp bad
 int clamp_percent(int v) {
     int r = v < 0 ? 0 : v > 100 ? 100 : v;
     return r;                  // BAD: "0..100" lives only in the author's head
@@ -253,7 +253,7 @@ ignored and the program carries on with a bad value; an exception can't be
 ignored. Outcomes the caller should always check (a lookup that may find
 nothing) are better returned as `std::optional` or `std::expected`.
 
-```cpp nocompile
+```cpp bad
 int parse_port(const char* s);        // BAD: returns -1 on failure
 void caller() {
     int port = parse_port("http");    // nobody checks
@@ -282,7 +282,7 @@ leaks or is deleted twice. Return by value (moves make it cheap), or return a
 `std::unique_ptr` when you need a pointer. Where an old ABI forces a raw
 owning pointer, the GSL's `gsl::owner<T*>` at least marks it.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 std::vector<double>* load_samples() {      // BAD: is the caller supposed to delete it?
     return new std::vector<double>(1000);
@@ -310,7 +310,7 @@ does that for pointers. In standard C++, take a reference (which can't be
 null) or a type that rejects null, such as `std::string_view`, whose
 constructor from `nullptr` is deleted since C++23.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 std::size_t length(const char* s) {     // BAD: is length(nullptr) allowed?
     std::size_t n = 0;
@@ -345,7 +345,7 @@ derived-class array silently converts to a base pointer, so indexing walks
 with the wrong element size. A `std::span` keeps the count, and it refuses
 that conversion.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; int id = 0; };
 struct Circle : Shape { double r = 1; };
 void draw(Shape* shapes, int n) {
@@ -375,7 +375,7 @@ a global whose initializer reads another file's global may read it before it's
 built (the "static initialization order fiasco"). Initialize globals with
 constants (`constexpr`, `constinit`), or build them on first use.
 
-```cpp nocompile
+```cpp bad
 // config.cpp
 #include <string>
 std::string read_config();
@@ -415,7 +415,7 @@ is missing or the function does too much. Group parameters that belong
 together into a type (a point, a style, a range); fewer than four parameters
 is a good target.
 
-```cpp nocompile
+```cpp bad
 #include <cstdint>
 void draw_text(int x, int y, int size, bool bold, bool italic,
                std::uint32_t color, const char* text);    // BAD: seven positional arguments
@@ -437,7 +437,7 @@ Two neighbouring parameters of the same type can be swapped without a
 compiler error. Make them different types: `const` on the source, a named
 type per role, or a struct whose fields are named at the call.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 void copy_bytes(char* from, char* to, std::size_t n);   // BAD: swap from and to, it still compiles
 ```
@@ -468,7 +468,7 @@ An interface base with no data (only pure virtual functions and a virtual
 destructor) is stable: changing an implementation never changes it, and no
 derived class is forced to carry members it doesn't need.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 struct Point { int x, y; };
@@ -539,7 +539,7 @@ user to recompile, and a library's ABI breaks. Moving them behind a pointer to
 an implementation class ("Pimpl") keeps the public class's size and layout
 fixed, at the cost of an allocation and an indirection.
 
-```cpp nocompile
+```cpp bad
 // parser.h
 #include <map>
 #include <string>
@@ -594,7 +594,7 @@ sometimes owned and sometimes borrowed. Hide it inside one class with a
 simple interface, so the tricky ownership logic is written and reviewed once
 instead of at every call site.
 
-```cpp nocompile
+```cpp bad
 #include <fstream>
 #include <iostream>
 void run(const char* path) {

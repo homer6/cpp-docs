@@ -11,7 +11,7 @@ Today it just puts distance between a variable and its first real value, and
 leaves variables uninitialized in between. Declare each one where you can
 initialize it.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles; the variables are declared long before they get a value,
 // and name is still empty if someone adds an early use of it.
@@ -41,7 +41,7 @@ Forcing one exit point adds result variables and nesting. Returning as soon
 as the answer is known, especially for argument checks at the top, is shorter
 and easier to follow.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the single return needs a result variable and nested ifs.
 int classify(int x) {
     int result;
@@ -71,7 +71,7 @@ An error code can be ignored by the caller, and every layer has to pass it
 along by hand. An exception can't be ignored, separates the error path from
 the normal one, and, with RAII, cleans up on the way out.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles; the caller forgot to check the code, so it carries on with port 0.
 int parse_port(const std::string& s, int& out) {
@@ -109,7 +109,7 @@ object exists but isn't usable, and every member function has to wonder
 whether `init()` ran. Let the constructor establish the invariant, and throw if
 it can't.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles; between construction and init() the object is half-made,
 // and nothing stops a caller from skipping init() entirely.
@@ -147,7 +147,7 @@ The `goto exit` pattern routes every error to one cleanup block at the end.
 It's easy to jump past an initialization or forget to release something on one
 path. Destructors (RAII) do the cleanup on every exit, including exceptions.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 #include <cstdlib>
 // BAD: compiles; every path must reach "done", and a new early return leaks both.
@@ -188,7 +188,7 @@ Tested by [`tests/guidelines/not_test.cpp`](../../../../tests/guidelines/not_tes
 anywhere, so the base class can't keep its invariant. Keep data `private` and
 give derived classes functions that preserve the invariant.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; any derived class can break the "balance >= 0" invariant.
 class Account {
 protected:

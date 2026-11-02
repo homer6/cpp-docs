@@ -63,7 +63,7 @@ don't.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <deque>
 
 int main() {
@@ -83,7 +83,7 @@ int main() {
 
 ### Using it as a sliding window
 
-```cpp
+```cpp run
 #include <cstddef>
 #include <deque>
 

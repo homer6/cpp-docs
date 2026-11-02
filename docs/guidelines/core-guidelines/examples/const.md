@@ -76,7 +76,7 @@ When a value is fixed once it's built, make the object `const`, even when the
 value is only known at run time. Readers then know it stays the same for the
 rest of the scope.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 void greet(const std::vector<std::string>& names) {
@@ -94,7 +94,7 @@ void greet(const std::vector<std::string>& names) {
 }
 ```
 
-The BAD version compiles, so it's tagged `nocompile` (wrong but compiles): the
+The BAD version compiles, so it's tagged `bad` (compiles, but is wrong): the
 missing promise is for a reader or a linter to catch, such as clang-tidy's
 `misc-const-correctness`.
 

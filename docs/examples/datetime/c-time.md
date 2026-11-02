@@ -49,7 +49,7 @@ C++26, following C23.
 
 ### Now, broken down and formatted
 
-```cpp
+```cpp run
 #include <cstdio>
 #include <ctime>
 

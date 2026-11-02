@@ -54,7 +54,7 @@ copied, and found.
 
 ### Construction & growth
 
-```cpp
+```cpp run
 #include <string>
 using namespace std::string_literals;        // the ""s literal
 

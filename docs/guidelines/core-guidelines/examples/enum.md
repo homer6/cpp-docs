@@ -9,7 +9,7 @@ A macro is text substitution: it ignores scopes and types, can silently
 change unrelated code that uses the same name, and is gone before the
 debugger sees it. An enumeration is a real type with scoped names.
 
-```cpp nocompile
+```cpp bad
 // colors.h
 #define RED   0xFF0000
 #define BLUE  0x0000FF
@@ -34,7 +34,7 @@ Constants that belong together (states, modes, colours) should be one
 enumeration: the type says they're related, a parameter of that type accepts
 only them, and compilers can warn when a `switch` misses one.
 
-```cpp nocompile
+```cpp bad
 constexpr int idle = 0, running = 1, stopped = 2;   // BAD: just ints
 void set_state(int s);
 void caller() { set_state(42); }                    // compiles
@@ -60,7 +60,7 @@ A plain `enum` converts to `int` silently and spills its enumerator names
 into the surrounding scope, so values from unrelated enumerations can be
 mixed and compared. An `enum class` does neither.
 
-```cpp nocompile
+```cpp bad
 enum Color { red, green };
 enum Fruit { apple, banana };
 void set_brightness(int level);
@@ -96,7 +96,7 @@ If code needs to step, combine or print enumeration values, write those
 operations once, next to the enumeration, instead of casting at every use.
 The casts then live in one reviewed place, with the edge cases handled.
 
-```cpp nocompile
+```cpp bad
 enum class Day { mon, tue, wed, thu, fri, sat, sun };
 void caller(Day d) {
     d = static_cast<Day>(static_cast<int>(d) + 1);   // BAD: after sun, a value with no name
@@ -140,7 +140,7 @@ An unnamed `enum` used only to get integer constants groups values that
 aren't related, and gives them an anonymous enumeration type instead of the
 type you meant. Use `constexpr` variables with the right types.
 
-```cpp nocompile
+```cpp bad
 enum { buffer_size = 4096, max_users = 8, verbose = 1 };   // BAD: unrelated values
 ```
 
@@ -159,7 +159,7 @@ The default is simplest (an `enum class` is `int` underneath). Name the type
 only when it matters: to save space, to fix the size for a file format or
 bit flags, or to forward-declare a plain `enum`.
 
-```cpp nocompile
+```cpp bad
 #include <cstdint>
 enum class Weekday : std::int32_t { mon, tue, wed };   // BAD: compiles, but says nothing new
 ```
@@ -181,7 +181,7 @@ Without explicit values, enumerators count up from zero with no gaps and no
 duplicates. Write values only when they mean something: a conventional
 numbering, bit flags, or values fixed by a protocol.
 
-```cpp nocompile
+```cpp bad
 enum class Level { low = 1, medium = 2, high = 2 };    // BAD: a typo makes two levels equal
 ```
 

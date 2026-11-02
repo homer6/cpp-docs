@@ -91,7 +91,7 @@ does the same for something that isn't a direct member (e.g. `*self.ptr_`).
 A lambda's explicit object parameter is the closure itself, so it can call
 itself:
 
-```cpp
+```cpp run
 #include <iostream>
 
 int main() {
@@ -108,7 +108,7 @@ The classic CRTP base needs a template parameter and a `static_cast` to reach
 the derived class. With deducing `this`, the base is an ordinary class and
 `Self` *is* the derived type:
 
-```cpp
+```cpp run
 #include <iostream>
 
 struct Greeter {                               // no template<class Derived>
@@ -134,7 +134,7 @@ This is still static dispatch: through a `Greeter&`, `Self` is `Greeter` and
 Taking `self` by value works on a copy — useful for small types and for
 "return a modified copy" members:
 
-```cpp
+```cpp run
 #include <iostream>
 
 struct Point {

@@ -54,7 +54,7 @@ Don't use it to implement coroutines or cancellation — C++20 coroutines and
 
 ### Escaping from deep recursion
 
-```cpp
+```cpp run
 #include <csetjmp>
 #include <cstdio>
 
@@ -86,7 +86,7 @@ jumped back, attempts=1
 
 ### `longjmp(env, 0)` returns 1
 
-```cpp
+```cpp run
 #include <csetjmp>
 #include <cstdio>
 
@@ -106,7 +106,7 @@ int main() {
   at `-O0` with both GCC 15 and Clang 22: the optimizer kept `plain` in a
   register that `longjmp` restored. Make such variables `volatile`.
 
-  ```cpp
+  ```cpp run
   #include <csetjmp>
   #include <cstdio>
   std::jmp_buf env;

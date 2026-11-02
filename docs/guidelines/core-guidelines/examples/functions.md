@@ -9,7 +9,7 @@ When a piece of code does one recognisable job, pull it out and name it. The
 name documents the job, the piece can be reused and tested on its own, and the
 surrounding code reads as a list of steps.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>
 #include <string>
 void report(const std::string& line) {
@@ -40,7 +40,7 @@ void report(std::ostream& out, std::string_view line) {   // GOOD: reads as two 
 }
 ```
 
-The BAD version compiles, so it's tagged `nocompile`: the problem is the
+The BAD version compiles, so it's tagged `bad`: the problem is the
 structure, which a reviewer has to catch.
 
 ## F.2: A function should perform a single logical operation
@@ -49,7 +49,7 @@ A function that does one thing is easy to name, test and reuse. One that
 parses, transforms and prints can only ever be used for exactly that
 combination.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -91,7 +91,7 @@ Long functions with deep branching hide bugs: it's hard to see that every case
 is handled. Split the cases into small functions and keep the top level a
 short dispatch.
 
-```cpp nocompile
+```cpp bad
 double shipping(double kg, bool express, bool international, bool member) {
     double cost = 0;                 // BAD: every combination in one body
     if (international) {
@@ -149,7 +149,7 @@ body at the call site. Defining it in the header (`inline`, or inside the class
 body, which is implicitly `inline`) makes that possible without link-time
 optimization. Keep large functions and stable ABIs out of line, and measure.
 
-```cpp nocompile
+```cpp bad
 // point.h
 struct Point {
     double x, y;
@@ -168,8 +168,8 @@ struct Point {
 inline double dot(Point a, Point b) { return a.x * b.x + a.y * b.y; }   // GOOD: inline free function
 ```
 
-The BAD version is valid C++; it's tagged `nocompile` because it shows two
-files. `constexpr` functions are implicitly `inline` too.
+The BAD version is valid C++ and compiles as one file (tagged `bad`); the
+problem appears when two files include it. `constexpr` functions are implicitly `inline` too.
 
 ## F.6: If your function must not throw, declare it `noexcept`
 
@@ -178,7 +178,7 @@ moves its elements when it grows only if the move constructor is `noexcept`;
 otherwise it copies them to keep its strong guarantee. Destructors, `swap` and
 move operations should be `noexcept`.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <utility>
 struct Track {
@@ -236,7 +236,7 @@ A pure function's result depends only on its arguments and it changes nothing
 else. It's easy to test, safe to call from several threads, can be cached, and
 can often be `constexpr`.
 
-```cpp nocompile
+```cpp bad
 double tax_rate = 0.2;
 int calls = 0;
 double with_tax(double price) {
@@ -260,7 +260,7 @@ A parameter the body never reads is clearer without a name: readers don't look
 for its use, and `-Wunused-parameter` stays quiet. When it's unused only on
 some paths, mark it `[[maybe_unused]]`.
 
-```cpp nocompile
+```cpp bad
 struct Event { int code; };
 void on_event(const Event& e, int priority) {   // BAD: priority is never read (-Wunused-parameter warns)
     use(e.code);
@@ -284,7 +284,7 @@ void on_event_logged(const Event& e, [[maybe_unused]] int priority) {
 When the same non-trivial lambda shows up twice, it's a function waiting to be
 named. A name documents what it does, and a fix lands in one place.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <cctype>
 #include <string>
@@ -320,7 +320,7 @@ For a short predicate used once, an unnamed lambda at the call site is the
 clearest: the logic sits where it's used, with no class or function to look up
 elsewhere.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <vector>
 struct IsNegative {                    // BAD: a whole class for a one-off test,
@@ -343,7 +343,7 @@ Use the usual conventions (value or `const&` for inputs, `&` for in-out, the
 return value for outputs) so readers know what a signature means at a glance.
 Clever schemes surprise readers and rarely pay off; measure before using one.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 #include <string>
 // BAD: an untyped buffer for input, an rvalue reference "for speed" that
@@ -364,7 +364,7 @@ Small types (a few machine words: `int`, `double`, pointers, `std::string_view`,
 `std::span`) are fastest by value. Anything that may be expensive to copy
 (`std::string`, containers) goes by `const&`, which still accepts temporaries.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 std::size_t words(std::vector<std::string> lines);   // BAD: copies every string on each call
@@ -386,7 +386,7 @@ When a function reads an argument and changes it for the caller, take it by
 `T&`. The signature then says "this will be modified"; by value, the change is
 silently lost.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 void normalize(std::string path) {      // BAD: changes a copy; the caller's string is untouched
     if (!path.empty() && path.back() == '/') path.pop_back();
@@ -409,7 +409,7 @@ from it. An lvalue then won't bind without an explicit `std::move` at the call
 site, so giving up the object is visible. `std::move` on a `const&` doesn't
 move; it quietly copies.
 
-```cpp nocompile
+```cpp bad
 #include <utility>
 #include <vector>
 struct Inbox {
@@ -442,7 +442,7 @@ A function that only passes an argument on should take a forwarding reference
 (`T&&` with `T` deduced) and `std::forward` it, once, so an rvalue stays an
 rvalue and is moved, not copied.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 template <class T>
@@ -469,7 +469,7 @@ A return value says plainly what the function produces. An output parameter
 could be in-out or out-only, needs a pre-made object, and makes the call
 awkward. Returning a local is cheap: it's elided or moved, never copied.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 void evens(const std::vector<int>& in, std::vector<int>& out) {   // BAD: is out cleared first? appended to?
     for (int x : in)
@@ -495,7 +495,7 @@ Several results come back best as a named `struct`; its member names document
 them, and structured bindings unpack them at the call site. Use `pair` or
 `tuple` only when the values have no better names.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 bool parse_port(const std::string& s, int& port, std::string& error);   // BAD: two out-parameters
 ```
@@ -550,7 +550,7 @@ other types for the other meanings: `std::span` for a sequence, a string type
 for text, and `owner<T*>` (the Guidelines Support Library's annotation; better,
 a smart pointer) for a pointer that must be deleted.
 
-```cpp nocompile
+```cpp bad
 void reset(int* values, int n, char* name, int* scratch) {
     values[n - 1] = 0;   // BAD: is values really n elements long?
     use(name);           // BAD: zero-terminated? may it be null?
@@ -577,7 +577,7 @@ A plain pointer leaves both sides guessing who checks for null. A
 the check. The GSL provides `gsl::not_null`; a minimal version rejects a
 literal `nullptr` at compile time and costs nothing at run time.
 
-```cpp nocompile
+```cpp bad
 struct Record { int size; };
 int length(const Record* r) { return r->size; }   // BAD: may r be null? crashes if it is
 int n = length(nullptr);                          // compiles
@@ -609,7 +609,7 @@ both together, is built from arrays and containers automatically, and is as
 cheap to pass as the pair. (`span_p`, a span ending at a sentinel, is a GSL
 idea with no standard type.)
 
-```cpp nocompile
+```cpp bad
 int sum(const int* p, int n) {   // BAD: nothing ties n to the real size of p
     int total = 0;
     for (int i = 0; i < n; ++i) total += p[i];
@@ -641,7 +641,7 @@ Name the zero-terminated case (the GSL calls it `czstring`, or `zstring` when
 mutable) so readers know a terminator is required. If you don't need the
 terminator, take `std::string_view`, which knows its length.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 std::size_t spaces(const char* s);   // BAD: zero-terminated? may s be null?
 ```
@@ -669,7 +669,7 @@ When a function hands an object to its caller through a pointer (a factory
 returning a derived class, say), return `std::unique_ptr`. The caller owns it,
 can't forget to delete it, and the transfer costs no more than a raw pointer.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; virtual double area() const = 0; };
 struct Square : Shape { double s = 1; double area() const override { return s * s; } };
 Shape* make_shape() { return new Square; }   // BAD: who deletes it? one early return leaks it
@@ -691,7 +691,7 @@ last, `std::shared_ptr` deletes it when the last owner lets go. Prefer
 `unique_ptr` when there's only ever one owner at a time: the shared count costs
 atomic operations.
 
-```cpp nocompile
+```cpp bad
 struct Image { int w, h; };
 struct Viewer { Image* img; ~Viewer() { delete img; } };   // BAD: two viewers sharing one image
 void show() {                                              // both delete it: double free
@@ -718,7 +718,7 @@ A returned raw pointer should mean "here it is" (or `nullptr`, "not found"),
 pointing into something the caller already has. It should never mean "you own
 this now"; return a smart pointer for that.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 int* make_buffer(std::size_t n) { return new int[n]{}; }   // BAD: a raw pointer that must be delete[]d
 ```
@@ -826,7 +826,7 @@ needed.
 void main() {}   // BAD: not C++
 ```
 
-```cpp
+```cpp run
 int main() {}   // GOOD: returns 0
 ```
 
@@ -860,7 +860,7 @@ Returning a local by name already moves it if the copy isn't elided. Wrapping
 it in `std::move` turns the return into a move from a reference, which blocks
 the elision (NRVO) and forces a move that needn't happen.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <utility>
 std::string build() {
@@ -885,7 +885,7 @@ A `const` return value can't be moved from, so assigning it to an existing
 variable copies instead of moving. The old reason for it, stopping assignment
 to a temporary, isn't worth that cost.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 const std::vector<int> load();   // BAD: v = load() copies every element
 void refresh(std::vector<int>& v) { v = load(); }
@@ -931,7 +931,7 @@ When the variants differ only in whether a trailing argument is given, a
 default argument keeps one implementation. Overloads are separate bodies that
 can drift apart.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 std::string pad(const std::string& s, std::size_t width, char fill) {
     return s.size() >= width ? s : std::string(width - s.size(), fill) + s;
@@ -956,7 +956,7 @@ A lambda that runs before the enclosing function returns (an algorithm's
 predicate, a local helper) can capture by reference: nothing is copied, and
 the lambda can update the caller's variables.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -990,7 +990,7 @@ A lambda that outlives the current scope (returned, stored, run on another
 thread) must not hold references to locals: they'll be gone when it runs.
 Capture by value or move the data in.
 
-```cpp nocompile
+```cpp bad
 #include <functional>
 #include <string>
 std::function<std::string()> make_greeter(std::string name) {
@@ -1016,7 +1016,7 @@ reached through `this`, which is the only thing copied: the lambda sees later
 changes and dangles if the object dies. C++20 deprecated that implicit capture.
 Write `[this]` when you mean it, or `[*this]` for a real copy.
 
-```cpp nocompile
+```cpp bad
 struct Counter {
     int count = 0;
     auto reader() {
@@ -1033,7 +1033,7 @@ struct Counter {
 };
 ```
 
-The BAD block compiles with a deprecation warning, so it's tagged `nocompile`.
+The BAD block compiles with a deprecation warning, so it's tagged `bad`.
 
 Tested by [`tests/guidelines/functions_test.cpp`](../../../../tests/guidelines/functions_test.cpp).
 
@@ -1043,7 +1043,7 @@ A C variadic function reads its arguments by trusting that the caller passed
 the types it expects; pass a `double` where an `int` is read and the behaviour
 is undefined. A variadic template checks every argument's type.
 
-```cpp nocompile
+```cpp bad
 #include <cstdarg>
 int sum(int count, ...) {
     va_list args;
@@ -1071,7 +1071,7 @@ Handle the exceptional cases first with early returns (guard clauses) and keep
 the main work at the outer level. Merge conditions instead of nesting them,
 and drop an `else` after a `return`.
 
-```cpp nocompile
+```cpp bad
 struct Order { bool paid; bool in_stock; int items; };
 int ship(const Order& o) {
     if (o.paid) {                    // BAD: the real work is three levels deep

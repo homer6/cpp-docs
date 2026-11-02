@@ -20,7 +20,7 @@ where "stuck at the limit" beats "wrapped to nonsense".
 
 ## Declaration
 
-```cpp nocompile
+```cpp
 namespace std {
     template<class T> constexpr T saturating_add(T x, T y) noexcept;
     template<class T> constexpr T saturating_sub(T x, T y) noexcept;

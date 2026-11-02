@@ -10,7 +10,7 @@ The compiler checks code, not comments. When a loop is really a search, call
 the search algorithm; when a number is really a temperature, give it a type.
 Then the meaning is in the code, where tools can check it.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles and works, but the reader has to work out that this is a
 // search, and the "-1 means not found" convention lives only in our heads.
@@ -64,7 +64,7 @@ Write what should happen, not just how. A range-`for` over `const&` says "look
 at every element, change none of them"; an index loop says only "count from 0",
 and leaves the index around after the loop.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles, but the index is an implementation detail that outlives the
 // loop, and nothing stops the body from changing the elements.
@@ -91,7 +91,7 @@ Unions, casts, array decay, range errors and narrowing conversions are where
 the type system stops protecting you. Each has a safer replacement; here a
 tagged `std::variant` replaces a union that the code reads as the wrong type.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but reading i after writing f reads the inactive member: UB.
 union Value { int i; float f; };
 int read_back() {
@@ -119,7 +119,7 @@ handler. When an assumption is about types or constants, state it as a
 `static_assert` or encode it in a type instead of testing it while the program
 runs.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 // BAD: compiles, but the check runs on every call, can only fail after the
 // program ships, and needs an error path for something known at build time.
@@ -143,7 +143,7 @@ Some facts are only known at run time, such as how many elements a buffer holds.
 Keep that information with the data so that a check is at least possible.
 A bare pointer has thrown the size away; a `std::span` carries it.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but f can't know how many ints p points to, so no check
 // is possible, at compile time or at run time.
 void f(int* p) { p[9] = 0; }
@@ -164,7 +164,7 @@ Check a value once, where it enters the program, and then carry it in a type
 that can only hold valid values. Errors show up at the source instead of as
 corrupted data far away, and the rest of the code doesn't re-check.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles, but a bad month passes through as a string and is only
 // found (if at all) deep inside whatever finally parses it.
@@ -194,7 +194,7 @@ Every resource you acquire (memory, a file, a lock, a socket) must be released
 on every path, including early returns and exceptions. Give it to an object
 whose destructor releases it (RAII), and no path can forget.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but if process() throws or we return early, the Widget leaks.
 bool handle(bool skip) {
     Widget* w = new Widget;
@@ -223,7 +223,7 @@ C++ is chosen for efficiency, so don't throw it away on work that buys
 nothing. Calling `strlen` in a loop condition walks the whole string on every
 iteration, which turns a linear loop into a quadratic one.
 
-```cpp nocompile
+```cpp bad
 #include <cstring>
 // BAD: compiles and is correct, but strlen(s) runs on every iteration: O(n²).
 int count_spaces(const char* s) {
@@ -270,7 +270,7 @@ Low-level code (manual memory, casts, tricky lifetimes) is where bugs hide.
 Write it once, behind a clean interface, or better, use a library that already
 did. Then the rest of the program uses the interface and never sees the mess.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 // BAD: compiles, but every caller repeats the growth logic; this copy forgets
 // to check for a null result and to update the capacity.
@@ -296,7 +296,7 @@ A well-used library is better tested, better documented and usually faster
 than what you'd write in an afternoon. Reach for the standard library (and
 your project's foundation libraries) first, and need a reason not to.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles, but it's a hand-rolled O(n²) sort that we now own, test and debug.
 void sort_scores(std::vector<int>& v) {

@@ -54,7 +54,7 @@ report errors through `errno`, the FP flags or both is
 
 ### Clear, compute, test
 
-```cpp
+```cpp run
 #include <cfenv>
 #include <cmath>
 #include <cstdio>
@@ -90,7 +90,7 @@ sqrt(-1)   FE_INVALID
 
 ### Changing the rounding mode
 
-```cpp
+```cpp run
 #include <cfenv>
 #include <cmath>
 #include <cstdio>
@@ -136,7 +136,7 @@ raises `FE_INEXACT`); `std::round` always rounds halves away from zero and
 
 ### Hiding intermediate flags from the caller
 
-```cpp
+```cpp run
 #include <cfenv>
 #include <cstdio>
 
@@ -165,7 +165,7 @@ int main() {
 
 ### How does `<cmath>` report errors here?
 
-```cpp
+```cpp run
 #include <cmath>
 #include <cstdio>
 
@@ -197,7 +197,7 @@ after `std::log(0.0)` is therefore not portable.
   caller saw `FE_DIVBYZERO`. Use `volatile` operands and results (as these
   examples do) when the code must work on GCC.
 
-  ```cpp
+  ```cpp run
   #include <cfenv>
   #include <cstdio>
   #pragma STDC FENV_ACCESS ON

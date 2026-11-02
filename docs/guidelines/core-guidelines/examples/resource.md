@@ -10,7 +10,7 @@ object whose constructor acquires it and whose destructor releases it. Then
 every exit from the scope (a `return`, a `break`, an exception) releases it
 exactly once, without anyone having to remember.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 #include <mutex>
 std::mutex m;
@@ -49,7 +49,7 @@ A `T*` parameter should point at one object (or be null). A pointer plus a
 count says nothing the compiler can check; a range belongs in a container or a
 `std::span`, which carries its size.
 
-```cpp nocompile
+```cpp bad
 void zero(int* values, int n) {           // BAD: is n right? nothing checks it
     for (int i = 0; i < n; ++i) values[i] = 0;
 }
@@ -77,7 +77,7 @@ pointers are `std::unique_ptr` or `std::shared_ptr` (or a value returned by
 value), so ownership is visible in the type. The GSL's `gsl::owner<T*>` is
 only an annotation for legacy code that must keep a raw owning pointer.
 
-```cpp nocompile
+```cpp bad
 struct Gadget { int id; };
 Gadget* make_gadget(int id) { return new Gadget{id}; }   // BAD: who deletes it?
 void caller() {
@@ -108,7 +108,7 @@ A reference refers to an object someone else owns; it never deletes it.
 Binding a reference to a fresh `new` makes an owner that doesn't look like
 one.
 
-```cpp nocompile
+```cpp bad
 void f() {
     int& r = *new int{7};    // BAD: an owning reference
     use(r);
@@ -134,7 +134,7 @@ destructor runs when its scope ends. Use the heap only when the object must
 outlive the scope, is too big for the stack, or its size is only known at run
 time.
 
-```cpp nocompile
+```cpp bad
 struct Gadget { explicit Gadget(int); };
 void f(int n) {
     auto* g = new Gadget{n};     // BAD: an allocation for nothing
@@ -159,7 +159,7 @@ The same rule as I.2: a mutable global is a hidden input and output of every
 function that touches it, and a data race waiting for a second thread. Pass
 the state in, or make it a member of an object.
 
-```cpp nocompile
+```cpp bad
 int open_connections = 0;                   // BAD: anyone can change it
 void connect() { ++open_connections; }
 ```
@@ -181,7 +181,7 @@ constexpr int max_connections = 16;         // constants are fine
 Mixing them with `new`/`delete` is undefined behavior. Use `std::make_unique`,
 a container, or a local.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 #include <string>
 struct Record { int id; std::string name; };
@@ -211,7 +211,7 @@ that you wrote it. Let a factory (`std::make_unique`, `std::make_shared`) or a
 container own the object instead; `delete` then lives in one place, the
 owner's destructor.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 struct Shape { virtual ~Shape() = default; };
 void draw() {
@@ -239,7 +239,7 @@ When you must call an acquire function yourself (`fopen`, a C library's
 `create`), hand the result to its owner in the same statement. Anything that
 runs in between, even an allocation that can throw, can leak it.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 #include <vector>
 void read_header(const char* path) {
@@ -276,7 +276,7 @@ completely before the next, so `f(std::unique_ptr<T>(new T), …)` no longer
 interleaves, but raw pointers handed to one constructor still leak. The
 factories avoid the question.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <utility>
 struct Engine { };
@@ -306,7 +306,7 @@ A parameter declared `int a[]` (or `int a[10]`) is really `int*`: the size is
 gone, `sizeof(a)` is the size of a pointer, and any array length is accepted.
 `std::span` keeps the size.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 std::size_t count(int a[10]) {
     return sizeof(a) / sizeof(a[0]);   // BAD: sizeof a pointer, not 10 ints
@@ -330,7 +330,7 @@ A class that defines its own `operator new` must define the matching
 one allocator goes back to another. If the memory must never be freed,
 declare the deallocation function `= delete` rather than leaving it out.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 void* pool_alloc(std::size_t);
 struct Message {
@@ -356,7 +356,7 @@ Tested by [`tests/guidelines/resource_test.cpp`](../../../../tests/guidelines/re
 When a pointer owns its object, make it a smart pointer: the object is then
 destroyed when its last owner goes away, on every path.
 
-```cpp nocompile
+```cpp bad
 struct Texture { };
 void load() {
     Texture* t{new Texture};          // BAD: owns, but nothing will delete it
@@ -383,7 +383,7 @@ and you know exactly where the object dies. Reach for `shared_ptr` only when
 several owners really share the object's lifetime. A `unique_ptr` converts to
 a `shared_ptr` later if that need appears.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Parser { };
 void parse() {
@@ -421,7 +421,7 @@ Tested by [`tests/guidelines/resource_test.cpp`](../../../../tests/guidelines/re
 reference counts together, in one allocation instead of two. It also never
 leaves a raw pointer lying around.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Session { explicit Session(int); };
 std::shared_ptr<Session> s{new Session{42}};   // BAD: compiles, but two allocations and T named twice
@@ -441,7 +441,7 @@ Tested by [`tests/guidelines/resource_test.cpp`](../../../../tests/guidelines/re
 the code, so a search for `new` finds only the code that really manages
 memory.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Buffer { explicit Buffer(int); };
 std::unique_ptr<Buffer> b{new Buffer{64}};   // BAD: compiles, but repetitive and a naked new
@@ -462,7 +462,7 @@ above zero forever, so neither is destroyed. Make one direction (usually the
 back pointer to a parent or owner) a `std::weak_ptr`, and `lock()` it when
 you need it.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Child;
 struct Parent { std::shared_ptr<Child> child; };
@@ -528,7 +528,7 @@ means no copying, moving transfers it, `*` and `->` reach the object, and the
 destructor releases it. Code reviewers and analysis tools then read it the
 same way.
 
-```cpp nocompile
+```cpp bad
 template <class T>
 struct Handle {
     T* p;
@@ -570,7 +570,7 @@ Tested by [`tests/guidelines/resource_test.cpp`](../../../../tests/guidelines/re
 A by-value `std::unique_ptr<T>` parameter is a sink: the caller must hand
 ownership over with `std::move`, and the type documents and enforces it.
 
-```cpp nocompile
+```cpp bad
 struct Job { };
 void enqueue(Job* job);              // BAD: does it keep job? delete it later?
 void caller() {
@@ -613,7 +613,7 @@ A non-`const` `std::unique_ptr<T>&` parameter means "I may replace the object
 you own". If the function only uses the object, take `T&` (or `T*`) instead,
 so callers aren't misled and any `T` can be passed.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Config { int level = 0; };
 void print(std::unique_ptr<Config>& c) { use(c->level); }   // BAD: never reseats
@@ -636,7 +636,7 @@ A by-value `std::shared_ptr<T>` parameter says the function (or the object
 it builds) becomes one more owner. Move it into place to avoid an extra count
 update.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Texture { };
 struct Sprite {
@@ -671,7 +671,7 @@ When a function may point the caller's `shared_ptr` at a different object,
 take it by non-`const` reference. By value, the function would only change its
 own copy.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Theme { int id; };
 void switch_theme(std::shared_ptr<Theme> t) {      // BAD: reseats a copy
@@ -695,7 +695,7 @@ A `const std::shared_ptr<T>&` parameter is for a function that *might* keep
 a copy: it pays for a count update only on the path that copies. A function
 that always keeps it takes it by value (R.34); one that never does takes `T&`.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <vector>
 struct Event { bool important; };
@@ -724,7 +724,7 @@ member, something shared), the callee may reset that smart pointer and destroy
 the object while you still hold the reference. Take a local copy first: it
 keeps the object alive for the whole call.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Doc { int pages = 1; };
 std::shared_ptr<Doc> current = std::make_shared<Doc>();

@@ -9,7 +9,7 @@
 Values that belong together should travel together. A `struct` names the
 group, so a function can't mix up which number goes with which.
 
-```cpp nocompile
+```cpp bad
 void draw_line(int x1, int y1, int x2, int y2);   // BAD: four loose ints; nothing ties x1 to y1
 void demo() { draw_line(0, 10, 0, 20); }          // was that (0,10)→(0,20) or (0,0)→(10,20)? It compiles either way
 ```
@@ -26,7 +26,7 @@ void demo() { draw_line({0, 10}, {0, 20}); }
 member functions may change them". `struct` says every combination of values
 is fine.
 
-```cpp nocompile
+```cpp bad
 struct Date_range {        // BAD: first <= last must hold, but anyone can break it
     int first;
     int last;
@@ -58,7 +58,7 @@ The public part of a class is what users may rely on; the private part is
 what the author may change. When users reach into the representation, it can
 never change again.
 
-```cpp nocompile
+```cpp bad
 struct Temperature {
     double kelvin;         // BAD: every user reads and writes the representation
 };
@@ -82,7 +82,7 @@ A member function can touch the private data, so every member is something to
 re-check when the representation changes. A function that only needs the
 public interface is better as a non-member.
 
-```cpp nocompile
+```cpp bad
 class Account {
 public:
     long balance() const { return cents_; }
@@ -134,7 +134,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 A type definition that also declares a variable is easy to misread, and a
 forgotten `;` after a `}` can silently turn the next name into a variable.
 
-```cpp nocompile
+```cpp bad
 struct Config { int retries; } default_config;      // BAD: a type and a variable in one statement
 enum class Mode { fast, safe } mode = Mode::safe;   // BAD: the same with an enum
 ```
@@ -151,7 +151,7 @@ Mode mode = Mode::safe;
 `struct` reads as "plain data, all public". If something is hidden, say so
 with `class` and put the public interface first.
 
-```cpp nocompile
+```cpp bad
 struct Counter {           // BAD: says "struct" but hides its data
     void increment() { ++n_; }
     int value() const { return n_; }
@@ -175,7 +175,7 @@ private:
 Every public data member is a promise to every user, and code anywhere can
 break the object's rules through it. Keep data private and offer operations.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Buffer {
 public:
@@ -204,7 +204,7 @@ A plain value type lives on the stack or inside other objects, needs no
 allocation or indirection, and is easy to reason about. Use a hierarchy only
 when you need run-time polymorphism.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Shape_base { virtual ~Shape_base() = default; virtual double area() const = 0; };
 struct Square : Shape_base {   // BAD: a hierarchy with one type in it: heap, pointer, vtable
@@ -285,7 +285,7 @@ Members are constructed in declaration order and destroyed in reverse, no
 matter how the constructor's initializer list is written. A member that uses
 another must come after it.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Samples {
     std::size_t count_;          // BAD: declared first, so built before data_ exists
@@ -316,7 +316,7 @@ When every member manages itself (`std::string`, `std::vector`, smart
 pointers), the compiler's copy, move and destructor are right and fast. This
 is the rule of zero.
 
-```cpp nocompile
+```cpp bad
 #include <map>
 #include <string>
 class Phone_book {
@@ -385,7 +385,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 Copy construction and copy assignment must do the same thing, and both must
 agree with what the constructor acquires and the destructor releases.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Text {
 public:
@@ -427,7 +427,7 @@ Write a destructor only when something must happen that the members' own
 destructors don't do. An empty one adds nothing, and declaring it costs the
 class its implicit moves.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Name {
 public:
@@ -463,7 +463,7 @@ Whatever the constructor (or any member function) acquires, the destructor
 releases, including when the object is destroyed by an exception. Holding the
 resource in a member that cleans up after itself does it for you.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 class Log {
 public:
@@ -494,7 +494,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 A raw pointer member doesn't say whether the class must delete what it points
 to. Decide, then make the answer visible in the type.
 
-```cpp nocompile
+```cpp bad
 struct Node;
 class Tree_cursor {
     Node* node_;           // BAD: owner or observer? A reader can't tell, so a leak or a double delete waits
@@ -513,7 +513,7 @@ An owned object must be deleted when its owner dies. With a raw owning
 pointer that means a destructor (and then the other four operations, C.21);
 a smart pointer does all of it for you.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 class Image {
 public:
@@ -550,7 +550,7 @@ Deleting a derived object through a base pointer whose destructor isn't
 virtual is undefined behaviour. Either allow it (public and virtual) or forbid
 it (protected, so only derived classes can call it).
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <string>
 struct Sensor {
@@ -589,7 +589,7 @@ Destructors run during stack unwinding and inside containers that can't cope
 with a failure. A destructor that throws while another exception is in
 flight calls `std::terminate`. Handle or report the failure and finish.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 class Connection {
 public:
@@ -621,7 +621,7 @@ A destructor is implicitly `noexcept` only while every member's and base's
 destructor is. One member with a `noexcept(false)` destructor silently
 changes the whole class. Saying `noexcept` keeps the promise explicit.
 
-```cpp nocompile
+```cpp bad
 struct Legacy { ~Legacy() noexcept(false) {} };
 class Session {            // BAD: Session's destructor is now noexcept(false) too, without a word
 public:
@@ -649,7 +649,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 The constructor is where an invariant is established. Without one, any
 initializer the user writes is accepted.
 
-```cpp nocompile
+```cpp bad
 struct Fraction {
     int num;
     int den;               // BAD: must not be 0, but nothing checks
@@ -678,7 +678,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 When the constructor returns, the object must be ready to use. A separate
 `init()` that callers must remember is a bug waiting to happen.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Histogram {
 public:
@@ -710,7 +710,7 @@ A constructor has no return value to report failure with. Leaving behind a
 half-made object with an `is_valid()` flag makes every user check it, and one
 of them won't.
 
-```cpp nocompile
+```cpp bad
 class Port {
 public:
     explicit Port(int n) : n_{n}, valid_{n > 0 && n < 65536} {}   // BAD: builds an invalid Port
@@ -770,7 +770,7 @@ A default constructor that can't fail makes "reset to empty" safe after an
 error and keeps moved-from states cheap. Allocating in it costs time and
 memory for every empty object.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 class Int_buffer {
 public:
@@ -801,7 +801,7 @@ Put the defaults on the members and let the compiler generate the default
 constructor; it's shorter and the compiler's version can be more efficient
 (and `noexcept`).
 
-```cpp nocompile
+```cpp bad
 class Retry_policy {
 public:
     Retry_policy() : attempts_{3}, delay_ms_{100} {}   // BAD: a constructor only to set constants
@@ -827,7 +827,7 @@ A non-`explicit` one-argument constructor is also an implicit conversion, so
 a wrong argument type quietly becomes an object. Make it `explicit` unless the
 conversion is really wanted.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 class Buffer_size {
 public:
@@ -859,7 +859,7 @@ Members are initialized in declaration order, whatever order the initializer
 list uses. Writing the list in a different order misleads the reader, and an
 initializer that reads a "later" member reads garbage.
 
-```cpp nocompile
+```cpp bad
 class Rect {
     int area_;
     int width_;
@@ -881,7 +881,7 @@ public:
 ```
 
 GCC and Clang warn about the BAD order with `-Wreorder` (in `-Wall`), but it
-isn't an error, so the block is tagged `nocompile` (wrong but compiles).
+isn't an error, so the block is tagged `bad` (it compiles, but is wrong).
 
 Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class_test.cpp).
 
@@ -891,7 +891,7 @@ When several constructors share a constant initial value, write it once on
 the member. Then a new constructor can't forget it, and the constructors
 only mention what differs.
 
-```cpp nocompile
+```cpp bad
 class Connection_opts {
 public:
     Connection_opts() : timeout_ms_{500}, verbose_{false} {}
@@ -922,7 +922,7 @@ Assigning in the constructor body first default-constructs each member and
 then overwrites it, and a member is unset until its line runs. Initialize in
 the member initializer list.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Person {
 public:
@@ -956,7 +956,7 @@ During a base constructor the derived part doesn't exist yet, so a virtual
 call can't reach it. If setup needs the derived behaviour, construct the
 object first, then finish it in a factory that's the only way to create one.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 void register_name(const std::string&);
 class Plugin {
@@ -1007,7 +1007,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 When constructors share work (a check, a computation), have the others
 delegate to one that does it. Copies drift apart; a delegation can't.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 class Color {
 public:
@@ -1041,7 +1041,7 @@ When a derived class adds behaviour but no data that needs initializing, a
 `using Base::Base;` gives it every base constructor. Re-writing them by hand
 is tedious and easy to get subtly wrong.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 #include <initializer_list>
 #include <vector>
@@ -1073,7 +1073,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 reads the source without copying it, and returns the target so that
 assignments chain. A `virtual` assignment invites mixing types.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Matrix {
 public:
@@ -1103,7 +1103,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 After `x = y` (or `T x{y}`), `x == y`. With value semantics the two are then
 independent: changing one doesn't change the other.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <vector>
 class Polygon {
@@ -1135,7 +1135,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 with `i == j`), so a hand-written assignment that frees first and copies
 second destroys its own source.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <cstddef>
 class Blob {
@@ -1171,7 +1171,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 The same shape as copy assignment, for rvalues: `T& operator=(T&&)`, not
 virtual, returning `*this`.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Buffer {
 public:
@@ -1204,7 +1204,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 After `y = std::move(x)`, `y` has `x`'s old value and `x` can still be
 destroyed, assigned to and used. Ideally it's the default (empty) value.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 #include <string>
 class Name_list {
@@ -1252,7 +1252,7 @@ Nobody writes `x = std::move(x)` on purpose, but `std::swap(a, b)` with `a`
 and `b` the same object does it. A move assignment that releases first and
 steals second loses the value.
 
-```cpp nocompile
+```cpp bad
 class Owner {
 public:
     Owner& operator=(Owner&& o) noexcept {
@@ -1290,7 +1290,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 can't throw; otherwise it copies them to keep its strong guarantee. A move
 that isn't `noexcept` quietly turns into a copy.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Track {
 public:
@@ -1324,7 +1324,7 @@ copy then behaves like the base. Delete the copy and move operations of a
 polymorphic base (make them protected if the base has data), and use `clone`
 (C.130) when deep copies are needed.
 
-```cpp nocompile
+```cpp bad
 struct Shape {
     virtual ~Shape() = default;
     virtual double area() const { return 0; }
@@ -1358,7 +1358,7 @@ When you must declare a special member (here the destructor is virtual) but
 want its usual meaning, `= default` says so and keeps what the compiler's
 version gives you, such as triviality and `noexcept`.
 
-```cpp nocompile
+```cpp bad
 struct Pixel {
     Pixel() {}
     Pixel(const Pixel& o) : r{o.r}, g{o.g}, b{o.b} {}   // BAD: hand-written defaults: verbose,
@@ -1385,7 +1385,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 call. The old trick (private and never defined) still lets members and
 friends compile a copy, and fails only when linking.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 class Lock_guard {
     Lock_guard(const Lock_guard&);              // BAD: private and undefined: a member that copies
@@ -1416,7 +1416,7 @@ Inside a constructor or destructor the object is only the class being built
 or torn down, so a virtual call runs that class's version, not the derived
 one. Calling a pure virtual function that way is undefined behaviour.
 
-```cpp nocompile
+```cpp bad
 class Logger {
 public:
     Logger() { open(); }               // BAD: runs Logger::open even when building a File_logger
@@ -1449,7 +1449,7 @@ A cheap, non-throwing `swap` is the basis of copy-and-swap assignment and of
 commit-or-rollback code. Give it as a member and as a non-member in the
 type's namespace, so `using std::swap; swap(a, b);` finds it.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Grid {
 public:
@@ -1477,7 +1477,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 Algorithms and containers assume `swap` always succeeds. A swap that copies
 can run out of memory halfway; swap the handles instead.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Table {
 public:
@@ -1508,7 +1508,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 Since a swap must not fail, say so: `noexcept` lets `std::is_nothrow_swappable`
 and the code that checks it rely on it, and terminates if it ever does throw.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 struct Tag {
     std::string text;
@@ -1560,7 +1560,7 @@ An `==` defined on a base compares only the base part, so two different
 derived objects can compare equal, and a virtual `==` can't know the other
 operand's type. Compare where the whole value is known.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 struct Animal {
     std::string name;
@@ -1594,7 +1594,7 @@ Unordered containers call the hash on every lookup and don't expect it to
 fail; the standard requires it not to throw. Combine the members' standard
 hashes and mark it `noexcept`.
 
-```cpp nocompile
+```cpp bad
 #include <functional>
 #include <stdexcept>
 #include <string>
@@ -1630,7 +1630,7 @@ Constructors and assignment keep a type's invariants. `memset` and `memcpy`
 on a type that isn't trivially copyable are undefined behaviour: they
 overwrite pointers, sizes, and vtable pointers behind the type's back.
 
-```cpp nocompile
+```cpp bad
 #include <cstring>
 #include <string>
 struct Record { std::string name; int score = 0; };
@@ -1646,7 +1646,7 @@ void clone(Record& to, const Record& from) { to = from; }       // GOOD
 ```
 
 GCC warns about the BAD calls (`-Wclass-memaccess`), but they compile, so the
-block is `nocompile` (wrong but compiles).
+block is `bad` (it compiles, but is wrong).
 
 Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class_test.cpp).
 
@@ -1697,7 +1697,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 Copying a container should copy its elements: the copy compares equal and is
 independent, as with `std::vector`.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 class Int_list {
 public:
@@ -1731,7 +1731,7 @@ Moving a container should hand over its buffer, not copy the elements, so
 returning one from a function is cheap. A user-declared copy constructor with
 no move constructor makes every move a copy.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Series {
 public:
@@ -1861,7 +1861,7 @@ Inherit only when every derived type really is a kind of the base and can do
 everything the base promises. Forcing unrelated things under one base leaves
 functions that can't be implemented and throw instead.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 struct Container {                    // BAD: not every container can do all of this
     virtual ~Container() = default;
@@ -1893,7 +1893,7 @@ An interface should be only public pure virtual functions and a virtual
 destructor: no data and no implementation that ties the users to a
 representation.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Printer {                       // BAD: an interface with data and a non-virtual destructor
 public:
@@ -1926,7 +1926,7 @@ When users must not depend on any implementation detail (across a library or
 ABI boundary, or to swap implementations), give them an abstract class and a
 factory; the concrete classes can then change without recompiling users.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Usb_storage {                   // BAD: users include and depend on one concrete class:
 public:                               // its size, members and layout are part of their build
@@ -1957,7 +1957,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 An abstract class usually has no data, so there's nothing for a constructor
 to set up. Leave it to the compiler.
 
-```cpp nocompile
+```cpp bad
 class Codec {
 public:
     Codec() {}                         // BAD: nothing to initialize
@@ -1980,7 +1980,7 @@ A class with virtual functions is meant to be used through base pointers, and
 eventually something deletes through one. With a public non-virtual
 destructor that's undefined behaviour.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Task {
 public:
@@ -2012,7 +2012,7 @@ one", `final` says "and nothing may override me". With `override`, a
 signature that drifts from the base is an error instead of a silent new
 function.
 
-```cpp nocompile
+```cpp bad
 struct Shape {
     virtual void scale(double factor);
     virtual void draw() const;
@@ -2043,7 +2043,7 @@ Inheriting an interface separates users from implementations; inheriting an
 implementation shares code. Mixing both in one base makes every change to
 the shared code or data ripple to every user.
 
-```cpp nocompile
+```cpp bad
 class Shape {                          // BAD: interface and implementation in one base
 public:
     Shape(double x, double y) : x_{x}, y_{y} {}
@@ -2082,7 +2082,7 @@ private:
 Copying through a base slices. A virtual `clone` copies the most-derived
 object and returns an owner of the copy.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 struct Shape {
     virtual ~Shape() = default;
@@ -2124,7 +2124,7 @@ A getter and setter that just read and write a member add nothing over
 public data. If any value is allowed, use a `struct`; if not, the functions
 should enforce the rule.
 
-```cpp nocompile
+```cpp bad
 class Point {
 public:
     int x() const { return x_; }
@@ -2150,7 +2150,7 @@ A virtual function costs a vtable pointer in every object and an indirect
 call, and it invites overriding. A class that isn't meant as a base doesn't
 need any.
 
-```cpp nocompile
+```cpp bad
 class Vec2 {
 public:
     virtual double length() const;            // BAD: nobody derives from Vec2; every
@@ -2179,7 +2179,7 @@ Protected data can be changed by any derived class, present or future, so no
 one can state or keep its invariant. Keep data private and give derived
 classes protected functions instead.
 
-```cpp nocompile
+```cpp bad
 class Shape {
 public:
     virtual ~Shape() = default;
@@ -2210,7 +2210,7 @@ A class either keeps an invariant (all non-`const` data private) or is a
 bundle of independent values (all public). Mixing the two leaves the reader
 unsure which members the rules cover.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 class Inventory {
 public:
@@ -2240,7 +2240,7 @@ struct Margins { int top = 0, right = 0, bottom = 0, left = 0; };   // GOOD: all
 Split a large interface into the separate roles callers need, and let a class
 implement several of them. A caller that only reads takes a `Reader&`.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Stream {                         // BAD: one interface for everything: a read-only
 public:                                // source must still implement write and seek
@@ -2273,7 +2273,7 @@ Small bases that each bring a piece of state and its operations (mixins) can
 be combined in one class, instead of copying the same code into every class
 that needs it.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Session {
 public:
@@ -2405,7 +2405,7 @@ Default arguments are chosen from the static type, but the body comes from the
 dynamic type. If the base and the overrider disagree, the same call gives a
 different argument depending on how you reach it.
 
-```cpp nocompile
+```cpp bad
 struct Logger {
     virtual ~Logger() = default;
     virtual void log(const char* msg, int level = 1);
@@ -2433,7 +2433,7 @@ Passing or storing a polymorphic object by value copies only the base part,
 and calls then go to the base's functions. Use a reference, a pointer or a
 smart pointer.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 struct Shape { virtual ~Shape() = default; virtual double area() const { return 0; } };
 struct Square : Shape { double side = 2; double area() const override { return side * side; } };
@@ -2457,7 +2457,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 type. A `static_cast` downcast trusts you, and is undefined behaviour when
 you're wrong.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape { double r = 1; };
 struct Square : Shape { double side = 1; };
@@ -2481,7 +2481,7 @@ A reference can't be null, so `dynamic_cast<T&>` throws `std::bad_cast` when
 the object isn't a `T`. Use it when "not a `T`" is a bug, not a case to
 handle.
 
-```cpp nocompile
+```cpp bad
 struct Message { virtual ~Message() = default; };
 struct Login : Message { const char* user = ""; };
 const char* user_of(Message& m) {
@@ -2504,7 +2504,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 When "it might not be a `T`" is a normal case, cast to a pointer and test it
 for null. An exception isn't the tool for ordinary control flow.
 
-```cpp nocompile
+```cpp bad
 #include <typeinfo>
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape { double r = 1; };
@@ -2530,7 +2530,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 A raw `new` needs a matching `delete` on every path, including exceptions and
 early returns. A smart pointer deletes on all of them.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape {};
 void draw(Shape&);
@@ -2559,7 +2559,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 `std::make_unique<T>(args)` names the type once and never leaves a naked
 `new` in the code.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <string>
 std::unique_ptr<std::string> greeting{new std::string{"hello"}};   // BAD: type written twice, a naked new
@@ -2578,7 +2578,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 `std::make_shared` allocates the object and its reference counts together,
 once, instead of in two allocations, and avoids the naked `new`.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <string>
 std::shared_ptr<std::string> name{new std::string{"Ada"}};   // BAD: two allocations, a naked new
@@ -2598,7 +2598,7 @@ An array of `Derived` decays to `Derived*`, which converts to `Base*`
 silently. Indexing that pointer steps by `sizeof(Base)`, landing in the
 middle of objects.
 
-```cpp nocompile
+```cpp bad
 struct Base { int id = 0; };
 struct Derived : Base { int extra = 0; };
 int sum_ids(const Base* p, int n) { int s = 0; for (int i = 0; i < n; ++i) s += p[i].id; return s; }
@@ -2627,7 +2627,7 @@ A virtual call always reaches the most-derived override. A chain of casts
 checks for the types someone thought of, and silently does the wrong thing
 for a class added later.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; };
 struct Circle : Shape { double r = 1; };
 struct Square : Shape { double side = 1; };
@@ -2652,7 +2652,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 An operator should do what the symbol means for built-in types: `+` adds and
 doesn't change its operands, `==` is equality and a copy compares equal.
 
-```cpp nocompile
+```cpp bad
 struct Money {
     long cents = 0;
     Money operator+(const Money& o) { cents += o.cents; return *this; }   // BAD: + changes its left operand
@@ -2701,7 +2701,7 @@ Tested by [`tests/guidelines/class_test.cpp`](../../../../tests/guidelines/class
 The same operation on different types should have the same name. Encoding
 the type in the name adds noise and stops generic code from calling it.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 std::string int_to_text(int);                   // BAD: the type is in the name,
 std::string double_to_text(double);             // so a template can't call "to_text" on T
@@ -2722,7 +2722,7 @@ Two different operations shouldn't share a name: overload resolution then
 picks the meaning from the argument's type, and a small change in a call
 changes what it does.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <cstddef>
 #include <vector>
@@ -2745,7 +2745,7 @@ An implicit conversion operator fires in places nobody intended, such as
 turning a temporary string into a pointer that dangles. Make it `explicit`,
 or give it a name.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 class Path {
 public:
@@ -2779,7 +2779,7 @@ into scope with `using std::swap;` and call it unqualified. Then a type's own
 `swap` is found by argument-dependent lookup, and the generic one is the
 fallback.
 
-```cpp nocompile
+```cpp bad
 #include <utility>
 template <class T>
 void exchange_values(T& a, T& b) {
@@ -2804,7 +2804,7 @@ Code everywhere assumes `&x` is the address of `x`. Overloading it breaks
 that for every user and every template; generic code then has to use
 `std::addressof`.
 
-```cpp nocompile
+```cpp bad
 struct Tracked {
     int value = 0;
     int operator&() const { return value; }   // BAD: &t is no longer an address
@@ -2825,7 +2825,7 @@ When an operation has a conventional operator (`<<` for output, `==` for
 equality, `[]` for indexing), use it: then the type works with the code that
 relies on the convention.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>
 struct Point { int x, y; };
 void print_point(std::ostream& os, const Point& p) { os << p.x << ',' << p.y; }   // BAD: can't be chained or used generically
@@ -2893,7 +2893,7 @@ A union lets members that are never used at the same time share storage: it's
 as big as its largest member, not the sum. Keep it wrapped with something
 that knows which member is live (C.181).
 
-```cpp nocompile
+```cpp bad
 struct Token {
     int kind;              // 0 = number, 1 = symbol
     double number;         // BAD: both always take space, though only one is used
@@ -2919,7 +2919,7 @@ A union on its own doesn't record which member holds a value, so reading the
 wrong one is a silent type error. Use `std::variant`, which tracks it and
 checks every access.
 
-```cpp nocompile
+```cpp bad
 union Value {
     int i;
     double d;
@@ -2948,7 +2948,7 @@ When you write your own tagged union, put the tag and an anonymous union
 inside a class, keep both private, and let the member functions keep them in
 step. Users can't then set one without the other.
 
-```cpp nocompile
+```cpp bad
 struct Value {
     enum Kind { integer, real } kind;
     union { int i; double d; } as;    // BAD: public tag and union: nothing keeps them in step
@@ -2984,7 +2984,7 @@ Writing one member of a union and reading another is undefined behaviour in
 C++, and it's invisible at the read. To see an object's bits, use
 `std::bit_cast` (C++20), which is defined and checked.
 
-```cpp nocompile
+```cpp bad
 #include <cstdint>
 std::uint32_t bits_of(float f) {
     union { float f; std::uint32_t u; } pun;
