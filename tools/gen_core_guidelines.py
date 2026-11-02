@@ -138,7 +138,8 @@ def link(anchor: str | None) -> str:
 
 
 RULE_ID = re.compile(r"[A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9]+[a-z]?")
-TEST_COMMENT = re.compile(r"^// (" + RULE_ID.pattern + r"):", re.M)
+# Test comments use the same IDs as the index, including named ones (GSL.ptr).
+TEST_COMMENT = re.compile(r"^// ([A-Za-z]+(?:\.[A-Za-z]+)*\.[0-9A-Za-z?-]+):", re.M)
 NO_EXAMPLE = re.compile(r"^\*No example: (.+?)\*\s*$", re.M)
 
 
@@ -406,11 +407,14 @@ def self_test() -> int:
         bad.append("render: profile sub-point missing")
     ex = {"class.md": "# C\n\n## C.30: Define a destructor if needed\n\nText.\n\n```cpp\nstruct S {};\n```\n\n"
                       "## SL.str.1: Use `std::string`\n\n*No example: shown elsewhere.*\n\n## C.31: no code yet\n"}
-    ts = {"tests/guidelines/class_test.cpp": "// C.30: the destructor runs\nTEST(A, B) {}\n// C.30: again\n"}
+    ts = {"tests/guidelines/class_test.cpp": "// C.30: the destructor runs\nTEST(A, B) {}\n// C.30: again\n",
+          "tests/guidelines/gsl_test.cpp": "// Checks claims made by x.\n// GSL.ptr: owner is an alias\n"}
     cov = coverage(ex, ts)
     if cov.get("C.30", {}).get("example") != ("class.md", "c30-define-a-destructor-if-needed") \
             or cov["C.30"]["tests"] != ["tests/guidelines/class_test.cpp"]:
         bad.append(f"coverage C.30: {cov.get('C.30')}")
+    if cov.get("GSL.ptr", {}).get("tests") != ["tests/guidelines/gsl_test.cpp"] or "Checks" in cov:
+        bad.append(f"named test ID: {cov.get('GSL.ptr')}")
     if cov.get("SL.str.1", {}).get("none") != "shown elsewhere." or "example" in cov.get("C.31", {"x": 1}):
         bad.append(f"coverage no-example / empty: {cov.get('SL.str.1')}, {cov.get('C.31')}")
     files = render(sections, "0123456789abcdef", "June 14, 2026", pages, cov)
