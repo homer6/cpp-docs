@@ -16,6 +16,8 @@ verified locally (the snippet compiles, and behaves as described when run).
 [![Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml)
 [![FreeBSD](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml)
 
+**[Platform support notes →](docs/platform-support/notes.md)**
+
 **[Full platform / compiler / architecture support →](docs/platform-support/README.md)**
 
 ## Layout

@@ -187,6 +187,15 @@ not named on the command line (git history keeps them; the removal shows in
 per-toolchain file (removing files for toolchains no longer present) and the
 README table. Check `tools/collect_results.py --help` for the current flags.
 
+Then **update the platform support notes** (`docs/platform-support/notes.md`,
+#226), which the collector shows at the top of the folder README. Re-read the
+new results (per-toolchain counts, the skip reasons grouped by feature-test
+macro, x86_64 vs arm64 pairs, `known-bugs.json`), revise every claim that
+changed, and set the `<!-- notes-run: <id> -->` marker to the newest run.
+Keep them high level: the level of support per compiler, platform and
+architecture, what decides it, what nothing supports, and the limits of the
+results. `--check` fails until the marker matches the newest run.
+
 ## 7. Local results
 
 The local toolchains are part of the report. Before regenerating for a
@@ -221,6 +230,15 @@ the new `runs/` folders, `local/` and the README block. The body lists:
 
 Then comment on the release tracker (#140 or its successor) with the
 per-workflow results.
+
+## 9. Every release: the platform support notes
+
+A release always ships fresh notes (#226): the release run is a full run, so
+step 6's notes update is part of the release PR (with the release notes,
+version and report), never skipped or left for later. Re-derive every claim
+from the release run's results, set the marker to the release run, and link
+the notes from `docs/releases/vX.Y.Z.md`. `collect_results.py --check` fails
+until the marker names that run.
 
 ## Keeping this skill current
 
