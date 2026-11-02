@@ -26,4 +26,4 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-gsl-concepts)
 
-- [GSL.ptr: Smart pointer concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-gsl-smartptrconcepts)
+- [GSL.ptr: Smart pointer concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-gsl-smartptrconcepts) · [example](examples/gsl.md#gslptr-smart-pointer-concepts) · [test](../../../tests/guidelines/gsl_test.cpp)

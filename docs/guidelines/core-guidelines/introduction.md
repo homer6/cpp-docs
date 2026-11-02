@@ -14,7 +14,7 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-aims)
 
-- [In.0: Don't panic!](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r0)
+- [In.0: Don't panic!](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r0) · no example: advice on how to read and adopt the Guidelines (take time to understand a rule, adopt them gradually), not a rule about code.
 
 ## In.not: Non-aims
 

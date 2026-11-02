@@ -6,10 +6,10 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-not) · [All sections](README.md)
 
-- [NR.1: Don't insist that all declarations should be at the top of a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-top)
-- [NR.2: Don't insist on having only a single `return`-statement in a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-single-return)
-- [NR.3: Don't avoid exceptions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-no-exceptions)
-- [NR.4: Don't insist on placing each class definition in its own source file](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-lots-of-files)
-- [NR.5: Don't use two-phase initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-two-phase-init)
-- [NR.6: Don't place all cleanup actions at the end of a function and `goto exit`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-goto-exit)
-- [NR.7: Don't make data members `protected`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-protected-data)
+- [NR.1: Don't insist that all declarations should be at the top of a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-top) · [example](examples/not.md#nr1-dont-insist-that-all-declarations-should-be-at-the-top-of-a-function)
+- [NR.2: Don't insist on having only a single `return`-statement in a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-single-return) · [example](examples/not.md#nr2-dont-insist-on-having-only-a-single-return-statement-in-a-function) · [test](../../../tests/guidelines/not_test.cpp)
+- [NR.3: Don't avoid exceptions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-no-exceptions) · [example](examples/not.md#nr3-dont-avoid-exceptions) · [test](../../../tests/guidelines/not_test.cpp)
+- [NR.4: Don't insist on placing each class definition in its own source file](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-lots-of-files) · no example: it's about how source files are organized (cohesive files and namespaces rather than one file per class), which a single snippet can't show.
+- [NR.5: Don't use two-phase initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-two-phase-init) · [example](examples/not.md#nr5-dont-use-two-phase-initialization) · [test](../../../tests/guidelines/not_test.cpp)
+- [NR.6: Don't place all cleanup actions at the end of a function and `goto exit`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-goto-exit) · [example](examples/not.md#nr6-dont-place-all-cleanup-actions-at-the-end-of-a-function-and-goto-exit) · [test](../../../tests/guidelines/not_test.cpp)
+- [NR.7: Don't make data members `protected`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rnr-protected-data) · [example](examples/not.md#nr7-dont-make-data-members-protected) · [test](../../../tests/guidelines/not_test.cpp)

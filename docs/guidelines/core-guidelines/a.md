@@ -6,6 +6,6 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-a) · [All sections](README.md)
 
-- [A.1: Separate stable code from less stable code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-stable)
-- [A.2: Express potentially reusable parts as a library](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-lib)
-- [A.4: There should be no cycles among libraries](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-dag)
+- [A.1: Separate stable code from less stable code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-stable) · [example](examples/a.md#a1-separate-stable-code-from-less-stable-code)
+- [A.2: Express potentially reusable parts as a library](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-lib) · no example: it's about packaging code as a library (headers, object files, documentation, shipped together), which a code snippet can't show.
+- [A.4: There should be no cycles among libraries](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ra-dag) · no example: it's about dependencies between libraries in a build, which a single code snippet can't show.
