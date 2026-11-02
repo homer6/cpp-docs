@@ -16,6 +16,17 @@
 
 #include "support/feature.hpp"
 
+// Clang 20 and later define __cpp_explicit_this_parameter, so libstdc++ 14 takes its
+// deducing-this path for a range adaptor closure such as ranges::to<C>(), which uses
+// std::forward_like. libstdc++ 14.1 and 14.2 declare forward_like with a deduced return
+// type that Clang, treating it as a builtin, can't use ("function 'forward_like<...>' with
+// deduced return type cannot be used before it is defined"), so `r | ranges::to<C>()` has
+// no viable operator| (llvm/llvm-project#101614). libstdc++ 14.3 (2025-05-23) fixes it.
+#if defined(__clang__) && defined(__cpp_explicit_this_parameter) && defined(_GLIBCXX_RELEASE) && \
+    _GLIBCXX_RELEASE == 14 && __GLIBCXX__ < 20250523
+#define CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE 1
+#endif
+
 namespace rv = std::views;
 
 namespace {
@@ -200,10 +211,21 @@ TEST(Views, FilterCachesBegin) {
 // "join_with — flatten with a separator": a char or a string_view goes between the pieces.
 TEST(Views, JoinWith) {
     CPPDOCS_REQUIRE(__cpp_lib_ranges_join_with);
-#ifdef __cpp_lib_ranges_join_with
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_to_container);  // the page collects with ranges::to (GCC 13 lacks it)
+#if defined(__cpp_lib_ranges_join_with) && defined(__cpp_lib_ranges_to_container)
     std::vector<std::string> words{"a", "bc", "d"};
+#ifdef CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE
+    // The call form doesn't go through the adaptor closure, so it still runs.
+    EXPECT_EQ(std::ranges::to<std::string>(words | rv::join_with(',')), "a,bc,d");
+    EXPECT_EQ(std::ranges::to<std::string>(words | rv::join_with(std::string_view{", "})), "a, bc, d");
+    GTEST_SKIP() << "Clang " << __clang_major__ << " with libstdc++ 14.1/14.2 rejects "
+                    "`r | ranges::to<C>()`: forward_like has a deduced return type Clang can't "
+                    "use as a builtin (llvm/llvm-project#101614); fixed in libstdc++ 14.3. "
+                    "The call form ranges::to<C>(r) was checked";
+#else
     EXPECT_EQ(words | rv::join_with(',') | std::ranges::to<std::string>(), "a,bc,d");
     EXPECT_EQ(words | rv::join_with(std::string_view{", "}) | std::ranges::to<std::string>(), "a, bc, d");
+#endif
 #endif
 }
 

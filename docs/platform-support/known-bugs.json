@@ -47,5 +47,33 @@
   "upstream": [{"label": "llvm/llvm-project#122306", "url": "https://github.com/llvm/llvm-project/issues/122306"}],
   "issues": [194],
   "match": "llvm/llvm-project#122306"
+ },
+ {
+  "toolchain": "Clang 20–22 with libstdc++ 14.1/14.2 (Ubuntu 24.04)",
+  "summary": "libstdc++'s std::forward_like has a deduced return type that Clang, treating it as a builtin, can't use, so calling a bind_front/bind_back result and piping into ranges::to<C>() fail on libstdc++'s deducing-this path; fixed in libstdc++ 14.3",
+  "upstream": [{"label": "llvm/llvm-project#101614", "url": "https://github.com/llvm/llvm-project/issues/101614"}, {"label": "llvm/llvm-project#131708", "url": "https://github.com/llvm/llvm-project/issues/131708"}],
+  "issues": [193],
+  "match": "llvm/llvm-project#101614"
+ },
+ {
+  "toolchain": "Clang 18–23 with libstdc++ (Linux, MSYS2 UCRT64)",
+  "summary": "Clang doesn't constant-evaluate arithmetic on GNU __complex__ types, so constexpr std::complex arithmetic from libstdc++ is rejected",
+  "upstream": [{"label": "llvm/llvm-project#55370", "url": "https://github.com/llvm/llvm-project/issues/55370"}],
+  "issues": [193],
+  "match": "llvm/llvm-project#55370"
+ },
+ {
+  "toolchain": "Clang 22–23 with libstdc++ 15.0–15.3 / 16.0–16.2 (Ubuntu 26.04, MSYS2 UCRT64)",
+  "summary": "every format string with a dynamic width or precision (\"{:{}}\") is rejected at compile time in C++26 mode: Clang can't call __check_dynamic_spec, instantiated before its definition (llvm#73232); libstdc++ works around it in 15.4 and 16.3",
+  "upstream": [{"label": "GCC PR 127220", "url": "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=127220"}, {"label": "llvm/llvm-project#73232", "url": "https://github.com/llvm/llvm-project/issues/73232"}],
+  "issues": [193],
+  "match": "PR 127220"
+ },
+ {
+  "toolchain": "libc++ 18 (Clang 18)",
+  "summary": "a type whose formatter's format() takes std::format_context& (not a template context) isn't treated as formattable, so std::format/std::print with it fails to compile; libc++ 19 accepts it",
+  "upstream": [{"label": "llvm/llvm-project#66466", "url": "https://github.com/llvm/llvm-project/issues/66466"}],
+  "issues": [193],
+  "match": "llvm/llvm-project#66466"
  }
 ]

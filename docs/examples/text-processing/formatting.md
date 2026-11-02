@@ -101,6 +101,14 @@ delegate to an existing formatter (e.g. inherit from `std::formatter<int>`).
 - **Compile-time check needs a literal format string.** A `std::string` format
   argument won't compile with `std::format`; route runtime strings through
   `std::vformat(str, std::make_format_args(args...))`.
+- **Toolchain gaps in the compile-time check.** Clang with libstdc++ 15.0–15.3
+  or 16.0–16.2 rejects every dynamic width or precision (`"{:{}}"`) in C++26
+  mode ([GCC PR 127220](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=127220),
+  fixed in 15.4 and 16.3); `std::vformat` still works. libc++ 18 rejects a
+  formatter whose `format()` takes `std::format_context&` instead of a template
+  context parameter
+  ([llvm/llvm-project#66466](https://github.com/llvm/llvm-project/issues/66466),
+  fixed in libc++ 19).
 - **It's locale-independent by default** (unlike `iostream`, and `to_string` before C++26). Use the
   `L` spec / `std::format(std::locale, ...)` overloads when you actually want
   locale formatting.

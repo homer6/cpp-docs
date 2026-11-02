@@ -13,6 +13,17 @@
 
 #include "support/feature.hpp"
 
+// Clang 20 and later define __cpp_explicit_this_parameter, so libstdc++ 14 takes its
+// deducing-this path for a range adaptor closure such as ranges::to<C>(), which uses
+// std::forward_like. libstdc++ 14.1 and 14.2 declare forward_like with a deduced return
+// type that Clang, treating it as a builtin, can't use ("function 'forward_like<...>' with
+// deduced return type cannot be used before it is defined"), so `r | ranges::to<C>()` has
+// no viable operator| (llvm/llvm-project#101614). libstdc++ 14.3 (2025-05-23) fixes it.
+#if defined(__clang__) && defined(__cpp_explicit_this_parameter) && defined(_GLIBCXX_RELEASE) && \
+    _GLIBCXX_RELEASE == 14 && __GLIBCXX__ < 20250523
+#define CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE 1
+#endif
+
 namespace rv = std::views;
 
 namespace {
@@ -69,6 +80,17 @@ TEST(RangeFactories, RangesTo) {
 #ifdef __cpp_lib_ranges_to_container
     std::vector<int> data{1, 2, 3, 4};
     std::vector<std::pair<int, std::string>> pairs{{1, "one"}, {2, "two"}};
+#ifdef CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE
+    // The call form doesn't go through the adaptor closure, so it still runs.
+    auto evens = std::ranges::to<std::vector>(data | rv::filter([](int x) { return x % 2 == 0; }));
+    EXPECT_EQ(evens, (std::vector<int>{2, 4}));
+    EXPECT_EQ((std::ranges::to<std::map<int, std::string>>(pairs)),
+              (std::map<int, std::string>{{1, "one"}, {2, "two"}}));
+    GTEST_SKIP() << "Clang " << __clang_major__ << " with libstdc++ 14.1/14.2 rejects "
+                    "`r | ranges::to<C>()`: forward_like has a deduced return type Clang can't "
+                    "use as a builtin (llvm/llvm-project#101614); fixed in libstdc++ 14.3. "
+                    "The call form ranges::to<C>(r) was checked";
+#else
     auto evens = data | rv::filter([](int x) { return x % 2 == 0; }) | std::ranges::to<std::vector>();
     static_assert(std::same_as<decltype(evens), std::vector<int>>);
     EXPECT_EQ(evens, (std::vector<int>{2, 4}));
@@ -79,6 +101,7 @@ TEST(RangeFactories, RangesTo) {
 
     auto m = pairs | std::ranges::to<std::map<int, std::string>>();
     EXPECT_EQ(m, (std::map<int, std::string>{{1, "one"}, {2, "two"}}));
+#endif
 #endif
 }
 

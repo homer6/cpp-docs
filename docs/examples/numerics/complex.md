@@ -78,6 +78,12 @@ constexpr auto z2 = z * z;                    // (1 + 2i)² = -3 + 4i
 static_assert(z2.real() == -3.0 && z2.imag() == 4.0);
 ```
 
+GCC with libstdc++ and Clang with libc++ accept this. Clang with libstdc++
+rejects it (Clang 18 through 23 so far): libstdc++ stores the value as a GNU
+`__complex__ double`, and Clang won't constant-evaluate arithmetic on it
+([llvm/llvm-project#55370](https://github.com/llvm/llvm-project/issues/55370)).
+The same product at run time is fine.
+
 ### Square root of a negative number
 
 ```cpp
