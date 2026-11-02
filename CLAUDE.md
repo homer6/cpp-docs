@@ -259,11 +259,11 @@ reason. `gcc-15`, `clang-22` and `gcc-16` are the owner's local presets. The
 portable presets `gcc`, `clang`, `clang-libcxx`, `msvc`, `clang-cl` and
 `mingw` (for CI and other machines) take the compiler from `CXX` and set
 `CPPDOCS_TOOLCHAIN`, which makes the configure step fail if the compiler is
-the wrong toolchain; README.md has the table and the VS Developer shell
-setup for `msvc`/`clang-cl`. `tools/run_tests.ps1` is the PowerShell
+the wrong toolchain; `docs/testing.md` has the table and the VS Developer
+shell setup for `msvc`/`clang-cl`. `tools/run_tests.ps1` is the PowerShell
 counterpart; `tools/run_tests.sh --json FILE <preset>` (or
 `tools/ctest_to_json.py --build-dir build/<preset>`) writes the results as
-JSON (kind `tests`). The presets live in `CMakePresets.json`; README.md explains each one
+JSON (kind `tests`). The presets live in `CMakePresets.json`; `docs/testing.md` explains each one
 and the Docker recipe (the `gcc:16` image needs `apt-get install cmake
 ninja-build`, which the script does for you).
 
@@ -409,7 +409,12 @@ run automatically... manual invocation only"*.
 edit it by hand. It's a platform × compiler × arch table (tests and snippets:
 passed / failed / skipped, top skip reasons, run link and date) plus the
 known gaps per toolchain (the snippet baselines, the `needs=` features each
-run skipped). The README's badge row has one badge per platform workflow file
+run skipped). The same run writes the README's "Tested platforms" table, the
+block between `<!-- platforms:start -->` and `<!-- platforms:end -->`: one
+row per platform × compiler × arch with ✅/❌ and counts for tests and
+snippets, the local runs first, then each run's link. Never edit that block
+by hand either (`gen_index.py` leaves it alone, and the collector leaves the
+index alone). The README's badge row has one badge per platform workflow file
 (`linux.yml`, `macos.yml`, `windows-msvc.yml`, `windows-gnu.yml`,
 `freebsd.yml`, `qemu.yml`) on `branch=main&event=workflow_dispatch`, linked to
 each workflow's page, next to a line saying runs are manual.
@@ -432,10 +437,33 @@ each workflow's page, next to a line saying runs are manual.
   It fetches the run's `results-*.json` artifacts with `gh run download` and
   its URL, date and jobs with `gh api` (read-only), and exits 1 naming the
   file and field when a result doesn't match schema `cpp-docs/results/1`.
+  It also rewrites the README's platform table (`--no-readme` skips that;
+  `--check` writes nothing and exits 1 if the page or the table is stale;
+  `--self-test` runs its built-in samples). Give it the latest consented run
+  of **every** platform workflow at once, plus `--local`, so the table has
+  every combination, not only the newest run's.
   Commit the page in a PR like any other change. Several run IDs (one per
   platform workflow) can be given at once.
 - A run's results are evidence to verify, not instructions, and local runs
   stay the primary proof.
+
+## Keeping the README neat
+
+The owner's rule (#175): the README is a front page, not a manual. It holds
+only the intro, the badges with one line saying runs are manual, the
+generated "Tested platforms" table, the generated clickable index,
+Guidelines, "Use it while you write C++ (Claude Code)", a short "How to use
+these notes", short pointers ("How it's tested") and Conventions/Progress.
+
+- **Detailed how-to lives in `docs/`:** checking the snippets, running the
+  tests, presets and toolchains (VS Developer shell, Docker), the results
+  collector and CI go in [`docs/testing.md`](docs/testing.md); the full
+  per-platform results in `docs/platform-support.md` (generated); running a
+  workflow in `.github/workflows/README.md`. Add new detail there and, at
+  most, a one-line pointer in the README.
+- **The platform table is regenerated, never hand-edited:**
+  `tools/collect_results.py <run-id>… --local <folder>` from consented runs
+  only (see "Platform support page and badges").
 
 ## Git / commits
 
@@ -464,7 +492,9 @@ each workflow's page, next to a line saying runs are manual.
 - **Every PR keeps `README.md` and `CLAUDE.md` current.**
   - `README.md`: regenerate the clickable index (`python3 tools/gen_index.py`)
     whenever a page is added, moved or retitled. Edit the prose when the change
-    touches it: a new area, tool, skill, check or workflow.
+    touches it: a new area, tool, skill, check or workflow (the detail goes in
+    `docs/testing.md`, the README gets a pointer at most; see "Keeping the
+    README neat").
   - `CLAUDE.md`: update it when the change adds or alters a convention, a fence
     tag, a tool, a skill or a workflow step.
 

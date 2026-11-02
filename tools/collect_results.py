@@ -67,7 +67,7 @@ WORKFLOWS = [
      "FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC"),
     ("qemu.yml", "Other architectures (QEMU)", "riscv64, s390x (big-endian), ppc64le under QEMU"),
 ]
-NOT_RUN = "not run yet: first run after the next release, with the owner's consent"
+NOT_RUN = "not run yet (each run needs the owner's consent)"
 
 # Fields every result document must have, by kind: (path, type).
 COMMON = [("schema", str), ("kind", str), ("platform", dict), ("platform.system", str),
@@ -137,22 +137,32 @@ def unpack(d, where: str) -> list[dict]:
     if isinstance(d, dict) and d.get("kind") == "run":
         if d.get("schema") != SCHEMA:
             raise SchemaError(f"{where}: schema is {d.get('schema')!r}, expected {SCHEMA!r}")
-        out = []
+        out = [{"kind": "run", **{k: v for k, v in d.items() if k not in ("tests", "snippets", "kind")}}]
         for sub in ("tests", "snippets"):
             if d.get(sub) is not None:
                 doc = validate(d[sub], f"{where} ({sub})")
                 if sub == "snippets":
                     doc = {**doc, "mode": d.get("snippets_mode", "enforced")}
                 out.append(doc)
-        if not out:
+        if len(out) == 1:
             raise SchemaError(f"{where}: a 'run' result with neither tests nor snippets "
                               "(the job's configure or build step probably failed)")
         return out
     return [validate(d, where)]
 
 
+def docs(row: dict[str, dict]) -> list[dict]:
+    """A row's tests and snippets documents (not the job's "run" metadata)."""
+    return [row[k] for k in ("tests", "snippets") if k in row]
+
+
 def load_dir(folder: pathlib.Path) -> dict[str, dict[str, dict]]:
-    """{label: {kind: doc}} for every results-*.json under folder."""
+    """{label: {kind: doc}} for every results-*.json under folder.
+
+    kind is "tests", "snippets" and, for a platform workflow job, "run": the
+    job's own fields (os_version, inputs, steps, ok, run link), without the
+    nested documents.
+    """
     rows: dict[str, dict[str, dict]] = {}
     files = sorted(folder.rglob("results-*.json"))
     for f in files:
@@ -201,7 +211,7 @@ def load_run(run_id: str, keep: pathlib.Path | None) -> dict:
 def load_folder(folder: pathlib.Path, url: str, date: str) -> dict:
     rows = load_dir(folder)
     if not date:
-        stamps = [d["generated"] for r in rows.values() for d in r.values()]
+        stamps = [d["generated"] for r in rows.values() for d in docs(r)]
         date = max(stamps)[:10] if stamps else ""
     return {"rows": rows, "url": url, "date": date, "workflow": "", "branch": "", "sha": "",
             "conclusion": "", "jobs": []}
@@ -248,14 +258,24 @@ def short_reason(reason: str, limit: int = 60) -> str:
 
 def top_skips(row: dict[str, dict]) -> str:
     # nocompile snippets skip on every toolchain alike, so they aren't a toolchain's gap.
-    counts = collections.Counter(short_reason(s["reason"]) for d in row.values() for s in d["skips"]
+    counts = collections.Counter(short_reason(s["reason"]) for d in docs(row) for s in d["skips"]
                                  if s["reason"] != "nocompile")
     return "<br>".join(f"{n}× {r}" for r, n in counts.most_common(TOP_SKIPS)) or "-"
 
 
-def tests_cell(doc: dict | None) -> str:
+def missing_tests(row: dict[str, dict]) -> str:
+    """Why a job that was asked to run the tests has no tests result, or ""."""
+    run = row.get("run")
+    if "tests" in row or not run or not (run.get("inputs") or {}).get("tests"):
+        return ""
+    code = (run.get("steps") or {}).get("tests")
+    return f"no results (tests step exit {code})" if code not in (None, 0) else "no results"
+
+
+def tests_cell(doc: dict | None, row: dict[str, dict] | None = None) -> str:
     if not doc:
-        return "-"
+        why = missing_tests(row or {})
+        return f"failed: {why}" if why else "-"
     c = doc["counts"]
     return f"{c['passed']} / {c['failed']} / {c['skipped']}"
 
@@ -279,7 +299,7 @@ def describe(row: dict[str, dict]) -> tuple[str, str, str, str]:
     if stdlib and stdlib != "unknown":
         comp += f", {stdlib}"
     preset = row["tests"]["preset"] if "tests" in row else row["snippets"]["toolchain"]
-    return os_of(main), arch_of(main), comp, f"`{preset}`"
+    return os_label(row), arch_of(main), comp, f"`{preset}`"
 
 
 def matrix(rows: dict[str, dict[str, dict]], link: str) -> list[str]:
@@ -289,7 +309,7 @@ def matrix(rows: dict[str, dict[str, dict]], link: str) -> list[str]:
     for label in sorted(rows):
         row = rows[label]
         os_, arch, comp, preset = describe(row)
-        out.append(f"| {label} | {os_} | {arch} | {comp} | {preset} | {tests_cell(row.get('tests'))} "
+        out.append(f"| {label} | {os_} | {arch} | {comp} | {preset} | {tests_cell(row.get('tests'), row)} "
                    f"| {snippets_cell(row.get('snippets'))} | {top_skips(row)} | {link} |")
     return out
 
@@ -372,8 +392,10 @@ def render(runs: list[dict], local: dict | None, today: str) -> str:
            "have run on, with passed, failed and skipped counts.", "",
            "## How to read this", "",
            "- **Workflows run only by hand.** Every GitHub Actions workflow here is `workflow_dispatch` "
-           "only, and runs only with the owner's consent, at a release. The badges in the README and "
-           "the tables below show the **last consented run**, not the current tip of any branch.",
+           "only, and runs only with the owner's consent, given for each run: before a release (on "
+           "`dev`), or to back a claim about a platform we can't run locally. The tables below show "
+           "the **last consented run** of each workflow, not the current tip of any branch; the README "
+           "badges show the last run on `main`.",
            f"- **Last consented run:** {last or 'none yet'}.",
            "- **Report-only snippets.** Snippet runs are enforced against a reviewed baseline only for "
            "GCC 15/16 and Clang/LLVM 22 with libc++ (off Windows). Every other toolchain's snippet "
@@ -406,7 +428,8 @@ def render(runs: list[dict], local: dict | None, today: str) -> str:
         for r in consented:
             if r["rows"]:
                 link = f"[{r['date'] or 'run'}]({r['url']})" if r["url"] else (r["date"] or "-")
-                where = " · ".join(x for x in (r["workflow"], r["branch"], r["sha"]) if x)
+                scope = areas_of(r["rows"])
+                where = " · ".join(x for x in (r["workflow"], r["branch"], r["sha"], scope) if x)
                 if where:
                     out += [f"Run {link}: {where}.", ""]
                 out += matrix(r["rows"], link) + [""]
@@ -427,6 +450,131 @@ def render(runs: list[dict], local: dict | None, today: str) -> str:
         ([(l, row) for l, row in local["rows"].items()] if local else [])
     out += gaps(all_rows) + [""]
     return "\n".join(out)
+
+
+def areas_of(rows: dict[str, dict[str, dict]]) -> str:
+    """The test areas a run's jobs covered ("areas `^strings$`", "all areas"), or "" if unknown."""
+    found = {(row["run"].get("inputs") or {}).get("areas") or "" for row in rows.values() if "run" in row}
+    if not found:
+        return ""
+    return "all areas" if found == {""} else "areas " + ", ".join(f"`{a or 'all'}`" for a in sorted(found))
+
+
+# --- the README's platform table --------------------------------------------
+
+README = ROOT / "README.md"
+README_START, README_END = "<!-- platforms:start -->", "<!-- platforms:end -->"
+
+
+def short_version(v: str) -> str:
+    m = re.match(r"\d+(?:\.\d+){0,2}", v)
+    return m[0] if m else v
+
+
+def os_label(row: dict[str, dict]) -> str:
+    """The OS or runner image a row ran on, short: "Ubuntu 24.04", "macOS 15", "Windows Server 2025"."""
+    run = row.get("run") or {}
+    v, plat = run.get("os_version") or "", run.get("platform") or ""
+    if m := re.search(r"MSYS2 (\w+)", v):
+        w = re.match(r"windows-(\d+)", plat)
+        base = ("Windows Server " if w and len(w[1]) == 4 else "Windows ") + w[1] if w else "Windows"
+        return f"{base}, MSYS2 {m[1]}"
+    for pat, fmt in ((r"Ubuntu (\d+\.\d+)", "Ubuntu {}"), (r"macOS (\d+)", "macOS {}"),
+                     (r"FreeBSD (\d+\.\d+)", "FreeBSD {}"), (r"Microsoft Windows (Server \d+|\d+)", "Windows {}"),
+                     (r"Debian(?: GNU/Linux)? (\d+)", "Debian {}")):
+        if m := re.match(pat, v):
+            return fmt.format(m[1]) + (" (QEMU user-mode)" if "QEMU" in v else "")
+    if v:
+        return v.split(",")[0]
+    main = row.get("tests") or row["snippets"]  # a local run: no job metadata
+    p = main["platform"]
+    if p["system"] == "Linux" and "linuxkit" in p["version"]:
+        return "Linux (Docker)"
+    return os_of(main)
+
+
+def compiler_label(row: dict[str, dict]) -> str:
+    main = row.get("tests") or row["snippets"]
+    fam = family(main)
+    out = f"{fam} {short_version(version_of(main))}"
+    stdlib = main["compiler"].get("stdlib") or ""
+    if fam == "Clang" and stdlib and stdlib != "unknown":
+        out += f", {stdlib}"
+    return out
+
+
+def readme_tests(row: dict[str, dict]) -> str:
+    doc = row.get("tests")
+    if not doc:
+        why = missing_tests(row)
+        return f"❌ {why}" if why else "-"
+    c = doc["counts"]
+    if c["failed"]:
+        return f"❌ {c['failed']} failed ({c['passed']}/{c['total']})"
+    return f"✅ {c['passed']}/{c['total']}" + (f" ({c['skipped']} skipped)" if c["skipped"] else "")
+
+
+def readme_snippets(row: dict[str, dict]) -> str:
+    doc = row.get("snippets")
+    if not doc:
+        return "-"
+    c = doc["counts"]
+    new = doc["baseline"]["new"] if doc["baseline"] is not None else c["failed"]
+    notes = []
+    if c["failed"] - new:
+        notes.append(f"{c['failed'] - new} baselined")
+    if c["skipped"]:
+        notes.append(f"{c['skipped']} skipped")
+    if doc.get("mode") == "report-only":
+        notes.append("report-only")
+    cell = f"{'✅' if new == 0 else '❌'} {c['checked'] - c['failed']}/{c['checked']}"
+    return cell + (f" ({', '.join(notes)})" if notes else "")
+
+
+def readme_block(runs: list[dict], local: dict | None) -> str:
+    """The README's platform table: one row per platform x compiler x arch, newest results."""
+    order = {w: i for i, (w, _, _) in enumerate(WORKFLOWS)}
+    ci = sorted((r for r in runs if r["rows"]), key=lambda r: order.get(r["workflow"], len(order)))
+    entries = []  # (row, run cell)
+    if local and local["rows"]:
+        for label in sorted(local["rows"]):
+            entries.append((local["rows"][label], f"local, {local['date']}" if local["date"] else "local"))
+    for r in ci:
+        for label in sorted(r["rows"]):
+            row = r["rows"][label]
+            url = (row.get("run") or {}).get("run", {}).get("url") or r["url"]
+            entries.append((row, f"[{r['date'] or 'run'}]({url})" if url else (r["date"] or "-")))
+    scopes = {areas_of(r["rows"]) for r in ci} - {""}
+    per_row_scope = len(scopes) > 1
+    dates = [r["date"] for r in ci if r["date"]] + ([local["date"]] if local and local["rows"] and local["date"] else [])
+    out = ["<!-- Generated by tools/collect_results.py from consented runs and local results; "
+           "don't edit by hand (see CLAUDE.md). -->", ""]
+    if not entries:
+        return "\n".join(out + ["No results yet."])
+    out.append(f"{len(entries)} platform × compiler × architecture combinations, results as of "
+               f"{max(dates) if dates else 'unknown'}. **Tests**: GoogleTest cases passed / total; "
+               "**snippets**: compile-checked blocks passed / checked. *report-only*: that toolchain's "
+               "snippet results don't fail its run yet (no reviewed baseline). Skip reasons, known gaps "
+               "and full counts: [`docs/platform-support.md`](docs/platform-support.md).")
+    if scopes and not per_row_scope:
+        out[-1] += (f" The GitHub Actions runs here cover {next(iter(scopes))} (the `areas` input)"
+                    + ("; the local runs cover the whole suite." if local and local["rows"] else "."))
+    out += ["", "| Platform | Compiler | Arch | Tests | Snippets |" + (" Scope |" if per_row_scope else "") + " Run |",
+            "|---|---|---|---|---|" + ("---|" if per_row_scope else "") + "---|"]
+    for row, run_cell in entries:
+        scope = ""
+        if per_row_scope:
+            scope = (areas_of({"r": row}) or "all areas") + " | "
+        out.append(f"| {os_label(row)} | {compiler_label(row)} | {arch_of(row.get('tests') or row['snippets'])} "
+                   f"| {readme_tests(row)} | {readme_snippets(row)} | {scope}{run_cell} |")
+    return "\n".join(out)
+
+
+def update_readme(text: str, block: str) -> str:
+    pattern = re.compile(re.escape(README_START) + r".*?" + re.escape(README_END), re.S)
+    if not pattern.search(text):
+        raise SchemaError(f"README.md is missing the {README_START} / {README_END} markers")
+    return pattern.sub(lambda _: f"{README_START}\n{block}\n{README_END}", text)
 
 
 def summary(runs: list[dict], local: dict | None) -> str:
@@ -455,7 +603,16 @@ def main() -> int:
     ap.add_argument("--summary", action="store_true",
                     help="only the results tables and gaps (for a run's $GITHUB_STEP_SUMMARY)")
     ap.add_argument("--stdout", action="store_true", help="print the page instead of writing it")
+    ap.add_argument("--readme", type=pathlib.Path, default=README,
+                    help=f"README whose {README_START} block gets the platform table "
+                         f"(default: {README.relative_to(ROOT)})")
+    ap.add_argument("--no-readme", action="store_true", help="write the page only, leave the README alone")
+    ap.add_argument("--check", action="store_true",
+                    help="write nothing; exit 1 if the page or the README table differ from these results")
+    ap.add_argument("--self-test", action="store_true", help="run the built-in samples and exit")
     args = ap.parse_args()
+    if args.self_test:
+        return self_test()
     if not args.sources and not args.local:
         ap.error("give a run ID, a results folder, or --local DIR")
     if args.local and not args.local.is_dir():
@@ -485,12 +642,125 @@ def main() -> int:
         page = render(runs, local, os.environ.get("CPPDOCS_DATE") or dt.date.today().isoformat())
     if args.stdout:
         sys.stdout.write(page)
-    else:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(page, encoding="utf-8")
-        n = sum(len(r["rows"]) for r in runs) + (len(local["rows"]) if local else 0)
-        print(f"wrote {args.output}: {n} rows")
+        return 0
+    readme = None
+    if not args.summary and not args.no_readme:
+        try:
+            current = args.readme.read_text(encoding="utf-8")
+            readme = (current, update_readme(current, readme_block(runs, local)))
+        except (OSError, SchemaError) as e:
+            print(f"collect_results.py: {e}", file=sys.stderr)
+            return 2
+    if args.check:
+        stale = []
+        if args.output.is_file() and args.output.read_text(encoding="utf-8") != page:
+            stale.append(str(args.output))
+        if readme and readme[0] != readme[1]:
+            stale.append(f"{args.readme} ({README_START} block)")
+        print("out of date: " + ", ".join(stale) if stale else "up to date")
+        return 1 if stale else 0
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(page, encoding="utf-8")
+    n = sum(len(r["rows"]) for r in runs) + (len(local["rows"]) if local else 0)
+    print(f"wrote {args.output}: {n} rows")
+    if readme:
+        if readme[0] != readme[1]:
+            args.readme.write_text(readme[1], encoding="utf-8")
+        print(f"{'updated' if readme[0] != readme[1] else 'unchanged'}: {args.readme} platform table")
     return 0
+
+
+def self_test() -> int:
+    """Render the README table and the page from built-in samples and check the cells."""
+    def tests(passed, failed=0, skipped=0, cid="GNU", ver="16.2.0", stdlib="libstdc++", system="Linux"):
+        return {"schema": SCHEMA, "kind": "tests", "preset": "gcc", "toolchain": "gcc",
+                "platform": {"system": system, "version": "7.0", "arch": "x86_64"},
+                "compiler": {"id": cid, "version": ver, "stdlib": stdlib},
+                "counts": {"total": passed + failed + skipped, "passed": passed, "failed": failed,
+                           "skipped": skipped},
+                "failures": [], "skips": [{"reason": "needs x"}] * skipped, "generated": "2026-11-01T00:00:00Z"}
+
+    def snippets(checked, failed=0, new=None, tc="gcc", cid="gcc", ver="g++ (GCC) 16.2.0"):
+        base = None if new is None else {"file": f"tools/snippet_baseline/{tc}.txt", "known_failing": failed - new,
+                                         "new": new, "fixed": [], "stale": []}
+        return {"schema": SCHEMA, "kind": "snippets", "toolchain": tc, "enabled": [],
+                "platform": {"system": "Linux", "version": "7.0", "arch": "x86_64"},
+                "compiler": {"id": cid, "version": ver},
+                "counts": {"total": checked, "checked": checked, "failed": failed, "skipped": 0},
+                "failures": [], "skips": [], "baseline": base, "generated": "2026-11-01T00:00:00Z"}
+
+    def job(os_version, t, sn, mode="enforced", steps=None, platform="linux-x86_64-ubuntu-24.04"):
+        return {"schema": SCHEMA, "kind": "run", "platform": platform, "os_version": os_version,
+                "inputs": {"areas": "^strings$", "tests": True, "snippets": True}, "snippets_mode": mode,
+                "steps": steps or {"tests": 0}, "ok": True,
+                "run": {"url": "https://example.invalid/runs/1"}, "tests": t, "snippets": sn}
+
+    samples = {
+        "results-linux-x86_64-ubuntu-24.04-gcc-16.json":
+            job("Ubuntu 24.04.5 LTS x86_64", tests(30), snippets(12, 0, 0)),
+        "results-linux-x86_64-ubuntu-24.04-clang-22.json":
+            job("Ubuntu 24.04.5 LTS x86_64", tests(28, 2, cid="Clang", ver="22.1.8", stdlib="libc++"),
+                snippets(12, 12, tc="clang", cid="clang", ver="Ubuntu clang version 22.1.8"), mode="report-only"),
+        "results-windows-2025-x64-msvc.json":
+            job("Microsoft Windows Server 2025 Datacenter 10.0.26100", None,
+                snippets(12, 0, 0, tc="msvc", cid="msvc", ver="Microsoft (R) C/C++ Optimizing Compiler Version "
+                         "19.51.36260 for x64"), mode="report-only", steps={"tests": 2, "snippets": 0},
+                platform="windows-2025-x64"),
+        "results-windows-2025-x64-UCRT64-gcc-16.json":
+            job("MINGW64_NT-10.0-26100 3.6.12, MSYS2 UCRT64", tests(30), snippets(12, 0, 0),
+                platform="windows-2025-x64-UCRT64"),
+    }
+    local_samples = {"results-macos-arm64-clang-22.json": tests(969, 0, 128, cid="Clang", ver="22.1.8",
+                                                                stdlib="libc++", system="Darwin"),
+                     "results-macos-arm64-clang-22-snippets.json": snippets(691, 19, 0, tc="clang", cid="clang",
+                                                                            ver="Homebrew clang version 22.1.8")}
+    failures = []
+
+    def expect(what, cond):
+        if not cond:
+            failures.append(what)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ci_dir, local_dir = pathlib.Path(tmp, "ci"), pathlib.Path(tmp, "local")
+        for d, items in ((ci_dir, samples), (local_dir, local_samples)):
+            d.mkdir()
+            for name, doc in items.items():
+                (d / name).write_text(json.dumps(doc), encoding="utf-8")
+        run = load_folder(ci_dir, "https://example.invalid/runs/1", "2026-11-02") | {"workflow": "linux.yml"}
+        local = load_folder(local_dir, "", "")
+        block = readme_block([run], local)
+        lines = block.splitlines()
+        expect("five rows", sum(1 for l in lines if l.startswith("| ") and not l.startswith("| Platform")) == 5)
+        expect("local row first", lines.index(next(l for l in lines if "local, 2026-11-01" in l))
+               < lines.index(next(l for l in lines if "example.invalid" in l)))
+        expect("green row", "| Ubuntu 24.04 | GCC 16.2.0 | x86_64 | ✅ 30/30 | ✅ 12/12 |" in block)
+        expect("failed tests", "❌ 2 failed (28/30)" in block)
+        expect("report-only failures", "❌ 0/12 (report-only)" in block)
+        expect("clang stdlib", "Clang 22.1.8, libc++" in block)
+        expect("missing tests", "| Windows Server 2025 | MSVC 19.51.36260 | x86_64 | ❌ no results "
+                                "(tests step exit 2) | ✅ 12/12 (report-only) |" in block)
+        expect("msys2", "Windows Server 2025, MSYS2 UCRT64" in block)
+        expect("baselined", "✅ 672/691 (19 baselined)" in block)
+        expect("skips", "✅ 969/1097 (128 skipped)" in block)
+        expect("scope", "cover areas `^strings$`" in block)
+        readme = ("# t\n<!-- index:library:start -->\nidx\n<!-- index:library:end -->\n"
+                  f"{README_START}\nold\n{README_END}\ntail\n")
+        new = update_readme(readme, block)
+        expect("block replaced", "old" not in new and block in new)
+        expect("index untouched", "<!-- index:library:start -->\nidx\n<!-- index:library:end -->" in new)
+        expect("idempotent", update_readme(new, block) == new)
+        try:
+            update_readme("# no markers\n", block)
+            expect("missing markers rejected", False)
+        except SchemaError:
+            pass
+        page = render([run], local, "2026-11-02")
+        expect("page tests failure", "failed: no results (tests step exit 2)" in page)
+        expect("page scope", "areas `^strings$`" in page)
+    for f in failures:
+        print(f"FAIL: {f}", file=sys.stderr)
+    print(f"collect_results self-test: {'FAILED' if failures else 'OK'} ({len(failures)} failure(s))")
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":
