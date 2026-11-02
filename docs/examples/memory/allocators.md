@@ -72,7 +72,8 @@ use it too.
 template<class T>
 struct Arena {                                   // a stateful allocator
     using value_type = T;
-    int id;
+    int id = 0;
+    Arena() = default;                           // see below
     explicit Arena(int i) : id(i) {}
     template<class U> Arena(const Arena<U>& o) noexcept : id(o.id) {}
     T* allocate(std::size_t n)          { return std::allocator<T>{}.allocate(n); }
@@ -89,6 +90,12 @@ int demo() {
     return v[0].get_allocator().id;              // 7: the element got the vector's arena
 }
 ```
+
+The default constructor isn't an allocator requirement, but `basic_string`'s
+constructors default their last parameter to `Allocator()`. Clang instantiates
+that default argument while the adaptor checks which constructor to call, so
+without `Arena()` the `emplace_back` fails to compile with Clang (on libc++ 23
+and libstdc++ 15 alike); GCC accepts it.
 
 [PMR](memory-resources.md) does this by default: a `pmr::vector<pmr::string>`
 hands its resource to every string, with no adaptor. Reach for

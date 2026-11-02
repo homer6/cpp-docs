@@ -20,7 +20,9 @@ identifier-shaped token
 Keywords are recognised in translation phase 6 (preprocessing tokens become
 tokens) and are "unconditionally treated as keywords in phases 6 and 7" — except
 inside an attribute token, which is why `[[maybe_unused]]` and friends never
-clash with them. To the preprocessor (phase 4) they are still identifiers.
+clash with them. To the preprocessor (phase 4) they are still identifiers
+(MSVC is an exception: it rejects a keyword in `#if` with C1017, even with
+`/Zc:preprocessor`).
 
 ## Declaration
 

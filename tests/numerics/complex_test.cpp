@@ -74,10 +74,21 @@ TEST(Complex, SettersAndStreaming) {
 // __cpp_lib_constexpr_complex is 201711L on GCC 15 and Clang 22.
 TEST(Complex, ConstexprArithmetic) {
     constexpr std::complex<double> z{1.0, 2.0};
+    const auto rt = z * z;  // the same product at run time
+    EXPECT_EQ(rt, (std::complex<double>{-3.0, 4.0}));
+#if defined(__clang__) && defined(__GLIBCXX__)
+    // libstdc++ stores complex<double> as a GNU `__complex__ double` and multiplies with
+    // `_M_value *= __t`, which Clang (18 through 23 so far) won't constant-evaluate
+    // ("subexpression not valid in a constant expression").
+    GTEST_SKIP() << "Clang " << __clang_major__ << " with libstdc++ " << _GLIBCXX_RELEASE
+                 << " can't constant-evaluate libstdc++'s __complex__ arithmetic "
+                    "(llvm/llvm-project#55370); run-time result checked";
+#else
     constexpr auto z2 = z * z;
     static_assert(z2.real() == -3.0 && z2.imag() == 4.0);
 #if defined(_LIBCPP_VERSION) || (defined(__GNUC__) && __GNUC__ == 15)
     EXPECT_EQ(__cpp_lib_constexpr_complex, 201711L);
+#endif
 #endif
 }
 

@@ -1,0 +1,2 @@
+# Known snippet failures with clang-cl (MS STL) for tools/check_snippets.py --toolchain clang-cl --baseline.
+# One block ID per line. Regenerate with --update-baseline; the list should only shrink.

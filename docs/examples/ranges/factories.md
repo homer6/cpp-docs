@@ -73,6 +73,13 @@ auto m = pairs | std::ranges::to<std::map<int, std::string>>();
 `ranges::to<C>()` deduces or takes the target container type and constructs it
 from the range — the bridge from lazy views back to owning storage.
 
+Support: `__cpp_lib_ranges_to_container`. GCC 13 doesn't have it (GCC 14 and
+libc++ 17 do). Clang 20 and later with libstdc++ 14.1 or 14.2
+reject the pipe form `r | ranges::to<C>()` (libstdc++'s `forward_like` has a
+deduced return type Clang mishandles,
+[llvm/llvm-project#101614](https://github.com/llvm/llvm-project/issues/101614));
+the call form `ranges::to<C>(r)` works there, and libstdc++ 14.3 fixes the pipe.
+
 ## Gotchas
 
 - **Infinite factories must be bounded before full iteration.** `rv::iota(0)` or

@@ -11,6 +11,22 @@
 
 #include "support/feature.hpp"
 
+// Clang 20 and later define __cpp_explicit_this_parameter, so libstdc++ 14 takes its
+// deducing-this path for bind_front's call operator, which uses std::forward_like.
+// libstdc++ 14.1 and 14.2 declare forward_like with a deduced return type, and Clang
+// treats it as a builtin it can't deduce, so calling the result of bind_front has no
+// viable operator() (llvm/llvm-project#101614, #131708). libstdc++ 14.3 (2025-05-23)
+// gives it an explicit return type.
+#if defined(__clang__) && defined(__cpp_explicit_this_parameter) && defined(_GLIBCXX_RELEASE) && \
+    _GLIBCXX_RELEASE == 14 && __GLIBCXX__ < 20250523
+#define CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE 1
+#define CPPDOCS_FORWARD_LIKE_SKIP                                                              \
+    GTEST_SKIP() << "Clang " << __clang_major__ << " with libstdc++ 14.1/14.2 can't call a "     \
+                    "bind_front/bind_back result: forward_like has a deduced return type "      \
+                    "Clang can't use as a builtin (llvm/llvm-project#101614, #131708); "        \
+                    "fixed in libstdc++ 14.3"
+#endif
+
 // "std::invoke": calls a member function, reads a data member, calls a lambda.
 TEST(Functional, Invoke) {
     struct S {
@@ -69,6 +85,9 @@ TEST(Functional, BindVsLambda) {
 
 // "bind_front / bind_back": front prepends, back appends; a member function binds to an object pointer.
 TEST(Functional, BindFrontBack) {
+#ifdef CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE
+    CPPDOCS_FORWARD_LIKE_SKIP;
+#else
     auto sub = [](int a, int b) { return a - b; };
     auto from10 = std::bind_front(sub, 10);
     EXPECT_EQ(from10(3), 7);
@@ -85,10 +104,14 @@ TEST(Functional, BindFrontBack) {
     auto add_to_c = std::bind_front(&Counter::add, &c);
     add_to_c(5);
     EXPECT_EQ(c.n, 5);
+#endif
 }
 
 // Gotcha "bind_front copies its arguments": binding obj by value leaves the original alone.
 TEST(Functional, BindFrontCopies) {
+#ifdef CPPDOCS_CLANG_LIBSTDCXX14_FORWARD_LIKE
+    CPPDOCS_FORWARD_LIKE_SKIP;
+#else
     struct Counter {
         int n = 0;
         int add(int k) { return n += k; }
@@ -100,6 +123,7 @@ TEST(Functional, BindFrontCopies) {
     auto on_ref = std::bind_front(&Counter::add, std::ref(c));
     on_ref(5);
     EXPECT_EQ(c.n, 5);
+#endif
 }
 
 // "not_fn (C++17)": counts the odd numbers in {1..5} == 3.

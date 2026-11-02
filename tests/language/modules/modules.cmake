@@ -17,14 +17,27 @@ if(CMAKE_VERSION VERSION_LESS 3.28)
   set(_skip "CMake ${CMAKE_VERSION} has no FILE_SET CXX_MODULES (needs 3.28)")
 elseif(NOT CMAKE_GENERATOR MATCHES "^Ninja")
   set(_skip "generator '${CMAKE_GENERATOR}': this suite builds modules with Ninja only")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+  set(_skip "Apple Clang ${CMAKE_CXX_COMPILER_VERSION}: no clang-scan-deps, so CMake can't scan it for modules")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
   set(_skip "GCC ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with GCC 14 and newer")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15
+       AND CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" AND CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL 15)
+  # Compiler bug: pkg GCC 14.2 on FreeBSD 15.1 segfaults (internal compiler error) on every
+  # module unit; the same GCC on FreeBSD 14.5 builds them (run 41380889279, #209).
+  set(_skip "GCC ${CMAKE_CXX_COMPILER_VERSION} on FreeBSD ${CMAKE_SYSTEM_VERSION}: internal compiler error (segfault) on every module unit (issue 209)")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
   set(_skip "Clang ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with Clang 16 and newer")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC"
+       AND NOT CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS)
+  # apt.llvm.org ships clang-scan-deps-N in clang-tools-N, not with clang-N;
+  # without it every scan step fails at build time.
+  set(_skip "Clang ${CMAKE_CXX_COMPILER_VERSION}: clang-scan-deps not found (install clang-tools), so CMake can't scan it for modules")
 elseif(NOT CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|MSVC")
   set(_skip "compiler ${CMAKE_CXX_COMPILER_ID}: CMake can't scan it for modules")
 endif()
 
+# No "#" in a reason: CMake drops or mangles a compile definition holding one.
 if(_skip)
   set_property(TARGET examples_language_tests APPEND PROPERTY
                COMPILE_DEFINITIONS "CPPDOCS_NAMED_MODULES_SKIP=\"${_skip}\""
@@ -66,6 +79,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
                COMPILE_DEFINITIONS CPPDOCS_PRIVATE_MODULE_FRAGMENT)
 endif()
 
+# A BMI and its importers must be compiled with the same flags: where
+# FindThreads uses -pthread, tests/CMakeLists.txt adds it to every target.
 target_link_libraries(examples_language_tests PRIVATE cppdocs_modules)
 set_property(TARGET examples_language_tests APPEND PROPERTY
              COMPILE_DEFINITIONS CPPDOCS_NAMED_MODULES)
@@ -84,6 +99,11 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.5)
   endif()
 elseif(NOT DEFINED CMAKE_EXPERIMENTAL_CXX_IMPORT_STD)
   set(_std_skip "CMake ${CMAKE_VERSION}: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions tested)")
+elseif(CMAKE_CXX_STDLIB_MODULES_JSON AND NOT (IS_ABSOLUTE "${CMAKE_CXX_STDLIB_MODULES_JSON}"
+                                             AND EXISTS "${CMAKE_CXX_STDLIB_MODULES_JSON}"))
+  # The compiler's -print-file-name didn't find the file (Homebrew LLVM keeps
+  # libc++.modules.json in lib/c++/), and CMake would fail at generate time.
+  set(_std_skip "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}: '${CMAKE_CXX_STDLIB_MODULES_JSON}' not found; pass -DCMAKE_CXX_STDLIB_MODULES_JSON=<path> to build import std")
 elseif(NOT _std_level IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
   string(REPLACE ";" "," _levels "${CMAKE_CXX_COMPILER_IMPORT_STD}")  # no ';' in a definition
   set(_std_skip "CMake ${CMAKE_VERSION} with ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}: no import std for C++${_std_level} (CMAKE_CXX_COMPILER_IMPORT_STD='${_levels}')")

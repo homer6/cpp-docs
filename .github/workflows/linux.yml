@@ -1,0 +1,166 @@
+# Linux: GCC 13-16 and Clang 18-22 (with libstdc++ and with libc++) on x86_64
+# and native arm64. Issues #143 (x86_64) and #144 (arm64).
+#
+# Where each compiler comes from (checked 2026-11-01):
+#   GCC 13-16   the official gcc:N images (Docker Library), pinned by their
+#               multi-arch index digest: each has the newest upstream release
+#               (13.5, 14.4, 15.3, 16.2) for amd64 and arm64. Noble's archive
+#               stops at GCC 14 and the toolchain PPA has only a GCC 16
+#               snapshot, so the images are the one source for all four.
+#               gcc:13 is Debian bookworm (CMake 3.25.1), 14-16 trixie.
+#   Clang 18-22 apt.llvm.org on ubuntu-24.04 (noble has a suite for each
+#               version, amd64 and arm64), with clang-N and libc++-N-dev.
+#   26.04       ubuntu-26.04 / ubuntu-26.04-arm are public preview: GCC 15 and
+#               Clang 22 from Ubuntu's own archive (apt.llvm.org has no 18-20
+#               for 26.04).
+#
+# To refresh a digest: docker buildx imagetools inspect gcc:N (the "Digest:" line).
+#
+# Manual only: started by hand (or by all.yml through workflow_call), with the
+# owner's consent for each run. See .github/workflows/README.md.
+name: Linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      areas:
+        description: "Test areas: a ctest label regex (empty = all), e.g. ^containers$|^ranges$"
+        type: string
+        default: ""
+      tests:
+        description: "Build and run the GoogleTest suite"
+        type: boolean
+        default: true
+      snippets:
+        description: "Run the snippet checker"
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+        default: ""
+      tests:
+        type: boolean
+        default: true
+      snippets:
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+env:
+  CPPDOCS_AREAS: ${{ inputs.areas }}
+  CPPDOCS_TESTS: ${{ inputs.tests }}
+  CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+
+jobs:
+  gcc:
+    name: GCC ${{ matrix.gcc }} · ${{ matrix.runner }} (gcc:${{ matrix.gcc }} image)
+    runs-on: ${{ matrix.runner }}
+    container:
+      image: ${{ matrix.image }}
+    continue-on-error: false
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {gcc: "13", runner: ubuntu-24.04, image: "gcc:13@sha256:20eec427045c47d0aad1bd28c81d435916c327cd992240aa78350f755d04d04a"}
+          - {gcc: "14", runner: ubuntu-24.04, image: "gcc:14@sha256:435c3cbc2ad1c25fbc1684c367808ff0ca2035a1bed56734a40165ab5cd7e3bd"}
+          - {gcc: "15", runner: ubuntu-24.04, image: "gcc:15@sha256:dc99c5016a0fb74d4e9a392e7892966ec7f358af744799bd3479239598f79d45"}
+          - {gcc: "16", runner: ubuntu-24.04, image: "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb"}
+          # arm64 (#144): the same images, native on the arm runner.
+          - {gcc: "15", runner: ubuntu-24.04-arm, image: "gcc:15@sha256:dc99c5016a0fb74d4e9a392e7892966ec7f358af744799bd3479239598f79d45"}
+          - {gcc: "16", runner: ubuntu-24.04-arm, image: "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb"}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (cmake, ninja, python3 from Debian)
+        run: tools/ci/linux-toolchain.sh gcc-image
+
+      - name: Configure, build, test, check snippets
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ env.CPPDOCS_PLATFORM || matrix.runner }}-${{ env.CPPDOCS_COMPILER || format('gcc-{0}', matrix.gcc) }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn
+
+  clang:
+    name: Clang ${{ matrix.clang }} ${{ matrix.stdlib }} · ${{ matrix.runner }} (apt.llvm.org)
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: false
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04]
+        clang: ["18", "19", "20", "21", "22"]
+        stdlib: [libstdcxx, libcxx]
+        include:
+          # arm64 (#144)
+          - {runner: ubuntu-24.04-arm, clang: "22", stdlib: libstdcxx}
+          - {runner: ubuntu-24.04-arm, clang: "22", stdlib: libcxx}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (clang-${{ matrix.clang }} from apt.llvm.org)
+        run: tools/ci/linux-toolchain.sh clang-apt-llvm "${{ matrix.clang }}" "${{ matrix.stdlib }}"
+
+      - name: Configure, build, test, check snippets
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ env.CPPDOCS_PLATFORM || matrix.runner }}-${{ env.CPPDOCS_COMPILER || format('clang-{0}-{1}', matrix.clang, matrix.stdlib) }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn
+
+  ubuntu-26-04:
+    name: ${{ matrix.runner }} · ${{ matrix.tc.label }} (Ubuntu archive)
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: false
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-26.04, ubuntu-26.04-arm]
+        tc:
+          - {label: gcc-15, kind: gcc-ubuntu, ver: "15", stdlib: ""}
+          - {label: clang-22-libstdcxx, kind: clang-ubuntu, ver: "22", stdlib: libstdcxx}
+          - {label: clang-22-libcxx, kind: clang-ubuntu, ver: "22", stdlib: libcxx}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (${{ matrix.tc.label }})
+        run: tools/ci/linux-toolchain.sh "${{ matrix.tc.kind }}" "${{ matrix.tc.ver }}" "${{ matrix.tc.stdlib }}"
+
+      - name: Configure, build, test, check snippets
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ env.CPPDOCS_PLATFORM || matrix.runner }}-${{ env.CPPDOCS_COMPILER || matrix.tc.label }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn

@@ -26,7 +26,10 @@ the standard version — because compilers ship features incrementally.
 - **Language** macros: `__cpp_concepts`, `__cpp_constexpr`, `__cpp_modules`,
   `__cpp_consteval`, `__cpp_if_constexpr` … (predefined by the compiler, no
   header needed). A macro is only defined while its feature is on: GCC defines
-  `__cpp_modules` only with `-fmodules`, and Clang 22 sets it to `1`, not a date.
+  `__cpp_modules` only with `-fmodules`; Clang 22 and later set it to `1`, not a
+  date, while Clang 21 and earlier (and Apple Clang 17 and 21, from Xcode 16.4
+  and 26.6) leave it undefined even though they support modules
+  ([llvm/llvm-project#161034](https://github.com/llvm/llvm-project/pull/161034)).
 - **Library** macros: `__cpp_lib_*`, exposed via `<version>` (or the specific
   feature's own header): `__cpp_lib_ranges`, `__cpp_lib_expected`,
   `__cpp_lib_print`, `__cpp_lib_simd`, `__cpp_lib_linalg`, etc.
@@ -63,7 +66,8 @@ The value is a date; compare with `>=` against the value from cppreference's
   other headers; `<version>` is the portable, cheap way to get them all.
 - **Don't lean on `__cplusplus` alone.** It says which standard was *requested*,
   not which features the implementation actually finished. Feature-test macros are
-  the precise tool.
+  the precise tool. Compilers also report pre-publication values for a mode they
+  haven't finished: GCC 13 gives `202100L` for `-std=c++23`, not `202302L`.
 - **Each feature's cppreference page lists its macro and value** in a "Feature-test
   macro" box — that's the authoritative number to compare against.
 

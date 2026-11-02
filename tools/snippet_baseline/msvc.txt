@@ -1,0 +1,2 @@
+# Known snippet failures with msvc (MS STL) for tools/check_snippets.py --toolchain msvc --baseline.
+# One block ID per line. Regenerate with --update-baseline; the list should only shrink.

@@ -107,7 +107,9 @@ int main() { return manhattan({3, -4}) == 7 ? 0 : 1; }
 
 A non-exported namespace-scope name has **module linkage**: every unit of the
 module can use it, nothing outside can, and it doesn't clash with the same name
-elsewhere (GCC and Clang put the module name in the symbol). Name lookup finds
+elsewhere (GCC, Clang and MSVC put the module in the symbol; clang-cl doesn't
+yet, so two such names collide at link time there:
+[llvm/llvm-project#174064](https://github.com/llvm/llvm-project/issues/174064)). Name lookup finds
 only exported names (*visibility*), but every declaration in an imported
 interface is *reachable*: an importer can use a non-exported type it gets
 without naming it.

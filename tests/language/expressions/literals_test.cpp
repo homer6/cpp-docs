@@ -84,6 +84,7 @@ TEST(Literals, UserDefinedLiteral) {
 // "Numeric literals": the uz / z suffixes (C++23).
 TEST(Literals, SizeTSuffix) {
     CPPDOCS_REQUIRE_VERSION(__cpp_size_t_suffix, 202011L);
+#if __cpp_size_t_suffix >= 202011L  // MSVC: VS 2022 17.13 and later
     static_assert(std::is_same_v<decltype(42uz), std::size_t>);
     static_assert(std::is_same_v<decltype(42zu), std::size_t>);
     static_assert(std::is_same_v<decltype(42UZ), std::size_t>);
@@ -91,4 +92,5 @@ TEST(Literals, SizeTSuffix) {
     std::vector<int> v{1, 2, 3};
     auto smaller = std::min(v.size(), 2uz);
     EXPECT_EQ(smaller, 2uz);
+#endif
 }

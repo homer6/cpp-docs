@@ -7,8 +7,11 @@
 #include <string>
 #include <thread>
 #include <type_traits>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 // "std::thread — the original": runs on another thread; join() waits for it.
 TEST(Threads, RunsElsewhereJoinWaits) {
@@ -49,6 +52,8 @@ TEST(ThreadsDeathTest, UnjoinedThreadTerminates) {
 // "std::jthread": a leading stop_token parameter is supplied; the destructor
 // requests stop and joins.
 TEST(Threads, JthreadStopsAndJoins) {
+    CPPDOCS_REQUIRE(__cpp_lib_jthread);  // libc++ 20+, GCC 10+, MS STL 19.28+
+#ifdef __cpp_lib_jthread
     std::atomic<bool> started{false}, finished{false};
     {
         std::jthread jt{[&](std::stop_token st) {
@@ -60,16 +65,20 @@ TEST(Threads, JthreadStopsAndJoins) {
         started.wait(false);  // the worker is inside its loop
     }  // no explicit request_stop() or join()
     EXPECT_TRUE(finished);
+#endif
 }
 
 // "std::jthread": request_stop() is seen through the token.
 TEST(Threads, RequestStop) {
+    CPPDOCS_REQUIRE(__cpp_lib_jthread);
+#ifdef __cpp_lib_jthread
     std::jthread jt{[](std::stop_token st) {
         while (!st.stop_requested()) std::this_thread::yield();
     }};
     EXPECT_TRUE(jt.request_stop());
     jt.join();
     EXPECT_TRUE(jt.get_stop_token().stop_requested());
+#endif
 }
 
 // "this_thread": sleep_until doesn't return before the deadline; hardware_concurrency is a hint.

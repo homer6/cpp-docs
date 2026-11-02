@@ -84,6 +84,18 @@ Parsed parse(std::string_view line);
 auto [id, name] = parse("42 widget");
 ```
 
+**The rules assume the GSL.** Many rules name a GSL type as the fix:
+- I.11 / R.3: `owner`;
+- I.12 / F.23: `not_null`;
+- ES.46 / ES.49: `narrow` and `narrow_cast`;
+- E.19: `finally`;
+- I.6 / I.8: `Expects` / `Ensures`;
+- SL.str: `zstring`.
+
+Which of these the standard has replaced, and which library to use, is in
+[safety](safety.md#gsl-guidelines-support-library) and
+[industry practice](industry-practice.md#the-gsl-in-practice).
+
 **I.6 / I.8 → contracts (C++26).** The Guidelines express preconditions with
 GSL's `Expects()` / `Ensures()`. C++26 has them in the language:
 

@@ -45,8 +45,14 @@ TEST(Keywords, AlternativeTokensAndDigraphs) {
 // "Mental model": to the preprocessor (phase 4) keywords are still identifiers.
 TEST(Keywords, KeywordsAreIdentifiersToThePreprocessor) {
     EXPECT_STREQ(KEYWORDS_STR(class), "class");
+#if defined(_MSC_VER) && !defined(__clang__)
+    // MSVC rejects a keyword in #if (C1017, even with /Zc:preprocessor), seen
+    // on VS 2022 and VS 2026, x64 and arm64; the page notes it.
+    GTEST_SKIP() << "MSVC rejects a keyword in #if (C1017)";
+#else
 #if static   // a non-macro identifier in #if evaluates to 0
     FAIL() << "keyword treated as non-zero in #if";
+#endif
 #endif
 }
 

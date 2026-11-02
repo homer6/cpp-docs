@@ -42,6 +42,72 @@
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "g++"
       }
+    },
+    {
+      "name": "generic",
+      "hidden": true,
+      "inherits": "base",
+      "description": "Portable presets for CI and other machines: no compiler paths, the compiler comes from CXX or -DCMAKE_CXX_COMPILER."
+    },
+    {
+      "name": "gcc",
+      "displayName": "GCC + libstdc++ (compiler from CXX, default g++)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "gcc"
+      }
+    },
+    {
+      "name": "clang",
+      "displayName": "Clang + the platform's default library (libstdc++ on Linux; compiler from CXX, default clang++)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "clang"
+      }
+    },
+    {
+      "name": "clang-libcxx",
+      "displayName": "Clang + libc++ (compiler from CXX, default clang++)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "clang-libcxx",
+        "CMAKE_CXX_FLAGS_INIT": "-stdlib=libc++",
+        "CMAKE_EXE_LINKER_FLAGS_INIT": "-stdlib=libc++"
+      }
+    },
+    {
+      "name": "msvc",
+      "displayName": "MSVC cl + MS STL (run from a VS Developer shell; compiler from CXX, default cl)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "msvc"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "clang-cl",
+      "displayName": "clang-cl + MS STL (run from a VS Developer shell; compiler from CXX, default clang-cl)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "mingw",
+      "displayName": "MinGW-w64 GCC + libstdc++ (MSYS2 or a cross g++; compiler from CXX, default g++)",
+      "inherits": "generic",
+      "cacheVariables": {
+        "CPPDOCS_TOOLCHAIN": "mingw"
+      }
     }
   ],
   "buildPresets": [
@@ -56,6 +122,40 @@
     {
       "name": "gcc-16",
       "configurePreset": "gcc-16"
+    },
+    {
+      "name": "gcc",
+      "configurePreset": "gcc"
+    },
+    {
+      "name": "clang",
+      "configurePreset": "clang"
+    },
+    {
+      "name": "clang-libcxx",
+      "configurePreset": "clang-libcxx"
+    },
+    {
+      "name": "msvc",
+      "configurePreset": "msvc",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "clang-cl",
+      "configurePreset": "clang-cl",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "mingw",
+      "configurePreset": "mingw"
     }
   ],
   "testPresets": [
@@ -84,6 +184,46 @@
       "name": "gcc-16",
       "inherits": "base",
       "configurePreset": "gcc-16"
+    },
+    {
+      "name": "gcc",
+      "inherits": "base",
+      "configurePreset": "gcc"
+    },
+    {
+      "name": "clang",
+      "inherits": "base",
+      "configurePreset": "clang"
+    },
+    {
+      "name": "clang-libcxx",
+      "inherits": "base",
+      "configurePreset": "clang-libcxx"
+    },
+    {
+      "name": "msvc",
+      "inherits": "base",
+      "configurePreset": "msvc",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "clang-cl",
+      "inherits": "base",
+      "configurePreset": "clang-cl",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "mingw",
+      "inherits": "base",
+      "configurePreset": "mingw"
     }
   ],
   "workflowPresets": [
@@ -135,6 +275,108 @@
         {
           "type": "test",
           "name": "gcc-16"
+        }
+      ]
+    },
+    {
+      "name": "gcc",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc"
+        },
+        {
+          "type": "build",
+          "name": "gcc"
+        },
+        {
+          "type": "test",
+          "name": "gcc"
+        }
+      ]
+    },
+    {
+      "name": "clang",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang"
+        },
+        {
+          "type": "build",
+          "name": "clang"
+        },
+        {
+          "type": "test",
+          "name": "clang"
+        }
+      ]
+    },
+    {
+      "name": "clang-libcxx",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-libcxx"
+        },
+        {
+          "type": "build",
+          "name": "clang-libcxx"
+        },
+        {
+          "type": "test",
+          "name": "clang-libcxx"
+        }
+      ]
+    },
+    {
+      "name": "msvc",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "msvc"
+        },
+        {
+          "type": "build",
+          "name": "msvc"
+        },
+        {
+          "type": "test",
+          "name": "msvc"
+        }
+      ]
+    },
+    {
+      "name": "clang-cl",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-cl"
+        },
+        {
+          "type": "build",
+          "name": "clang-cl"
+        },
+        {
+          "type": "test",
+          "name": "clang-cl"
+        }
+      ]
+    },
+    {
+      "name": "mingw",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "mingw"
+        },
+        {
+          "type": "build",
+          "name": "mingw"
+        },
+        {
+          "type": "test",
+          "name": "mingw"
         }
       ]
     }

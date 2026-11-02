@@ -13,18 +13,50 @@
 #include <version>
 
 #include <gtest/gtest.h>
+#if defined(_WIN32)
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "support/feature.hpp"
 
 namespace fs = std::filesystem;
+
+namespace {
+// std::chrono::is_clock_v (C++20) has no feature-test macro of its own, and libc++
+// added it only in LLVM 22 (Clang 18-21 libc++, Apple and FreeBSD libc++ lack it).
+// There, check the Cpp17Clock members it tests for directly.
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 220000
+template <class C>
+constexpr bool is_clock_v = requires {
+    typename C::rep;
+    typename C::period;
+    typename C::duration;
+    typename C::time_point;
+    C::is_steady;
+    C::now();
+};
+#else
+template <class C>
+constexpr bool is_clock_v = std::chrono::is_clock_v<C>;
+#endif
+
+int process_id() {
+#if defined(_WIN32)
+    return ::_getpid();
+#else
+    return ::getpid();
+#endif
+}
+}  // namespace
 
 class Filesystem : public testing::Test {
 protected:
     fs::path dir;
     void SetUp() override {
         dir = fs::temp_directory_path() /
-              ("cppdocs-filesystem-" + std::to_string(::getpid()) + "-" +
+              ("cppdocs-filesystem-" + std::to_string(process_id()) + "-" +
                testing::UnitTest::GetInstance()->current_test_info()->name());
         fs::create_directories(dir);
     }
@@ -41,7 +73,13 @@ TEST(FilesystemPath, Decomposition) {
     EXPECT_EQ(p.extension(), ".txt");
     EXPECT_EQ(p.parent_path(), "dir/sub");
     EXPECT_FALSE(p.is_absolute());
+#if defined(_WIN32)
+    // Windows: absolute needs a root name too; "/tmp" is relative to the current drive.
+    EXPECT_FALSE(fs::path("/tmp").is_absolute());
+    EXPECT_TRUE(fs::path("C:/tmp").is_absolute());
+#else
     EXPECT_TRUE(fs::path("/tmp").is_absolute());  // POSIX
+#endif
 }
 
 // "Querying the filesystem": exists, kinds, size, write time, absolute/canonical.
@@ -53,7 +91,7 @@ TEST_F(Filesystem, Querying) {
     EXPECT_TRUE(fs::is_directory(dir));
     EXPECT_EQ(fs::file_size(f), 3u);
     static_assert(std::is_same_v<decltype(fs::last_write_time(f)), fs::file_time_type>);
-    static_assert(std::chrono::is_clock_v<fs::file_time_type::clock>);
+    static_assert(is_clock_v<fs::file_time_type::clock>);
     EXPECT_TRUE(fs::current_path().is_absolute());
     EXPECT_TRUE(fs::absolute("x").is_absolute());
     EXPECT_EQ(fs::canonical(dir / "." / "a.txt"), fs::canonical(f));

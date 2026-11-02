@@ -111,7 +111,11 @@ TEST(BitFields, UnnamedFieldsAreSkipped) {
 
 // "Gotchas": no address; const& binds a copy; structured bindings name the field itself.
 TEST(BitFields, NoAddressReferencesAndBindings) {
+#if !defined(_MSC_VER) || defined(__clang__)
+    // MSVC treats `&t.a` on a bit-field as valid inside a requires-expression
+    // (ordinary code still errors), so the concept is true there.
     static_assert(!AddressableA<F>);
+#endif
 
     Flags f;
     const unsigned& r = f.mode;  // bound to a temporary copy
@@ -127,8 +131,14 @@ TEST(BitFields, NoAddressReferencesAndBindings) {
 // "Gotchas": a narrow unsigned bit-field promotes to int; auto deduces the declared type.
 TEST(BitFields, PromotionSurprises) {
     B b{3};
+#if !(defined(_MSC_VER) && !defined(__clang__))
     static_assert(std::is_same_v<decltype(+b.x), int>);
+#endif
     auto y = b.x;
     static_assert(std::is_same_v<decltype(y), unsigned>);
     EXPECT_EQ(y, 3u);
+#if defined(_MSC_VER) && !defined(__clang__)
+    GTEST_SKIP() << "MSVC gives a narrow unsigned bit-field the type unsigned int after promotion, not int "
+                    "(stackoverflow.com/q/32529080); the int claim is checked on GCC and Clang";
+#endif
 }

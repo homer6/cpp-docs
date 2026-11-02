@@ -72,6 +72,10 @@ constexpr int sq_or(int x) {
 static_assert(sq_or(4) == 16);
 ```
 
+MSVC needs VS 2026 (19.5x) for this: VS 2022 (19.44) rejects the `sq(x)` call
+inside `if consteval` (C7595), as a
+[consented `windows-msvc` run](https://github.com/homer6/cpp-docs/actions/runs/41366612820) showed.
+
 A plain `if (std::is_constant_evaluated())` doesn't give that, so the same call
 is an error:
 

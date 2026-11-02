@@ -61,9 +61,14 @@ TEST(NullTerminatedWideStrings, SizeAndLength) {
 // "Counting and classifying characters": C locale: iswalpha(é)=0, towupper(é)=U+00E9.
 TEST(NullTerminatedWideStrings, CLocaleClassifiesOnlyAscii) {
     ASSERT_STREQ(std::setlocale(LC_ALL, nullptr), "C");
+#if defined(_WIN32)
+    GTEST_SKIP() << "the UCRT's \"C\"-locale wide classification of non-ASCII characters isn't "
+                    "documented; the page states macOS/glibc behaviour";
+#else
     EXPECT_EQ(std::iswalpha(L'é') != 0, false);
     EXPECT_EQ(static_cast<unsigned>(std::towupper(L'é')), 0xE9u);
     EXPECT_NE(std::iswalpha(L'a'), 0);
+#endif
 }
 
 // "Counting and classifying characters": UTF-8 locale: iswalpha(é)=1, towupper(é)=U+00C9.
@@ -126,15 +131,20 @@ TEST(NullTerminatedWideStrings, WcharMax) {
 #endif
 }
 
-// "Gotchas": printf("[%ls]\n", L"héllo") in the "C" locale returns -1 and prints nothing on
-// glibc, while macOS writes the raw byte 0xE9.
+// "Gotchas": printf("[%ls]\n", L"héllo") in the "C" locale returns -1 on glibc. glibc 2.37
+// and later (printf rewritten on top of an internal buffer) print nothing; 2.36 and earlier
+// have already written the "[" before the failing conversion. macOS writes the raw byte 0xE9.
 TEST(NullTerminatedWideStrings, PrintfLsInCLocale) {
     ASSERT_STREQ(std::setlocale(LC_ALL, nullptr), "C");
     int rc = 0;
     auto out = cppdocs::capture_stdout([&] { rc = std::printf("[%ls]\n", L"h\u00E9llo"); });
 #if defined(__GLIBC__)
     EXPECT_EQ(rc, -1);
+#if __GLIBC__ == 2 && __GLIBC_MINOR__ < 37
+    EXPECT_EQ(out, "[");
+#else
     EXPECT_EQ(out, "");
+#endif
 #elif defined(__APPLE__)
     EXPECT_EQ(rc, 8);
     EXPECT_EQ(out, "[h\xE9llo]\n");

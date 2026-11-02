@@ -44,6 +44,11 @@ const int& m = std::min(1, 2);   // dangles: min returns a reference, not the te
 - **Range-`for`** (C++23, P2718): every temporary in the range initializer
   lives until the loop ends, so `for (int x : make_holder().items())` no longer
   dangles. GCC 15 and Clang 22 implement it (`__cpp_range_based_for >= 202211L`).
+  MSVC 19.51 (VS 2026) defines the macro as `202211L`, but in
+  [run 41368084884](https://github.com/homer6/cpp-docs/actions/runs/41368084884)
+  `for (int x : Holder{{1, 2, 3}}.items())` still destroyed the `Holder`
+  before the loop ran (amd64 and arm64): the loop saw an empty vector. Don't
+  rely on the extension with MSVC yet; name the temporary first.
 
 ## Implicit-lifetime types
 

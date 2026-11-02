@@ -38,12 +38,12 @@ for the next phase.
 constexpr int N = 10;                    // number of phases
 void compute_phase();
 
-std::barrier sync{4, []{ /* runs once per phase when all 4 arrive */ }};
+std::barrier phase_done{4, []{ /* runs once per phase when all 4 arrive */ }};
 
 void worker() {
     for (int phase = 0; phase < N; ++phase) {
         compute_phase();
-        sync.arrive_and_wait();      // wait for all 4, then proceed together
+        phase_done.arrive_and_wait();      // wait for all 4, then proceed together
     }
 }
 ```

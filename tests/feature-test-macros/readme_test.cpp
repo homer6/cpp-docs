@@ -21,14 +21,21 @@ TEST(FeatureTestMacros, LanguageMacrosAreDates) {
 }
 
 // "Two families": a language macro is defined only while its feature is on —
-// GCC defines __cpp_modules only with -fmodules (not passed here); Clang 22
-// defines it as 1.
+// GCC defines __cpp_modules only with -fmodules (not passed here); Clang 22 and
+// later define it as 1 (llvm/llvm-project#161034); Clang 21 and earlier, and Apple
+// Clang 17 and 21 (Xcode 16.4, 26.6), leave it undefined.
 TEST(FeatureTestMacros, ModulesMacroDependsOnToolchain) {
 #if defined(__clang__)
 #ifdef __cpp_modules
     EXPECT_EQ(__cpp_modules, 1);
+#elif defined(__apple_build_version__)
+    GTEST_SKIP() << "Apple Clang " << __clang_major__ << " doesn't define __cpp_modules; LLVM "
+                    "Clang defines it as 1 from Clang 22 (llvm/llvm-project#161034)";
+#elif __clang_major__ < 22
+    GTEST_SKIP() << "Clang " << __clang_major__ << " doesn't define __cpp_modules; Clang defines "
+                    "it as 1 from Clang 22 (llvm/llvm-project#161034)";
 #else
-    FAIL() << "Clang 22 defines __cpp_modules in C++26 mode";
+    FAIL() << "Clang 22 and later define __cpp_modules in C++26 mode";
 #endif
 #elif defined(__GNUC__)
 #ifdef __cpp_modules
@@ -70,7 +77,8 @@ TEST(FeatureTestMacros, GateOnLibraryMacroValue) {
 #endif
 TEST(FeatureTestMacros, RangesBranch) {
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_ranges, 201911L);
-#if __cpp_lib_ranges >= 201911L
+    CPPDOCS_REQUIRE(__cpp_lib_ranges_to_container);  // the check collects with ranges::to (GCC 13 lacks it)
+#if __cpp_lib_ranges >= 201911L && defined(__cpp_lib_ranges_to_container)
     std::vector<int> data{1, 2, 3, 4};
     auto v = data | std::views::filter([](int x) { return x % 2 == 0; });
     EXPECT_EQ(std::ranges::to<std::vector>(v), (std::vector<int>{2, 4}));
@@ -79,5 +87,14 @@ TEST(FeatureTestMacros, RangesBranch) {
 
 // "Gotchas": __cplusplus says which standard was requested (C++26 mode is newer than C++23).
 TEST(FeatureTestMacros, CplusplusReflectsRequestedStandard) {
+#if defined(_MSC_VER) && !defined(__clang__) && __cplusplus <= 202302L
+    GTEST_SKIP() << "MSVC has no C++26 mode; /std:c++latest sets __cplusplus to " << __cplusplus;
+#elif defined(CPPDOCS_CXX_STANDARD) && CPPDOCS_CXX_STANDARD < 26
+    // GCC 13 has no C++26 flag CMake knows, so the suite builds as C++23 there, and
+    // GCC 13's C++23 __cplusplus is the pre-publication 202100L.
+    GTEST_SKIP() << "built as C++" << CPPDOCS_CXX_STANDARD << " (no C++26 mode); __cplusplus is "
+                 << __cplusplus;
+#else
     EXPECT_GT(__cplusplus, 202302L);
+#endif
 }

@@ -132,8 +132,10 @@ int main() {
   context-sensitive case mapping; use a Unicode library for real case conversion.
 - **`printf("%ls")` converts through the current locale**, and what happens to
   a character the locale can't encode is up to the C library: in the `"C"`
-  locale, `printf("[%ls]\n", L"héllo")` returned -1 and printed nothing on
-  glibc, while macOS wrote the raw byte `0xE9`. Don't mix byte and wide output
+  locale, `printf("[%ls]\n", L"héllo")` returned -1 on glibc and printed
+  nothing with glibc 2.41, but `[` with glibc 2.36 (Debian 12), which writes
+  the output before the failing conversion; macOS wrote the raw byte `0xE9`.
+  A failed `printf` can leave partial output behind. Don't mix byte and wide output
   (`printf` vs `wprintf`) on one `FILE*`: a stream's orientation is fixed by its
   first use (`std::fwide`).
 - **The `wcs*` functions share the byte versions' bugs**: `wcsncpy` may not

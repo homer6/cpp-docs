@@ -81,9 +81,13 @@ Every page has the same skeleton. Read these parts:
 3. **The local compilers:**
    `python3 .claude/skills/add-to-topic/scripts/probe.py macros __cpp_lib_<x>`
    or `probe.py snippet file.cpp --run`.
-4. **The vendors' published status pages**, for compilers you can't run
-   locally (MSVC, older releases). The `add-to-topic` skill's step 2 lists
-   them and explains how to read them.
+4. **A consented CI run**, for MSVC, FreeBSD and other platforms you can't
+   run locally: `docs/platform-support.md` in the checkout lists the last
+   GitHub Actions run per platform and compiler, with its link. Cite that
+   over a status page alone.
+5. **The vendors' published status pages**, where no run covers it (older
+   releases, or before the first run). The `add-to-topic` skill's step 2
+   lists them and explains how to read them.
 
 If the project can't use the feature, write the fallback the page suggests,
 or guard it:

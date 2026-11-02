@@ -11,6 +11,7 @@
 #include <thread>
 #include <type_traits>
 #include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
 
@@ -119,12 +120,16 @@ TEST(Mutexes, ConditionVariableLockTypes) {
     static_assert(CanWait<std::condition_variable, std::unique_lock<std::mutex>>);
     static_assert(!CanWait<std::condition_variable, std::lock_guard<std::mutex>>);
     static_assert(CanWait<std::condition_variable_any, std::shared_lock<std::shared_mutex>>);
+    // stop_token and its condition_variable_any overloads come with jthread (P0660).
+    CPPDOCS_REQUIRE(__cpp_lib_jthread);
+#ifdef __cpp_lib_jthread
     std::condition_variable_any cv;
     std::mutex m;
     std::stop_source ss;
     ss.request_stop();
     std::unique_lock lk{m};
     EXPECT_FALSE(cv.wait(lk, ss.get_token(), [] { return false; }));  // returns on stop
+#endif
 }
 
 // "Run something exactly once": racing threads run the callable once, and every

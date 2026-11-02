@@ -190,8 +190,9 @@ int main() {
   thread changes the answer for every thread.
 - **`std::strchr(const char*, int)` has two overloads in C++** (`const` and
   non-`const`), unlike C's single function that silently drops `const`.
-  GCC's libstdc++ on macOS is an exception: it relies on the C headers for
-  them, and the macOS SDK only declares C's `char* strchr(const char*, int)`.
+  GCC's libstdc++ on macOS and FreeBSD is an exception: it relies on the C
+  headers for them, and the macOS SDK and FreeBSD's libc only declare C's
+  `char* strchr(const char*, int)` (glibc declares both for C++).
 
 ## See also
 

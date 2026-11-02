@@ -299,16 +299,23 @@ is filled immediately). Everywhere else, follow **ES.20** and initialize.
 
 ## GSL (Guidelines Support Library)
 
-The Guidelines' helper library. Several of its types now have standard
-equivalents:
+The Guidelines' helper library (implementations: [industry practice](industry-practice.md#the-gsl-in-practice)).
+Several of its types now have standard equivalents:
 
 | GSL | Standard replacement |
 |---|---|
-| `gsl::span` | `std::span` (C++20) |
+| `gsl::span` | `std::span` (C++20). `gsl::span` is bounds-checked (`Expects`); `std::span` only with a hardened library |
+| `gsl::at(c, i)` | — (bounds-checked indexing; or a hardened library's checked `operator[]`) |
 | `Expects()` / `Ensures()` | `pre` / `post` contracts (C++26) |
 | `gsl::finally` | — (still useful; or write a small scope guard) |
-| `gsl::not_null<T*>` | — (still useful; or take a reference) |
-| `gsl::owner<T*>` | — (annotation only; better to use `unique_ptr`) |
+| `gsl::not_null<T*>`, `strict_not_null` | — (still useful; or take a reference) |
+| `gsl::owner<T*>` | — (an alias for `T*`, annotation only; better to use `unique_ptr`) |
+| `gsl::narrow` / `narrow_cast` | — (`narrow` throws `narrowing_error` if the value changes; `narrow_cast` is a `static_cast` that states intent) |
+| `gsl::zstring` / `czstring` | — (aliases for `char*` / `const char*` that say "zero-terminated") |
+| `gsl::index` | `std::ptrdiff_t` (it's an alias); or `std::ssize` (C++20) |
+| `gsl::byte` | `std::byte` (C++17); deprecated in GSL |
+| `joining_thread` | `std::jthread` (C++20); never implemented in Microsoft GSL |
+| GSL.concept (`Range`, `Sortable`…) | `<concepts>` / `<ranges>` (C++20): `std::ranges::range`, `std::sortable`… |
 
 ## See also
 

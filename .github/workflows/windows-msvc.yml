@@ -1,0 +1,107 @@
+# Windows with MSVC (cl + MS STL): VS 2022 and VS 2026 on x64, VS 2026 on
+# arm64 (native). Issue #146.
+#
+# Runner images (actions/runner-images, checked 2026-11-01):
+#   windows-2022           VS 2022 Enterprise 17.14
+#   windows-2025-vs2026    VS 2026 Enterprise 18.x; `windows-2025` is the same
+#                          image since June 2026 (runner-images #14017)
+#   windows-11-arm         VS 2026 on Windows 11 arm64: moved to the
+#                          windows-11-vs2026-arm image in September 2026
+#                          (#14602), so there is no VS 2022 arm64 image left
+#                          to test
+#
+# The VS Developer environment comes from vswhere + VsDevCmd.bat in plain
+# PowerShell (tools/ci/vsdevenv.ps1); no third-party action.
+#
+# Manual only: started by hand (or by all.yml through workflow_call), with the
+# owner's consent for each run. See .github/workflows/README.md.
+name: Windows (MSVC)
+
+on:
+  workflow_dispatch:
+    inputs:
+      areas:
+        description: "Test areas: a ctest label regex (empty = all), e.g. ^containers$|^ranges$"
+        type: string
+        default: ""
+      tests:
+        description: "Build and run the GoogleTest suite"
+        type: boolean
+        default: true
+      snippets:
+        description: "Run the snippet checker"
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      areas:
+        type: string
+        default: ""
+      tests:
+        type: boolean
+        default: true
+      snippets:
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  msvc:
+    name: ${{ matrix.runner }} · MSVC ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: false
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            arch: amd64
+            platform: windows-2022-x64
+          - runner: windows-2025-vs2026
+            arch: amd64
+            platform: windows-2025-x64
+          - runner: windows-11-arm
+            arch: arm64
+            platform: windows-11-arm64
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_PLATFORM: ${{ matrix.platform }}
+      CPPDOCS_PRESET: msvc
+      CPPDOCS_SNIPPET_TOOLCHAIN: msvc
+      CPPDOCS_BASELINE: tools/snippet_baseline/msvc.txt
+      CXX: cl
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: VS Developer environment (${{ matrix.arch }})
+        run: tools/ci/vsdevenv.ps1 -Arch ${{ matrix.arch }}
+
+      - name: Record MSVC and OS versions
+        run: |
+          $os = Get-CimInstance Win32_OperatingSystem
+          $vs = $env:VisualStudioVersion
+          "CPPDOCS_COMPILER=msvc-$($env:VCToolsVersion)" >> $env:GITHUB_ENV
+          "CPPDOCS_OS_VERSION=$($os.Caption) $($os.Version), VS $vs, VC tools $($env:VCToolsVersion)" >> $env:GITHUB_ENV
+
+      - name: Configure, build, test (run_tests.ps1), check snippets
+        run: tools/ci/run.ps1
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ matrix.platform }}-${{ env.CPPDOCS_COMPILER || 'msvc' }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn

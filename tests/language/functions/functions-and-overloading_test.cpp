@@ -66,7 +66,10 @@ TEST(FunctionsAndOverloading, OverloadResolution) {
 TEST(FunctionsAndOverloading, Attributes) {
     EXPECT_THROW(fail(), std::runtime_error);
     EXPECT_EQ(g(1), 0);
-    static_assert(__has_cpp_attribute(nodiscard) >= 201907L);  // nodiscard("reason"): C++20
+    // __has_cpp_attribute only works in #if / #elif ([cpp.cond]); MSVC rejects it elsewhere.
+#if __has_cpp_attribute(nodiscard) < 201907L  // nodiscard("reason"): C++20
+#error "[[nodiscard]] with a reason not recognized"
+#endif
 }
 
 // "Default vs deleted": = default / = delete members, and a deleted overload.
@@ -77,16 +80,20 @@ TEST(FunctionsAndOverloading, DefaultVersusDeleted) {
     static_assert(!CallableF<double>);  // picks the deleted overload
 }
 
+#if __cpp_deleted_function >= 202403L  // MSVC has no C++26 core features yet
 namespace deleted_reason {
 void g(int) {}
 void g(double) = delete("would narrow; convert explicitly");
 template <class T>
 concept CallableG = requires(T t) { g(t); };
 }  // namespace deleted_reason
+#endif
 
 // "`= delete(\"reason\")` (C++26)": the overload is deleted; the message is in the diagnostic.
 TEST(FunctionsAndOverloading, DeleteWithReason) {
     CPPDOCS_REQUIRE_VERSION(__cpp_deleted_function, 202403L);
+#if __cpp_deleted_function >= 202403L
     static_assert(deleted_reason::CallableG<int>);
     static_assert(!deleted_reason::CallableG<double>);
+#endif
 }

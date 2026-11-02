@@ -64,6 +64,10 @@ constexpr bool check() {
 static_assert(check());
 ```
 
+MSVC needs VS 2026 (19.5x) for this: VS 2022 (19.44) rejects the virtual
+`area()` call through the base reference (C2131), as a
+[consented `windows-msvc` run](https://github.com/homer6/cpp-docs/actions/runs/41366612820) showed.
+
 ### `try`/`catch` and union members (C++20)
 
 A `try` block may appear, as long as nothing throws during constant evaluation
@@ -239,7 +243,12 @@ static_assert(keeps_order());   // equal keys keep their original order
 | C++26 | `flat_map`, `flat_set` (P3372) | no | yes | yes |
 | C++26 | `deque`, `map`, `set`, `unordered_*`, `stack` (P3372) | no | no | no |
 
-Each has its own macro, such as `__cpp_lib_constexpr_list`.
+Each has its own macro, such as `__cpp_lib_constexpr_list`. Older toolchains
+lag here: in the [platform runs](../../../platform-support.md), Clang 18 rejects a
+constant-evaluated `std::optional<std::string>` / `std::variant` with both libraries
+(constexpr `optional`/`variant` is P2231, `__cpp_lib_variant` and
+`__cpp_lib_optional` `>= 202106L`; libstdc++ 14 enables it only for compilers with
+`__cpp_concepts >= 202002L`, which Clang reaches in 19).
 
 **`<cmath>`.** C++23 made the simple functions `constexpr` (`fabs`, `floor`,
 `fmax`, `fmod`, `copysign`…, P0533), and C++26 added most of the rest (`sqrt`,
@@ -247,7 +256,9 @@ Each has its own macro, such as `__cpp_lib_constexpr_list`.
 `__cpp_lib_constexpr_cmath` yet. GCC accepts all of these anyway, even in
 `-std=c++17`, because it folds its math builtins. Clang 22 with libc++ rejects
 even `std::fabs` and integer `std::abs` ("non-constexpr function"), though
-`std::isnan` and `std::signbit` work:
+`std::isnan` and `std::signbit` work (`std::signbit` only from Clang 20, which
+can constant-evaluate `__builtin_signbit`; Clang 18 and 19 and Apple Clang 17
+reject it):
 
 ```cpp needs=constexpr-cmath
 static_assert(std::fabs(-2.5) == 2.5);    // GCC: yes; Clang 22 + libc++: not yet

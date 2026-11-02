@@ -159,6 +159,10 @@ int main() {
   either GCC 15 or Clang 22/libc++ on macOS. The `<cuchar>` examples above are
   tagged `needs=cuchar` and were verified with GCC 16 on Linux (glibc). Use
   `mbrtowc` (where `wchar_t` is UTF-32) or a Unicode library on macOS.
+- **`mbrtoc8` / `c8rtomb` need C23 support in the C library.** The C++ library
+  only re-exports them from `<uchar.h>`: FreeBSD 14 and 15 (with GCC and with
+  Clang/libc++) and MS STL don't declare them, though `mbrtoc16` and
+  `mbrtoc32` are there. glibc 2.36 and later has them.
 - **The encoding is global, run-time state.** Programs start in the `"C"`
   locale, where only single bytes decode (`mbrtoc32` on `"\xC3\xA9"` returns
   `(size_t)-1` on glibc). `setlocale` is not thread-safe and affects every thread.

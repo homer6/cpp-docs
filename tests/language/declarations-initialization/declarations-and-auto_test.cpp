@@ -117,6 +117,14 @@ TEST(DeclarationsAuto, AutoForwardingReference) {
     EXPECT_EQ(rv + total, 5);
 }
 
+// P2686 (constexpr structured bindings) has no macro of its own. GCC 16 and Clang 22 have it
+// and define the P1061 value 202411L; Clang 21 (and Apple Clang 21) define 202411L for the
+// packs but reject `constexpr auto [a, b]` ("decomposition declaration cannot be declared
+// 'constexpr'"), so they're excluded by version.
+#if __cpp_structured_bindings >= 202411L && !(defined(__clang__) && __clang_major__ < 22)
+#define CPPDOCS_CONSTEXPR_STRUCTURED_BINDINGS 1
+#endif
+
 namespace sb_cpp26 {
 #if __cpp_structured_bindings >= 202411L
 template <class Tuple>
@@ -128,6 +136,8 @@ constexpr auto head_and_count = [](auto t) {
     auto [head, ...rest] = t;
     return head * 100 + sizeof...(rest);
 };
+#endif
+#ifdef CPPDOCS_CONSTEXPR_STRUCTURED_BINDINGS
 struct Point2 { int x, y; };
 constexpr Point2 origin{3, 4};
 constexpr auto [ox, oy] = origin;
@@ -159,11 +169,15 @@ TEST(DeclarationsAuto, StructuredBindingPack) {
 #endif
 }
 
-// "`constexpr` structured bindings (C++26)". P2686 has no macro of its own; the
-// toolchains that have it (GCC 16, Clang 22) are the ones defining the P1061 value.
+// "`constexpr` structured bindings (C++26)" (P2686; see CPPDOCS_CONSTEXPR_STRUCTURED_BINDINGS).
 TEST(DeclarationsAuto, ConstexprStructuredBindings) {
     CPPDOCS_REQUIRE_VERSION(__cpp_structured_bindings, 202411L);
-#if __cpp_structured_bindings >= 202411L
+#if defined(__clang__) && __clang_major__ < 22
+    GTEST_SKIP() << "Clang " << __clang_major__ << " has structured binding packs (P1061, "
+                    "__cpp_structured_bindings 202411L) but not constexpr structured bindings "
+                    "(P2686, Clang 22)";
+#endif
+#ifdef CPPDOCS_CONSTEXPR_STRUCTURED_BINDINGS
     static_assert(sb_cpp26::ox + sb_cpp26::oy == 7);
     static_assert(sb_cpp26::t2 == 3);
     EXPECT_EQ(&sb_cpp26::t0, &sb_cpp26::table[0]);  // constexpr auto& refers to the static object

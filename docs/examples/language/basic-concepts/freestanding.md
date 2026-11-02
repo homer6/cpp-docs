@@ -67,6 +67,11 @@ What the local libraries define (`echo '#include <version>' | … -dM -E`):
 | libstdc++ (GCC 15.2 and 16.2) | `algorithm`, `array`, `cstring`, `expected`, `optional`, `string_view`, `variant` (all `202311L`) |
 | libc++ (Clang 22) | none |
 
+libstdc++ added them in GCC 14 (GCC 13 defines none), so test with `#ifdef`,
+never in a plain expression. `_expected` appears only where `<expected>` is
+enabled: under Clang 18, which has `__cpp_concepts == 201907L`, libstdc++
+leaves it out.
+
 ## When to use it
 
 - You're writing a kernel, firmware or a bare-metal runtime: compile with

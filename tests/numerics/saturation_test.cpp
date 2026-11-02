@@ -2,8 +2,21 @@
 #include <climits>
 #include <cstdint>
 #include <numeric>
-#include <stdckdint.h>
 #include <version>
+
+// <stdckdint.h> (C23, C++26 by P3370R1): GCC, Clang and libc++/libstdc++ ship it; MSVC/UCRT
+// doesn't yet. GCC's own header up to 14.2 is the C one, whose ckd_add casts to _Bool and
+// doesn't compile in C++; libstdc++'s C++ header (GCC 15, also in GCC 14.4) defines
+// _GLIBCXX_STDCKDINT_H, and GCC 16 adds __cpp_lib_stdckdint_h. Clang's own header works in C++.
+#if __has_include(<stdckdint.h>)
+#include <stdckdint.h>
+#if !defined(__GNUC__) || defined(__clang__) || defined(_GLIBCXX_STDCKDINT_H) || \
+    defined(__cpp_lib_stdckdint_h)
+#define CPPDOCS_HAS_STDCKDINT 1
+#else
+#define CPPDOCS_STDCKDINT_C_ONLY 1
+#endif
+#endif
 
 #include "support/feature.hpp"
 
@@ -91,8 +104,15 @@ TEST(Saturation, PortableSwitch) {
 
 // "Gotchas" ("Not a checked operation"): ckd_add reports overflow by returning true.
 TEST(Saturation, CkdAddReportsOverflow) {
+#ifdef CPPDOCS_HAS_STDCKDINT
     int r = 0;
     EXPECT_TRUE(ckd_add(&r, INT_MAX, 1));
     EXPECT_FALSE(ckd_add(&r, 2, 3));
     EXPECT_EQ(r, 5);
+#elif defined(CPPDOCS_STDCKDINT_C_ONLY)
+    GTEST_SKIP() << "<stdckdint.h> here is GCC's C header (ckd_add uses _Bool), not usable from "
+                    "C++; libstdc++'s C++26 <stdckdint.h> (P3370R1) arrived in GCC 15";
+#else
+    GTEST_SKIP() << "<stdckdint.h> not provided by this toolchain (MSVC/UCRT lacks it)";
+#endif
 }

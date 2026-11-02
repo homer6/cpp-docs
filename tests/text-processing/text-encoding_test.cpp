@@ -12,6 +12,16 @@
 
 #include "support/feature.hpp"
 
+// environment() and locale::encoding() live in libstdc++exp (GCC 14+), which
+// tests/CMakeLists.txt links where a try-link of <stacktrace> needs it: so wherever
+// libstdc++ defines __cpp_lib_stacktrace. Without stacktrace support it isn't linked.
+#if defined(__GLIBCXX__) && !defined(__cpp_lib_stacktrace)
+#define CPPDOCS_TE_SKIP_ "libstdc++ without <stacktrace> support: the suite doesn't link stdc++exp, which environment() and locale::encoding() need"
+#elif defined(_LIBCPP_AVAILABILITY_HAS_TEXT_ENCODING_ENVIRONMENT) && \
+    !_LIBCPP_AVAILABILITY_HAS_TEXT_ENCODING_ENVIRONMENT
+#define CPPDOCS_TE_SKIP_ "libc++ (LLVM 23) marks text_encoding::environment() and locale::encoding() unavailable on Apple platforms: no macOS release ships them in the system libc++ yet"
+#endif
+
 // "Declaration": id::UTF8 is 106, max_name_length is 63, default is unknown with name "".
 TEST(TextEncoding, DeclarationBasics) {
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_text_encoding, 202306L);
@@ -40,10 +50,17 @@ TEST(TextEncoding, LiteralIsUtf8) {
 }
 
 // "What am I running with?": environment()/environment_is() need -lstdc++exp with libstdc++.
+// Its value depends on the LANG/LC_ALL the test runs with, so only check it's known.
 TEST(TextEncoding, Environment) {
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_text_encoding, 202306L);
-    GTEST_SKIP() << "environment() needs -lstdc++exp with libstdc++ and its result depends on "
-                    "the LANG/LC_ALL the test runs with; the suite doesn't link stdc++exp";
+#if defined(CPPDOCS_TE_SKIP_)
+    GTEST_SKIP() << CPPDOCS_TE_SKIP_;
+#elif defined(__cpp_lib_text_encoding)
+    auto env = std::text_encoding::environment();
+    EXPECT_FALSE(env == std::text_encoding::id::unknown) << env.name();
+    EXPECT_TRUE(std::text_encoding::environment_is<std::text_encoding::id::UTF8>() ==
+                (env == std::text_encoding::id::UTF8));
+#endif
 }
 
 // "Looking encodings up by name": the documented output.
@@ -79,21 +96,27 @@ TEST(TextEncoding, LooseNameMatching) {
 #endif
 }
 
-// "The encoding of a locale": classic().encoding() is US-ASCII (mib 3).
+// "The encoding of a locale": classic().encoding() is US-ASCII (mib 3), except
+// libc++ on Windows (the ANSI code page); unavailable with libc++ on Apple.
 TEST(TextEncoding, LocaleEncoding) {
     CPPDOCS_REQUIRE_VERSION(__cpp_lib_text_encoding, 202306L);
-#if defined(__GLIBCXX__)
-    GTEST_SKIP() << "std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 "
-                    "fail to link without it); the suite doesn't link stdc++exp";
+#if defined(CPPDOCS_TE_SKIP_)
+    GTEST_SKIP() << CPPDOCS_TE_SKIP_;
 #elif defined(__cpp_lib_text_encoding)
     auto enc = std::locale::classic().encoding();
+#if defined(_LIBCPP_VERSION) && defined(_WIN32)
+    // libc++ on Windows (MSYS2 CLANG64, LLVM 23) reports the ANSI code page (GetACP(),
+    // e.g. windows-1252) for the "C" locale, not US-ASCII.
+    EXPECT_FALSE(enc == std::text_encoding::id::unknown);
+#else
     EXPECT_TRUE(enc == std::text_encoding::id::ASCII);
+#endif
 #endif
 }
 
-// "Gotchas": libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 15 and 16.
+// "Gotchas": libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 14, 15 and 16.
 TEST(TextEncoding, FeatureMacroValue) {
-#if defined(__GLIBCXX__) && defined(__GNUC__) && !defined(__clang__) && __GNUC__ >= 15
+#if defined(__GLIBCXX__) && defined(__GNUC__) && !defined(__clang__) && __GNUC__ >= 14
     CPPDOCS_REQUIRE(__cpp_lib_text_encoding);
 #ifdef __cpp_lib_text_encoding
     EXPECT_EQ(__cpp_lib_text_encoding, 202306L);
@@ -108,6 +131,6 @@ TEST(TextEncoding, FeatureMacroValue) {
     GTEST_SKIP() << "page only states libc++ status for Clang 22";
 #endif
 #else
-    GTEST_SKIP() << "page only states libstdc++ (GCC 15/16) and libc++ (Clang 22) status";
+    GTEST_SKIP() << "page only states libstdc++ (GCC 14-16) and libc++ (Clang 22) status";
 #endif
 }

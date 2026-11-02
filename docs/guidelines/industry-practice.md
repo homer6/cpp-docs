@@ -3,7 +3,7 @@
 > What large C++ codebases actually allow, where their guides disagree and why,
 > and which Abseil "Tips of the Week" still matter now that the standard has
 > caught up. **Sources:** Google C++ Style Guide, Chromium's modern C++ feature
-> list, LLVM Coding Standards, Abseil Tips — all checked 2026-10-30
+> list, LLVM Coding Standards, Abseil Tips — all checked 2026-10-30; Microsoft GSL and gsl-lite checked 2026-11-01
 
 "Modern C++" isn't one policy. The big guides agree on the fundamentals (RAII,
 clear ownership, readable code) and disagree on features, mostly for reasons of
@@ -113,8 +113,49 @@ vector) is not `absl::flat_hash_map` (a hash table), and `std::expected` alone
 isn't the whole `absl::Status` ecosystem (error codes, payloads, propagation
 macros).
 
+## The GSL in practice
+
+The Core Guidelines lean on a small support library, the
+[GSL](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-gsl).
+Many rules say "use `gsl::not_null`", "`gsl::narrow`" or "`gsl::owner`". The
+Guidelines define its contents, and libraries implement them.
+
+| Library | Standards | Notes |
+|---|---|---|
+| [Microsoft GSL](https://github.com/microsoft/GSL) 5.0.1 (Sep 2026) | C++14–C++23 | The reference implementation, header-only, namespace `gsl`. Contract failures call `std::terminate`. |
+| [gsl-lite](https://github.com/gsl-lite/gsl-lite) 1.1.1 (Aug 2026) | C++98–C++23 | Single header for older codebases. Version 1 uses namespace `gsl_lite` and doesn't define unprefixed `Expects`/`Ensures` by default. |
+
+**Still worth using with C++20/23:**
+- `gsl::not_null<T>` / `strict_not_null<T>`: construction from `nullptr` doesn't compile, and a null pointer at run time terminates;
+- `gsl::narrow` (throws `gsl::narrowing_error` when the value changes) and `narrow_cast` (states that truncation is intended);
+- `gsl::finally`, a one-line scope guard;
+- `gsl::at` and `gsl::span`, which are bounds-checked (a hardened standard library gives `std::span` the same; see [safety](safety.md#gsl-guidelines-support-library)).
+
+**Skip the parts the standard replaced:**
+- `gsl::byte` (use `std::byte`; deprecated);
+- `gsl::unique_ptr` / `shared_ptr` aliases (deprecated);
+- `joining_thread`, which Microsoft GSL never implemented (use `std::jthread`).
+
+`Expects`/`Ensures` become `pre`/`post` once your compilers support C++26
+contracts.
+
+**Tooling expects the GSL's names.** clang-tidy's Core Guidelines checks are
+built around them:
+- `cppcoreguidelines-owning-memory` treats only `gsl::owner<T*>` as an owning
+  raw pointer;
+- `cppcoreguidelines-pro-bounds-constant-array-index` flags non-constant
+  indexes into arrays and `std::array`, and can rewrite them to `gsl::at` (its
+  `GslHeader` option);
+- `cppcoreguidelines-narrowing-conversions` flags the conversions `gsl::narrow`
+  makes explicit.
+
+Adopting the GSL's names, even as local aliases, is what lets those checks see
+ownership and intent.
+
 ## See also
 
+- [Microsoft GSL](https://github.com/microsoft/GSL) · [gsl-lite](https://github.com/gsl-lite/gsl-lite) ·
+  [Core Guidelines: GSL](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-gsl)
 - [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) ·
   [Chromium modern C++ features](https://chromium.googlesource.com/chromium/src/+/main/styleguide/c++/c++-features.md) ·
   [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html) ·

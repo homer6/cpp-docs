@@ -2,8 +2,11 @@
 #include <memory>
 #include <type_traits>
 #include <utility>
+#include <version>
 
 #include <gtest/gtest.h>
+
+#include "support/feature.hpp"
 
 namespace {
 int live = 0;  // counts objects alive, to observe deletion
@@ -116,6 +119,7 @@ TEST(UniquePtr, ArrayFormUsesDeleteArray) {
     static_assert(std::is_same_v<decltype(arr)::deleter_type, std::default_delete<int[]>>);
 }
 
+#ifdef __cpp_lib_out_ptr  // C++23: GCC 14, libc++ 19, MS STL 19.34
 namespace {
 struct CHandle {
     int v;
@@ -149,6 +153,7 @@ int handle_peek(CHandle** out) {
 // "C APIs that return through T**": out_ptr adopts the result; inout_ptr passes
 // the old pointer in and adopts the replacement.
 TEST(UniquePtr, OutPtrAndInoutPtr) {
+    CPPDOCS_REQUIRE(__cpp_lib_out_ptr);
     std::unique_ptr<CHandle, CHandleFree> h;
     handle_create(std::out_ptr(h), 7);
     ASSERT_NE(h, nullptr);
@@ -166,6 +171,7 @@ TEST(UniquePtr, OutPtrAndInoutPtr) {
 
 // "Gotchas": out_ptr resets the smart pointer before the call (old object freed first).
 TEST(UniquePtr, OutPtrResetsBeforeCall) {
+    CPPDOCS_REQUIRE(__cpp_lib_out_ptr);
     std::unique_ptr<CHandle, CHandleFree> h{new CHandle{1}};
     watched = &h;
     handle_deletes = 0;
@@ -175,3 +181,9 @@ TEST(UniquePtr, OutPtrResetsBeforeCall) {
     EXPECT_EQ(h->v, 2);
     watched = nullptr;
 }
+#else
+// "C APIs that return through T**": std::out_ptr / std::inout_ptr (C++23).
+TEST(UniquePtr, OutPtrAndInoutPtr) { CPPDOCS_REQUIRE(__cpp_lib_out_ptr); }
+// "Gotchas": out_ptr resets the smart pointer before the call.
+TEST(UniquePtr, OutPtrResetsBeforeCall) { CPPDOCS_REQUIRE(__cpp_lib_out_ptr); }
+#endif

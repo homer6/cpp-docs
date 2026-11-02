@@ -71,6 +71,15 @@ All three produce the same values, honour the four C++26 parameters, and give
 extension, but doesn't yet claim the C++26 feature — so test `__has_embed`/`__cpp_pp_embed` rather than the standard
 version, and expect `-pedantic-errors` builds on Clang to reject it.
 
+Older toolchains, from the [platform runs](../../../platform-support.md): GCC 13
+and 14 have no `#embed` at all (no `__has_embed`, and `__cpp_pp_embed` isn't
+defined, so use it only inside `#ifdef`). Clang 19 and 20 (and Apple Clang 17,
+which is LLVM 19) have `#embed`, but deducing `std::initializer_list` from a
+braced list that holds one (`auto il = { #embed "f" };`) fails with "excess
+elements in array initializer"
+([llvm/llvm-project#122306](https://github.com/llvm/llvm-project/issues/122306),
+fixed in Clang 21); arrays are fine.
+
 ## When to use it
 
 - Shaders, fonts, images, certificates, test vectors, lookup tables — any data

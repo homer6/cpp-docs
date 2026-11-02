@@ -5,7 +5,10 @@
 #include <version>
 
 // libstdc++'s C++ <stdbit.h> (GCC 15+, C++26 mode); not glibc's C-only header.
-#if __has_include(<stdbit.h>) && defined(__GLIBCXX__) && __cplusplus > 202302L
+// FreeBSD 15's system <stdbit.h> is C-only (_Bool), so without libstdc++'s own header
+// (GCC 14.2, the FreeBSD package) including it doesn't compile; skip it there.
+#if __has_include(<stdbit.h>) && defined(__GLIBCXX__) && __cplusplus > 202302L && \
+    !(defined(__FreeBSD__) && _GLIBCXX_RELEASE < 15)
 #include <stdbit.h>
 #endif
 #if defined(_GLIBCXX_STDBIT_H) || defined(__cpp_lib_stdbit_h)

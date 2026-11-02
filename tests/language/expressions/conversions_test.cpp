@@ -98,6 +98,7 @@ NoMove make() { return {}; }
 // "auto(x) — make a copy (C++23)": a decayed prvalue copy.
 TEST(Conversions, AutoDecayCopy) {
     CPPDOCS_REQUIRE_VERSION(__cpp_auto_cast, 202110L);
+#if __cpp_auto_cast >= 202110L  // MSVC: Build Tools 14.50 and later
     std::vector<int> v{1, 2, 1, 3, 1};
     std::erase(v, auto(v.front()));
     EXPECT_EQ(v, (std::vector<int>{2, 3}));
@@ -107,4 +108,5 @@ TEST(Conversions, AutoDecayCopy) {
     int arr[3]{};
     static_assert(std::is_same_v<decltype(auto(arr)), int*>);  // arrays decay
     [[maybe_unused]] auto x = auto(auto_cast::make());          // prvalue: no copy or move needed
+#endif
 }

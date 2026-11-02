@@ -77,7 +77,9 @@ int count_calls() {
 
 It must be an empty statement of its own, and the expression must convert to
 `bool`. GCC 15 and Clang 22 both support it (`__has_cpp_attribute(assume) ==
-202207L`). If the condition could ever be false, the program has undefined
+202207L`); it arrived in GCC 13 and Clang 19. Clang 18 ignores it with
+`-Wunknown-attributes`, and MSVC doesn't implement it (warning C5222), so test
+`__has_cpp_attribute(assume)` in `#if` before relying on it. If the condition could ever be false, the program has undefined
 behaviour, so it's a promise, not a check: use `assert` or
 [contracts](../basic-concepts/contracts.md) for checks.
 
