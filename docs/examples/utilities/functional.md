@@ -72,6 +72,13 @@ add_to_c(5);                                           // c.n == 5
 Bound arguments are stored by value (decayed); pass `std::ref(x)` to bind a
 reference.
 
+Clang 20 and later with libstdc++ 14.1 or 14.2 (Ubuntu 24.04's GCC 14) can't
+call the result: libstdc++'s `forward_like` there has a deduced return type
+that Clang mishandles
+([llvm/llvm-project#101614](https://github.com/llvm/llvm-project/issues/101614),
+[#131708](https://github.com/llvm/llvm-project/issues/131708)). libstdc++ 14.3
+and 15 fix it.
+
 ## not_fn (C++17)
 
 `std::not_fn(f)` returns a callable that returns `!f(args...)`. It replaces the
