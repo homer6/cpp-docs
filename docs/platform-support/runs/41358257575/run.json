@@ -1,0 +1,600 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41358257575,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41358257575",
+ "date": "2026-11-01",
+ "started": "2026-11-01T22:39:50Z",
+ "workflow": "linux.yml",
+ "branch": "dev",
+ "sha": "dfd59ae1f2faf11d04b8e4c057e604e4c3cd5eaa",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "^strings$",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "ubuntu-26.04-arm · clang-22-libstdcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 14 · ubuntu-24.04 (gcc:14 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 15 · ubuntu-24.04-arm (gcc:15 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 16 · ubuntu-24.04 (gcc:16 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 16 · ubuntu-24.04-arm (gcc:16 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "ubuntu-26.04 · gcc-15 (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 13 · ubuntu-24.04 (gcc:13 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "ubuntu-26.04 · clang-22-libcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "ubuntu-26.04 · clang-22-libstdcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "GCC 15 · ubuntu-24.04 (gcc:15 image)",
+   "conclusion": "success"
+  },
+  {
+   "name": "ubuntu-26.04-arm · gcc-15 (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "ubuntu-26.04-arm · clang-22-libcxx (Ubuntu archive)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 22 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 21 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 22 libcxx · ubuntu-24.04-arm (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 21 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 18 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 22 libstdcxx · ubuntu-24.04-arm (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 20 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 20 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 19 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 22 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 18 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "Clang 19 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "linux-aarch64-debian-13-gcc-15": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-debian-13-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-24.04-clang-22-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-24.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-clang-22-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-aarch64-ubuntu-26.04-gcc-15": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-12-gcc-13": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-13-gcc-14": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-13-gcc-15": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-debian-13-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-18-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-18-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-19-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-19-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-20-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-20-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-21-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-21-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-22-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-clang-22-libcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-clang-22-libstdcxx": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-26.04-gcc-15": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  }
+ }
+}

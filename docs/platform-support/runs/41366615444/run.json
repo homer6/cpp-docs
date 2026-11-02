@@ -1,0 +1,120 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41366615444,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41366615444",
+ "date": "2026-11-02",
+ "started": "2026-11-02T00:20:25Z",
+ "workflow": "windows-gnu.yml",
+ "branch": "dev",
+ "sha": "4ef07d3ed6ab41ccaa4d8a3d8dee013144f130d0",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "^strings$",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "windows-2025-vs2026 · clang-cl",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-2025-vs2026 · MSYS2 UCRT64 gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-2025-vs2026 · MSYS2 UCRT64 clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-2025-vs2026 · MSYS2 CLANG64 clang",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "windows-2025-x64-CLANG64-clang-23": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2025-x64-UCRT64-clang-23": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2025-x64-UCRT64-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2025-x64-clang-cl-22": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  }
+ }
+}

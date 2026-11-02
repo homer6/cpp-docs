@@ -14,8 +14,10 @@ The goal is every documented feature and every example on every supported platfo
 - **Local runs are the primary proof.** The owner's machine (GCC 15, Clang 22) and the GCC 16 Docker image are checked for every release; their results are labelled *local*.
 - **Skipped** means a test or snippet didn't run on that toolchain, for the reason given: a missing library feature (`CPPDOCS_REQUIRE`, `needs=`), a `nocompile` snippet, or an implementation-defined result. A skip isn't a pass or a failure; it's a known gap.
 - **Tests** are the GoogleTest suite (`tests/`); **snippets** are the compile-checked blocks in `docs/` (`tools/check_snippets.py`). Snippet *passed* = checked − failed; baselined failures are counted as failed and noted. The top skip reasons leave out `nocompile` snippets, which skip on every toolchain alike.
+- **Per feature:** the [feature support matrix](#feature-support-matrix) below shows every documented feature and example per compiler; the [bugs found](#compiler-and-platform-bugs-found) close the page.
+- **Archived:** each run's results and metadata are kept in [`platform-support/runs/<run-id>/`](platform-support/runs/), so this page can be rebuilt after GitHub's artifact retention runs out.
 
-Generated 2026-11-01.
+Generated 2026-11-02.
 
 ## GitHub Actions
 
@@ -23,8 +25,8 @@ Generated 2026-11-01.
 |---|---|---|
 | [Linux (x86_64 and arm64)](https://github.com/homer6/cpp-docs/actions/workflows/linux.yml) (`linux.yml`) | ubuntu-24.04/26.04 x64 and arm: GCC 13-16, Clang 18-22 with libstdc++ and libc++ | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) (success) |
 | [macOS](https://github.com/homer6/cpp-docs/actions/workflows/macos.yml) (`macos.yml`) | macos-15/26 arm64, macos-15-intel/26-intel: Apple Clang, Homebrew GCC and LLVM | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) (success) |
-| [Windows (MSVC)](https://github.com/homer6/cpp-docs/actions/workflows/windows-msvc.yml) (`windows-msvc.yml`) | windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) (failure) |
-| [Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml) (`windows-gnu.yml`) | windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) (failure) |
+| [Windows (MSVC)](https://github.com/homer6/cpp-docs/actions/workflows/windows-msvc.yml) (`windows-msvc.yml`) | windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) (success) |
+| [Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml) (`windows-gnu.yml`) | windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) (success) |
 | [FreeBSD](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml) (`freebsd.yml`) | FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) (success) |
 | [Other architectures (QEMU)](https://github.com/homer6/cpp-docs/actions/workflows/qemu.yml) (`qemu.yml`) | riscv64, s390x (big-endian), ppc64le under QEMU | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) (success) |
 
@@ -74,22 +76,22 @@ Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121): m
 | macos-26-x86_64-gcc-16 | macOS 26 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
 | macos-26-x86_64-llvm-22 | macOS 26 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
 
-Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411): windows-msvc.yml · dev · 3c864fa · areas `^strings$`.
+Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135): windows-msvc.yml · dev · 37198cd · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| windows-11-arm64-msvc-14.51.36231 | Windows 11 | arm64 | MSVC 19.51.36260 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
-| windows-2022-x64-msvc-14.44.35207 | Windows Server 2022 | x86_64 | MSVC 19.44.35229 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
-| windows-2025-x64-msvc-14.51.36231 | Windows Server 2025 | x86_64 | MSVC 19.51.36260 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
+| windows-11-arm64-msvc-14.51.36231 | Windows 11 | arm64 | MSVC 19.51.36260.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
+| windows-2022-x64-msvc-14.44.35207 | Windows Server 2022 | x86_64 | MSVC 19.44.35229.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
+| windows-2025-x64-msvc-14.51.36231 | Windows Server 2025 | x86_64 | MSVC 19.51.36260.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
 
-Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810): windows-gnu.yml · dev · 3c864fa · areas `^strings$`.
+Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444): windows-gnu.yml · dev · 4ef07d3 · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| windows-2025-x64-CLANG64-clang-23 | Windows Server 2025, MSYS2 CLANG64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-UCRT64-clang-23 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-UCRT64-gcc-16 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | GCC 16.2.0, libstdc++ | `mingw` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-clang-cl-22 | Windows Server 2025 | x86_64 | clang-cl 22.1.3 | `clang-cl` | failed: no results (tests step exit -1) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
+| windows-2025-x64-CLANG64-clang-23 | Windows Server 2025, MSYS2 CLANG64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| windows-2025-x64-UCRT64-clang-23 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| windows-2025-x64-UCRT64-gcc-16 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | GCC 16.2.0, libstdc++ | `mingw` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| windows-2025-x64-clang-cl-22 | Windows Server 2025 | x86_64 | clang-cl 22.1.3, MS STL | `clang-cl` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
 
 Run [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143): freebsd.yml · dev · b3d13a9 · areas `^strings$`.
 
@@ -111,13 +113,4175 @@ Run [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400): q
 
 ## Local runs
 
-Run on the owner's machine (macOS, Apple silicon) and in the `gcc:16` Docker image for the host's architecture, 2026-11-01. These are **local runs**, not GitHub Actions.
+Run on the owner's machine (macOS, Apple silicon) and in the `gcc:16` Docker image for the host's architecture, 2026-11-02. These are **local runs**, not GitHub Actions.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
 | linux-arm64-gcc-16 | Linux (Docker) | arm64 | GCC 16.2.0, libstdc++ | `gcc-16` | 1062 / 0 / 38 | 717 / 0 / 103 | 6× needs __cpp_lib_hive (not defined by this toolchain)<br>6× needs mdspan<br>5× needs __cpp_lib_senders (not defined by this toolchain) | local |
 | macos-arm64-clang-22 | macOS (Darwin 23.6.0) | arm64 | Clang 22.1.8, libc++ | `clang-22` | 969 / 0 / 128 | 672 / 19 / 129 (19 in baseline) | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
 | macos-arm64-gcc-15 | macOS (Darwin 23.6.0) | arm64 | GCC 15.2.0, libstdc++ | `gcc-15` | 986 / 0 / 111 | 691 / 0 / 129 | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
+
+## Feature support matrix
+
+Every feature this reference documents and every example it shows, per compiler: **measured results, not vendor claims.** A *feature* is one GoogleTest case in `tests/`, which checks one claim of one page section (its label is the comment above the `TEST`); an *example* is one compile-checked ```` ```cpp ```` block in `docs/`, by its stable ID.
+
+- **Cells:** ✅ passed · ❌ failed · ⏭ skipped (the numbered reason is under each area: a missing feature-test macro, a `needs=` tag, a compiler-bug gate, a `nocompile` example) · — not run (outside the run's areas, or not built on that toolchain) · ❔ unknown (the job's results couldn't be matched to this checkout; see the column notes).
+- **Summaries** (per area and per page): ✅ everything that ran passed · 🟡 *n* skipped, none failed · ❌ *n* failed.
+- **Columns** are compilers. Jobs with the same compiler, version and standard library whose results are identical share one column ("Columns: where each one ran" lists every OS, architecture and run behind it); when results differ, the column splits (*a*, *b*, …). *local* columns are the owner's local runs. † marks report-only snippet results (no reviewed snippet baseline yet, #159). Inside an area, columns with identical results on every row of that area are merged under a letter.
+- **Rows** come from this checkout. A job that ran an older tree is matched by test name and block ID; if its counts don't add up, its cells are ❔ rather than guessed. Jobs that list every test's status (the `results` field) are matched exactly.
+
+**GitHub Actions coverage: 30 of 1095 features and 12 of 820 examples** ran on at least one GitHub Actions toolchain (areas: `strings`). **Coverage is partial:** the other areas show — on those columns until a consented every-area run (empty `areas`) is collected.
+
+Features (GoogleTest cases) per area:
+
+| Area | Features | GCC<br>13† | GCC<br>14† | GCC<br>15 | GCC<br>15<br>*local* | GCC<br>16 | GCC<br>16† | GCC<br>16<br>*local* | Clang<br>18<br>libstdc++† | Clang<br>19<br>libstdc++† | Clang<br>20<br>libstdc++† | Clang<br>21<br>libstdc++† | Clang<br>22<br>libstdc++† | Clang<br>23<br>libstdc++† | Clang<br>18<br>libc++† | Clang<br>19<br>libc++† | Clang<br>20<br>libc++† | Clang<br>21<br>libc++† | Clang<br>22<br>libc++ | Clang<br>22<br>libc++<br>*local* | Clang<br>23<br>libc++† | Apple Clang<br>17† | Apple Clang<br>21† | MSVC<br>19.44† | MSVC<br>19.51† | clang-cl<br>22† |
+|---|---:|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [algorithms](#algorithms) | 56 | — | — | — | 🟡 1 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| [concepts](#concepts) | 9 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [concurrency](#concurrency) | 48 | — | — | — | 🟡 4 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | 🟡 4 | — | — | — | — | — | — |
+| [containers](#containers) | 165 | — | — | — | 🟡 24 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 17 | — | — | — | — | — | — |
+| [datetime](#datetime) | 22 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 3 | — | — | — | — | — | — |
+| [diagnostics](#diagnostics) | 25 | — | — | — | 🟡 10 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 11 | — | — | — | — | — | — |
+| [execution](#execution) | 5 | — | — | — | 🟡 5 | — | — | 🟡 5 | — | — | — | — | — | — | — | — | — | — | — | 🟡 5 | — | — | — | — | — | — |
+| [feature-test-macros](#feature-test-macros) | 6 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [io](#io) | 48 | — | — | — | 🟡 2 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 9 | — | — | — | — | — | — |
+| [iterators](#iterators) | 24 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [language](#language) | 278 | — | — | — | 🟡 19 | — | — | 🟡 9 | — | — | — | — | — | — | — | — | — | — | — | 🟡 21 | — | — | — | — | — | — |
+| [language-support](#language-support) | 44 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [memory](#memory) | 55 | — | — | — | 🟡 7 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| [metaprogramming](#metaprogramming) | 40 | — | — | — | 🟡 14 | — | — | 🟡 1 | — | — | — | — | — | — | — | — | — | — | — | 🟡 14 | — | — | — | — | — | — |
+| [named-requirements](#named-requirements) | 7 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [numerics](#numerics) | 55 | — | — | — | 🟡 9 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 10 | — | — | — | — | — | — |
+| [ranges](#ranges) | 33 | — | — | — | 🟡 2 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 8 | — | — | — | — | — | — |
+| [strings](#strings) | 30 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [text-processing](#text-processing) | 80 | — | — | — | 🟡 8 | — | — | 🟡 8 ❔ | — | — | — | — | — | — | — | — | — | — | — | 🟡 10 | — | — | — | — | — | — |
+| [utilities](#utilities) | 65 | — | — | — | 🟡 6 | — | — | 🟡 1 | — | — | — | — | — | — | — | — | — | — | — | 🟡 4 | — | — | — | — | — | — |
+
+Examples (compile-checked snippets) per area:
+
+| Area | Examples | GCC<br>13† | GCC<br>14† | GCC<br>15 | GCC<br>15<br>*local* | GCC<br>16 | GCC<br>16† | GCC<br>16<br>*local* | Clang<br>18<br>libstdc++† | Clang<br>19<br>libstdc++† | Clang<br>20<br>libstdc++† | Clang<br>21<br>libstdc++† | Clang<br>22<br>libstdc++† | Clang<br>23<br>libstdc++† | Clang<br>18<br>libc++† | Clang<br>19<br>libc++† | Clang<br>20<br>libc++† | Clang<br>21<br>libc++† | Clang<br>22<br>libc++ | Clang<br>22<br>libc++<br>*local* | Clang<br>23<br>libc++† | Apple Clang<br>17† | Apple Clang<br>21† | MSVC<br>19.44† | MSVC<br>19.51† | clang-cl<br>22† |
+|---|---:|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [algorithms](#algorithms) | 28 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| [concepts](#concepts) | 9 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [concurrency](#concurrency) | 30 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| [containers](#containers) | 96 | — | — | — | 🟡 14 | — | — | 🟡 14 | — | — | — | — | — | — | — | — | — | — | — | 🟡 14 | — | — | — | — | — | — |
+| [datetime](#datetime) | 13 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| [diagnostics](#diagnostics) | 17 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | 🟡 7 | — | — | — | — | — | — |
+| [execution](#execution) | 5 | — | — | — | 🟡 5 | — | — | 🟡 5 | — | — | — | — | — | — | — | — | — | — | — | 🟡 5 | — | — | — | — | — | — |
+| [feature-test-macros](#feature-test-macros) | 2 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [io](#io) | 31 | — | — | — | 🟡 4 | — | — | 🟡 4 | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| [iterators](#iterators) | 13 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [language](#language) | 248 | — | — | — | 🟡 28 | — | — | 🟡 22 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| [language-support](#language-support) | 28 | — | — | — | 🟡 3 | — | — | 🟡 3 | — | — | — | — | — | — | — | — | — | — | — | 🟡 3 | — | — | — | — | — | — |
+| [memory](#memory) | 30 | — | — | — | 🟡 6 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| [metaprogramming](#metaprogramming) | 47 | — | — | — | 🟡 16 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| [named-requirements](#named-requirements) | 5 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| [numerics](#numerics) | 36 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| [ranges](#ranges) | 21 | — | — | — | 🟡 2 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | ❌ 5 | — | — | — | — | — | — |
+| [strings](#strings) | 12 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ 12 | ❌ 12 | ✅ | ✅ | ✅ |
+| [text-processing](#text-processing) | 30 | — | — | — | 🟡 3 | — | — | 🟡 3 | — | — | — | — | — | — | — | — | — | — | — | ❌ 3 | — | — | — | — | — | — |
+| [utilities](#utilities) | 43 | — | — | — | 🟡 4 | — | — | 🟡 4 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| [Guidelines (snippets only)](#guidelines-snippets-only) | 76 | — | — | — | 🟡 23 | — | — | 🟡 17 | — | — | — | — | — | — | — | — | — | — | — | 🟡 23 | — | — | — | — | — | — |
+
+<details><summary>Columns: where each one ran</summary>
+
+| Column | Compiler | Ran on | Tests | Snippets |
+|---|---|---|---|---|
+| GCC 13† | GCC 13.5.0 | Debian 12 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| GCC 14† | GCC 14.2.0<br>GCC 14.4.0 | Debian 13 (QEMU user-mode) · ppc64le · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400)<br>Debian 13 (QEMU user-mode) · riscv64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400)<br>Debian 13 (QEMU user-mode) · s390x · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400)<br>Debian 13 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>FreeBSD 14.5 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143)<br>FreeBSD 15.1 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) | 30 tests | 12 blocks (report-only) |
+| GCC 15 | GCC 15.2.0<br>GCC 15.3.0 | Debian 13 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Debian 13 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks |
+| GCC 15 (local) | GCC 15.2.0 | macOS (Darwin 23.6.0) · arm64 · local | 1097 tests | 820 blocks |
+| GCC 16 | GCC 16.2.0 | Debian 13 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Debian 13 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>macOS 15 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 15 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 26 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 26 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) | 30 tests | 12 blocks |
+| GCC 16† | GCC 16.2.0 | Windows Server 2025, MSYS2 UCRT64 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) | 30 tests | 12 blocks (report-only) |
+| GCC 16 (local) | GCC 16.2.0 | Linux (Docker) · arm64 · local | 1096 tests | 820 blocks |
+| Clang 18, libstdc++† | Clang 18.1.8, libstdc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 19, libstdc++† | Clang 19.1.7, libstdc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 20, libstdc++† | Clang 20.1.8, libstdc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 21, libstdc++† | Clang 21.1.8, libstdc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 22, libstdc++† | Clang 22.1.2, libstdc++<br>Clang 22.1.8, libstdc++ | Ubuntu 24.04 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 23, libstdc++† | Clang 23.1.4, libstdc++ | Windows Server 2025, MSYS2 CLANG64 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444)<br>Windows Server 2025, MSYS2 UCRT64 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) | 30 tests | 12 blocks (report-only) |
+| Clang 18, libc++† | Clang 18.1.8, libc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 19, libc++† | Clang 19.1.7, libc++ | FreeBSD 15.1 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143)<br>FreeBSD 15.1 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143)<br>Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 20, libc++† | Clang 20.1.8, libc++ | Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 21, libc++† | Clang 21.1.8, libc++ | FreeBSD 14.5 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143)<br>Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) | 30 tests | 12 blocks (report-only) |
+| Clang 22, libc++ | Clang 22.1.2, libc++<br>Clang 22.1.8, libc++ | Ubuntu 24.04 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 24.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · arm64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>Ubuntu 26.04 · x86_64 · [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575)<br>macOS 15 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 26 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) | 30 tests | 12 blocks |
+| Clang 22, libc++ (local) | Clang 22.1.8, libc++ | macOS (Darwin 23.6.0) · arm64 · local | 1097 tests | 820 blocks |
+| Clang 23, libc++† | Clang 23.1.4, libc++ | macOS 15 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 26 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) | 30 tests | 12 blocks (report-only) |
+| Apple Clang 17† | Apple Clang 17.0.0 | macOS 15 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 15 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) | 30 tests | 12 blocks (report-only) |
+| Apple Clang 21† | Apple Clang 21.0.0 | macOS 26 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121)<br>macOS 26 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) | 30 tests | 12 blocks (report-only) |
+| MSVC 19.44† | MSVC 19.44.35229 | Windows Server 2022 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) | 30 tests | 12 blocks (report-only) |
+| MSVC 19.51† | MSVC 19.51.36260 | Windows 11 · arm64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135)<br>Windows Server 2025 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) | 30 tests | 12 blocks (report-only) |
+| clang-cl 22† | clang-cl 22.1.3 | Windows Server 2025 · x86_64 · [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) | 30 tests | 12 blocks (report-only) |
+
+</details>
+
+### algorithms
+
+7 pages · 56 features · 28 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/algorithms/README.md](examples/algorithms/README.md) | 0 | 1 | ✅ | ✅ | ✅ |
+| [examples/algorithms/execution-and-ranges.md](examples/algorithms/execution-and-ranges.md) | 10 | 5 | ✅ | ✅ | ❌ 1 |
+| [examples/algorithms/modifying.md](examples/algorithms/modifying.md) | 11 | 7 | 🟡 1 | ✅ | 🟡 1 |
+| [examples/algorithms/non-modifying.md](examples/algorithms/non-modifying.md) | 8 | 4 | ✅ | ✅ | ✅ |
+| [examples/algorithms/numeric.md](examples/algorithms/numeric.md) | 9 | 4 | ✅ | ✅ | 🟡 1 |
+| [examples/algorithms/partition-heap-minmax.md](examples/algorithms/partition-heap-minmax.md) | 7 | 3 | ✅ | ✅ | ✅ |
+| [examples/algorithms/sorting-searching.md](examples/algorithms/sorting-searching.md) | 11 | 4 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/algorithms/README.md</code>: 0 features, 1 examples</summary>
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [two-flavors-of-every-algorithm-c20](examples/algorithms/README.md#two-flavors-of-every-algorithm-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/algorithms/execution-and-ranges.md</code>: 10 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Execution policies (C++17)](examples/algorithms/execution-and-ranges.md#execution-policies-c17): seq, par, par_unseq and (C++20) unseq all sort / for_… <sub>`ExecutionAndRanges.PoliciesGiveTheSameResult`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+| **Rules**: an exception escaping an element op calls std::terminate under any policy,… <sub>`ExecutionAndRangesDeathTest.ThrowFromElementOpTerminates`</sub> | ✅ | ✅ | ⏭<sup>2</sup> |
+| [std::ranges algorithms (C++20)](examples/algorithms/execution-and-ranges.md#stdranges-algorithms-c20): whole-range calls, projections, results on sample… <sub>`ExecutionAndRanges.RangesAlgorithmsAndProjections`</sub> | ✅ | ✅ | ✅ |
+| **std::ranges algorithms**: richer result types, and concept-checked (constrained) si… <sub>`ExecutionAndRanges.RicherResultsAndConstraints`</sub> | ✅ | ✅ | ✅ |
+| [Projections](examples/algorithms/execution-and-ranges.md#projections): max_element with &amp;Person::score finds Ann (90). <sub>`ExecutionAndRanges.ProjectionMaxElement`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/execution-and-ranges.md#gotchas): find with a projection still returns an iterator to the element, not the… <sub>`ExecutionAndRanges.ProjectionAppliesToPredicateNotResult`</sub> | ✅ | ✅ | ✅ |
+| [Borrowed iterators &amp; dangling](examples/algorithms/execution-and-ranges.md#borrowed-iterators--dangling): a temporary vector gives std::ranges::dangling; an… <sub>`ExecutionAndRanges.DanglingForTemporaries`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/execution-and-ranges.md#gotchas): ranges algorithms take no execution policy (until C++26 parallel range a… <sub>`ExecutionAndRanges.RangesAlgorithmsTakeNoPolicy`</sub> | ✅ | ✅ | ⏭<sup>2</sup> |
+| [Folds (C++23)](examples/algorithms/execution-and-ranges.md#folds-c23): fold_left and fold_left_with_iter (libc++ in Clang 22 has these tw… <sub>`ExecutionAndRanges.FoldLeft`</sub> | ✅ | ✅ | ✅ |
+| [Folds (C++23)](examples/algorithms/execution-and-ranges.md#folds-c23): fold_right swaps the argument order; the _first/_last forms return… <sub>`ExecutionAndRanges.FoldRightAndFirst`</sub> | ✅ | ✅ | ⏭<sup>3</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [execution-policies-c17](examples/algorithms/execution-and-ranges.md#execution-policies-c17) | 1 | ✅ | ✅ | ✅ |
+| [stdranges-algorithms-c20](examples/algorithms/execution-and-ranges.md#stdranges-algorithms-c20) | 1 | ✅ | ✅ | ✅ |
+| [projections](examples/algorithms/execution-and-ranges.md#projections) | 1 | ✅ | ✅ | ✅ |
+| [borrowed-iterators--dangling](examples/algorithms/execution-and-ranges.md#borrowed-iterators--dangling) | 1 | ✅ | ✅ | ✅ |
+| [folds-c23](examples/algorithms/execution-and-ranges.md#folds-c23) | 1 | ✅ | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/algorithms/modifying.md</code>: 11 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Copy / move / transform](examples/algorithms/modifying.md#copy--move--transform): copy appends, copy_if filters, transform maps and zips. <sub>`Modifying.CopyAndTransform`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/modifying.md#gotchas): transform can write in place (out == in). <sub>`Modifying.TransformInPlace`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/modifying.md#gotchas): the std::move algorithm leaves the sources moved-from. <sub>`Modifying.MoveAlgorithmLeavesSourcesMovedFrom`</sub> | ✅ | ✅ | ✅ |
+| [Fill / generate](examples/algorithms/modifying.md#fill--generate): fill, fill_n, generate gives 0,1,2,..., iota gives 1,2,3,... <sub>`Modifying.FillAndGenerate`</sub> | ✅ | ✅ | ✅ |
+| [Replace](examples/algorithms/modifying.md#replace): every 0 becomes -1, then every negative becomes 0. <sub>`Modifying.Replace`</sub> | ✅ | ✅ | ✅ |
+| **Remove**: remove keeps the size, moves kept elements to the front and returns the n… <sub>`Modifying.RemoveDoesNotShrink`</sub> | ✅ | ✅ | ✅ |
+| [Remove — and the erase-remove idiom](examples/algorithms/modifying.md#remove--and-the-erase-remove-idiom): erase-remove and C++20 std::erase / erase_if. <sub>`Modifying.EraseRemoveIdiom`</sub> | ✅ | ✅ | ✅ |
+| **unique**: collapses only consecutive duplicates; sorting first removes all of them. <sub>`Modifying.UniqueOnlyAdjacent`</sub> | ✅ | ✅ | ✅ |
+| [Reorder](examples/algorithms/modifying.md#reorder): reverse, rotate brings element 3 to the front, shuffle permutes, sample… <sub>`Modifying.Reorder`</sub> | ✅ | ✅ | ✅ |
+| **shift_left / shift_right**: the kept elements move by n; the return value marks the… <sub>`Modifying.ShiftLeftRight`</sub> | ✅ | ✅ | ✅ |
+| **shift_left / shift_right**: the C++23 range forms return the shifted subrange. <sub>`Modifying.RangesShift`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [copy--move--transform](examples/algorithms/modifying.md#copy--move--transform) | 1 | ✅ | ✅ | ✅ |
+| [fill--generate](examples/algorithms/modifying.md#fill--generate) | 1 | ✅ | ✅ | ✅ |
+| [replace](examples/algorithms/modifying.md#replace) | 1 | ✅ | ✅ | ✅ |
+| [remove--and-the-erase-remove-idiom](examples/algorithms/modifying.md#remove--and-the-erase-remove-idiom) | 1 | ✅ | ✅ | ✅ |
+| [unique--collapse-consecutive-duplicates](examples/algorithms/modifying.md#unique--collapse-consecutive-duplicates) | 1 | ✅ | ✅ | ✅ |
+| [reorder](examples/algorithms/modifying.md#reorder) | 1 | ✅ | ✅ | ✅ |
+| [shift_left--shift_right-c20](examples/algorithms/modifying.md#shift_left--shift_right-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/algorithms/non-modifying.md</code>: 8 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Searching](examples/algorithms/non-modifying.md#searching): find / find_if / find_if_not return the first match or end(). <sub>`NonModifying.FindFamily`</sub> | ✅ | ✅ | ✅ |
+| [Searching](examples/algorithms/non-modifying.md#searching): search finds a subrange, find_first_of any of a set, adjacent_find an… <sub>`NonModifying.SubsequenceAndSetSearches`</sub> | ✅ | ✅ | ✅ |
+| [Counting &amp; testing](examples/algorithms/non-modifying.md#counting--testing): results on the page's v{7, 1, 7, 4} with pred x &gt; 3. <sub>`NonModifying.CountingAndTesting`</sub> | ✅ | ✅ | ✅ |
+| [Comparing ranges](examples/algorithms/non-modifying.md#comparing-ranges): a{1,2,3} vs b{1,2,4} — not equal, mismatch at index 2, a &lt; b. <sub>`NonModifying.ComparingRanges`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/non-modifying.md#gotchas): the 4-iterator equal/mismatch respect the second range's end. <sub>`NonModifying.FourIteratorFormsCheckBothLengths`</sub> | ✅ | ✅ | ✅ |
+| [Traversal](examples/algorithms/non-modifying.md#traversal): for_each_n applies fn to the first 5 elements and returns the next pos… <sub>`NonModifying.ForEachN`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/non-modifying.md#gotchas): find on a sorted range is still linear; binary_search is O(log n). <sub>`NonModifying.FindIsLinearBinarySearchLogarithmic`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/non-modifying.md#gotchas): associative containers' member find is O(log n). <sub>`NonModifying.SetMemberFindIsLogarithmic`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [searching](examples/algorithms/non-modifying.md#searching) | 1 | ✅ | ✅ | ✅ |
+| [counting--testing](examples/algorithms/non-modifying.md#counting--testing) | 1 | ✅ | ✅ | ✅ |
+| [comparing-ranges](examples/algorithms/non-modifying.md#comparing-ranges) | 1 | ✅ | ✅ | ✅ |
+| [traversal](examples/algorithms/non-modifying.md#traversal) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/algorithms/numeric.md</code>: 9 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [accumulate — the classic left fold](examples/algorithms/numeric.md#accumulate--the-classic-left-fold): sum, product, string join (left to right). <sub>`Numeric.AccumulateFolds`</sub> | ✅ | ✅ | ✅ |
+| **accumulate**: the init value's type drives the accumulation; 0 over doubles truncat… <sub>`Numeric.InitTypeDrivesAccumulation`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/numeric.md#gotchas): pick a wide enough init type to avoid overflow. <sub>`Numeric.WideInitAvoidsOverflow`</sub> | ✅ | ✅ | ✅ |
+| **reduce / transform_reduce**: sum, dot product, count of positives. <sub>`Numeric.ReduceAndTransformReduce`</sub> | ✅ | ✅ | ✅ |
+| **reduce / transform_reduce**: the parallel overload with std::execution::par. <sub>`Numeric.ParallelReduce`</sub> | ✅ | ✅ | ⏭<sup>5</sup> |
+| [Gotchas](examples/algorithms/numeric.md#gotchas): accumulate is a strict left fold, so non-associative ops give a defined… <sub>`Numeric.AccumulateKeepsOrder`</sub> | ✅ | ✅ | ✅ |
+| [Scans — running totals](examples/algorithms/numeric.md#scans--running-totals): inclusive, exclusive, adjacent difference. <sub>`Numeric.Scans`</sub> | ✅ | ✅ | ✅ |
+| [Small but handy](examples/algorithms/numeric.md#small-but-handy): iota, gcd, lcm, midpoint (overflow-safe). <sub>`Numeric.SmallButHandy`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/numeric.md#gotchas): accumulate(doubles, 0) works in int; ranges::fold_left deduces double fr… <sub>`Numeric.FoldLeftDeducesResultType`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [accumulate--the-classic-left-fold](examples/algorithms/numeric.md#accumulate--the-classic-left-fold) | 1 | ✅ | ✅ | ✅ |
+| [reduce--transform_reduce--same-idea-parallelizable-c17](examples/algorithms/numeric.md#reduce--transform_reduce--same-idea-parallelizable-c17) | 1 | ✅ | ✅ | ✅ |
+| [scans--running-totals](examples/algorithms/numeric.md#scans--running-totals) | 1 | ✅ | ✅ | ✅ |
+| [small-but-handy](examples/algorithms/numeric.md#small-but-handy) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/algorithms/partition-heap-minmax.md</code>: 7 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Partitioning](examples/algorithms/partition-heap-minmax.md#partitioning): [begin, mid) satisfy pred; is_partitioned and partition_point agree. <sub>`PartitionHeapMinmax.PartitionSplitsByPredicate`</sub> | ✅ | ✅ | ✅ |
+| [Partitioning](examples/algorithms/partition-heap-minmax.md#partitioning): stable_partition keeps relative order within each group. <sub>`PartitionHeapMinmax.StablePartitionKeepsOrder`</sub> | ✅ | ✅ | ✅ |
+| [Heap operations](examples/algorithms/partition-heap-minmax.md#heap-operations): make_heap puts the max at the front in O(n) comparisons. <sub>`PartitionHeapMinmax.MakeHeapMaxAtFrontLinear`</sub> | ✅ | ✅ | ✅ |
+| [Heap operations](examples/algorithms/partition-heap-minmax.md#heap-operations): push_back + push_heap sifts up; pop_heap moves the max to the ba… <sub>`PartitionHeapMinmax.PushPopSortHeap`</sub> | ✅ | ✅ | ✅ |
+| [Heap operations](examples/algorithms/partition-heap-minmax.md#heap-operations): make_heap then repeated pop_heap + pop_back extracts in descendi… <sub>`PartitionHeapMinmax.ExtractDescending`</sub> | ✅ | ✅ | ✅ |
+| [Min / max / clamp](examples/algorithms/partition-heap-minmax.md#min--max--clamp): values on the page's inputs. <sub>`PartitionHeapMinmax.MinMaxClamp`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/partition-heap-minmax.md#gotchas): min/max return const&amp;, minmax returns references to its arguments. <sub>`PartitionHeapMinmax.ReturnReferences`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [partitioning](examples/algorithms/partition-heap-minmax.md#partitioning) | 1 | ✅ | ✅ | ✅ |
+| [heap-operations](examples/algorithms/partition-heap-minmax.md#heap-operations) | 1 | ✅ | ✅ | ✅ |
+| [min--max--clamp](examples/algorithms/partition-heap-minmax.md#min--max--clamp) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/algorithms/sorting-searching.md</code>: 11 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Sorting](examples/algorithms/sorting-searching.md#sorting): ascending, descending with std::greater&lt;&gt;, stable_sort keeps equal eleme… <sub>`SortingSearching.SortAndStableSort`</sub> | ✅ | ✅ | ✅ |
+| [Partial / selection](examples/algorithms/sorting-searching.md#partial--selection): partial_sort sorts the first 10; nth_element places the nth… <sub>`SortingSearching.PartialSortAndNthElement`</sub> | ✅ | ✅ | ✅ |
+| **Binary search**: lower_bound is first &gt;= x, upper_bound first &gt; x, equal_range the… <sub>`SortingSearching.BinarySearch`</sub> | ✅ | ✅ | ✅ |
+| **Merge &amp; set operations**: results on the page's inputs. <sub>`SortingSearching.MergeAndSetOperations`</sub> | ✅ | ✅ | ✅ |
+| [Sorting](examples/algorithms/sorting-searching.md#sorting): sort by a field with a lambda; is_sorted checks the result. <sub>`SortingSearching.SortByFieldAndIsSorted`</sub> | ✅ | ✅ | ✅ |
+| [Partial / selection](examples/algorithms/sorting-searching.md#partial--selection): nth_element is O(n) — far fewer comparisons than a full sort. <sub>`SortingSearching.NthElementIsLinear`</sub> | ✅ | ✅ | ✅ |
+| **Binary search**: O(log n) — about log2(n) comparisons on a sorted range. <sub>`SortingSearching.BinarySearchIsLogarithmic`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/sorting-searching.md#gotchas): binary search on unsorted input gives a wrong answer, with no error. <sub>`SortingSearching.UnsortedInputGivesWrongAnswer`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/sorting-searching.md#gotchas): std::sort needs random-access iterators; list has a member sort instead. <sub>`SortingSearching.SortNeedsRandomAccess`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/sorting-searching.md#gotchas): binary_search only says yes/no; lower_bound + *it == x gives the positio… <sub>`SortingSearching.LowerBoundForPosition`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/algorithms/sorting-searching.md#gotchas): after nth_element neither side is necessarily sorted (checked on a large… <sub>`SortingSearching.NthElementSidesNotSorted`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [sorting](examples/algorithms/sorting-searching.md#sorting) | 1 | ✅ | ✅ | ✅ |
+| [partial--selection](examples/algorithms/sorting-searching.md#partial--selection) | 1 | ✅ | ✅ | ✅ |
+| [binary-search-range-must-be-sorted](examples/algorithms/sorting-searching.md#binary-search-range-must-be-sorted) | 1 | ✅ | ✅ | ✅ |
+| [merge--set-operations-sorted-inputs](examples/algorithms/sorting-searching.md#merge--set-operations-sorted-inputs) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_execution &gt;= 201902L (not defined by this toolchain)
+2. needs __cpp_lib_execution (not defined by this toolchain)
+3. needs __cpp_lib_ranges_fold &gt;= 202207L (not defined by this toolchain)
+4. needs __cpp_lib_shift &gt;= 202202L (this toolchain has 201806L)
+5. needs __cpp_lib_parallel_algorithm (not defined by this toolchain)
+
+</details>
+
+### concepts
+
+2 pages · 9 features · 9 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/concepts/README.md](examples/concepts/README.md) | 0 | 1 | ✅ |
+| [examples/concepts/standard-concepts.md](examples/concepts/standard-concepts.md) | 9 | 8 | ✅ |
+
+<details><summary><code>examples/concepts/README.md</code>: 0 features, 1 examples</summary>
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [the-one-line-pitch](examples/concepts/README.md#the-one-line-pitch) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/concepts/standard-concepts.md</code>: 9 features, 8 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): core language / relationships. <sub>`StandardConcepts.CoreRelationships`</sub> | ✅ |
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): type categories. <sub>`StandardConcepts.TypeCategories`</sub> | ✅ |
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): comparison. <sub>`StandardConcepts.Comparison`</sub> | ✅ |
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): object / lifetime, and what semiregular / regular… <sub>`StandardConcepts.ObjectLifetime`</sub> | ✅ |
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): callable. <sub>`StandardConcepts.Callable`</sub> | ✅ |
+| [Four ways to apply a concept](examples/concepts/standard-concepts.md#four-ways-to-apply-a-concept): constrained parameter, requires-clause, constrained… <sub>`StandardConcepts.FourWaysToApply`</sub> | ✅ |
+| [The standard library concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts): the relation/strict_weak_order lines hold. <sub>`StandardConcepts.StandardLibraryConcepts`</sub> | ✅ |
+| [Writing your own](examples/concepts/standard-concepts.md#writing-your-own): Addable requires a + b to be valid AND yield T. <sub>`StandardConcepts.WritingYourOwn`</sub> | ✅ |
+| [Overloading by constraint](examples/concepts/standard-concepts.md#overloading-by-constraint): ints pick the integral overload, doubles the floating… <sub>`StandardConcepts.OverloadingByConstraint`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [the-standard-library-concepts](examples/concepts/standard-concepts.md#the-standard-library-concepts) | 5 | ✅ |
+| [four-ways-to-apply-a-concept](examples/concepts/standard-concepts.md#four-ways-to-apply-a-concept) | 1 | ✅ |
+| [writing-your-own](examples/concepts/standard-concepts.md#writing-your-own) | 1 | ✅ |
+| [overloading-by-constraint](examples/concepts/standard-concepts.md#overloading-by-constraint) | 1 | ✅ |
+
+</details>
+
+### concurrency
+
+6 pages · 48 features · 30 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/concurrency/atomics.md](examples/concurrency/atomics.md) | 13 | 8 | 🟡 2 | 🟡 1 | ❌ 1 |
+| [examples/concurrency/coordination.md](examples/concurrency/coordination.md) | 5 | 3 | ✅ | ✅ | ✅ |
+| [examples/concurrency/futures.md](examples/concurrency/futures.md) | 9 | 4 | ✅ | ✅ | ✅ |
+| [examples/concurrency/mutexes.md](examples/concurrency/mutexes.md) | 12 | 5 | 🟡 1 | ✅ | ✅ |
+| [examples/concurrency/safe-reclamation.md](examples/concurrency/safe-reclamation.md) | 3 | 7 | 🟡 8 | 🟡 8 | 🟡 8 |
+| [examples/concurrency/threads.md](examples/concurrency/threads.md) | 6 | 3 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/concurrency/atomics.md</code>: 13 features, 8 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/concurrency/atomics.md#mental-model): fetch_add returns the old value; ++, load, store. <sub>`Atomics.BasicOps`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/concurrency/atomics.md#mental-model): increments from many threads aren't lost. <sub>`Atomics.NoLostUpdates`</sub> | ✅ | ✅ | ✅ |
+| [Read-modify-write &amp; CAS](examples/concurrency/atomics.md#read-modify-write--cas): the arithmetic results and CAS semantics. <sub>`Atomics.RmwAndCas`</sub> | ✅ | ✅ | ✅ |
+| [Memory order](examples/concurrency/atomics.md#memory-order): a release store publishes the plain write to an acquire load. <sub>`Atomics.ReleaseAcquirePublishes`</sub> | ✅ | ✅ | ✅ |
+| [atomic_ref and atomic&lt;shared_ptr&gt; (C++20)](examples/concurrency/atomics.md#atomic_ref-and-atomicshared_ptr-c20): atomic_ref works everywhere; atomic&lt;sh… <sub>`Atomics.AtomicRef`</sub> | ✅ | ✅ | ✅ |
+| Atomics.AtomicSharedPtr <sub>`Atomics.AtomicSharedPtr`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+| [Gotchas](examples/concurrency/atomics.md#gotchas): not always lock-free — a large struct isn't; int is. <sub>`Atomics.LockFreeness`</sub> | ✅ | ✅ | ✅ |
+| [wait and notify (C++20)](examples/concurrency/atomics.md#wait-and-notify-c20): wait blocks while the value equals old; a store followed… <sub>`Atomics.WaitNotifyAll`</sub> | ✅ | ✅ | ✅ |
+| [wait and notify (C++20)](examples/concurrency/atomics.md#wait-and-notify-c20): notify_one wakes a single waiter; wait returns at once w… <sub>`Atomics.WaitNotifyOne`</sub> | ✅ | ✅ | ✅ |
+| [fetch_max and fetch_min (C++26)](examples/concurrency/atomics.md#fetch_max-and-fetch_min-c26): return the old value, keep the max/min. <sub>`Atomics.FetchMaxMin`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+| [fetch_max and fetch_min (C++26)](examples/concurrency/atomics.md#fetch_max-and-fetch_min-c26): the pre-C++26 CAS loop gives the same result. <sub>`Atomics.FetchMaxCasLoop`</sub> | ✅ | ✅ | ✅ |
+| [False sharing and interference sizes (C++17)](examples/concurrency/atomics.md#false-sharing-and-interference-sizes-c17): the padded counters sit a destructi… <sub>`Atomics.InterferenceSizes`</sub> | ✅ | ✅ | ✅ |
+| [C compatibility: &lt;stdatomic.h&gt; (C++23)](examples/concurrency/atomics.md#c-compatibility-stdatomich-c23): the C names are the C++ types. <sub>`Atomics.StdatomicH`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/concurrency/atomics.md#mental-model) | 1 | ✅ | ✅ | ✅ |
+| [read-modify-write--cas](examples/concurrency/atomics.md#read-modify-write--cas) | 1 | ✅ | ✅ | ✅ |
+| [memory-order](examples/concurrency/atomics.md#memory-order) | 1 | ✅ | ✅ | ✅ |
+| [atomic_ref-and-atomicshared_ptr-c20](examples/concurrency/atomics.md#atomic_ref-and-atomicshared_ptr-c20) | 1 | ✅ | ✅ | ❌ |
+| [wait-and-notify-c20](examples/concurrency/atomics.md#wait-and-notify-c20) | 1 | ✅ | ✅ | ✅ |
+| [fetch_max-and-fetch_min-c26](examples/concurrency/atomics.md#fetch_max-and-fetch_min-c26) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+| [false-sharing-and-interference-sizes-c17](examples/concurrency/atomics.md#false-sharing-and-interference-sizes-c17) | 1 | ✅ | ✅ | ✅ |
+| [c-compatibility-stdatomich-c23](examples/concurrency/atomics.md#c-compatibility-stdatomich-c23) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/concurrency/coordination.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::latch**: wait() returns only after all N count_down()s; then it stays at zero. <sub>`Coordination.LatchCountsDown`</sub> | ✅ | ✅ | ✅ |
+| **std::latch**: arrive_and_wait counts down and then waits. <sub>`Coordination.LatchArriveAndWait`</sub> | ✅ | ✅ | ✅ |
+| **std::barrier**: the completion function runs once per phase, after all arrive and b… <sub>`Coordination.BarrierPhases`</sub> | ✅ | ✅ | ✅ |
+| **std::counting_semaphore**: permits run out and come back; max() is the template bou… <sub>`Coordination.CountingSemaphore`</sub> | ✅ | ✅ | ✅ |
+| **std::counting_semaphore**: + "Gotchas": a binary_semaphore works as a one-shot even… <sub>`Coordination.BinarySemaphoreEventNoOwnership`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdlatch--a-one-shot-countdown](examples/concurrency/coordination.md#stdlatch--a-one-shot-countdown) | 1 | ✅ | ✅ | ✅ |
+| [stdbarrier--a-reusable-rendezvous](examples/concurrency/coordination.md#stdbarrier--a-reusable-rendezvous) | 1 | ✅ | ✅ | ✅ |
+| [stdcounting_semaphore--a-permit-counter](examples/concurrency/coordination.md#stdcounting_semaphore--a-permit-counter) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/concurrency/futures.md</code>: 9 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/concurrency/futures.md#mental-model): an exception thrown by the producer is re-thrown at get(). <sub>`Futures.AsyncRethrowsAtGet`</sub> | ✅ | ✅ | ✅ |
+| **promise / future**: and "packaged_task": the values from the examples. <sub>`Futures.PromiseAndPackagedTaskDeliverValues`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/futures.md#gotchas): get() can be called only once; afterwards the future is no longer valid. <sub>`Futures.GetOnlyOnce`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/futures.md#gotchas): with launch::deferred the task runs lazily, on the thread that calls get… <sub>`Futures.DeferredRunsOnGetCaller`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/futures.md#gotchas): a promise destroyed without a value makes get() throw std::future_error… <sub>`Futures.BrokenPromise`</sub> | ✅ | ✅ | ✅ |
+| **std::async**: launch::async runs the task on another thread. <sub>`Futures.LaunchAsyncUsesAnotherThread`</sub> | ✅ | ✅ | ✅ |
+| [Checking without blocking](examples/concurrency/futures.md#checking-without-blocking): wait_for(0s) reports ready once the value is set. <sub>`Futures.WaitForZeroPolls`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/futures.md#gotchas): shared_future allows several waiters. <sub>`Futures.SharedFutureManyWaiters`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/futures.md#gotchas): the destructor of an async-launched future blocks until the task is done. <sub>`Futures.AsyncFutureDestructorBlocks`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdasync--fire-off-work-get-a-future](examples/concurrency/futures.md#stdasync--fire-off-work-get-a-future) | 1 | ✅ | ✅ | ✅ |
+| [promise--future--hand-built-channel](examples/concurrency/futures.md#promise--future--hand-built-channel) | 1 | ✅ | ✅ | ✅ |
+| [packaged_task--wrap-a-callable-as-a-future](examples/concurrency/futures.md#packaged_task--wrap-a-callable-as-a-future) | 1 | ✅ | ✅ | ✅ |
+| [checking-without-blocking](examples/concurrency/futures.md#checking-without-blocking) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/concurrency/mutexes.md</code>: 12 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Lock with RAII**: the guard unlocks on scope exit, even when the scope throws. <sub>`Mutexes.LockGuardUnlocksOnThrow`</sub> | ✅ | ✅ | ✅ |
+| **Lock with RAII**: increments from many threads under the lock aren't lost. <sub>`Mutexes.CriticalSection`</sub> | ✅ | ✅ | ✅ |
+| [The lock types](examples/concurrency/mutexes.md#the-lock-types): scoped_lock locks both mutexes; opposite orders don't deadlock. <sub>`Mutexes.ScopedLockMultiple`</sub> | ✅ | ✅ | ✅ |
+| [Mutex flavors](examples/concurrency/mutexes.md#mutex-flavors): recursive_mutex re-locks on the same thread; timed_mutex try_lock_… <sub>`Mutexes.RecursiveAndTimed`</sub> | ✅ | ✅ | ✅ |
+| [Mutex flavors](examples/concurrency/mutexes.md#mutex-flavors): shared_mutex allows many readers or one writer. <sub>`Mutexes.SharedMutexReadersAndWriter`</sub> | ✅ | ✅ | ✅ |
+| **Condition variables**: the consumer waits with a predicate and gets the value. <sub>`Mutexes.ConditionVariableQueue`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/mutexes.md#gotchas): condition_variable needs unique_lock; condition_variable_any takes other… <sub>`Mutexes.ConditionVariableLockTypes`</sub> | ✅ | ✅ | ✅ |
+| **Run something exactly once**: racing threads run the callable once, and every calle… <sub>`Mutexes.CallOnceRunsOnce`</sub> | ✅ | ✅ | ✅ |
+| **Run something exactly once**: a function-local static is initialized once, thread-s… <sub>`Mutexes.LocalStaticInitializedOnce`</sub> | ✅ | ✅ | ✅ |
+| **Run something exactly once**: a once_flag member gives once per object. <sub>`Mutexes.CallOncePerObject`</sub> | ✅ | ✅ | ✅ |
+| **Run something exactly once**: + "Gotchas": a throwing callable leaves the flag unse… <sub>`Mutexes.CallOnceRetriesAfterThrow`</sub> | ⏭<sup>4</sup> | ✅ | ✅ |
+| **Run something exactly once**: a static's initializer that throws is retried. <sub>`Mutexes.LocalStaticRetriesAfterThrow`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [lock-with-raii-never-by-hand](examples/concurrency/mutexes.md#lock-with-raii-never-by-hand) | 1 | ✅ | ✅ | ✅ |
+| [the-lock-types](examples/concurrency/mutexes.md#the-lock-types) | 1 | ✅ | ✅ | ✅ |
+| [mutex-flavors](examples/concurrency/mutexes.md#mutex-flavors) | 1 | ✅ | ✅ | ✅ |
+| [condition-variables--wait-for-a-state-change](examples/concurrency/mutexes.md#condition-variables--wait-for-a-state-change) | 1 | ✅ | ✅ | ✅ |
+| [run-something-exactly-once--stdcall_once](examples/concurrency/mutexes.md#run-something-exactly-once--stdcall_once) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/concurrency/safe-reclamation.md</code>: 3 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Compiler support](examples/concurrency/safe-reclamation.md#compiler-support): neither macro is defined by the toolchains in the table. <sub>`SafeReclamation.CompilerSupportTable`</sub> | ✅ | ✅ | ✅ |
+| [RCU: a read-mostly configuration](examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration): a retired object outlives the reader that can s… <sub>`SafeReclamation.RcuRetireWaitsForReaders`</sub> | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+| **Hazard pointers**: a default-constructed hazard_pointer is empty; protect() keeps a… <sub>`SafeReclamation.HazardPointerProtects`</sub> | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [rcu-p2545](examples/concurrency/safe-reclamation.md#rcu-p2545) | 1 | ⏭<sup>7</sup> | ⏭<sup>7</sup> | ⏭<sup>7</sup> |
+| [hazard_pointer-p2530](examples/concurrency/safe-reclamation.md#hazard_pointer-p2530) | 1 | ⏭<sup>7</sup> | ⏭<sup>7</sup> | ⏭<sup>7</sup> |
+| [compiler-support](examples/concurrency/safe-reclamation.md#compiler-support) | 1 | ✅ | ✅ | ✅ |
+| [rcu-a-read-mostly-configuration](examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+| [rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own](examples/concurrency/safe-reclamation.md#rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+| [hazard-pointers-protect-one-node](examples/concurrency/safe-reclamation.md#hazard-pointers-protect-one-node) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [hazard-pointers-the-try_protect-loop](examples/concurrency/safe-reclamation.md#hazard-pointers-the-try_protect-loop) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+
+</details>
+
+<details><summary><code>examples/concurrency/threads.md</code>: 6 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [std::thread — the original](examples/concurrency/threads.md#stdthread--the-original): runs on another thread; join() waits for it. <sub>`Threads.RunsElsewhereJoinWaits`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/threads.md#gotchas): arguments are copied into the thread; std::ref passes a reference. <sub>`Threads.ArgumentsAreCopied`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/concurrency/threads.md#gotchas): destroying a thread that's neither joined nor detached calls std::termin… <sub>`ThreadsDeathTest.UnjoinedThreadTerminates`</sub> | ✅ | ✅ | ✅ |
+| **std::jthread**: a leading stop_token parameter is supplied; the destructor requests… <sub>`Threads.JthreadStopsAndJoins`</sub> | ✅ | ✅ | ✅ |
+| **std::jthread**: request_stop() is seen through the token. <sub>`Threads.RequestStop`</sub> | ✅ | ✅ | ✅ |
+| [this_thread](examples/concurrency/threads.md#this_thread): sleep_until doesn't return before the deadline; hardware_concurrency… <sub>`Threads.ThisThread`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdthread--the-original](examples/concurrency/threads.md#stdthread--the-original) | 1 | ✅ | ✅ | ✅ |
+| [stdjthread--prefer-this-c20](examples/concurrency/threads.md#stdjthread--prefer-this-c20) | 1 | ✅ | ✅ | ✅ |
+| [this_thread](examples/concurrency/threads.md#this_thread) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_atomic_shared_ptr (not defined by this toolchain)
+2. needs __cpp_lib_atomic_min_max &gt;= 202403L (not defined by this toolchain)
+3. needs atomic_min_max
+4. libstdc++ off Linux: call_once with a throwing callable is broken (GCC PR 66146)
+5. needs __cpp_lib_rcu (not defined by this toolchain)
+6. needs __cpp_lib_hazard_pointer (not defined by this toolchain)
+7. nocompile
+8. needs rcu
+9. needs hazard_pointer
+
+</details>
+
+### containers
+
+23 pages · 165 features · 96 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/containers/README.md](examples/containers/README.md) | 11 | 0 | 🟡 3 | 🟡 1 | 🟡 2 |
+| [examples/containers/adaptors/flat_map.md](examples/containers/adaptors/flat_map.md) | 8 | 5 | ✅ | ✅ | ✅ |
+| [examples/containers/adaptors/flat_set.md](examples/containers/adaptors/flat_set.md) | 6 | 4 | ✅ | ✅ | ✅ |
+| [examples/containers/adaptors/priority_queue.md](examples/containers/adaptors/priority_queue.md) | 8 | 5 | ✅ | ✅ | ✅ |
+| [examples/containers/adaptors/queue.md](examples/containers/adaptors/queue.md) | 4 | 2 | ✅ | ✅ | ✅ |
+| [examples/containers/adaptors/stack.md](examples/containers/adaptors/stack.md) | 5 | 3 | ✅ | ✅ | ✅ |
+| [examples/containers/associative/map.md](examples/containers/associative/map.md) | 10 | 6 | ✅ | ✅ | ✅ |
+| [examples/containers/associative/multimap.md](examples/containers/associative/multimap.md) | 6 | 2 | ✅ | ✅ | ✅ |
+| [examples/containers/associative/multiset.md](examples/containers/associative/multiset.md) | 5 | 2 | ✅ | ✅ | ✅ |
+| [examples/containers/associative/set.md](examples/containers/associative/set.md) | 10 | 7 | ✅ | ✅ | ✅ |
+| [examples/containers/sequence/array.md](examples/containers/sequence/array.md) | 8 | 6 | ✅ | ✅ | ✅ |
+| [examples/containers/sequence/deque.md](examples/containers/sequence/deque.md) | 6 | 3 | ✅ | ✅ | ✅ |
+| [examples/containers/sequence/forward_list.md](examples/containers/sequence/forward_list.md) | 6 | 5 | ✅ | ✅ | ✅ |
+| [examples/containers/sequence/hive.md](examples/containers/sequence/hive.md) | 5 | 5 | 🟡 10 | 🟡 10 | 🟡 10 |
+| [examples/containers/sequence/inplace_vector.md](examples/containers/sequence/inplace_vector.md) | 7 | 3 | 🟡 9 | 🟡 2 | 🟡 9 |
+| [examples/containers/sequence/list.md](examples/containers/sequence/list.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/containers/sequence/vector.md](examples/containers/sequence/vector.md) | 10 | 6 | ✅ | ✅ | ✅ |
+| [examples/containers/unordered/unordered_map.md](examples/containers/unordered/unordered_map.md) | 8 | 5 | ✅ | ✅ | ✅ |
+| [examples/containers/unordered/unordered_multimap.md](examples/containers/unordered/unordered_multimap.md) | 6 | 2 | ✅ | ✅ | ✅ |
+| [examples/containers/unordered/unordered_multiset.md](examples/containers/unordered/unordered_multiset.md) | 4 | 2 | ✅ | ✅ | ✅ |
+| [examples/containers/unordered/unordered_set.md](examples/containers/unordered/unordered_set.md) | 8 | 6 | ✅ | ✅ | ✅ |
+| [examples/containers/views/mdspan.md](examples/containers/views/mdspan.md) | 10 | 7 | 🟡 16 | 🟡 7 | 🟡 9 |
+| [examples/containers/views/span.md](examples/containers/views/span.md) | 9 | 6 | ✅ | ✅ | 🟡 1 |
+
+<details><summary><code>examples/containers/README.md</code>: 11 features, 0 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Sequence containers](examples/containers/README.md#sequence-containers): array is fixed-size with inline storage; the rest keep the o… <sub>`ContainersReadme.SequenceContainers`</sub> | ✅ | ✅ | ✅ |
+| [Sequence containers](examples/containers/README.md#sequence-containers): inplace_vector (C++26) is a fixed-capacity vector in &lt;inplac… <sub>`ContainersReadme.InplaceVector`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Sequence containers](examples/containers/README.md#sequence-containers): hive (C++26) lives in &lt;hive&gt;. <sub>`ContainersReadme.Hive`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [Associative containers (ordered)](examples/containers/README.md#associative-containers-ordered): sorted by key; set/map unique, multi* keep dupl… <sub>`ContainersReadme.OrderedAssociative`</sub> | ✅ | ✅ | ✅ |
+| [Unordered associative containers (hash-based)](examples/containers/README.md#unordered-associative-containers-hash-based): unique vs duplicate keys. <sub>`ContainersReadme.UnorderedAssociative`</sub> | ✅ | ✅ | ✅ |
+| [Container adaptors](examples/containers/README.md#container-adaptors): stack is LIFO, queue FIFO, priority_queue largest-first by de… <sub>`ContainersReadme.ClassicAdaptors`</sub> | ✅ | ✅ | ✅ |
+| [Container adaptors](examples/containers/README.md#container-adaptors): flat_set is a sorted set over one contiguous array (&lt;flat_set… <sub>`ContainersReadme.FlatSet`</sub> | ✅ | ✅ | ✅ |
+| [Container adaptors](examples/containers/README.md#container-adaptors): flat_map is a sorted map over two arrays (&lt;flat_map&gt;, C++23). <sub>`ContainersReadme.FlatMap`</sub> | ✅ | ✅ | ✅ |
+| [Views (related — not containers)](examples/containers/README.md#views-related--not-containers): span is a non-owning contiguous 1-D view. <sub>`ContainersReadme.Span`</sub> | ✅ | ✅ | ✅ |
+| [Views (related — not containers)](examples/containers/README.md#views-related--not-containers): mdspan is a multidimensional view (&lt;mdspan&gt;, C+… <sub>`ContainersReadme.Mdspan`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| **Which container should I use?**: list keeps element addresses stable across inserts. <sub>`ContainersReadme.CheatSheetListStability`</sub> | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/adaptors/flat_map.md</code>: 8 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/adaptors/flat_map.md#declaration): default parameters, and value_type is pair&lt;key, mapped&gt;. <sub>`FlatMap.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/adaptors/flat_map.md#declaration): / "Gotchas": *it is a pair of references (a proxy), not a reference… <sub>`FlatMap.DereferenceYieldsProxy`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/adaptors/flat_map.md#examples): operator[] inserts keeping keys sorted; at/contains; ascending iteratio… <sub>`FlatMap.ExampleBasics`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/adaptors/flat_map.md#mental-model): / "Access the underlying arrays directly": keys() and values() are… <sub>`FlatMap.KeysAndValuesAreParallelArrays`</sub> | ✅ | ✅ | ✅ |
+| [Build fast from sorted input](examples/containers/adaptors/flat_map.md#build-fast-from-sorted-input): the sorted_unique constructor adopts the two contai… <sub>`FlatMap.SortedUniqueConstructor`</sub> | ✅ | ✅ | ✅ |
+| [flat_multimap allows repeats; no operator[]](examples/containers/adaptors/flat_map.md#flat_multimap-allows-repeats-no-operator): / "Gotchas": both kept, no operator[… <sub>`FlatMap.MultimapKeepsRepeatsNoSubscript`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/adaptors/flat_map.md#gotchas): operator[] inserts a default value for a missing key. <sub>`FlatMap.SubscriptInsertsDefault`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/adaptors/flat_map.md#iterator--reference-invalidation): an insert shifts elements in both arrays. <sub>`FlatMap.InsertShiftsBothArrays`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/adaptors/flat_map.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/adaptors/flat_map.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [access-the-underlying-arrays-directly](examples/containers/adaptors/flat_map.md#access-the-underlying-arrays-directly) | 1 | ✅ | ✅ | ✅ |
+| [build-fast-from-sorted-input](examples/containers/adaptors/flat_map.md#build-fast-from-sorted-input) | 1 | ✅ | ✅ | ✅ |
+| [flat_multimap-allows-repeats-no-operator](examples/containers/adaptors/flat_map.md#flat_multimap-allows-repeats-no-operator) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/adaptors/flat_set.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/adaptors/flat_set.md#declaration): default parameters; no allocator on the adaptor itself. <sub>`FlatSet.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/adaptors/flat_set.md#declaration): the backing container can be a std::deque. <sub>`FlatSet.DequeBacked`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/adaptors/flat_set.md#mental-model): / "Basics": kept sorted through insert and erase; contains(). <sub>`FlatSet.ExampleBasics`</sub> | ✅ | ✅ | ✅ |
+| [Skip the sort when input is already ordered](examples/containers/adaptors/flat_set.md#skip-the-sort-when-input-is-already-ordered): sorted_unique for flat_set, sorted_e… <sub>`FlatSet.SortedTags`</sub> | ✅ | ✅ | ✅ |
+| [flat_multiset keeps duplicates](examples/containers/adaptors/flat_set.md#flat_multiset-keeps-duplicates): [1,2,3,3,3], count(3) == 3, equal_range is the ru… <sub>`FlatSet.MultisetKeepsDuplicates`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/adaptors/flat_set.md#iterator--reference-invalidation): an insert shifts the tail like a vector. <sub>`FlatSet.InsertShiftsTail`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/adaptors/flat_set.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [basics](examples/containers/adaptors/flat_set.md#basics) | 1 | ✅ | ✅ | ✅ |
+| [skip-the-sort-when-input-is-already-ordered](examples/containers/adaptors/flat_set.md#skip-the-sort-when-input-is-already-ordered) | 1 | ✅ | ✅ | ✅ |
+| [flat_multiset-keeps-duplicates](examples/containers/adaptors/flat_set.md#flat_multiset-keeps-duplicates) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/adaptors/priority_queue.md</code>: 8 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/adaptors/priority_queue.md#declaration): defaults are std::vector&lt;T&gt; and std::less. <sub>`PriorityQueue.Defaults`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/adaptors/priority_queue.md#declaration): std::deque also qualifies as the container. <sub>`PriorityQueue.DequeQualifies`</sub> | ✅ | ✅ | ✅ |
+| [Interface](examples/containers/adaptors/priority_queue.md#interface): / "Gotchas": top() is a const reference; pop() returns void. <sub>`PriorityQueue.TopIsConstPopIsVoid`</sub> | ✅ | ✅ | ✅ |
+| [Default max-heap](examples/containers/adaptors/priority_queue.md#default-max-heap): top() is the largest. <sub>`PriorityQueue.DefaultMaxHeap`</sub> | ✅ | ✅ | ✅ |
+| [Min-heap with std::greater](examples/containers/adaptors/priority_queue.md#min-heap-with-stdgreater): top() is the smallest. <sub>`PriorityQueue.MinHeapWithGreater`</sub> | ✅ | ✅ | ✅ |
+| [Custom priority (e.g. by a field)](examples/containers/adaptors/priority_queue.md#custom-priority-eg-by-a-field): highest priority field first. <sub>`PriorityQueue.CustomComparator`</sub> | ✅ | ✅ | ✅ |
+| [Build from existing data in O(n)](examples/containers/adaptors/priority_queue.md#build-from-existing-data-in-on): / "Not sorted, just heap-ordered": the range co… <sub>`PriorityQueue.BuildFromRangeAndPopOrder`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/adaptors/priority_queue.md#mental-model): the underlying container is a heap, which need not be sorted. <sub>`PriorityQueue.UnderlyingIsHeapNotSorted`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/adaptors/priority_queue.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [default-max-heap](examples/containers/adaptors/priority_queue.md#default-max-heap) | 1 | ✅ | ✅ | ✅ |
+| [min-heap-with-stdgreater](examples/containers/adaptors/priority_queue.md#min-heap-with-stdgreater) | 1 | ✅ | ✅ | ✅ |
+| [custom-priority-eg-by-a-field](examples/containers/adaptors/priority_queue.md#custom-priority-eg-by-a-field) | 1 | ✅ | ✅ | ✅ |
+| [build-from-existing-data-in-on](examples/containers/adaptors/priority_queue.md#build-from-existing-data-in-on) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/adaptors/queue.md</code>: 4 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/adaptors/queue.md#declaration): the default backing container is std::deque&lt;T&gt;. <sub>`Queue.DefaultContainerIsDeque`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/adaptors/queue.md#declaration): list qualifies; vector does not, because it has no pop_front. <sub>`Queue.ListQualifiesVectorLacksPopFront`</sub> | ✅ | ✅ | ✅ |
+| [Interface](examples/containers/adaptors/queue.md#interface): pop() returns void; there are no iterators. <sub>`Queue.PopReturnsVoidNoIterators`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/adaptors/queue.md#examples): FIFO — front() is the oldest, back() the newest, pop() removes the fron… <sub>`Queue.ExampleFifo`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/adaptors/queue.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/adaptors/queue.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/adaptors/stack.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/adaptors/stack.md#declaration): the default backing container is std::deque&lt;T&gt;. <sub>`Stack.DefaultContainerIsDeque`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/adaptors/stack.md#declaration): deque, vector and list all qualify as the backing store. <sub>`Stack.VectorAndListQualify`</sub> | ✅ | ✅ | ✅ |
+| **Interface**: pop() returns void; there are no iterators. <sub>`Stack.PopReturnsVoidNoIterators`</sub> | ✅ | ✅ | ✅ |
+| **Interface**: top() is read/write. <sub>`Stack.TopIsWritable`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/adaptors/stack.md#examples): LIFO order; top() does not remove; pop() removes the top. <sub>`Stack.ExampleLifo`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/adaptors/stack.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/adaptors/stack.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [choosing-a-different-backing-container](examples/containers/adaptors/stack.md#choosing-a-different-backing-container) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/associative/map.md</code>: 10 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/associative/map.md#declaration): default template arguments and value_type. <sub>`Map.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/associative/map.md#mental-model): the key is const through an iterator; the value is mutable. <sub>`Map.KeyIsConstValueIsNot`</sub> | ✅ | ✅ | ✅ |
+| [The many ways to insert (and why they differ)](examples/containers/associative/map.md#the-many-ways-to-insert-and-why-they-differ): what each call does to the value. <sub>`Map.ManyWaysToInsert`</sub> | ✅ | ✅ | ✅ |
+| [Lookup](examples/containers/associative/map.md#lookup): at throws, operator[] inserts a default, contains/find don't insert. <sub>`Map.Lookup`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/associative/map.md#gotchas): operator[] needs a default-constructible T and isn't available on a cons… <sub>`Map.SubscriptRequirements`</sub> | ✅ | ✅ | ✅ |
+| [Iterating (sorted by key) with structured bindings](examples/containers/associative/map.md#iterating-sorted-by-key-with-structured-bindings): ascending key order, values m… <sub>`Map.IterationSortedAndMutable`</sub> | ✅ | ✅ | ✅ |
+| [Counting words — the idiomatic snippet](examples/containers/associative/map.md#counting-words--the-idiomatic-snippet): operator[] default-inits to 0. <sub>`Map.CountingWords`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/associative/map.md#c20-uniform-erase): erase_if removes matching entries. <sub>`Map.EraseIf`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/associative/map.md#iterator--reference-invalidation): inserts never invalidate; erase only the erase… <sub>`Map.NodeStability`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/associative/map.md#gotchas): change a key via extract (C++17). <sub>`Map.ExtractChangesKey`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/associative/map.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [the-many-ways-to-insert-and-why-they-differ](examples/containers/associative/map.md#the-many-ways-to-insert-and-why-they-differ) | 1 | ✅ | ✅ | ✅ |
+| [lookup](examples/containers/associative/map.md#lookup) | 1 | ✅ | ✅ | ✅ |
+| [iterating-sorted-by-key-with-structured-bindings](examples/containers/associative/map.md#iterating-sorted-by-key-with-structured-bindings) | 1 | ✅ | ✅ | ✅ |
+| [counting-words--the-idiomatic-snippet](examples/containers/associative/map.md#counting-words--the-idiomatic-snippet) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/associative/map.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/associative/multimap.md</code>: 6 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/associative/multimap.md#declaration): default template arguments. <sub>`Multimap.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from map](examples/containers/associative/multimap.md#how-it-differs-from-map): / "Gotchas": no operator[], at, try_emplace, insert_or_a… <sub>`Multimap.NoUniqueKeyConveniences`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from map](examples/containers/associative/multimap.md#how-it-differs-from-map): insert/emplace always succeed and return a plain iterato… <sub>`Multimap.InsertReturnsPlainIterator`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/associative/multimap.md#examples): count, equal_range, erase one iterator vs erase(key). <sub>`Multimap.Example`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from map](examples/containers/associative/multimap.md#how-it-differs-from-map): erase(key) removes all entries and returns the count. <sub>`Multimap.EraseKeyRemovesWholeGroup`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/associative/multimap.md#iterator--reference-invalidation): equivalent keys keep insertion order; nodes ar… <sub>`Multimap.InsertionOrderAndStability`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/associative/multimap.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/associative/multimap.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/associative/multiset.md</code>: 5 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/associative/multiset.md#declaration): default template arguments. <sub>`Multiset.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/associative/multiset.md#mental-model): sorted, duplicates kept and adjacent. <sub>`Multiset.SortedDuplicatesKept`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from set](examples/containers/associative/multiset.md#how-it-differs-from-set): insert always succeeds and returns a plain iterator. <sub>`Multiset.InsertReturnsPlainIterator`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/associative/multiset.md#examples): count, contains, erase one by iterator, erase(key) returns the count, e… <sub>`Multiset.Example`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/associative/multiset.md#iterator--reference-invalidation): equivalent elements keep insertion order (C++1… <sub>`Multiset.EquivalentElementsKeepInsertionOrder`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/associative/multiset.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/associative/multiset.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/associative/set.md</code>: 10 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/associative/set.md#declaration): default template arguments; the value is the key. <sub>`Set.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Basics](examples/containers/associative/set.md#basics): duplicates dropped, sorted, insert/erase/contains/count/find. <sub>`Set.Basics`</sub> | ✅ | ✅ | ✅ |
+| [insert returns whether it happened](examples/containers/associative/set.md#insert-returns-whether-it-happened): inserted is false for an existing key; it poi… <sub>`Set.InsertReturnsPair`</sub> | ✅ | ✅ | ✅ |
+| [Ordered queries](examples/containers/associative/set.md#ordered-queries): lower_bound / upper_bound. <sub>`Set.OrderedQueries`</sub> | ✅ | ✅ | ✅ |
+| [Custom ordering &amp; transparent comparators](examples/containers/associative/set.md#custom-ordering--transparent-comparators): greater&lt;&gt; sorts descending; less&lt;&gt; all… <sub>`Set.CustomOrderingAndTransparentLookup`</sub> | ✅ | ✅ | ✅ |
+| [Node extraction &amp; merge (C++17)](examples/containers/associative/set.md#node-extraction--merge-c17): merge leaves only duplicates in the source; extr… <sub>`Set.MergeAndExtract`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/associative/set.md#c20-uniform-erase): erase_if removes evens. <sub>`Set.EraseIf`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/associative/set.md#gotchas): *it is const — keys can't be modified through an iterator. <sub>`Set.IteratorDerefIsConst`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/associative/set.md#mental-model): / "Gotchas": uniqueness is by equivalence under the comparator, not… <sub>`Set.UniquenessIsEquivalence`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/associative/set.md#iterator--reference-invalidation): insertion never invalidates; erase only the er… <sub>`Set.NodeStability`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/associative/set.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [basics](examples/containers/associative/set.md#basics) | 1 | ✅ | ✅ | ✅ |
+| [insert-returns-whether-it-happened](examples/containers/associative/set.md#insert-returns-whether-it-happened) | 1 | ✅ | ✅ | ✅ |
+| [ordered-queries](examples/containers/associative/set.md#ordered-queries) | 1 | ✅ | ✅ | ✅ |
+| [custom-ordering--transparent-comparators](examples/containers/associative/set.md#custom-ordering--transparent-comparators) | 1 | ✅ | ✅ | ✅ |
+| [node-extraction--merge-c17](examples/containers/associative/set.md#node-extraction--merge-c17) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/associative/set.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/array.md</code>: 8 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/containers/sequence/array.md#mental-model): the elements live inside the object, with no extra overhead. <sub>`Array.ElementsAreInline`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/sequence/array.md#declaration): an aggregate; N == 0 is allowed. <sub>`Array.AggregateAndEmpty`</sub> | ✅ | ✅ | ✅ |
+| [Initialization (mind the braces)](examples/containers/sequence/array.md#initialization-mind-the-braces): {} zeroes, {1} value-initializes the rest, CTAD. <sub>`Array.Initialization`</sub> | ✅ | ✅ | ✅ |
+| [Access and iteration](examples/containers/sequence/array.md#access-and-iteration): at() throws std::out_of_range; size() is constexpr and == 3. <sub>`Array.Access`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/sequence/array.md#iterator--reference-invalidation): swap keeps iterators valid but swaps the eleme… <sub>`Array.SwapKeepsIteratorsSwapsElements`</sub> | ✅ | ✅ | ✅ |
+| [constexpr / compile-time use](examples/containers/sequence/array.md#constexpr--compile-time-use) <sub>`Array.Constexpr`</sub> | ✅ | ✅ | ✅ |
+| [Structured bindings &amp; std::get](examples/containers/sequence/array.md#structured-bindings--stdget) <sub>`Array.StructuredBindingsAndGet`</sub> | ✅ | ✅ | ✅ |
+| **to_array**: deduces the size; a string literal keeps its '\0'. <sub>`Array.ToArray`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/array.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [initialization-mind-the-braces](examples/containers/sequence/array.md#initialization-mind-the-braces) | 1 | ✅ | ✅ | ✅ |
+| [access-and-iteration](examples/containers/sequence/array.md#access-and-iteration) | 1 | ✅ | ✅ | ✅ |
+| [constexpr--compile-time-use](examples/containers/sequence/array.md#constexpr--compile-time-use) | 1 | ✅ | ✅ | ✅ |
+| [structured-bindings--stdget](examples/containers/sequence/array.md#structured-bindings--stdget) | 1 | ✅ | ✅ | ✅ |
+| [to_array-deduce-from-a-c-array-literal-c20](examples/containers/sequence/array.md#to_array-deduce-from-a-c-array-literal-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/deque.md</code>: 6 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/containers/sequence/deque.md#mental-model): no data() on deque. <sub>`Deque.NoData`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/sequence/deque.md#examples): the values after each push/pop. <sub>`Deque.BothEnds`</sub> | ✅ | ✅ | ✅ |
+| [Using it as a sliding window](examples/containers/sequence/deque.md#using-it-as-a-sliding-window): keeps the last `cap` values. <sub>`Deque.SlidingWindow`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/sequence/deque.md#iterator--reference-invalidation): references to existing elements survive push_f… <sub>`Deque.ReferencesSurviveEndInsertion`</sub> | ✅ | ✅ | ✅ |
+| [When to use it](examples/containers/sequence/deque.md#when-to-use-it): std::queue and std::stack default to deque. <sub>`Deque.AdaptorsDefaultToDeque`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/sequence/deque.md#gotchas): shrink_to_fit exists (a non-binding request). <sub>`Deque.ShrinkToFit`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/deque.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/sequence/deque.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [using-it-as-a-sliding-window](examples/containers/sequence/deque.md#using-it-as-a-sliding-window) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/forward_list.md</code>: 6 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/containers/sequence/forward_list.md#mental-model): no stored size or tail, so the object is smaller than a list. <sub>`ForwardList.SmallerThanList`</sub> | ✅ | ✅ | ✅ |
+| [The _after interface and before_begin](examples/containers/sequence/forward_list.md#the-_after-interface-and-before_begin): the commented results. <sub>`ForwardList.AfterInterface`</sub> | ✅ | ✅ | ✅ |
+| [No size(): count manually](examples/containers/sequence/forward_list.md#no-size-count-manually) <sub>`ForwardList.NoSize`</sub> | ✅ | ✅ | ✅ |
+| [Member operations (like list)](examples/containers/sequence/forward_list.md#member-operations-like-list): the commented results. <sub>`ForwardList.MemberOperations`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/sequence/forward_list.md#c20-uniform-erase) <sub>`ForwardList.UniformErase`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/sequence/forward_list.md#gotchas): no back() / push_back(). <sub>`ForwardList.NoBack`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/forward_list.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [the-_after-interface-and-before_begin](examples/containers/sequence/forward_list.md#the-_after-interface-and-before_begin) | 1 | ✅ | ✅ | ✅ |
+| [no-size-count-manually](examples/containers/sequence/forward_list.md#no-size-count-manually) | 1 | ✅ | ✅ | ✅ |
+| [member-operations-like-list](examples/containers/sequence/forward_list.md#member-operations-like-list) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/sequence/forward_list.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/hive.md</code>: 5 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/sequence/hive.md#declaration): pmr alias; bidirectional (not random-access) iterators; no ==/!=. <sub>`Hive.DeclarationAndRequirements`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [Examples](examples/containers/sequence/hive.md#examples): + "Iterator &amp; reference invalidation": insert returns an iterator that… <sub>`Hive.StableAcrossInsertAndErase`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [Pre-reserve and tune block sizes](examples/containers/sequence/hive.md#pre-reserve-and-tune-block-sizes): reserve gives capacity without elements; hive_l… <sub>`Hive.ReserveAndLimits`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| **Member operations**: sort orders the elements; unique then removes consecutive dupl… <sub>`Hive.SortUnique`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [C++20-style uniform erase](examples/containers/sequence/hive.md#c20-style-uniform-erase) <sub>`Hive.UniformErase`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/hive.md#declaration) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [examples](examples/containers/sequence/hive.md#examples) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [pre-reserve-and-tune-block-sizes](examples/containers/sequence/hive.md#pre-reserve-and-tune-block-sizes) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [member-operations-like-list-since-order-isnt-positional](examples/containers/sequence/hive.md#member-operations-like-list-since-order-isnt-positional) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [c20-style-uniform-erase](examples/containers/sequence/hive.md#c20-style-uniform-erase) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/inplace_vector.md</code>: 7 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/sequence/inplace_vector.md#declaration): capacity() and max_size() are N, constexpr and noexcept; N == 0 is a… <sub>`InplaceVector.CapacityIsN`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Mental model](examples/containers/sequence/inplace_vector.md#mental-model): the elements live inside the object (no heap). <sub>`InplaceVector.StorageIsInline`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Inserting when full — three flavors](examples/containers/sequence/inplace_vector.md#inserting-when-full--three-flavors): return types and overflow behaviour (try_* r… <sub>`InplaceVector.ThreeInsertFlavors`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Examples](examples/containers/sequence/inplace_vector.md#examples): size after two push_backs; capacity stays 4. <sub>`InplaceVector.Example`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Iterator &amp; reference invalidation](examples/containers/sequence/inplace_vector.md#iterator--reference-invalidation): push_back never moves existing elements; movin… <sub>`InplaceVector.Invalidation`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [constexpr use](examples/containers/sequence/inplace_vector.md#constexpr-use) <sub>`InplaceVector.Constexpr`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Gotchas](examples/containers/sequence/inplace_vector.md#gotchas): reserve(n) is a no-op for n &lt;= N and throws std::bad_alloc for n &gt; N; sh… <sub>`InplaceVector.ReserveAndShrink`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/inplace_vector.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/sequence/inplace_vector.md#examples) | 1 | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+| [constexpr-use](examples/containers/sequence/inplace_vector.md#constexpr-use) | 1 | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/list.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Examples](examples/containers/sequence/list.md#examples): insert before an iterator, erase at it, without invalidating the rest. <sub>`List.InsertEraseAtIterator`</sub> | ✅ | ✅ | ✅ |
+| [Member operations that algorithms can't do as well](examples/containers/sequence/list.md#member-operations-that-algorithms-cant-do-as-well): the commented results. <sub>`List.MemberOperations`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/sequence/list.md#iterator--reference-invalidation): spliced elements keep their iterators, now in… <sub>`List.SpliceKeepsIterators`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/sequence/list.md#c20-uniform-erase) <sub>`List.UniformErase`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/sequence/list.md#gotchas): no operator[] or at(); iterators aren't random access (so no std::sort). <sub>`List.NoRandomAccess`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/list.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/sequence/list.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [member-operations-that-algorithms-cant-do-as-well](examples/containers/sequence/list.md#member-operations-that-algorithms-cant-do-as-well) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/sequence/list.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/sequence/vector.md</code>: 10 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Construction (modern)](examples/containers/sequence/vector.md#construction-modern): what each constructor form produces. <sub>`Vector.ConstructionForms`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/sequence/vector.md#mental-model): growth is geometric, so n push_backs reallocate only O(log n) times. <sub>`Vector.GeometricGrowth`</sub> | ✅ | ✅ | ✅ |
+| [Growth and the reserve idiom](examples/containers/sequence/vector.md#growth-and-the-reserve-idiom): refs stay valid while filling below the reservation… <sub>`Vector.ReserveKeepsReferencesValid`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/sequence/vector.md#iterator--reference-invalidation): without reallocation, insertion leaves element… <sub>`Vector.InvalidationWithoutReallocation`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/sequence/vector.md#gotchas): reserve changes capacity only; resize changes size; clear keeps capacity. <sub>`Vector.ReserveResizeClear`</sub> | ✅ | ✅ | ✅ |
+| [Access](examples/containers/sequence/vector.md#access): front/back/data; at() is bounds-checked and throws std::out_of_range. <sub>`Vector.AtThrowsOutOfRange`</sub> | ✅ | ✅ | ✅ |
+| [Erase-remove, and the C++20 simplification](examples/containers/sequence/vector.md#erase-remove-and-the-c20-simplification): std::erase returns the count removed. <sub>`Vector.EraseRemoveAndStdErase`</sub> | ✅ | ✅ | ✅ |
+| [Iterating](examples/containers/sequence/vector.md#iterating): auto&amp; in a range-for mutates in place. <sub>`Vector.IterateMutateInPlace`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/sequence/vector.md#gotchas): swapping with an empty temporary actually releases the memory. <sub>`Vector.SwapIdiomReleasesMemory`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/containers/sequence/vector.md#declaration): vector&lt;bool&gt;::operator[] returns a proxy, not bool&amp;. <sub>`Vector.VectorBoolReturnsProxy`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/sequence/vector.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [construction-modern](examples/containers/sequence/vector.md#construction-modern) | 1 | ✅ | ✅ | ✅ |
+| [growth-and-the-reserve-idiom](examples/containers/sequence/vector.md#growth-and-the-reserve-idiom) | 1 | ✅ | ✅ | ✅ |
+| [access](examples/containers/sequence/vector.md#access) | 1 | ✅ | ✅ | ✅ |
+| [erase-remove-and-the-c20-simplification](examples/containers/sequence/vector.md#erase-remove-and-the-c20-simplification) | 1 | ✅ | ✅ | ✅ |
+| [iterating](examples/containers/sequence/vector.md#iterating) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/unordered/unordered_map.md</code>: 8 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/unordered/unordered_map.md#declaration): default template arguments. <sub>`UnorderedMap.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Basics — same insertion API as map](examples/containers/unordered/unordered_map.md#basics--same-insertion-api-as-map): . <sub>`UnorderedMap.Basics`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/unordered/unordered_map.md#gotchas): operator[] inserts a default value for missing keys; find/contains don't. <sub>`UnorderedMap.SubscriptInserts`</sub> | ✅ | ✅ | ✅ |
+| [Reserve to avoid rehashing](examples/containers/unordered/unordered_map.md#reserve-to-avoid-rehashing): with max_load_factor set first, reserve(n) sizes the… <sub>`UnorderedMap.ReserveAvoidsRehash`</sub> | ✅ | ✅ | ✅ |
+| [Custom key type needs a hash](examples/containers/unordered/unordered_map.md#custom-key-type-needs-a-hash): . <sub>`UnorderedMap.CustomKeyHash`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/unordered/unordered_map.md#c20-uniform-erase): . <sub>`UnorderedMap.EraseIf`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/unordered/unordered_map.md#iterator--reference-invalidation): references survive rehash. <sub>`UnorderedMap.ReferencesSurviveRehash`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/unordered/unordered_map.md#gotchas): a bad hash still works (all keys in one bucket) — just slowly. <sub>`UnorderedMap.BadHashCollides`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/unordered/unordered_map.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [basics--same-insertion-api-as-map](examples/containers/unordered/unordered_map.md#basics--same-insertion-api-as-map) | 1 | ✅ | ✅ | ✅ |
+| [reserve-to-avoid-rehashing](examples/containers/unordered/unordered_map.md#reserve-to-avoid-rehashing) | 1 | ✅ | ✅ | ✅ |
+| [custom-key-type-needs-a-hash](examples/containers/unordered/unordered_map.md#custom-key-type-needs-a-hash) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/unordered/unordered_map.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/unordered/unordered_multimap.md</code>: 6 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/unordered/unordered_multimap.md#declaration): default template arguments. <sub>`UnorderedMultimap.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from unordered_map](examples/containers/unordered/unordered_multimap.md#how-it-differs-from-unordered_map): / "Gotchas": no [], at, try_emplace, insert_or… <sub>`UnorderedMultimap.NoUniqueKeyConveniences`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from unordered_map](examples/containers/unordered/unordered_multimap.md#how-it-differs-from-unordered_map): insert/emplace always succeed, returning a pla… <sub>`UnorderedMultimap.InsertReturnsPlainIterator`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/unordered/unordered_multimap.md#examples): + "Mental model": equal keys form a contiguous run returned by equal_ra… <sub>`UnorderedMultimap.Example`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/unordered/unordered_multimap.md#mental-model): entries with equal keys are adjacent in iteration order. <sub>`UnorderedMultimap.EqualKeysGrouped`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/unordered/unordered_multimap.md#iterator--reference-invalidation): references stable across rehash. <sub>`UnorderedMultimap.ReferencesSurviveRehash`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/unordered/unordered_multimap.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/unordered/unordered_multimap.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/unordered/unordered_multiset.md</code>: 4 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/unordered/unordered_multiset.md#declaration): default template arguments. <sub>`UnorderedMultiset.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [How it differs from unordered_set](examples/containers/unordered/unordered_multiset.md#how-it-differs-from-unordered_set): insert always succeeds, returns a plain iterat… <sub>`UnorderedMultiset.InsertReturnsPlainIterator`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/unordered/unordered_multiset.md#examples): count, erase one by iterator, erase(key) returns the count; equal_range. <sub>`UnorderedMultiset.Example`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/unordered/unordered_multiset.md#iterator--reference-invalidation): references survive rehash. <sub>`UnorderedMultiset.ReferencesSurviveRehash`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/unordered/unordered_multiset.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/unordered/unordered_multiset.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/unordered/unordered_set.md</code>: 8 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/unordered/unordered_set.md#declaration): default template arguments. <sub>`UnorderedSet.DeclarationDefaults`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/containers/unordered/unordered_set.md#examples): insert of an existing key reports inserted == false; contains/count/era… <sub>`UnorderedSet.Basics`</sub> | ✅ | ✅ | ✅ |
+| [Dedup a vector in O(n) average](examples/containers/unordered/unordered_set.md#dedup-a-vector-in-on-average): . <sub>`UnorderedSet.DedupVector`</sub> | ✅ | ✅ | ✅ |
+| [Reserve for known size](examples/containers/unordered/unordered_set.md#reserve-for-known-size): / "Gotchas": no rehash while filling up to the reserved s… <sub>`UnorderedSet.ReserveAvoidsRehash`</sub> | ✅ | ✅ | ✅ |
+| [Custom element type](examples/containers/unordered/unordered_set.md#custom-element-type): . <sub>`UnorderedSet.CustomElementType`</sub> | ✅ | ✅ | ✅ |
+| [C++20 uniform erase](examples/containers/unordered/unordered_set.md#c20-uniform-erase): . <sub>`UnorderedSet.EraseIf`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/unordered/unordered_set.md#gotchas): equivalence is KeyEqual (==), not ordering. <sub>`UnorderedSet.EquivalenceIsKeyEqual`</sub> | ✅ | ✅ | ✅ |
+| [Iterator &amp; reference invalidation](examples/containers/unordered/unordered_set.md#iterator--reference-invalidation): references survive rehash. <sub>`UnorderedSet.ReferencesSurviveRehash`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/unordered/unordered_set.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/containers/unordered/unordered_set.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [dedup-a-vector-in-on-average](examples/containers/unordered/unordered_set.md#dedup-a-vector-in-on-average) | 1 | ✅ | ✅ | ✅ |
+| [reserve-for-known-size](examples/containers/unordered/unordered_set.md#reserve-for-known-size) | 1 | ✅ | ✅ | ✅ |
+| [custom-element-type](examples/containers/unordered/unordered_set.md#custom-element-type) | 1 | ✅ | ✅ | ✅ |
+| [c20-uniform-erase](examples/containers/unordered/unordered_set.md#c20-uniform-erase) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/containers/views/mdspan.md</code>: 10 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/views/mdspan.md#declaration): default layout is layout_right, default accessor is default_accessor… <sub>`Mdspan.DeclarationDefaults`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Extents helpers](examples/containers/views/mdspan.md#extents-helpers): static vs dynamic extents and dextents. <sub>`Mdspan.ExtentsHelpers`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Mental model](examples/containers/views/mdspan.md#mental-model): / "View a vector as a matrix": CTAD gives a dynamic 2x3 layout_righ… <sub>`Mdspan.ViewVectorAsMatrix`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Compile-time shape](examples/containers/views/mdspan.md#compile-time-shape): a fixed 3x4 extent; mat[2, 3] is the last element. <sub>`Mdspan.CompileTimeShape`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Column-major view of the same buffer](examples/containers/views/mdspan.md#column-major-view-of-the-same-buffer): layout_left — first index varies fastest. <sub>`Mdspan.ColumnMajor`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Gotchas](examples/containers/views/mdspan.md#gotchas): indexing is m[i, j], not m(i, j). <sub>`Mdspan.SubscriptNotCallOperator`</sub> | ⏭<sup>3</sup> | ✅ | ✅ |
+| [Gotchas](examples/containers/views/mdspan.md#gotchas): ("Library support"): GCC 15's libstdc++ has no &lt;mdspan&gt;; GCC 16 and Clan… <sub>`Mdspan.LibrarySupport`</sub> | ✅ | ✅ | ✅ |
+| [Slices: std::submdspan (C++26)](examples/containers/views/mdspan.md#slices-stdsubmdspan-c26): each slice kind, rank changes, result layouts, an… <sub>`Mdspan.Submdspan`</sub> | ⏭<sup>6</sup> | ✅ | ⏭<sup>6</sup> |
+| [Promise alignment: std::aligned_accessor (C++26)](examples/containers/views/mdspan.md#promise-alignment-stdaligned_accessor-c26): access through an aligned mdspa… <sub>`Mdspan.AlignedAccessor`</sub> | ⏭<sup>7</sup> | ✅ | ✅ |
+| [Gotchas](examples/containers/views/mdspan.md#gotchas): ("strided_slice is gone"): the 202603L submdspan has extent_slice and ra… <sub>`Mdspan.StridedSliceRenamed`</sub> | ⏭<sup>8</sup> | ✅ | ⏭<sup>8</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/views/mdspan.md#declaration) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [extents-helpers](examples/containers/views/mdspan.md#extents-helpers) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [view-a-vector-as-a-matrix](examples/containers/views/mdspan.md#view-a-vector-as-a-matrix) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [compile-time-shape](examples/containers/views/mdspan.md#compile-time-shape) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [column-major-view-of-the-same-buffer](examples/containers/views/mdspan.md#column-major-view-of-the-same-buffer) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [slices-stdsubmdspan-c26](examples/containers/views/mdspan.md#slices-stdsubmdspan-c26) | 1 | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+| [promise-alignment-stdaligned_accessor-c26](examples/containers/views/mdspan.md#promise-alignment-stdaligned_accessor-c26) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+
+</details>
+
+<details><summary><code>examples/containers/views/span.md</code>: 9 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/containers/views/span.md#declaration): Extent defaults to dynamic_extent; a fixed extent isn't stored. <sub>`Span.DeclarationExtent`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/containers/views/span.md#mental-model): a span is pointer + length; copying it doesn't copy elements. <sub>`Span.MentalModelViewsStorage`</sub> | ✅ | ✅ | ✅ |
+| [Why it exists](examples/containers/views/span.md#why-it-exists): one sum(span&lt;const double&gt;) works for C arrays, std::array, vector. <sub>`Span.SumAcceptsAnyContiguousSource`</sub> | ✅ | ✅ | ✅ |
+| [Constructing from various sources](examples/containers/views/span.md#constructing-from-various-sources): sizes, and ptr + count takes the first n. <sub>`Span.ConstructingFromSources`</sub> | ✅ | ✅ | ✅ |
+| [Subviews (no copying)](examples/containers/views/span.md#subviews-no-copying): first/last/subspan view the same storage; writes go throug… <sub>`Span.Subviews`</sub> | ✅ | ✅ | ✅ |
+| [const view = read-only window](examples/containers/views/span.md#const-view--read-only-window): span&lt;const int&gt; elements can't be assigned. <sub>`Span.ConstViewIsReadOnly`</sub> | ✅ | ✅ | ✅ |
+| [As bytes (C++20)](examples/containers/views/span.md#as-bytes-c20): as_bytes gives a span&lt;const std::byte&gt; over the same memory. <sub>`Span.AsBytes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/containers/views/span.md#gotchas): at() is bounds-checked (C++26) and throws std::out_of_range. <sub>`Span.AtThrowsOutOfRange`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [Gotchas](examples/containers/views/span.md#gotchas): fixed-&gt;dynamic converts implicitly; dynamic-&gt;fixed only explicitly. <sub>`Span.FixedAndDynamicConversions`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/containers/views/span.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [why-it-exists](examples/containers/views/span.md#why-it-exists) | 1 | ✅ | ✅ | ✅ |
+| [constructing-from-various-sources](examples/containers/views/span.md#constructing-from-various-sources) | 1 | ✅ | ✅ | ✅ |
+| [subviews-no-copying](examples/containers/views/span.md#subviews-no-copying) | 1 | ✅ | ✅ | ✅ |
+| [const-view--read-only-window](examples/containers/views/span.md#const-view--read-only-window) | 1 | ✅ | ✅ | ✅ |
+| [as-bytes-c20](examples/containers/views/span.md#as-bytes-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_inplace_vector (not defined by this toolchain)
+2. needs __cpp_lib_hive (not defined by this toolchain)
+3. needs __cpp_lib_mdspan (not defined by this toolchain)
+4. needs hive
+5. needs inplace_vector
+6. needs __cpp_lib_submdspan (not defined by this toolchain)
+7. needs __cpp_lib_aligned_accessor (not defined by this toolchain)
+8. needs __cpp_lib_submdspan &gt;= 202603L (not defined by this toolchain)
+9. needs mdspan
+10. needs submdspan
+11. needs __cpp_lib_span &gt;= 202311L (this toolchain has 202002L)
+
+</details>
+
+### datetime
+
+4 pages · 22 features · 13 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (2 columns, identical here): GCC 15 (local), GCC 16 (local)
+
+| Page | Features | Examples | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|
+| [examples/datetime/c-time.md](examples/datetime/c-time.md) | 4 | 2 | ✅ | ✅ |
+| [examples/datetime/calendar-timezones.md](examples/datetime/calendar-timezones.md) | 6 | 4 | ✅ | ❌ 2 |
+| [examples/datetime/clocks-timepoints.md](examples/datetime/clocks-timepoints.md) | 7 | 3 | ✅ | 🟡 1 |
+| [examples/datetime/durations.md](examples/datetime/durations.md) | 5 | 4 | ✅ | ✅ |
+
+<details><summary><code>examples/datetime/c-time.md</code>: 4 features, 2 examples</summary>
+
+| Feature | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|
+| [Mental model](examples/datetime/c-time.md#mental-model): time_t is arithmetic (64-bit on the local toolchains). <sub>`CTime.TimeTIsArithmetic`</sub> | ✅ | ✅ |
+| [Now, broken down and formatted](examples/datetime/c-time.md#now-broken-down-and-formatted): the values in the comments. <sub>`CTime.BrokenDownAndFormatted`</sub> | ✅ | ✅ |
+| [The same thing with &lt;chrono&gt;](examples/datetime/c-time.md#the-same-thing-with-chrono): from_time_t + format gives the same date. <sub>`CTime.ChronoBridge`</sub> | ✅ | ✅ |
+| [Gotchas](examples/datetime/c-time.md#gotchas): gmtime returns the same static buffer every call. <sub>`CTime.GmtimeReturnsStaticStorage`</sub> | ✅ | ✅ |
+
+| Examples in section | Blocks | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|
+| [now-broken-down-and-formatted](examples/datetime/c-time.md#now-broken-down-and-formatted) | 1 | ✅ | ✅ |
+| [the-same-thing-with-chrono](examples/datetime/c-time.md#the-same-thing-with-chrono) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/datetime/calendar-timezones.md</code>: 6 features, 4 examples</summary>
+
+| Feature | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|
+| [Calendar types](examples/datetime/calendar-timezones.md#calendar-types): typed fields, ok(), and operator/ in any sensible order. <sub>`CalendarTimezones.CalendarTypes`</sub> | ✅ | ✅ |
+| [Gotchas](examples/datetime/calendar-timezones.md#gotchas): 2026y/February/30d is constructible but not ok(). <sub>`CalendarTimezones.InvalidDateNotOk`</sub> | ✅ | ✅ |
+| [Converting to/from a time point](examples/datetime/calendar-timezones.md#converting-tofrom-a-time-point): sys_days round-trips, differences are days, week… <sub>`CalendarTimezones.SysDaysBridge`</sub> | ✅ | ✅ |
+| [Formatting (and parsing)](examples/datetime/calendar-timezones.md#formatting-and-parsing): the date format and parse round-trip. <sub>`CalendarTimezones.FormatAndParse`</sub> | ✅ | ⏭<sup>1</sup> |
+| [Gotchas](examples/datetime/calendar-timezones.md#gotchas): %Z on a bare system_clock time point always prints UTC, not the local zo… <sub>`CalendarTimezones.BareSysTimeZoneIsUtc`</sub> | ✅ | ✅ |
+| [Time zones](examples/datetime/calendar-timezones.md#time-zones): named zones convert one instant, the database applies DST, and %Z pri… <sub>`CalendarTimezones.ZonedTime`</sub> | ✅ | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|
+| [calendar-types](examples/datetime/calendar-timezones.md#calendar-types) | 1 | ✅ | ✅ |
+| [converting-tofrom-a-time-point](examples/datetime/calendar-timezones.md#converting-tofrom-a-time-point) | 1 | ✅ | ✅ |
+| [time-zones](examples/datetime/calendar-timezones.md#time-zones) | 1 | ✅ | ❌ |
+| [formatting-and-parsing](examples/datetime/calendar-timezones.md#formatting-and-parsing) | 1 | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/datetime/clocks-timepoints.md</code>: 7 features, 3 examples</summary>
+
+| Feature | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|
+| [The clocks](examples/datetime/clocks-timepoints.md#the-clocks): steady_clock is monotonic; system_clock isn't marked steady. <sub>`ClocksTimepoints.SteadyIsMonotonic`</sub> | ✅ | ✅ |
+| [Gotchas](examples/datetime/clocks-timepoints.md#gotchas): high_resolution_clock is an alias of another clock, and which one differ… <sub>`ClocksTimepoints.HighResolutionIsAnAlias`</sub> | ✅ | ✅ |
+| **Measuring elapsed time**: now() - start is a duration that casts to ms/seconds. <sub>`ClocksTimepoints.ElapsedIsDuration`</sub> | ✅ | ✅ |
+| [time_point arithmetic](examples/datetime/clocks-timepoints.md#time_point-arithmetic): time_point + duration and time_point - time_point. <sub>`ClocksTimepoints.TimePointArithmetic`</sub> | ✅ | ✅ |
+| [Gotchas](examples/datetime/clocks-timepoints.md#gotchas): time points from different clocks can't be compared or subtracted. <sub>`ClocksTimepoints.ClockSpecificTimePoints`</sub> | ✅ | ✅ |
+| [Wall-clock time](examples/datetime/clocks-timepoints.md#wall-clock-time): + "Gotchas": to_time_t loses sub-second precision; format prints… <sub>`ClocksTimepoints.ToTimeTAndFormat`</sub> | ✅ | ✅ |
+| [The clocks](examples/datetime/clocks-timepoints.md#the-clocks): utc_clock, tai_clock and gps_clock are leap-second-aware (C++20). <sub>`ClocksTimepoints.LeapSecondAwareClocks`</sub> | ✅ | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|
+| [measuring-elapsed-time-the-canonical-snippet](examples/datetime/clocks-timepoints.md#measuring-elapsed-time-the-canonical-snippet) | 1 | ✅ | ✅ |
+| [wall-clock-time](examples/datetime/clocks-timepoints.md#wall-clock-time) | 1 | ✅ | ✅ |
+| [time_point-arithmetic](examples/datetime/clocks-timepoints.md#time_point-arithmetic) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/datetime/durations.md</code>: 5 features, 4 examples</summary>
+
+| Feature | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|
+| [Literals and arithmetic](examples/datetime/durations.md#literals-and-arithmetic): mixed units yield the finer common type. <sub>`Durations.MixedArithmeticUsesFinerUnit`</sub> | ✅ | ✅ |
+| [Converting between units](examples/datetime/durations.md#converting-between-units): duration_cast truncates; floor/round/ceil direct the ro… <sub>`Durations.CastAndRounding`</sub> | ✅ | ✅ |
+| [Floating-point durations](examples/datetime/durations.md#floating-point-durations): 1500ms converts implicitly to 1.5 seconds. <sub>`Durations.FloatingPointDuration`</sub> | ✅ | ✅ |
+| [Gotchas](examples/datetime/durations.md#gotchas): lossy implicit conversions don't compile; lossless ones do. <sub>`Durations.LossyImplicitConversionRejected`</sub> | ✅ | ✅ |
+| [Mental model](examples/datetime/durations.md#mental-model): duration = Rep count × Period ratio; days..years are C++20 aliases. <sub>`Durations.AliasPeriods`</sub> | ✅ | ✅ |
+
+| Examples in section | Blocks | **A** | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|
+| [mental-model](examples/datetime/durations.md#mental-model) | 1 | ✅ | ✅ |
+| [literals-and-arithmetic](examples/datetime/durations.md#literals-and-arithmetic) | 1 | ✅ | ✅ |
+| [converting-between-units](examples/datetime/durations.md#converting-between-units) | 1 | ✅ | ✅ |
+| [floating-point-durations](examples/datetime/durations.md#floating-point-durations) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_chrono &gt;= 201907L (this toolchain has 201611L)
+
+</details>
+
+### diagnostics
+
+4 pages · 25 features · 17 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/diagnostics/debugging.md](examples/diagnostics/debugging.md) | 3 | 4 | 🟡 7 | 🟡 4 | 🟡 7 |
+| [examples/diagnostics/exception-hierarchy.md](examples/diagnostics/exception-hierarchy.md) | 12 | 7 | 🟡 3 | 🟡 1 | 🟡 4 |
+| [examples/diagnostics/stacktrace.md](examples/diagnostics/stacktrace.md) | 5 | 3 | 🟡 7 | 🟡 2 | 🟡 7 |
+| [examples/diagnostics/system_error.md](examples/diagnostics/system_error.md) | 5 | 3 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/diagnostics/debugging.md</code>: 3 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Compiler support](examples/diagnostics/debugging.md#compiler-support): GCC 16.2 advertises 202403L (replaceable is_debugger_present). <sub>`Debugging.FeatureMacroValue`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Stop only when someone is watching](examples/diagnostics/debugging.md#stop-only-when-someone-is-watching): with no debugger attached (as under ctest) is… <sub>`Debugging.BreakpointIfDebuggingIsNoOpUnwatched`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+| [Gotchas](examples/diagnostics/debugging.md#gotchas): breakpoint() without a debugger ends the program with SIGTRAP. <sub>`DebuggingDeathTest.BreakpointWithoutDebuggerTraps`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/diagnostics/debugging.md#declaration) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+| [stop-only-when-someone-is-watching](examples/diagnostics/debugging.md#stop-only-when-someone-is-watching) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [a-cant-happen-check-that-traps-under-the-debugger](examples/diagnostics/debugging.md#a-cant-happen-check-that-traps-under-the-debugger) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [replacing-is_debugger_present](examples/diagnostics/debugging.md#replacing-is_debugger_present) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary><code>examples/diagnostics/exception-hierarchy.md</code>: 12 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The tree](examples/diagnostics/exception-hierarchy.md#the-tree): each class derives from the parent the diagram shows. <sub>`ExceptionHierarchy.TreeShape`</sub> | ✅ | ✅ | ✅ |
+| [The tree](examples/diagnostics/exception-hierarchy.md#the-tree): the library functions named there throw the listed exceptions. <sub>`ExceptionHierarchy.LibraryThrowsListedTypes`</sub> | ✅ | ✅ | ✅ |
+| [Throwing](examples/diagnostics/exception-hierarchy.md#throwing): and "Catch by const reference": most-derived handler first, base catche… <sub>`ExceptionHierarchy.CatchOrderAndWhat`</sub> | ✅ | ✅ | ✅ |
+| **Custom exceptions**: and "Gotchas": a runtime_error subclass is caught by catch (co… <sub>`ExceptionHierarchy.CustomExceptionAndSlicing`</sub> | ✅ | ✅ | ✅ |
+| [The tree](examples/diagnostics/exception-hierarchy.md#the-tree): dynamic_cast to a reference throws bad_cast; a failed allocation bad_al… <sub>`ExceptionHierarchy.BadCastAndBadAlloc`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/diagnostics/exception-hierarchy.md#gotchas): catch blocks are tried in order, so a base handler first shadows a deriv… <sub>`ExceptionHierarchy.BaseHandlerFirstShadows`</sub> | ✅ | ✅ | ✅ |
+| **Capture and rethrow: std::exception_ptr**: an exception caught in a worker thread i… <sub>`ExceptionHierarchy.ExceptionPtrMovesExceptionAcrossThreads`</sub> | ✅ | ✅ | ✅ |
+| **Capture and rethrow**: make_exception_ptr needs no throw, and a promise carries it… <sub>`ExceptionHierarchy.MakeExceptionPtrThroughPromise`</sub> | ✅ | ✅ | ✅ |
+| **Is this scope failing? std::uncaught_exceptions**: the count-comparing guard commit… <sub>`ExceptionHierarchy.UncaughtExceptionsScopeGuard`</sub> | ✅ | ✅ | ✅ |
+| **Is this scope failing?**: the removed bool uncaught_exception() is true for a guard… <sub>`ExceptionHierarchy.OldUncaughtExceptionCantTellNestedScopes`</sub> | ✅ | ✅ | ⏭<sup>5</sup> |
+| **Inspect without rethrowing: std::exception_ptr_cast**: a match through a base class… <sub>`ExceptionHierarchy.ExceptionPtrCast`</sub> | ⏭<sup>6</sup> | ✅ | ⏭<sup>6</sup> |
+| [Constexpr exceptions (C++26)](examples/diagnostics/exception-hierarchy.md#constexpr-exceptions-c26): a vector::at out_of_range and a rethrown exception_… <sub>`ExceptionHierarchy.ConstexprLibraryExceptions`</sub> | ⏭<sup>7</sup> | ✅ | ⏭<sup>7</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [catch-by-const-reference](examples/diagnostics/exception-hierarchy.md#catch-by-const-reference) | 1 | ✅ | ✅ | ✅ |
+| [throwing](examples/diagnostics/exception-hierarchy.md#throwing) | 1 | ✅ | ✅ | ✅ |
+| [custom-exceptions--derive-from-a-standard-base](examples/diagnostics/exception-hierarchy.md#custom-exceptions--derive-from-a-standard-base) | 1 | ✅ | ✅ | ✅ |
+| [capture-and-rethrow-stdexception_ptr-c11](examples/diagnostics/exception-hierarchy.md#capture-and-rethrow-stdexception_ptr-c11) | 2 | ✅ | ✅ | ✅ |
+| [is-this-scope-failing-stduncaught_exceptions-c17](examples/diagnostics/exception-hierarchy.md#is-this-scope-failing-stduncaught_exceptions-c17) | 1 | ✅ | ✅ | ✅ |
+| [inspect-without-rethrowing-stdexception_ptr_cast-c26](examples/diagnostics/exception-hierarchy.md#inspect-without-rethrowing-stdexception_ptr_cast-c26) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+
+</details>
+
+<details><summary><code>examples/diagnostics/stacktrace.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/diagnostics/stacktrace.md#mental-model): current() snapshots the calls leading here; frames report function… <sub>`Stacktrace.FramesHaveNameFileLine`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+| [Examples](examples/diagnostics/stacktrace.md#examples): operator&lt;&lt; pretty-prints all frames; std::format has a formatter. <sub>`Stacktrace.StreamAndFormat`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+| [Gotchas](examples/diagnostics/stacktrace.md#gotchas): std::pmr::stacktrace takes a polymorphic allocator. <sub>`Stacktrace.PmrStacktrace`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+| [Declaration](examples/diagnostics/stacktrace.md#declaration): current(skip, max_depth) drops the innermost frames and caps the dep… <sub>`Stacktrace.SkipAndMaxDepth`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+| [In error reporting](examples/diagnostics/stacktrace.md#in-error-reporting): + "Gotchas": a trace taken in a catch block shows the handler… <sub>`Stacktrace.CatchBlockDoesNotShowThrowSite`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/diagnostics/stacktrace.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/diagnostics/stacktrace.md#examples) | 1 | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+| [in-error-reporting](examples/diagnostics/stacktrace.md#in-error-reporting) | 1 | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+
+</details>
+
+<details><summary><code>examples/diagnostics/system_error.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The error_code overload pattern](examples/diagnostics/system_error.md#the-error_code-overload-pattern): the non-throwing overload fills ec instead of th… <sub>`SystemError.ErrorCodeOverload`</sub> | ✅ | ✅ | ✅ |
+| [Comparing against portable conditions](examples/diagnostics/system_error.md#comparing-against-portable-conditions): ec == errc works across categories. <sub>`SystemError.CompareWithErrc`</sub> | ✅ | ✅ | ✅ |
+| **Throwing form**: system_error wraps the code and prefixes what() with the message. <sub>`SystemError.SystemErrorCarriesCode`</sub> | ✅ | ✅ | ✅ |
+| [error_code vs error_condition](examples/diagnostics/system_error.md#error_code-vs-error_condition): the code is concrete, the condition portable. <sub>`SystemError.CodeVersusCondition`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/diagnostics/system_error.md#gotchas): a custom error_category plugs library codes into the machinery. <sub>`SystemError.CustomCategory`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-error_code-overload-pattern](examples/diagnostics/system_error.md#the-error_code-overload-pattern) | 1 | ✅ | ✅ | ✅ |
+| [comparing-against-portable-conditions](examples/diagnostics/system_error.md#comparing-against-portable-conditions) | 1 | ✅ | ✅ | ✅ |
+| [throwing-form-stdsystem_error](examples/diagnostics/system_error.md#throwing-form-stdsystem_error) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_debugging &gt;= 202403L (not defined by this toolchain)
+2. needs __cpp_lib_debugging (not defined by this toolchain)
+3. nocompile
+4. needs debugging
+5. std::uncaught_exception was removed in C++20 and this library no longer declares it
+6. needs __cpp_lib_exception_ptr_cast (not defined by this toolchain)
+7. needs __cpp_lib_constexpr_exceptions &gt;= 202502L (not defined by this toolchain)
+8. needs exception_ptr_cast
+9. needs __cpp_lib_stacktrace (not defined by this toolchain)
+10. needs stacktrace
+
+</details>
+
+### execution
+
+1 pages · 5 features · 5 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/execution/senders-receivers.md](examples/execution/senders-receivers.md) | 5 | 5 | 🟡 10 |
+
+<details><summary><code>examples/execution/senders-receivers.md</code>: 5 features, 5 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| **Sender adaptors**: + "Running it": just(21) \| then(x*2+1) yields 43 via sync_wait. <sub>`SendersReceivers.ThenChainSyncWait`</sub> | ⏭<sup>1</sup> |
+| [Gotchas](examples/execution/senders-receivers.md#gotchas): senders are lazy; nothing runs until the work is started. <sub>`SendersReceivers.SendersAreLazy`</sub> | ⏭<sup>1</sup> |
+| **Running it**: sync_wait rethrows an error sent on the error channel. <sub>`SendersReceivers.SyncWaitRethrowsError`</sub> | ⏭<sup>1</sup> |
+| **Sender factories**: just_stopped completes as cancelled, so sync_wait returns an em… <sub>`SendersReceivers.StoppedAndUponError`</sub> | ⏭<sup>1</sup> |
+| **Worked example**: on(run_loop scheduler, ...) runs the work on the loop's thread. <sub>`SendersReceivers.OnRunLoopRunsOnWorker`</sub> | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [sender-factories--make-work-from-nothing](examples/execution/senders-receivers.md#sender-factories--make-work-from-nothing) | 1 | ⏭<sup>2</sup> |
+| [sender-adaptors--compose-with-](examples/execution/senders-receivers.md#sender-adaptors--compose-with-) | 2 | ⏭<sup>2</sup>,<sup>3</sup> |
+| [running-it--sender-consumers](examples/execution/senders-receivers.md#running-it--sender-consumers) | 1 | ⏭<sup>2</sup> |
+| [worked-example-from-cppreference](examples/execution/senders-receivers.md#worked-example-from-cppreference) | 1 | ⏭<sup>2</sup> |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_senders (not defined by this toolchain)
+2. needs execution
+3. nocompile
+
+</details>
+
+### feature-test-macros
+
+1 pages · 6 features · 2 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/feature-test-macros/README.md](examples/feature-test-macros/README.md) | 6 | 2 | ✅ |
+
+<details><summary><code>examples/feature-test-macros/README.md</code>: 6 features, 2 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Two families](examples/feature-test-macros/README.md#two-families): language macros come from the compiler, no header needed. <sub>`FeatureTestMacros.LanguageMacrosAreDates`</sub> | ✅ |
+| [Two families](examples/feature-test-macros/README.md#two-families): a language macro is defined only while its feature is on — GCC defi… <sub>`FeatureTestMacros.ModulesMacroDependsOnToolchain`</sub> | ✅ |
+| [Mental model](examples/feature-test-macros/README.md#mental-model): the std::format gate from the page takes the format branch. <sub>`FeatureTestMacros.FormatGate`</sub> | ✅ |
+| [Examples](examples/feature-test-macros/README.md#examples): the __cpp_lib_expected-gated branch picks std::expected when available. <sub>`FeatureTestMacros.GateOnLibraryMacroValue`</sub> | ✅ |
+| [Examples](examples/feature-test-macros/README.md#examples): the __cpp_lib_ranges-gated views::filter keeps the evens. <sub>`FeatureTestMacros.RangesBranch`</sub> | ✅ |
+| [Gotchas](examples/feature-test-macros/README.md#gotchas): __cplusplus says which standard was requested (C++26 mode is newer than… <sub>`FeatureTestMacros.CplusplusReflectsRequestedStandard`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [mental-model](examples/feature-test-macros/README.md#mental-model) | 1 | ✅ |
+| [examples](examples/feature-test-macros/README.md#examples) | 1 | ✅ |
+
+</details>
+
+### io
+
+7 pages · 48 features · 31 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/io/files.md](examples/io/files.md) | 5 | 5 | ✅ | ✅ | ✅ |
+| [examples/io/filesystem.md](examples/io/filesystem.md) | 8 | 6 | 🟡 2 | 🟡 1 | 🟡 2 |
+| [examples/io/manipulators.md](examples/io/manipulators.md) | 7 | 3 | ✅ | ✅ | ✅ |
+| [examples/io/print.md](examples/io/print.md) | 11 | 5 | 🟡 3 | 🟡 2 | 🟡 4 |
+| [examples/io/streams.md](examples/io/streams.md) | 6 | 4 | ✅ | ✅ | ✅ |
+| [examples/io/string-streams.md](examples/io/string-streams.md) | 6 | 4 | ✅ | ✅ | ❌ 1 |
+| [examples/io/syncstream.md](examples/io/syncstream.md) | 5 | 4 | 🟡 1 | 🟡 1 | ❌ 1 |
+
+<details><summary><code>examples/io/files.md</code>: 5 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Write a file](examples/io/files.md#write-a-file): opened on construction, closed (and flushed) by the destructor. <sub>`Files.WriteClosesInDestructor`</sub> | ✅ | ✅ | ✅ |
+| [Read a file](examples/io/files.md#read-a-file): line by line, then token by token; read_all slurps everything. <sub>`Files.ReadLinesTokensAll`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/files.md#gotchas): opening a missing file leaves the stream falsy. <sub>`Files.OpenFailureIsFalsy`</sub> | ✅ | ✅ | ✅ |
+| [Open modes](examples/io/files.md#open-modes): + "Gotchas": ofstream truncates by default; ios::app appends; ios::at… <sub>`Files.TruncateAppendAte`</sub> | ✅ | ✅ | ✅ |
+| [Binary I/O &amp; positioning](examples/io/files.md#binary-io--positioning): raw write/read round-trips; seekg/tellg give the size. <sub>`Files.BinaryRoundTripAndSize`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [write-a-file](examples/io/files.md#write-a-file) | 1 | ✅ | ✅ | ✅ |
+| [read-a-file](examples/io/files.md#read-a-file) | 1 | ✅ | ✅ | ✅ |
+| [read-an-entire-file-into-a-string](examples/io/files.md#read-an-entire-file-into-a-string) | 1 | ✅ | ✅ | ✅ |
+| [open-modes](examples/io/files.md#open-modes) | 1 | ✅ | ✅ | ✅ |
+| [binary-io--positioning](examples/io/files.md#binary-io--positioning) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/io/filesystem.md</code>: 8 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Paths](examples/io/filesystem.md#paths): decomposition and operator/. <sub>`FilesystemPath.Decomposition`</sub> | ✅ | ✅ | ✅ |
+| [Querying the filesystem](examples/io/filesystem.md#querying-the-filesystem): exists, kinds, size, write time, absolute/canonical. <sub>`Filesystem.Querying`</sub> | ✅ | ✅ | ✅ |
+| [Directory iteration](examples/io/filesystem.md#directory-iteration): directory_iterator lists one level, recursive walks subdirec… <sub>`Filesystem.Iteration`</sub> | ✅ | ✅ | ✅ |
+| [Modifying operations](examples/io/filesystem.md#modifying-operations): the return values in the comments. <sub>`Filesystem.Modifying`</sub> | ✅ | ✅ | ✅ |
+| [Error handling — two flavors](examples/io/filesystem.md#error-handling--two-flavors): the throwing form throws filesystem_error with path… <sub>`Filesystem.ThrowingAndErrorCode`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/filesystem.md#gotchas): u8string() gives UTF-8 (char8_t) regardless of the native encoding. <sub>`FilesystemPath.U8String`</sub> | ✅ | ✅ | ✅ |
+| [Formatting a path (C++26)](examples/io/filesystem.md#formatting-a-path-c26): default unquoted, ? escaped, width/align, g generic. <sub>`FilesystemPath.Formatter`</sub> | ⏭<sup>1</sup> | ✅ | ⏭<sup>1</sup> |
+| [Gotchas](examples/io/filesystem.md#gotchas): operator&lt;&lt; quotes the path (it goes through std::quoted). <sub>`FilesystemPath.StreamOutputIsQuoted`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [paths](examples/io/filesystem.md#paths) | 1 | ✅ | ✅ | ✅ |
+| [formatting-a-path-c26](examples/io/filesystem.md#formatting-a-path-c26) | 1 | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [querying-the-filesystem](examples/io/filesystem.md#querying-the-filesystem) | 1 | ✅ | ✅ | ✅ |
+| [directory-iteration](examples/io/filesystem.md#directory-iteration) | 1 | ✅ | ✅ | ✅ |
+| [modifying-operations](examples/io/filesystem.md#modifying-operations) | 1 | ✅ | ✅ | ✅ |
+| [error-handling--two-flavors](examples/io/filesystem.md#error-handling--two-flavors) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/io/manipulators.md</code>: 7 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/io/manipulators.md#mental-model): hex stays on, setw applies to the next item only. <sub>`Manipulators.MentalModelDiagram`</sub> | ✅ | ✅ | ✅ |
+| [Common manipulators](examples/io/manipulators.md#common-manipulators): the lines run in order on one stream, with the page's resets… <sub>`Manipulators.CommonOutputsInSequence`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/manipulators.md#gotchas): without the resets, setw(8) &lt;&lt; 42 prints " 0x2a" and left &lt;&lt; setw(8) &lt;&lt;… <sub>`Manipulators.WithoutResets`</sub> | ✅ | ✅ | ✅ |
+| [Common manipulators](examples/io/manipulators.md#common-manipulators): the pi lines run in sequence on one stream, so the precision… <sub>`Manipulators.FixedScientificPrecision`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/manipulators.md#gotchas): setw applies to the next item only; the others are sticky. <sub>`Manipulators.SetwIsNotSticky`</sub> | ✅ | ✅ | ✅ |
+| [Save and restore the state](examples/io/manipulators.md#save-and-restore-the-state): copyfmt brings back the caller's formatting; "Gotchas… <sub>`Manipulators.SaveRestoreFlags`</sub> | ✅ | ✅ | ✅ |
+| [Quoting (C++14)](examples/io/manipulators.md#quoting-c14): quoted escapes on output and round-trips on input. <sub>`Manipulators.Quoted`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [common-manipulators](examples/io/manipulators.md#common-manipulators) | 1 | ✅ | ✅ | ✅ |
+| [quoting-c14](examples/io/manipulators.md#quoting-c14) | 1 | ✅ | ✅ | ✅ |
+| [save-and-restore-the-state](examples/io/manipulators.md#save-and-restore-the-state) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/io/print.md</code>: 11 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Destinations](examples/io/print.md#destinations): print adds no newline, println does, println() is a blank line, and… <sub>`Print.DestinationsOutput`</sub> | ✅ | ✅ | ✅ |
+| [Unicode text](examples/io/print.md#unicode-text): on macOS/Linux the UTF-8 bytes go out unchanged. <sub>`Print.Utf8BytesUnchanged`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/io/print.md#declaration): table: errors in a runtime format string passed to vprint_* throw st… <sub>`Print.VprintBadFormatThrows`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/print.md#gotchas): mixing std::print with std::cout keeps order while cout is synced (the d… <sub>`Print.MixesWithSyncedCoutInOrder`</sub> | ✅ | ✅ | ✅ |
+| [Compiler support](examples/io/print.md#compiler-support): every local toolchain has at least the C++23 feature (202207L). <sub>`Print.FeatureMacroAtLeastCxx23`</sub> | ✅ | ✅ | ✅ |
+| [Compiler support](examples/io/print.md#compiler-support): the exact __cpp_lib_print value per toolchain. <sub>`Print.FeatureMacroPerToolchain`</sub> | ✅ | ✅ | ✅ |
+| [Your own print-like function](examples/io/print.md#your-own-print-like-function): format_string + make_format_args + vprint_*. <sub>`Print.OwnPrintLikeFunction`</sub> | ✅ | ✅ | ✅ |
+| **Errors**: a failed write to a FILE* throws std::system_error. <sub>`Print.FailedWriteThrowsSystemError`</sub> | ✅ | ✅ | ✅ |
+| **Errors**: the stream overloads set badbit like operator&lt;&lt; instead of throwing. <sub>`Print.StreamOverloadSetsBadbit`</sub> | ✅ | ✅ | ✅ |
+| [Buffered variants (C++26)](examples/io/print.md#buffered-variants-c26): vprint_unicode_buffered (GCC 16.2). <sub>`Print.BufferedVariant`</sub> | ⏭<sup>3</sup> | ✅ | ⏭<sup>4</sup> |
+| [Gotchas](examples/io/print.md#gotchas): the runtime format-string wrapper is runtime_format in GCC 15.2, dynamic… <sub>`Print.RuntimeFormatWrapperSpelling`</sub> | ✅ | ✅ | ⏭<sup>5</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/io/print.md#declaration) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [destinations](examples/io/print.md#destinations) | 1 | ✅ | ✅ | ✅ |
+| [your-own-print-like-function](examples/io/print.md#your-own-print-like-function) | 1 | ✅ | ✅ | ✅ |
+| [unicode-text](examples/io/print.md#unicode-text) | 1 | ✅ | ✅ | ✅ |
+| [buffered-variants-c26](examples/io/print.md#buffered-variants-c26) | 1 | ⏭<sup>7</sup> | ⏭<sup>7</sup> | ⏭<sup>7</sup> |
+
+</details>
+
+<details><summary><code>examples/io/streams.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The basics](examples/io/streams.md#the-basics): chained output; &gt;&gt; skips leading whitespace; one token; getline a lin… <sub>`Streams.Basics`</sub> | ✅ | ✅ | ✅ |
+| **Stream state**: truthy iff the read succeeded; eof/fail/good; clear resets. <sub>`Streams.StateFlags`</sub> | ✅ | ✅ | ✅ |
+| **The idiom for reading many values**: the loop stops at EOF or bad input. <sub>`Streams.ReadLoop`</sub> | ✅ | ✅ | ✅ |
+| [Newlines and flushing](examples/io/streams.md#newlines-and-flushing): and "Gotchas": endl flushes every time, '\n' doesn't. <sub>`Streams.EndlFlushesNewlineDoesNot`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/streams.md#gotchas): &gt;&gt; leaves the newline, so a following getline reads an empty line; std::… <sub>`Streams.LeftoverNewline`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/streams.md#gotchas): a failed &gt;&gt; sets failbit and stores 0 (since C++11); later reads no-op u… <sub>`Streams.FailedReadStoresZero`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-basics](examples/io/streams.md#the-basics) | 1 | ✅ | ✅ | ✅ |
+| [stream-state--always-check-reads](examples/io/streams.md#stream-state--always-check-reads) | 2 | ✅ | ✅ | ✅ |
+| [newlines-and-flushing](examples/io/streams.md#newlines-and-flushing) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/io/string-streams.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Building strings](examples/io/string-streams.md#building-strings): the built string, and the std::format equivalent. <sub>`StringStreams.Build`</sub> | ✅ | ✅ | ✅ |
+| [Parsing / tokenizing](examples/io/string-streams.md#parsing--tokenizing): three ints, word splitting, and checked parsing. <sub>`StringStreams.ParseAndTokenize`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/string-streams.md#gotchas): str() returns a copy; the rvalue overload (C++20) moves the buffer out. <sub>`StringStreams.StrIsACopy`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/string-streams.md#gotchas): reuse needs both str("") and clear(). <sub>`StringStreams.ReuseNeedsStrAndClear`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/io/string-streams.md#gotchas): &gt;&gt; stops at whitespace; getline reads the phrase. <sub>`StringStreams.ExtractionStopsAtWhitespace`</sub> | ✅ | ✅ | ✅ |
+| [Fixed buffers: std::spanstream (C++23)](examples/io/string-streams.md#fixed-buffers-stdspanstream-c23): writes into the caller's buffer, never gr… <sub>`StringStreams.SpanStreamFixedBuffer`</sub> | ✅ | ✅ | ⏭<sup>8</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [building-strings](examples/io/string-streams.md#building-strings) | 1 | ✅ | ✅ | ✅ |
+| [parsing--tokenizing](examples/io/string-streams.md#parsing--tokenizing) | 1 | ✅ | ✅ | ✅ |
+| [type-conversion-via-streams-legacy](examples/io/string-streams.md#type-conversion-via-streams-legacy) | 1 | ✅ | ✅ | ✅ |
+| [fixed-buffers-stdspanstream-c23](examples/io/string-streams.md#fixed-buffers-stdspanstream-c23) | 1 | ✅ | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/io/syncstream.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Compiler support](examples/io/syncstream.md#compiler-support): libstdc++ (GCC 15.2 and 16.2) defines 201803L. <sub>`Syncstream.FeatureMacro`</sub> | ✅ | ✅ | ⏭<sup>9</sup> |
+| [When does the text arrive?](examples/io/syncstream.md#when-does-the-text-arrive): every assert from the page. <sub>`Syncstream.WhenDoesTextArrive`</sub> | ✅ | ✅ | ⏭<sup>10</sup> |
+| [Gotchas](examples/io/syncstream.md#gotchas): endl doesn't emit by default; flush_emit does right away. <sub>`Syncstream.EndlRemembersFlushEmitEmits`</sub> | ✅ | ✅ | ⏭<sup>10</sup> |
+| [Declaration](examples/io/syncstream.md#declaration): the ostream&amp; constructor wraps os.rdbuf(), reported by get_wrapped(). <sub>`Syncstream.GetWrapped`</sub> | ✅ | ✅ | ⏭<sup>10</sup> |
+| [Whole lines from many threads](examples/io/syncstream.md#whole-lines-from-many-threads): each temporary emits its line whole. The threads s… <sub>`Syncstream.WholeLinesFromManyThreads`</sub> | ✅ | ✅ | ⏭<sup>10</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/io/syncstream.md#declaration) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [whole-lines-from-many-threads](examples/io/syncstream.md#whole-lines-from-many-threads) | 1 | ✅ | ✅ | ✅ |
+| [when-does-the-text-arrive](examples/io/syncstream.md#when-does-the-text-arrive) | 1 | ✅ | ✅ | ❌ |
+| [keep-one-syncstream-for-a-multi-statement-message](examples/io/syncstream.md#keep-one-syncstream-for-a-multi-statement-message) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_format_path (not defined by this toolchain)
+2. needs format_path
+3. needs __cpp_lib_print &gt;= 202403L (this toolchain has 202211L)
+4. needs __cpp_lib_print &gt;= 202403L (this toolchain has 202207L)
+5. libc++ 22 has neither runtime_format nor dynamic_format
+6. nocompile
+7. needs print_buffered
+8. needs __cpp_lib_spanstream (not defined by this toolchain)
+9. needs __cpp_lib_syncbuf &gt;= 201803L (not defined by this toolchain)
+10. needs __cpp_lib_syncbuf (not defined by this toolchain)
+
+</details>
+
+### iterators
+
+3 pages · 24 features · 13 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/iterators/adaptors.md](examples/iterators/adaptors.md) | 8 | 4 | ✅ |
+| [examples/iterators/categories.md](examples/iterators/categories.md) | 6 | 3 | ✅ |
+| [examples/iterators/operations.md](examples/iterators/operations.md) | 10 | 6 | ✅ |
+
+<details><summary><code>examples/iterators/adaptors.md</code>: 8 features, 4 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| **Insert iterators**: back_inserter appends, front_inserter prepends (reversing), ins… <sub>`IteratorAdaptors.InsertIterators`</sub> | ✅ |
+| [Gotchas](examples/iterators/adaptors.md#gotchas): back_inserter needs push_back, which array and set don't have. <sub>`IteratorAdaptors.BackInserterNeedsPushBack`</sub> | ✅ |
+| **reverse_iterator**: rbegin..rend walks last to first; a reversed copy. <sub>`IteratorAdaptors.ReverseIterator`</sub> | ✅ |
+| [Gotchas](examples/iterators/adaptors.md#gotchas): a reverse iterator points one before its base(): &amp;*ri == &amp;*(ri.base() -… <sub>`IteratorAdaptors.ReverseBaseIsOffByOne`</sub> | ✅ |
+| **move_iterator**: dereferencing yields an rvalue, so elements are moved, leaving the… <sub>`IteratorAdaptors.MoveIterator`</sub> | ✅ |
+| **Stream iterators**: read ints until end of stream, write space-separated. <sub>`IteratorAdaptors.StreamIterators`</sub> | ✅ |
+| [Gotchas](examples/iterators/adaptors.md#gotchas): istream_iterator skips whitespace and silently stops at the first failed… <sub>`IteratorAdaptors.IstreamIteratorStopsOnBadInput`</sub> | ✅ |
+| [C++20 ranges-related iterators](examples/iterators/adaptors.md#c20-ranges-related-iterators): counted_iterator + default_sentinel; common_itera… <sub>`IteratorAdaptors.CountedAndCommonIterators`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [insert-iterators--write--grow-the-container](examples/iterators/adaptors.md#insert-iterators--write--grow-the-container) | 1 | ✅ |
+| [reverse_iterator--traverse-backwards](examples/iterators/adaptors.md#reverse_iterator--traverse-backwards) | 1 | ✅ |
+| [move_iterator--turn-copies-into-moves-c11](examples/iterators/adaptors.md#move_iterator--turn-copies-into-moves-c11) | 1 | ✅ |
+| [stream-iterators--treat-io-as-a-range](examples/iterators/adaptors.md#stream-iterators--treat-io-as-a-range) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/iterators/categories.md</code>: 6 features, 3 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [The hierarchy](examples/iterators/categories.md#the-hierarchy): the table's example containers have the stated category. <sub>`IteratorCategories.HierarchyTableExamples`</sub> | ✅ |
+| [The hierarchy](examples/iterators/categories.md#the-hierarchy): std::sort needs random access (the constrained ranges::sort reject… <sub>`IteratorCategories.WhyItMatters`</sub> | ✅ |
+| [C++20 iterator concepts](examples/iterators/categories.md#c20-iterator-concepts): the page's static_asserts. <sub>`IteratorCategories.Cpp20Concepts`</sub> | ✅ |
+| [The legacy tag types](examples/iterators/categories.md#the-legacy-tag-types): each tag derives from the weaker one; output_iterator_tag s… <sub>`IteratorCategories.LegacyTagTypes`</sub> | ✅ |
+| [The legacy tag types](examples/iterators/categories.md#the-legacy-tag-types): std::advance jumps once for random access, steps n times ot… <sub>`IteratorCategories.AdvanceDispatchesOnTag`</sub> | ✅ |
+| [Gotchas](examples/iterators/categories.md#gotchas): contiguous guarantees &amp;*(it + n) == &amp;*it + n; deque is random access but… <sub>`IteratorCategories.ContiguousVersusRandomAccess`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [c20-iterator-concepts](examples/iterators/categories.md#c20-iterator-concepts) | 2 | ✅ |
+| [the-legacy-tag-types](examples/iterators/categories.md#the-legacy-tag-types) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/iterators/operations.md</code>: 10 features, 6 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Moving and measuring](examples/iterators/operations.md#moving-and-measuring): advance mutates, next/prev don't, distance counts steps. <sub>`IteratorOperations.AdvanceNextPrevDistance`</sub> | ✅ |
+| [Gotchas](examples/iterators/operations.md#gotchas): next works on forward-only iterators where + doesn't compile. <sub>`IteratorOperations.NextWorksOnForwardIterators`</sub> | ✅ |
+| [Swapping/moving the pointed-to elements](examples/iterators/operations.md#swappingmoving-the-pointed-to-elements): iter_swap swaps values; iter_move moves… <sub>`IteratorOperations.IterSwapAndIterMove`</sub> | ✅ |
+| **std::iterator_traits**: the associated types for vector&lt;int&gt;::iterator and int*. <sub>`IteratorOperations.IteratorTraits`</sub> | ✅ |
+| **ranges::begin / end and sentinels**: end may be a sentinel of a different type. <sub>`IteratorOperations.RangesSentinels`</sub> | ✅ |
+| [Moving and measuring](examples/iterators/operations.md#moving-and-measuring): next/prev step through list and set; advance goes back with… <sub>`IteratorOperations.BidirectionalStepping`</sub> | ✅ |
+| [Gotchas](examples/iterators/operations.md#gotchas): distance on single-pass iterators consumes the input. <sub>`IteratorOperations.DistanceConsumesInputIterators`</sub> | ✅ |
+| **ranges::begin / end and sentinels**: default_sentinel ends a counted iterator after… <sub>`IteratorOperations.DefaultSentinelEndsCountedIterator`</sub> | ✅ |
+| **std::size / std::ssize**: signed count, works on arrays, safe in a countdown loop. <sub>`IteratorOperations.Ssize`</sub> | ✅ |
+| **ranges::begin / end and sentinels**: unreachable_sentinel drops the end test; iota(… <sub>`IteratorOperations.UnreachableSentinel`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [moving-and-measuring](examples/iterators/operations.md#moving-and-measuring) | 1 | ✅ |
+| [stdsize--stdssize-c17--c20](examples/iterators/operations.md#stdsize--stdssize-c17--c20) | 1 | ✅ |
+| [swappingmoving-the-pointed-to-elements](examples/iterators/operations.md#swappingmoving-the-pointed-to-elements) | 1 | ✅ |
+| [stditerator_traits--uniform-access-to-an-iterators-types](examples/iterators/operations.md#stditerator_traits--uniform-access-to-an-iterators-types) | 1 | ✅ |
+| [rangesbegin--end-and-sentinels-c20](examples/iterators/operations.md#rangesbegin--end-and-sentinels-c20) | 2 | ✅ |
+
+</details>
+
+### language
+
+47 pages · 278 features · 248 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/language/basic-concepts/comments.md](examples/language/basic-concepts/comments.md) | 4 | 6 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/basic-concepts/contracts.md](examples/language/basic-concepts/contracts.md) | 2 | 2 | 🟡 4 | ✅ | 🟡 4 |
+| [examples/language/basic-concepts/erroneous-behaviour.md](examples/language/basic-concepts/erroneous-behaviour.md) | 2 | 2 | 🟡 1 | ✅ | 🟡 1 |
+| [examples/language/basic-concepts/freestanding.md](examples/language/basic-concepts/freestanding.md) | 4 | 3 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/basic-concepts/fundamental-types.md](examples/language/basic-concepts/fundamental-types.md) | 8 | 3 | ✅ | ✅ | 🟡 1 |
+| [examples/language/basic-concepts/keywords.md](examples/language/basic-concepts/keywords.md) | 4 | 5 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/basic-concepts/object-model.md](examples/language/basic-concepts/object-model.md) | 12 | 9 | 🟡 4 | 🟡 3 | 🟡 4 |
+| [examples/language/basic-concepts/scope-storage-linkage.md](examples/language/basic-concepts/scope-storage-linkage.md) | 3 | 3 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/classes/bit-fields.md](examples/language/classes/bit-fields.md) | 8 | 6 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/classes/explicit-object-parameter.md](examples/language/classes/explicit-object-parameter.md) | 5 | 6 | ✅ | ✅ | ✅ |
+| [examples/language/classes/inheritance-polymorphism.md](examples/language/classes/inheritance-polymorphism.md) | 8 | 7 | ✅ | ✅ | ✅ |
+| [examples/language/classes/members-access.md](examples/language/classes/members-access.md) | 5 | 7 | ✅ | ✅ | ✅ |
+| [examples/language/classes/special-members.md](examples/language/classes/special-members.md) | 7 | 5 | ✅ | ✅ | ✅ |
+| [examples/language/classes/unions-aggregates.md](examples/language/classes/unions-aggregates.md) | 5 | 3 | ✅ | ✅ | ✅ |
+| [examples/language/coroutines/coroutines.md](examples/language/coroutines/coroutines.md) | 5 | 3 | 🟡 2 | 🟡 2 | ❌ 1 |
+| [examples/language/declarations-initialization/attributes.md](examples/language/declarations-initialization/attributes.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/const-mutable.md](examples/language/declarations-initialization/const-mutable.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/declarations-and-auto.md](examples/language/declarations-initialization/declarations-and-auto.md) | 8 | 8 | 🟡 4 | 🟡 2 | 🟡 2 |
+| [examples/language/declarations-initialization/enumerations.md](examples/language/declarations-initialization/enumerations.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/initialization.md](examples/language/declarations-initialization/initialization.md) | 7 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/namespaces.md](examples/language/declarations-initialization/namespaces.md) | 4 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/pointers-references-arrays.md](examples/language/declarations-initialization/pointers-references-arrays.md) | 4 | 3 | ✅ | ✅ | ✅ |
+| [examples/language/declarations-initialization/type-aliases.md](examples/language/declarations-initialization/type-aliases.md) | 4 | 3 | ✅ | ✅ | ✅ |
+| [examples/language/exceptions/noexcept-and-safety.md](examples/language/exceptions/noexcept-and-safety.md) | 6 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/exceptions/throw-try-catch.md](examples/language/exceptions/throw-try-catch.md) | 9 | 4 | 🟡 1 | ✅ | ✅ |
+| [examples/language/expressions/constant-evaluation-rules.md](examples/language/expressions/constant-evaluation-rules.md) | 9 | 10 | 🟡 1 | 🟡 1 | 🟡 2 |
+| [examples/language/expressions/constant-expressions.md](examples/language/expressions/constant-expressions.md) | 9 | 7 | 🟡 2 | 🟡 1 | 🟡 2 |
+| [examples/language/expressions/conversions.md](examples/language/expressions/conversions.md) | 5 | 6 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/expressions/literals.md](examples/language/expressions/literals.md) | 6 | 5 | ✅ | ✅ | ✅ |
+| [examples/language/expressions/operator-overloading.md](examples/language/expressions/operator-overloading.md) | 0 | 9 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/expressions/operators.md](examples/language/expressions/operators.md) | 4 | 2 | ✅ | ✅ | ✅ |
+| [examples/language/expressions/reflection.md](examples/language/expressions/reflection.md) | 4 | 3 | 🟡 7 | ✅ | 🟡 7 |
+| [examples/language/expressions/value-categories.md](examples/language/expressions/value-categories.md) | 7 | 2 | ✅ | ✅ | ✅ |
+| [examples/language/functions/default-variadic-args.md](examples/language/functions/default-variadic-args.md) | 6 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/functions/functions-and-overloading.md](examples/language/functions/functions-and-overloading.md) | 5 | 5 | ✅ | ✅ | ✅ |
+| [examples/language/functions/lambdas.md](examples/language/functions/lambdas.md) | 11 | 7 | ✅ | ✅ | 🟡 1 |
+| [examples/language/modules/building.md](examples/language/modules/building.md) | 4 | 2 | 🟡 1 | 🟡 4 | 🟡 1 |
+| [examples/language/modules/modules.md](examples/language/modules/modules.md) | 10 | 18 | 🟡 2 | 🟡 2 | 🟡 1 |
+| [examples/language/preprocessor/embed.md](examples/language/preprocessor/embed.md) | 6 | 7 | 🟡 5 | 🟡 5 | 🟡 5 |
+| [examples/language/preprocessor/preprocessor.md](examples/language/preprocessor/preprocessor.md) | 10 | 7 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/statements/iteration.md](examples/language/statements/iteration.md) | 6 | 5 | 🟡 2 | 🟡 1 | 🟡 2 |
+| [examples/language/statements/jump-statements.md](examples/language/statements/jump-statements.md) | 7 | 8 | 🟡 2 | 🟡 1 | 🟡 2 |
+| [examples/language/statements/selection.md](examples/language/statements/selection.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/language/templates/constraints.md](examples/language/templates/constraints.md) | 7 | 9 | 🟡 1 | 🟡 1 | 🟡 1 |
+| [examples/language/templates/specialization-ctad.md](examples/language/templates/specialization-ctad.md) | 6 | 5 | ✅ | ✅ | ✅ |
+| [examples/language/templates/templates-basics.md](examples/language/templates/templates-basics.md) | 5 | 5 | ✅ | ✅ | ✅ |
+| [examples/language/templates/variadic-templates.md](examples/language/templates/variadic-templates.md) | 7 | 6 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/language/basic-concepts/comments.md</code>: 4 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Both forms, and what is not a comment](examples/language/basic-concepts/comments.md#both-forms-and-what-is-not-a-comment): comment markers inside a string literal ar… <sub>`Comments.BothFormsAndStringLiterals`</sub> | ✅ | ✅ | ✅ |
+| [Comments in macros](examples/language/basic-concepts/comments.md#comments-in-macros): SIZE is just 4; a comment in a replacement list splits tokens. <sub>`Comments.CommentsInMacros`</sub> | ✅ | ✅ | ✅ |
+| [A comment is replaced by one space](examples/language/basic-concepts/comments.md#a-comment-is-replaced-by-one-space): q == 5, r == 9. <sub>`Comments.CommentBecomesOneSpace`</sub> | ✅ | ✅ | ✅ |
+| **Disabling code**: / "Gotchas": #if 0 hides code containing */; a // comment ending… <sub>`Comments.IfZeroAndBackslashSplice`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [both-forms-and-what-is-not-a-comment](examples/language/basic-concepts/comments.md#both-forms-and-what-is-not-a-comment) | 1 | ✅ | ✅ | ✅ |
+| [comments-in-macros](examples/language/basic-concepts/comments.md#comments-in-macros) | 1 | ✅ | ✅ | ✅ |
+| [a-comment-is-replaced-by-one-space](examples/language/basic-concepts/comments.md#a-comment-is-replaced-by-one-space) | 1 | ✅ | ✅ | ✅ |
+| [disabling-code-if-0-not--](examples/language/basic-concepts/comments.md#disabling-code-if-0-not--) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/language/basic-concepts/comments.md#gotchas) | 2 | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/contracts.md</code>: 2 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/language/basic-concepts/contracts.md#mental-model): pre/post/contract_assert in one function; all hold for valid input. <sub>`Contracts.AssertionsHoldForValidInput`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+| [Contract violations](examples/language/basic-concepts/contracts.md#contract-violations): the handler gets the kind and predicate text; enforce (GCC 1… <sub>`Contracts.ViolationCallsHandlerThenTerminates`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/language/basic-concepts/contracts.md#mental-model) | 1 | ⏭<sup>3</sup> | ✅ | ⏭<sup>3</sup> |
+| [contract-violations](examples/language/basic-concepts/contracts.md#contract-violations) | 1 | ⏭<sup>3</sup> | ✅ | ⏭<sup>3</sup> |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/erroneous-behaviour.md</code>: 2 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [What gets an erroneous value](examples/language/basic-concepts/erroneous-behaviour.md#what-gets-an-erroneous-value): static storage is zero. <sub>`ErroneousBehaviour.StaticStorageIsZero`</sub> | ✅ | ✅ | ✅ |
+| **Compiler support**: GCC 16 reads an uninitialized local as 0. <sub>`ErroneousBehaviour.Gcc16ReadsZero`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [what-gets-an-erroneous-value](examples/language/basic-concepts/erroneous-behaviour.md#what-gets-an-erroneous-value) | 1 | ✅ | ✅ | ✅ |
+| [opting-out-indeterminate](examples/language/basic-concepts/erroneous-behaviour.md#opting-out-indeterminate) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/freestanding.md</code>: 4 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Detect the implementation kind](examples/language/basic-concepts/freestanding.md#detect-the-implementation-kind): / "Guarding a hosted-only path": this suite is ho… <sub>`Freestanding.HostedBuildTakesHostedPath`</sub> | ✅ | ✅ | ✅ |
+| [Freestanding-friendly code](examples/language/basic-concepts/freestanding.md#freestanding-friendly-code): find_byte works in a constant expression. <sub>`Freestanding.FindByteIsConstexpr`</sub> | ✅ | ✅ | ✅ |
+| [Feature-test macros](examples/language/basic-concepts/freestanding.md#feature-test-macros): the table of __cpp_lib_freestanding_* each local library def… <sub>`Freestanding.LibraryFreestandingMacros`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/language/basic-concepts/freestanding.md#mental-model): -ffreestanding sets __STDC_HOSTED__ to 0 and changes builtins. <sub>`Freestanding.FfreestandingFlag`</sub> | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [detect-the-implementation-kind](examples/language/basic-concepts/freestanding.md#detect-the-implementation-kind) | 1 | ✅ | ✅ | ✅ |
+| [freestanding-friendly-code](examples/language/basic-concepts/freestanding.md#freestanding-friendly-code) | 1 | ✅ | ✅ | ✅ |
+| [guarding-a-hosted-only-path](examples/language/basic-concepts/freestanding.md#guarding-a-hosted-only-path) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/fundamental-types.md</code>: 8 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Sizes are minimums, not fixed](examples/language/basic-concepts/fundamental-types.md#sizes-are-minimums-not-fixed): int has at least 16 bits; &lt;cstdint&gt; aliases are ex… <sub>`FundamentalTypes.SizesAndFixedWidthAliases`</sub> | ✅ | ✅ | ✅ |
+| **Initialization defaults**: int y{} is 0; digit separators don't change the value. <sub>`FundamentalTypes.ValueInitAndDigitSeparators`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/basic-concepts/fundamental-types.md#gotchas): char, signed char and unsigned char are three distinct types; char8_t is… <sub>`FundamentalTypes.CharTypesAreDistinct`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/basic-concepts/fundamental-types.md#gotchas): unsigned arithmetic wraps modulo 2^N. <sub>`FundamentalTypes.UnsignedWraps`</sub> | ✅ | ✅ | ✅ |
+| [The categories](examples/language/basic-concepts/fundamental-types.md#the-categories): void, nullptr_t, and the arithmetic tree (integral = bool/char/in… <sub>`FundamentalTypes.Categories`</sub> | ✅ | ✅ | ✅ |
+| [The categories](examples/language/basic-concepts/fundamental-types.md#the-categories): the C++23 extended floating-point types. <sub>`FundamentalTypes.ExtendedFloatingPoint`</sub> | ✅ | ✅ | ⏭<sup>6</sup> |
+| [Initialization defaults &amp; the bool/char notes](examples/language/basic-concepts/fundamental-types.md#initialization-defaults--the-boolchar-notes): bool holds only true/false and is… <sub>`FundamentalTypes.BoolAndCharNotes`</sub> | ✅ | ✅ | ✅ |
+| [Type sizes and properties at compile time](examples/language/basic-concepts/fundamental-types.md#type-sizes-and-properties-at-compile-time): / "Gotchas": sizeof, alignof, numeric_… <sub>`FundamentalTypes.CompileTimePropertiesAndCmpLess`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [sizes-are-minimums-not-fixed](examples/language/basic-concepts/fundamental-types.md#sizes-are-minimums-not-fixed) | 1 | ✅ | ✅ | ✅ |
+| [initialization-defaults--the-boolchar-notes](examples/language/basic-concepts/fundamental-types.md#initialization-defaults--the-boolchar-notes) | 1 | ✅ | ✅ | ✅ |
+| [type-sizes-and-properties-at-compile-time](examples/language/basic-concepts/fundamental-types.md#type-sizes-and-properties-at-compile-time) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/keywords.md</code>: 4 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Contextual identifiers are still ordinary names](examples/language/basic-concepts/keywords.md#contextual-identifiers-are-still-ordinary-names): final/override/pre/post/module a… <sub>`Keywords.ContextualIdentifiersAreOrdinaryNames`</sub> | ✅ | ✅ | ✅ |
+| [Alternative tokens and digraphs](examples/language/basic-concepts/keywords.md#alternative-tokens-and-digraphs): the words are the operators; digraphs are punctu… <sub>`Keywords.AlternativeTokensAndDigraphs`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/language/basic-concepts/keywords.md#mental-model): to the preprocessor (phase 4) keywords are still identifiers. <sub>`Keywords.KeywordsAreIdentifiersToThePreprocessor`</sub> | ✅ | ✅ | ✅ |
+| [Keywords can't be names](examples/language/basic-concepts/keywords.md#keywords-cant-be-names): contract_assert is only reserved where contracts are imp… <sub>`Keywords.ContractAssertReservedOnlyWithContracts`</sub> | ✅ | ⏭<sup>7</sup> | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [contextual-identifiers-are-still-ordinary-names](examples/language/basic-concepts/keywords.md#contextual-identifiers-are-still-ordinary-names) | 1 | ✅ | ✅ | ✅ |
+| [alternative-tokens-and-digraphs](examples/language/basic-concepts/keywords.md#alternative-tokens-and-digraphs) | 1 | ✅ | ✅ | ✅ |
+| [keywords-cant-be-names](examples/language/basic-concepts/keywords.md#keywords-cant-be-names) | 2 | ✅ ⏭<sup>3</sup> | ✅ | ✅ ⏭<sup>3</sup> |
+| [inside-attributes-keywords-arent-reserved](examples/language/basic-concepts/keywords.md#inside-attributes-keywords-arent-reserved) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/object-model.md</code>: 12 features, 9 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Objects and lifetime](examples/language/basic-concepts/object-model.md#objects-and-lifetime): lifetime begins at construction and ends at scope exit (RAI… <sub>`ObjectModel.LifetimeEndsAtScopeExit`</sub> | ✅ | ✅ | ✅ |
+| [Temporary objects &amp; lifetime extension](examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension): a temporary bound to const&amp; lives as long… <sub>`ObjectModel.TemporaryLifetimeExtension`</sub> | ✅ | ✅ | ✅ |
+| **main**: implicit return 0, argv[argc] == nullptr, no recursion/address. <sub>`ObjectModel.MainFunction`</sub> | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+| [Startup &amp; shutdown order](examples/language/basic-concepts/object-model.md#startup--shutdown-order): statics in one TU construct in declaration order before… <sub>`ObjectModel.StartupAndShutdownOrder`</sub> | ✅ | ✅ | ✅ |
+| [Startup &amp; shutdown order](examples/language/basic-concepts/object-model.md#startup--shutdown-order): std::quick_exit() skips normal destruction. <sub>`ObjectModel.QuickExitSkipsDestructors`</sub> | ⏭<sup>9</sup> | ✅ | ⏭<sup>9</sup> |
+| [Trivial vs non-trivial types](examples/language/basic-concepts/object-model.md#trivial-vs-non-trivial-types): a struct of ints is trivially copyable (memcpy-able… <sub>`ObjectModel.TriviallyCopyable`</sub> | ✅ | ✅ | ✅ |
+| [Temporary objects &amp; lifetime extension](examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension): binding through member access extends the… <sub>`ObjectModel.MemberAccessExtendsTemporary`</sub> | ✅ | ✅ | ✅ |
+| [Temporary objects &amp; lifetime extension](examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension): C++23 range-for keeps every temporary in… <sub>`ObjectModel.RangeForExtendsTemporaries`</sub> | ✅ | ✅ | ✅ |
+| [Implicit-lifetime types](examples/language/basic-concepts/object-model.md#implicit-lifetime-types): malloc implicitly creates an implicit-lifetime object. <sub>`ObjectModel.MallocCreatesImplicitLifetimeObject`</sub> | ✅ | ✅ | ✅ |
+| [Strict aliasing](examples/language/basic-concepts/object-model.md#strict-aliasing): bit_cast and memcpy copy the bits instead of punning; 1.0f is 0x… <sub>`ObjectModel.BitCastAndMemcpyReplacePunning`</sub> | ✅ | ✅ | ✅ |
+| [Strict aliasing](examples/language/basic-concepts/object-model.md#strict-aliasing): char types may read any object's bytes. <sub>`ObjectModel.CharTypesMayAliasAnything`</sub> | ✅ | ✅ | ✅ |
+| [Pointer provenance](examples/language/basic-concepts/object-model.md#pointer-provenance): a one-past-the-end pointer can be formed, compared and subtra… <sub>`ObjectModel.PastTheEndAndTotalOrder`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [objects-and-lifetime](examples/language/basic-concepts/object-model.md#objects-and-lifetime) | 1 | ✅ | ✅ | ✅ |
+| [temporary-objects--lifetime-extension](examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension) | 2 | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> |
+| [implicit-lifetime-types](examples/language/basic-concepts/object-model.md#implicit-lifetime-types) | 1 | ✅ | ✅ | ✅ |
+| [strict-aliasing](examples/language/basic-concepts/object-model.md#strict-aliasing) | 2 | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> |
+| [pointer-provenance](examples/language/basic-concepts/object-model.md#pointer-provenance) | 1 | ✅ | ✅ | ✅ |
+| [main--the-entry-point](examples/language/basic-concepts/object-model.md#main--the-entry-point) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/basic-concepts/scope-storage-linkage.md</code>: 3 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Scope**: block, for-loop and if-init names end with their statement; inner names sh… <sub>`ScopeStorageLinkage.ScopeAndShadowing`</sub> | ✅ | ✅ | ✅ |
+| **Storage duration**: static locals persist across calls; thread_local is per thread;… <sub>`ScopeStorageLinkage.StorageDurations`</sub> | ✅ | ✅ | ✅ |
+| **Linkage**: internal and inline names are usable here; "one per TU" vs "one shared"… <sub>`ScopeStorageLinkage.Linkage`</sub> | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [scope--where-a-name-is-visible](examples/language/basic-concepts/scope-storage-linkage.md#scope--where-a-name-is-visible) | 1 | ✅ | ✅ | ✅ |
+| [storage-duration--how-long-an-object-lives](examples/language/basic-concepts/scope-storage-linkage.md#storage-duration--how-long-an-object-lives) | 1 | ✅ | ✅ | ✅ |
+| [linkage--visibility-across-translation-units-tus](examples/language/basic-concepts/scope-storage-linkage.md#linkage--visibility-across-translation-units-tus) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/bit-fields.md</code>: 8 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Flags with default member initializers (C++20)](examples/language/classes/bit-fields.md#flags-with-default-member-initializers-c20): the defaults print 0150. <sub>`BitFields.DefaultMemberInitializers`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/language/classes/bit-fields.md#mental-model): ":0" starts a new allocation unit, so sizeof is 8 (Itanium ABI only… <sub>`BitFields.ZeroWidthStartsNewUnit`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/language/classes/bit-fields.md#declaration): a field keeps the low width bits of an out-of-range value (C++20). <sub>`BitFields.WraparoundOnOverflow`</sub> | ✅ | ✅ | ✅ |
+| [Enumerations in bit-fields](examples/language/classes/bit-fields.md#enumerations-in-bit-fields): unsigned underlying type round-trips; a signed one do… <sub>`BitFields.EnumerationFields`</sub> | ✅ | ✅ | ✅ |
+| [[[no_unique_address]] is a different tool](examples/language/classes/bit-fields.md#no_unique_address-is-a-different-tool): the empty member takes no space (Itani… <sub>`BitFields.NoUniqueAddress`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/language/classes/bit-fields.md#declaration): unnamed bit-fields are skipped by aggregate initialization. <sub>`BitFields.UnnamedFieldsAreSkipped`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/bit-fields.md#gotchas): no address; const&amp; binds a copy; structured bindings name the field itse… <sub>`BitFields.NoAddressReferencesAndBindings`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/bit-fields.md#gotchas): a narrow unsigned bit-field promotes to int; auto deduces the declared t… <sub>`BitFields.PromotionSurprises`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/language/classes/bit-fields.md#declaration) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [flags-with-default-member-initializers-c20](examples/language/classes/bit-fields.md#flags-with-default-member-initializers-c20) | 1 | ✅ | ✅ | ✅ |
+| [wraparound-on-overflow](examples/language/classes/bit-fields.md#wraparound-on-overflow) | 1 | ✅ | ✅ | ✅ |
+| [enumerations-in-bit-fields](examples/language/classes/bit-fields.md#enumerations-in-bit-fields) | 1 | ✅ | ✅ | ✅ |
+| [no_unique_address-is-a-different-tool](examples/language/classes/bit-fields.md#no_unique_address-is-a-different-tool) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/language/classes/bit-fields.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/explicit-object-parameter.md</code>: 5 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [One accessor for every value category](examples/language/classes/explicit-object-parameter.md#one-accessor-for-every-value-category): the member keeps the object's category. <sub>`ExplicitObjectParameter.OneAccessorForEveryValueCategory`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/language/classes/explicit-object-parameter.md#declaration): &amp;S::g is a plain function pointer; Self deduces the derived type. <sub>`ExplicitObjectParameter.FunctionPointerAndDeducedSelf`</sub> | ✅ | ✅ | ✅ |
+| [Recursive lambdas](examples/language/classes/explicit-object-parameter.md#recursive-lambdas): the explicit object parameter is the closure, so fib(10) is 55. <sub>`ExplicitObjectParameter.RecursiveLambda`</sub> | ✅ | ✅ | ✅ |
+| [Replacing CRTP](examples/language/classes/explicit-object-parameter.md#replacing-crtp): Self is the derived type, but only statically. <sub>`ExplicitObjectParameter.ReplacingCrtp`</sub> | ✅ | ✅ | ✅ |
+| [By-value self](examples/language/classes/explicit-object-parameter.md#by-value-self): and "Gotchas": self by value is a copy, and copies a derived objec… <sub>`ExplicitObjectParameter.ByValueSelf`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/language/classes/explicit-object-parameter.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [one-accessor-for-every-value-category](examples/language/classes/explicit-object-parameter.md#one-accessor-for-every-value-category) | 1 | ✅ | ✅ | ✅ |
+| [recursive-lambdas](examples/language/classes/explicit-object-parameter.md#recursive-lambdas) | 1 | ✅ | ✅ | ✅ |
+| [replacing-crtp](examples/language/classes/explicit-object-parameter.md#replacing-crtp) | 1 | ✅ | ✅ | ✅ |
+| [by-value-self](examples/language/classes/explicit-object-parameter.md#by-value-self) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/language/classes/explicit-object-parameter.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/inheritance-polymorphism.md</code>: 8 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Inheritance](examples/language/classes/inheritance-polymorphism.md#inheritance): and "Abstract base classes": a pure virtual makes the class abstract… <sub>`InheritancePolymorphism.AbstractBaseAndIsA`</sub> | ✅ | ✅ | ✅ |
+| [Dynamic dispatch](examples/language/classes/inheritance-polymorphism.md#dynamic-dispatch): a base pointer/reference calls the most-derived override. <sub>`InheritancePolymorphism.DynamicDispatch`</sub> | ✅ | ✅ | ✅ |
+| [override and final](examples/language/classes/inheritance-polymorphism.md#override-and-final): final classes can't be derived from; final ends overriding. <sub>`InheritancePolymorphism.OverrideAndFinal`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/inheritance-polymorphism.md#gotchas): slicing loses the override; a signature mismatch silently calls the base. <sub>`InheritancePolymorphism.SlicingAndMissingOverride`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/inheritance-polymorphism.md#gotchas): deleting through a base pointer runs the derived destructor when it's vi… <sub>`InheritancePolymorphism.VirtualDestructorRunsDerived`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/inheritance-polymorphism.md#gotchas): during base construction, a virtual call reaches the base version. <sub>`InheritancePolymorphism.VirtualCallInConstructorIsBase`</sub> | ✅ | ✅ | ✅ |
+| **Multiple inheritance &amp; virtual bases**: one shared base, built by the most-derived… <sub>`InheritancePolymorphism.VirtualBaseBuiltByMostDerived`</sub> | ✅ | ✅ | ✅ |
+| [Covariant return types](examples/language/classes/inheritance-polymorphism.md#covariant-return-types): the override returns Circle*, through the base a Shape*. <sub>`InheritancePolymorphism.CovariantReturn`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [inheritance](examples/language/classes/inheritance-polymorphism.md#inheritance) | 1 | ✅ | ✅ | ✅ |
+| [dynamic-dispatch](examples/language/classes/inheritance-polymorphism.md#dynamic-dispatch) | 1 | ✅ | ✅ | ✅ |
+| [override-and-final](examples/language/classes/inheritance-polymorphism.md#override-and-final) | 1 | ✅ | ✅ | ✅ |
+| [covariant-return-types](examples/language/classes/inheritance-polymorphism.md#covariant-return-types) | 2 | ✅ | ✅ | ✅ |
+| [multiple-inheritance--virtual-bases-the-diamond](examples/language/classes/inheritance-polymorphism.md#multiple-inheritance--virtual-bases-the-diamond) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/members-access.md</code>: 5 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Members](examples/language/classes/members-access.md#members): const members work on const objects; static members are shared by the cl… <sub>`MembersAccess.ConstAndStaticMembers`</sub> | ✅ | ✅ | ✅ |
+| [Access specifiers](examples/language/classes/members-access.md#access-specifiers): class defaults to private, struct to public. <sub>`MembersAccess.DefaultAccess`</sub> | ✅ | ✅ | ✅ |
+| [friend — selective access](examples/language/classes/members-access.md#friend--selective-access): friends read privates without making them public. <sub>`MembersAccess.FriendGrantsAccess`</sub> | ✅ | ✅ | ✅ |
+| [this and ref-qualified members](examples/language/classes/members-access.md#this-and-ref-qualified-members): set() needs an lvalue, build() an rvalue. <sub>`MembersAccess.RefQualifiedMembers`</sub> | ✅ | ✅ | ✅ |
+| [friend — selective access](examples/language/classes/members-access.md#friend--selective-access): variadic friends (C++26) and the passkey idiom. <sub>`MembersAccess.VariadicFriends`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [members](examples/language/classes/members-access.md#members) | 1 | ✅ | ✅ | ✅ |
+| [access-specifiers](examples/language/classes/members-access.md#access-specifiers) | 1 | ✅ | ✅ | ✅ |
+| [friend--selective-access](examples/language/classes/members-access.md#friend--selective-access) | 2 | ✅ | ✅ | ✅ |
+| [nested-classes](examples/language/classes/members-access.md#nested-classes) | 2 | ✅ | ✅ | ✅ |
+| [this-and-ref-qualified-members](examples/language/classes/members-access.md#this-and-ref-qualified-members) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/special-members.md</code>: 7 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The six special members](examples/language/classes/special-members.md#the-six-special-members): a class that declares none gets all six, trivially. <sub>`SpecialMembers.CompilerSynthesizesAllSix`</sub> | ✅ | ✅ | ✅ |
+| **RAII**: the destructor runs at scope exit, including when an exception propagates. <sub>`SpecialMembers.RaiiReleasesOnScopeExitAndThrow`</sub> | ✅ | ✅ | ✅ |
+| [Construction details](examples/language/classes/special-members.md#construction-details): member initializer list, delegating and explicit constructo… <sub>`SpecialMembers.ConstructionDetails`</sub> | ✅ | ✅ | ✅ |
+| **Rule of Zero**: a member that is move-only makes the aggregate move-only, automatic… <sub>`SpecialMembers.RuleOfZeroComposes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/special-members.md#gotchas): declaring a destructor suppresses implicit moves, so "moving" copies. <sub>`SpecialMembers.UserDestructorSuppressesMove`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/special-members.md#gotchas): vector reallocation copies elements whose move constructor isn't noexcep… <sub>`SpecialMembers.VectorCopiesWhenMoveIsNotNoexcept`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/special-members.md#gotchas): members are initialized in declaration order, not initializer-list order. <sub>`SpecialMembers.MemberInitOrderIsDeclarationOrder`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-six-special-members](examples/language/classes/special-members.md#the-six-special-members) | 1 | ✅ | ✅ | ✅ |
+| [raii--the-reason-it-all-matters](examples/language/classes/special-members.md#raii--the-reason-it-all-matters) | 1 | ✅ | ✅ | ✅ |
+| [rule-of-zero--three--five](examples/language/classes/special-members.md#rule-of-zero--three--five) | 1 | ✅ | ✅ | ✅ |
+| [default-and-delete](examples/language/classes/special-members.md#default-and-delete) | 1 | ✅ | ✅ | ✅ |
+| [construction-details](examples/language/classes/special-members.md#construction-details) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/classes/unions-aggregates.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Aggregates](examples/language/classes/unions-aggregates.md#aggregates): brace, designated and array initialization, and structured bindings. <sub>`UnionsAggregates.AggregateInitialization`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/unions-aggregates.md#gotchas): a user-declared constructor (even = default) or private data ends aggreg… <sub>`UnionsAggregates.NonAggregates`</sub> | ✅ | ✅ | ✅ |
+| [Unions](examples/language/classes/unions-aggregates.md#unions): all members share the same storage; writing one switches the active membe… <sub>`UnionsAggregates.UnionMembersShareStorage`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/classes/unions-aggregates.md#gotchas): a union with a std::string has a deleted destructor; bit_cast replaces p… <sub>`UnionsAggregates.NonTrivialMembersAndBitCast`</sub> | ✅ | ✅ | ✅ |
+| [Prefer std::variant](examples/language/classes/unions-aggregates.md#prefer-stdvariant): it tracks the active type and std::get throws on a mismatch. <sub>`UnionsAggregates.VariantIsTypeSafe`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [aggregates](examples/language/classes/unions-aggregates.md#aggregates) | 1 | ✅ | ✅ | ✅ |
+| [unions](examples/language/classes/unions-aggregates.md#unions) | 1 | ✅ | ✅ | ✅ |
+| [prefer-stdvariant](examples/language/classes/unions-aggregates.md#prefer-stdvariant) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/coroutines/coroutines.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::generator (C++23)**: the first ten Fibonacci numbers are 0 1 1 2 3 5 8 13 21 3… <sub>`Coroutines.GeneratorFibonacciFirstTen`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| **std::generator (C++23)**: lazy — values are computed on demand. take(n) stops the l… <sub>`Coroutines.GeneratorIsLazy`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [Gotchas](examples/language/coroutines/coroutines.md#gotchas): std::generator is single-pass (an input range, not a forward range). <sub>`Coroutines.GeneratorIsSinglePass`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [Mental model](examples/language/coroutines/coroutines.md#mental-model): / "The catch": with a hand-written promise_type, co_yield suspends,… <sub>`Coroutines.HandWrittenPromiseSuspendsAndResumes`</sub> | ✅ | ✅ | ✅ |
+| **std::generator (C++23)**: GCC 15's libstdc++ ships &lt;generator&gt;; Clang 22's libc++ d… <sub>`Coroutines.GeneratorAvailabilityPerLibrary`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-three-keywords](examples/language/coroutines/coroutines.md#the-three-keywords) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [stdgenerator-c23--the-easy-win](examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win) | 1 | ✅ | ✅ | ❌ |
+| [what-awaiting-looks-like-sketch](examples/language/coroutines/coroutines.md#what-awaiting-looks-like-sketch) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/attributes.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The standard attributes](examples/language/declarations-initialization/attributes.md#the-standard-attributes): each one the page lists is known, at the version its "si… <sub>`Attributes.StandardAttributesAreRecognized`</sub> | ✅ | ✅ | ✅ |
+| [The standard attributes](examples/language/declarations-initialization/attributes.md#the-standard-attributes): attributes don't change meaning — the functions behave n… <sub>`Attributes.AttributedFunctionsBehaveNormally`</sub> | ✅ | ✅ | ✅ |
+| [The standard attributes](examples/language/declarations-initialization/attributes.md#the-standard-attributes): (statement attributes): fallthrough runs into the next c… <sub>`Attributes.StatementAttributes`</sub> | ✅ | ✅ | ✅ |
+| [Common uses](examples/language/declarations-initialization/attributes.md#common-uses): likely/unlikely only hint; case 1 falls through into case 2. <sub>`Attributes.CommonUses`</sub> | ✅ | ✅ | ✅ |
+| **[[assume(expr)]]**: the expression is never evaluated. <sub>`Attributes.AssumeIsNotEvaluated`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-standard-attributes](examples/language/declarations-initialization/attributes.md#the-standard-attributes) | 2 | ✅ | ✅ | ✅ |
+| [common-uses](examples/language/declarations-initialization/attributes.md#common-uses) | 1 | ✅ | ✅ | ✅ |
+| [assumeexpr-c23](examples/language/declarations-initialization/attributes.md#assumeexpr-c23) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/const-mutable.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **const**: which part of each pointer declaration is const (read right-to-left). <sub>`ConstMutable.PointerConstness`</sub> | ✅ | ✅ | ✅ |
+| [const-correctness](examples/language/declarations-initialization/const-mutable.md#const-correctness): a const member function is callable on const objects; non-cons… <sub>`ConstMutable.ConstMemberFunctions`</sub> | ✅ | ✅ | ✅ |
+| **mutable**: a const get() fills the cache once and reuses it. <sub>`ConstMutable.MutableCache`</sub> | ✅ | ✅ | ✅ |
+| [constexpr / constinit](examples/language/declarations-initialization/const-mutable.md#constexpr--constinit): + Gotchas: constexpr implies const; runtime-initialized co… <sub>`ConstMutable.ConstexprVersusConst`</sub> | ✅ | ✅ | ✅ |
+| **volatile**: volatile qualifies the pointee, and it is not atomic. <sub>`ConstMutable.VolatileQualifier`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [const--i-wont-modify-this](examples/language/declarations-initialization/const-mutable.md#const--i-wont-modify-this) | 1 | ✅ | ✅ | ✅ |
+| [mutable--escape-hatch-in-a-const-object](examples/language/declarations-initialization/const-mutable.md#mutable--escape-hatch-in-a-const-object) | 1 | ✅ | ✅ | ✅ |
+| [constexpr--constinit](examples/language/declarations-initialization/const-mutable.md#constexpr--constinit) | 1 | ✅ | ✅ | ✅ |
+| [volatile--not-for-threading](examples/language/declarations-initialization/const-mutable.md#volatile--not-for-threading) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/declarations-and-auto.md</code>: 8 features, 8 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **auto**: the deduced type of each declaration. <sub>`DeclarationsAuto.AutoDeduction`</sub> | ✅ | ✅ | ✅ |
+| **decltype**: decltype(x) is int, decltype((x)) is int&amp;; decltype(auto) keeps referen… <sub>`DeclarationsAuto.Decltype`</sub> | ✅ | ✅ | ✅ |
+| [Trailing return types &amp; deduced returns](examples/language/declarations-initialization/declarations-and-auto.md#trailing-return-types--deduced-returns): . <sub>`DeclarationsAuto.ReturnTypes`</sub> | ✅ | ✅ | ✅ |
+| **Structured bindings**: by copy from a pair, by reference to mutate, from std::array. <sub>`DeclarationsAuto.StructuredBindings`</sub> | ✅ | ✅ | ✅ |
+| Gotchas: auto&amp;&amp; is a forwarding reference — lvalue ref for lvalues, rvalue ref… <sub>`DeclarationsAuto.AutoForwardingReference`</sub> | ✅ | ✅ | ✅ |
+| [`_` — the placeholder name (C++26)](examples/language/declarations-initialization/declarations-and-auto.md#_--the-placeholder-name-c26): `_` may be declared more than once in a scope. <sub>`DeclarationsAuto.PlaceholderName`</sub> | ✅ | ✅ | ✅ |
+| [Binding a pack (C++26)](examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26): `...xs` binds every element; only inside a template. <sub>`DeclarationsAuto.StructuredBindingPack`</sub> | ⏭<sup>12</sup> | ✅ | ✅ |
+| [`constexpr` structured bindings (C++26)](examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26): . P2686 has no macro of its own; the too… <sub>`DeclarationsAuto.ConstexprStructuredBindings`</sub> | ⏭<sup>12</sup> | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [auto--deduce-the-type-from-the-initializer](examples/language/declarations-initialization/declarations-and-auto.md#auto--deduce-the-type-from-the-initializer) | 1 | ✅ | ✅ | ✅ |
+| [decltype--the-declared-type-of-an-expression](examples/language/declarations-initialization/declarations-and-auto.md#decltype--the-declared-type-of-an-expression) | 1 | ✅ | ✅ | ✅ |
+| [trailing-return-types--deduced-returns](examples/language/declarations-initialization/declarations-and-auto.md#trailing-return-types--deduced-returns) | 1 | ✅ | ✅ | ✅ |
+| [structured-bindings-c17](examples/language/declarations-initialization/declarations-and-auto.md#structured-bindings-c17) | 1 | ✅ | ✅ | ✅ |
+| [_--the-placeholder-name-c26](examples/language/declarations-initialization/declarations-and-auto.md#_--the-placeholder-name-c26) | 2 | ✅ | ✅ | ✅ |
+| [binding-a-pack-c26](examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26) | 1 | ⏭<sup>13</sup> | ⏭<sup>13</sup> | ⏭<sup>13</sup> |
+| [constexpr-structured-bindings-c26](examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26) | 1 | ⏭<sup>14</sup> | ⏭<sup>14</sup> | ⏭<sup>14</sup> |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/enumerations.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Scoped enums**: values 0, 1, 2; no implicit conversion; chosen underlying type. <sub>`Enumerations.ScopedEnums`</sub> | ✅ | ✅ | ✅ |
+| **Unscoped enums**: names leak and implicitly convert to int; explicit values and und… <sub>`Enumerations.UnscopedEnums`</sub> | ✅ | ✅ | ✅ |
+| [Using scoped enum values conveniently (C++20)](examples/language/declarations-initialization/enumerations.md#using-scoped-enum-values-conveniently-c20): using enum brings the enumerators… <sub>`Enumerations.UsingEnum`</sub> | ✅ | ✅ | ✅ |
+| [Helpers](examples/language/declarations-initialization/enumerations.md#helpers): std::to_underlying(Status::error) is std::uint8_t{2}. <sub>`Enumerations.ToUnderlying`</sub> | ✅ | ✅ | ✅ |
+| Gotchas: enum class has no bitwise operators out of the box. <sub>`Enumerations.ScopedEnumsHaveNoBitwiseOps`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [scoped-enums-enum-class--the-default-choice](examples/language/declarations-initialization/enumerations.md#scoped-enums-enum-class--the-default-choice) | 1 | ✅ | ✅ | ✅ |
+| [unscoped-enums-plain-enum--legacy](examples/language/declarations-initialization/enumerations.md#unscoped-enums-plain-enum--legacy) | 1 | ✅ | ✅ | ✅ |
+| [using-scoped-enum-values-conveniently-c20](examples/language/declarations-initialization/enumerations.md#using-scoped-enum-values-conveniently-c20) | 1 | ✅ | ✅ | ✅ |
+| [helpers](examples/language/declarations-initialization/enumerations.md#helpers) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/initialization.md</code>: 7 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The forms](examples/language/declarations-initialization/initialization.md#the-forms): every spelling of an int initializer gives the same value; the rest as… <sub>`Initialization.TheForms`</sub> | ✅ | ✅ | ✅ |
+| [What the categories mean](examples/language/declarations-initialization/initialization.md#what-the-categories-mean): default-init of a class runs its constructor; {} prefer… <sub>`Initialization.CategoryMeanings`</sub> | ✅ | ✅ | ✅ |
+| [The () vs {} trap](examples/language/declarations-initialization/initialization.md#the--vs--trap): (5, 0) is five zeros; {5, 0} is two elements. <sub>`Initialization.ParenVersusBraceForVector`</sub> | ✅ | ✅ | ✅ |
+| **Aggregates &amp; designated initializers**: unnamed members keep their default member i… <sub>`Initialization.DesignatedInitializersKeepDefaults`</sub> | ✅ | ✅ | ✅ |
+| [What the categories mean](examples/language/declarations-initialization/initialization.md#what-the-categories-mean): value-initialization zeroes scalars. <sub>`Initialization.ValueInitializationZeroes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/declarations-initialization/initialization.md#gotchas): {} bans narrowing; copy-list-init can't call an explicit constructor. <sub>`Initialization.BracesBanNarrowingAndCopyListSkipsExplicit`</sub> | ✅ | ✅ | ✅ |
+| **Aggregates &amp; designated initializers**: parenthesized aggregate init (C++20). <sub>`Initialization.ParenthesizedAggregateInit`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-forms](examples/language/declarations-initialization/initialization.md#the-forms) | 1 | ✅ | ✅ | ✅ |
+| [aggregates--designated-initializers-c20](examples/language/declarations-initialization/initialization.md#aggregates--designated-initializers-c20) | 2 | ✅ | ✅ | ✅ |
+| [the--vs--trap](examples/language/declarations-initialization/initialization.md#the--vs--trap) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/namespaces.md</code>: 4 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaring and using](examples/language/declarations-initialization/namespaces.md#declaring-and-using): qualified names, nested namespaces, aliases, using-declarati… <sub>`Namespaces.DeclaringAndUsing`</sub> | ✅ | ✅ | ✅ |
+| **inline namespaces**: lib::api() resolves to lib::v2::api(); v1 stays reachable. <sub>`Namespaces.InlineNamespaces`</sub> | ✅ | ✅ | ✅ |
+| [Name lookup &amp; ADL](examples/language/declarations-initialization/namespaces.md#name-lookup--adl): unqualified swap and operator&lt;&lt; are found in namespace std. <sub>`Namespaces.ArgumentDependentLookup`</sub> | ✅ | ✅ | ✅ |
+| Gotchas: a hidden friend is found only by ADL. <sub>`Namespaces.HiddenFriendOnlyViaAdl`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaring-and-using](examples/language/declarations-initialization/namespaces.md#declaring-and-using) | 1 | ✅ | ✅ | ✅ |
+| [anonymous-unnamed-namespaces--internal-linkage](examples/language/declarations-initialization/namespaces.md#anonymous-unnamed-namespaces--internal-linkage) | 1 | ✅ | ✅ | ✅ |
+| [inline-namespaces--versioning](examples/language/declarations-initialization/namespaces.md#inline-namespaces--versioning) | 1 | ✅ | ✅ | ✅ |
+| [name-lookup--adl](examples/language/declarations-initialization/namespaces.md#name-lookup--adl) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/pointers-references-arrays.md</code>: 4 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Pointers](examples/language/declarations-initialization/pointers-references-arrays.md#pointers): nullable and rebindable; dereference reads/writes the pointee. <sub>`PointersReferencesArrays.Pointers`</sub> | ✅ | ✅ | ✅ |
+| [References](examples/language/declarations-initialization/pointers-references-arrays.md#references): an alias — writes through it change the original; rvalue refs bind te… <sub>`PointersReferencesArrays.References`</sub> | ✅ | ✅ | ✅ |
+| **Arrays**: missing elements are zero; std::size is 5; passing decays to a pointer. <sub>`PointersReferencesArrays.Arrays`</sub> | ✅ | ✅ | ✅ |
+| Gotchas: nullptr has its own type and picks the pointer overload. <sub>`PointersReferencesArrays.NullptrPicksPointerOverload`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [pointers](examples/language/declarations-initialization/pointers-references-arrays.md#pointers) | 1 | ✅ | ✅ | ✅ |
+| [references](examples/language/declarations-initialization/pointers-references-arrays.md#references) | 1 | ✅ | ✅ | ✅ |
+| [arrays-and-why-to-avoid-raw-ones](examples/language/declarations-initialization/pointers-references-arrays.md#arrays-and-why-to-avoid-raw-ones) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/declarations-initialization/type-aliases.md</code>: 4 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [using vs typedef](examples/language/declarations-initialization/type-aliases.md#using-vs-typedef): both spellings name the same type. <sub>`TypeAliases.UsingEqualsTypedef`</sub> | ✅ | ✅ | ✅ |
+| **Alias templates**: Vec&lt;int&gt; is std::vector&lt;int&gt;; the _t helpers are alias templates. <sub>`TypeAliases.AliasTemplates`</sub> | ✅ | ✅ | ✅ |
+| [Member type aliases](examples/language/declarations-initialization/type-aliases.md#member-type-aliases): generic code reads C::value_type. <sub>`TypeAliases.MemberAliases`</sub> | ✅ | ✅ | ✅ |
+| Gotchas: an alias is not a new type — a plain double passes for Meters. <sub>`TypeAliases.AliasIsNotANewType`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [using-vs-typedef](examples/language/declarations-initialization/type-aliases.md#using-vs-typedef) | 1 | ✅ | ✅ | ✅ |
+| [alias-templates-only-using](examples/language/declarations-initialization/type-aliases.md#alias-templates-only-using) | 1 | ✅ | ✅ | ✅ |
+| [member-type-aliases](examples/language/declarations-initialization/type-aliases.md#member-type-aliases) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/exceptions/noexcept-and-safety.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [noexcept — this won't throw](examples/language/exceptions/noexcept-and-safety.md#noexcept--this-wont-throw): plain, noexcept(false) (the default), and conditiona… <sub>`NoexceptAndSafety.NoexceptSpecifiers`</sub> | ✅ | ✅ | ✅ |
+| **noexcept**: a noexcept function that throws calls std::terminate. <sub>`NoexceptAndSafetyDeathTest.ThrowFromNoexceptTerminates`</sub> | ✅ | ✅ | ✅ |
+| [Why noexcept matters for moves](examples/language/exceptions/noexcept-and-safety.md#why-noexcept-matters-for-moves): vector moves on reallocation only with a noexcept… <sub>`NoexceptAndSafety.VectorMovesOnlyNoexceptMoves`</sub> | ✅ | ✅ | ✅ |
+| [Techniques](examples/language/exceptions/noexcept-and-safety.md#techniques): RAII releases the lock and the buffer when the body throws. <sub>`NoexceptAndSafety.RaiiReleasesOnUnwind`</sub> | ✅ | ✅ | ✅ |
+| [Techniques](examples/language/exceptions/noexcept-and-safety.md#techniques): copy-and-swap assignment is noexcept and gives the strong guarantee. <sub>`NoexceptAndSafety.CopyAndSwapStrongGuarantee`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/exceptions/noexcept-and-safety.md#gotchas): noexcept is part of a function's type (since C++17). <sub>`NoexceptAndSafety.NoexceptIsPartOfTheType`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [noexcept--this-wont-throw](examples/language/exceptions/noexcept-and-safety.md#noexcept--this-wont-throw) | 1 | ✅ | ✅ | ✅ |
+| [the-noexcept-operator](examples/language/exceptions/noexcept-and-safety.md#the-noexcept-operator) | 1 | ✅ | ✅ | ✅ |
+| [why-noexcept-matters-for-moves](examples/language/exceptions/noexcept-and-safety.md#why-noexcept-matters-for-moves) | 1 | ✅ | ✅ | ✅ |
+| [techniques](examples/language/exceptions/noexcept-and-safety.md#techniques) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/exceptions/throw-try-catch.md</code>: 9 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The basics](examples/language/exceptions/throw-try-catch.md#the-basics): parse("") throws std::invalid_argument; the most-derived handler wins. <sub>`ThrowTryCatch.HandlersMatchInOrder`</sub> | ✅ | ✅ | ✅ |
+| [Stack unwinding](examples/language/exceptions/throw-try-catch.md#stack-unwinding): destructors of locals run, innermost first, before the handler. <sub>`ThrowTryCatch.StackUnwindingRunsDestructors`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/exceptions/throw-try-catch.md#gotchas): bare throw; keeps the dynamic type; throw e; through a base reference sl… <sub>`ThrowTryCatch.BareThrowPreservesTypeThrowECopySlices`</sub> | ✅ | ✅ | ✅ |
+| [Rethrow &amp; nested exceptions](examples/language/exceptions/throw-try-catch.md#rethrow--nested-exceptions): throw_with_nested keeps the cause, rethrow_if_nested… <sub>`ThrowTryCatch.NestedExceptionsPreserveCause`</sub> | ⏭<sup>15</sup> | ✅ | ✅ |
+| [Gotchas](examples/language/exceptions/throw-try-catch.md#gotchas): destructors are noexcept by default. <sub>`ThrowTryCatch.DestructorsAreNoexceptByDefault`</sub> | ✅ | ✅ | ✅ |
+| [The basics](examples/language/exceptions/throw-try-catch.md#the-basics): catch (...) catches anything, including non-std::exception types. <sub>`ThrowTryCatch.CatchAllCatchesAnything`</sub> | ✅ | ✅ | ✅ |
+| [Stack unwinding](examples/language/exceptions/throw-try-catch.md#stack-unwinding): the lock_guard's destructor releases the mutex when risky() thro… <sub>`ThrowTryCatch.UnwindingReleasesLock`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/exceptions/throw-try-catch.md#gotchas): catching by value slices a derived exception to the base. <sub>`ThrowTryCatch.CatchByValueSlices`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/exceptions/throw-try-catch.md#gotchas): a second exception escaping a destructor during unwinding calls std::ter… <sub>`ThrowTryCatchDeathTest.ThrowDuringUnwindingTerminates`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-basics](examples/language/exceptions/throw-try-catch.md#the-basics) | 1 | ✅ | ✅ | ✅ |
+| [stack-unwinding](examples/language/exceptions/throw-try-catch.md#stack-unwinding) | 1 | ✅ | ✅ | ✅ |
+| [rethrow--nested-exceptions](examples/language/exceptions/throw-try-catch.md#rethrow--nested-exceptions) | 1 | ✅ | ✅ | ✅ |
+| [catching-throw-by-value-catch-by-const-reference](examples/language/exceptions/throw-try-catch.md#catching-throw-by-value-catch-by-const-reference) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/expressions/constant-evaluation-rules.md</code>: 9 features, 10 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [virtual, dynamic_cast and typeid (C++20)](examples/language/expressions/constant-evaluation-rules.md#virtual-dynamic_cast-and-typeid-c20): polymorphism works at compile time. <sub>`ConstantEvaluationRules.PolymorphismAtCompileTime`</sub> | ✅ | ✅ | ✅ |
+| [try/catch and union members (C++20)](examples/language/expressions/constant-evaluation-rules.md#trycatch-and-union-members-c20): a try block that doesn't throw; switching me… <sub>`ConstantEvaluationRules.TryCatchAndUnionMember`</sub> | ✅ | ✅ | ✅ |
+| [Transient allocation (C++20)](examples/language/expressions/constant-evaluation-rules.md#transient-allocation-c20): a vector used and freed within one evaluation. <sub>`ConstantEvaluationRules.TransientAllocation`</sub> | ✅ | ✅ | ✅ |
+| [static constexpr locals, non-literal variables, goto (C++23)](examples/language/expressions/constant-evaluation-rules.md#static-constexpr-locals-non-literal-variables-goto-c23): they compile; goto… <sub>`ConstantEvaluationRules.Cxx23Relaxations`</sub> | ✅ | ✅ | ✅ |
+| [consteval propagation (C++23)](examples/language/expressions/constant-evaluation-rules.md#consteval-propagation-c23): a template calling a consteval function becomes im… <sub>`ConstantEvaluationRules.ConstevalPropagation`</sub> | ✅ | ✅ | ✅ |
+| [Placement new (C++26) and std::construct_at (C++20)](examples/language/expressions/constant-evaluation-rules.md#placement-new-c26-and-stdconstruct_at-c20): . <sub>`ConstantEvaluationRules.PlacementNew`</sub> | ✅ | ✅ | ✅ |
+| [Evaluation limits](examples/language/expressions/constant-evaluation-rules.md#evaluation-limits): two million iterations exceed both defaults at compile time, b… <sub>`ConstantEvaluationRules.LimitsApplyOnlyAtCompileTime`</sub> | ✅ | ✅ | ✅ |
+| [The constexpr standard library](examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library): stable_sort (C++26), containers and utilities. <sub>`ConstantEvaluationRules.ConstexprLibrary`</sub> | ✅ | ✅ | ✅ |
+| **&lt;cmath&gt;**: no toolchain defines the macro yet; GCC folds its builtins, libc++ doesn… <sub>`ConstantEvaluationRules.ConstexprCmath`</sub> | ✅ | ✅ | ⏭<sup>16</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [virtual-dynamic_cast-and-typeid-c20](examples/language/expressions/constant-evaluation-rules.md#virtual-dynamic_cast-and-typeid-c20) | 1 | ✅ | ✅ | ✅ |
+| [trycatch-and-union-members-c20](examples/language/expressions/constant-evaluation-rules.md#trycatch-and-union-members-c20) | 1 | ✅ | ✅ | ✅ |
+| [transient-allocation-c20](examples/language/expressions/constant-evaluation-rules.md#transient-allocation-c20) | 2 | ✅ | ✅ | ✅ |
+| [static-constexpr-locals-non-literal-variables-goto-c23](examples/language/expressions/constant-evaluation-rules.md#static-constexpr-locals-non-literal-variables-goto-c23) | 1 | ✅ | ✅ | ✅ |
+| [consteval-propagation-c23](examples/language/expressions/constant-evaluation-rules.md#consteval-propagation-c23) | 1 | ✅ | ✅ | ✅ |
+| [placement-new-c26-and-stdconstruct_at-c20](examples/language/expressions/constant-evaluation-rules.md#placement-new-c26-and-stdconstruct_at-c20) | 1 | ✅ | ✅ | ✅ |
+| [undefined-behaviour-is-a-compile-error](examples/language/expressions/constant-evaluation-rules.md#undefined-behaviour-is-a-compile-error) | 1 | ✅ | ✅ | ✅ |
+| [the-constexpr-standard-library](examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library) | 2 | ✅ ⏭<sup>17</sup> | ✅ ⏭<sup>17</sup> | ✅ ⏭<sup>17</sup> |
+
+</details>
+
+<details><summary><code>examples/language/expressions/constant-expressions.md</code>: 9 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [constexpr — may run at compile time](examples/language/expressions/constant-expressions.md#constexpr--may-run-at-compile-time): the same function at compile time and at run… <sub>`ConstantExpressions.ConstexprCompileOrRunTime`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/expressions/constant-expressions.md#gotchas): constexpr is a permission — with non-constant input the call runs at run… <sub>`ConstantExpressions.ConstexprIsAPermission`</sub> | ✅ | ✅ | ✅ |
+| **consteval**: every call is evaluated at compile time. <sub>`ConstantExpressions.Consteval`</sub> | ✅ | ✅ | ✅ |
+| **constinit**: initialized at compile time, but still mutable at run time. <sub>`ConstantExpressions.ConstinitIsMutable`</sub> | ✅ | ✅ | ✅ |
+| **if constexpr**: arithmetic types go through to_string, others construct a string. <sub>`ConstantExpressions.IfConstexprDiscards`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/expressions/constant-expressions.md#gotchas): constexpr on a variable implies const; on a member function it doesn't. <sub>`ConstantExpressions.ConstexprVariableIsConstMemberIsNot`</sub> | ✅ | ✅ | ✅ |
+| [static_assert with a computed message (C++26)](examples/language/expressions/constant-expressions.md#static_assert-with-a-computed-message-c26): the message is a constexpr std::st… <sub>`ConstantExpressions.ComputedStaticAssertMessage`</sub> | ✅ | ✅ | ✅ |
+| [Casting from void* (C++26)](examples/language/expressions/constant-expressions.md#casting-from-void-c26): static_cast back to the real type in a constant expre… <sub>`ConstantExpressions.ConstexprCastFromVoidPointer`</sub> | ✅ | ✅ | ✅ |
+| [Exceptions during constant evaluation (C++26)](examples/language/expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26): thrown and caught at compile time. <sub>`ConstantExpressions.ConstexprExceptions`</sub> | ⏭<sup>18</sup> | ✅ | ⏭<sup>18</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [constexpr--may-run-at-compile-time](examples/language/expressions/constant-expressions.md#constexpr--may-run-at-compile-time) | 1 | ✅ | ✅ | ✅ |
+| [consteval--must-run-at-compile-time-c20](examples/language/expressions/constant-expressions.md#consteval--must-run-at-compile-time-c20) | 1 | ✅ | ✅ | ✅ |
+| [constinit--guarantee-static-init-at-compile-time-c20](examples/language/expressions/constant-expressions.md#constinit--guarantee-static-init-at-compile-time-c20) | 1 | ✅ | ✅ | ✅ |
+| [if-constexpr--compile-time-branch-c17](examples/language/expressions/constant-expressions.md#if-constexpr--compile-time-branch-c17) | 1 | ✅ | ✅ | ✅ |
+| [static_assert-with-a-computed-message-c26](examples/language/expressions/constant-expressions.md#static_assert-with-a-computed-message-c26) | 1 | ✅ | ✅ | ✅ |
+| [casting-from-void-c26](examples/language/expressions/constant-expressions.md#casting-from-void-c26) | 1 | ✅ | ✅ | ✅ |
+| [exceptions-during-constant-evaluation-c26](examples/language/expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26) | 1 | ⏭<sup>19</sup> | ⏭<sup>19</sup> | ⏭<sup>19</sup> |
+
+</details>
+
+<details><summary><code>examples/language/expressions/conversions.md</code>: 5 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Implicit conversions](examples/language/expressions/conversions.md#implicit-conversions): double -&gt; int truncates; widening is value-preserving; upca… <sub>`Conversions.ImplicitConversions`</sub> | ✅ | ✅ | ✅ |
+| [The four named casts](examples/language/expressions/conversions.md#the-four-named-casts): static_cast forces floating division; dynamic_cast checks a… <sub>`Conversions.NamedCasts`</sub> | ✅ | ✅ | ✅ |
+| **Gotchas**: dynamic_cast down a hierarchy needs a polymorphic type. <sub>`Conversions.DynamicCastNeedsPolymorphicType`</sub> | ✅ | ✅ | ✅ |
+| [Explicit constructors &amp; conversion operators](examples/language/expressions/conversions.md#explicit-constructors--conversion-operators): no silent conversions either way. <sub>`Conversions.ExplicitBlocksImplicit`</sub> | ✅ | ✅ | ✅ |
+| [auto(x) — make a copy (C++23)](examples/language/expressions/conversions.md#autox--make-a-copy-c23): a decayed prvalue copy. <sub>`Conversions.AutoDecayCopy`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [implicit-conversions](examples/language/expressions/conversions.md#implicit-conversions) | 2 | ✅ | ✅ | ✅ |
+| [the-four-named-casts](examples/language/expressions/conversions.md#the-four-named-casts) | 2 | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> |
+| [explicit-constructors--conversion-operators](examples/language/expressions/conversions.md#explicit-constructors--conversion-operators) | 1 | ✅ | ✅ | ✅ |
+| [autox--make-a-copy-c23](examples/language/expressions/conversions.md#autox--make-a-copy-c23) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/expressions/literals.md</code>: 6 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Numeric literals](examples/language/expressions/literals.md#numeric-literals): the type and value of each form. <sub>`Literals.NumericLiteralTypesAndValues`</sub> | ✅ | ✅ | ✅ |
+| [Character &amp; string literals](examples/language/expressions/literals.md#character--string-literals): element types and array sizes (including the '\0'). <sub>`Literals.CharacterAndStringLiteralTypes`</sub> | ✅ | ✅ | ✅ |
+| [Character &amp; string literals](examples/language/expressions/literals.md#character--string-literals): raw strings keep backslashes; custom delimiters; con… <sub>`Literals.RawStringsAndConcatenation`</sub> | ✅ | ✅ | ✅ |
+| [Standard library suffix literals](examples/language/expressions/literals.md#standard-library-suffix-literals): s, ms, i. <sub>`Literals.StandardSuffixes`</sub> | ✅ | ✅ | ✅ |
+| **User-defined literals**: 5.0_km is 5000.0. <sub>`Literals.UserDefinedLiteral`</sub> | ✅ | ✅ | ✅ |
+| [Numeric literals](examples/language/expressions/literals.md#numeric-literals): the uz / z suffixes (C++23). <sub>`Literals.SizeTSuffix`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [numeric-literals](examples/language/expressions/literals.md#numeric-literals) | 2 | ✅ | ✅ | ✅ |
+| [character--string-literals](examples/language/expressions/literals.md#character--string-literals) | 1 | ✅ | ✅ | ✅ |
+| [standard-library-suffix-literals](examples/language/expressions/literals.md#standard-library-suffix-literals) | 1 | ✅ | ✅ | ✅ |
+| [user-defined-literals-udls](examples/language/expressions/literals.md#user-defined-literals-udls) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/expressions/operator-overloading.md</code>: 0 features, 9 examples</summary>
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/language/expressions/operator-overloading.md#declaration) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [arithmetic-compound-assignment--symmetric-hidden-friend](examples/language/expressions/operator-overloading.md#arithmetic-compound-assignment--symmetric-hidden-friend) | 1 | ✅ | ✅ | ✅ |
+| [increment-and-decrement](examples/language/expressions/operator-overloading.md#increment-and-decrement) | 1 | ✅ | ✅ | ✅ |
+| [subscript-including-multi-dimensional-c23](examples/language/expressions/operator-overloading.md#subscript-including-multi-dimensional-c23) | 1 | ✅ | ✅ | ✅ |
+| [function-call-and-static-operator-c23](examples/language/expressions/operator-overloading.md#function-call-and-static-operator-c23) | 1 | ✅ | ✅ | ✅ |
+| [conversions-explicit-operator-bool](examples/language/expressions/operator-overloading.md#conversions-explicit-operator-bool) | 2 | ✅ | ✅ | ✅ |
+| [pointer-like-types---and](examples/language/expressions/operator-overloading.md#pointer-like-types---and) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/language/expressions/operator-overloading.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/expressions/operators.md</code>: 4 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Precedence**: * before +, &lt;&lt; below +, comparisons above bitwise &amp;, assignment right… <sub>`Operators.Precedence`</sub> | ✅ | ✅ | ✅ |
+| [Overloading operators](examples/language/expressions/operators.md#overloading-operators): += returns *this, + is built from +=, defaulted == and &lt;=&gt;. <sub>`Operators.OverloadingVec2`</sub> | ✅ | ✅ | ✅ |
+| [Evaluation order](examples/language/expressions/operators.md#evaluation-order): C++17 rules for &lt;&lt;, a[i] = i++, and i = i++ + 1. <sub>`Operators.EvaluationOrderCpp17`</sub> | ✅ | ✅ | ✅ |
+| [Evaluation order](examples/language/expressions/operators.md#evaluation-order): &amp;&amp;, \|\| and ?: order left-to-right and short-circuit. <sub>`Operators.ShortCircuit`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [overloading-operators](examples/language/expressions/operators.md#overloading-operators) | 1 | ✅ | ✅ | ✅ |
+| [evaluation-order](examples/language/expressions/operators.md#evaluation-order) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/expressions/reflection.md</code>: 4 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Reflecting and splicing](examples/language/expressions/reflection.md#reflecting-and-splicing): ^^ gives a std::meta::info; [: r :] splices it back. <sub>`Reflection.ReflectAndSplice`</sub> | ⏭<sup>20</sup> | ✅ | ⏭<sup>20</sup> |
+| **The classic example**: dump(Point{1, 2, 3}) prints x = 1 / y = 2 / z = 3. <sub>`Reflection.IterateStructMembers`</sub> | ⏭<sup>20</sup> | ✅ | ⏭<sup>20</sup> |
+| [What it unlocks](examples/language/expressions/reflection.md#what-it-unlocks): enum-to-string with std::meta::enumerators_of. <sub>`Reflection.EnumeratorsOf`</sub> | ⏭<sup>20</sup> | ✅ | ⏭<sup>20</sup> |
+| [Annotations (C++26)](examples/language/expressions/reflection.md#annotations-c26): annotations_of, constant_of, annotations_of_with_type, extra… <sub>`Reflection.Annotations`</sub> | ⏭<sup>20</sup> | ✅ | ⏭<sup>20</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [reflecting-and-splicing](examples/language/expressions/reflection.md#reflecting-and-splicing) | 1 | ⏭<sup>21</sup> | ✅ | ⏭<sup>21</sup> |
+| [the-classic-example-iterate-a-structs-members](examples/language/expressions/reflection.md#the-classic-example-iterate-a-structs-members) | 1 | ⏭<sup>21</sup> | ✅ | ⏭<sup>21</sup> |
+| [annotations-c26](examples/language/expressions/reflection.md#annotations-c26) | 1 | ⏭<sup>21</sup> | ✅ | ⏭<sup>21</sup> |
+
+</details>
+
+<details><summary><code>examples/language/expressions/value-categories.md</code>: 7 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The taxonomy](examples/language/expressions/value-categories.md#the-taxonomy): examples of each category, checked with decltype((expr)). <sub>`ValueCategories.TaxonomyExamples`</sub> | ✅ | ✅ | ✅ |
+| [Why it matters](examples/language/expressions/value-categories.md#why-it-matters): overload resolution by category. <sub>`ValueCategories.OverloadsBindByCategory`</sub> | ✅ | ✅ | ✅ |
+| [Reference binding rules](examples/language/expressions/value-categories.md#reference-binding-rules): auto&amp;&amp; d = x is int&amp;, auto&amp;&amp; e = 42 is int&amp;&amp;. <sub>`ValueCategories.ForwardingReferenceDeduction`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/expressions/value-categories.md#gotchas): a named rvalue reference is itself an lvalue. <sub>`ValueCategories.NamedRvalueReferenceIsLvalue`</sub> | ✅ | ✅ | ✅ |
+| [Reference binding rules](examples/language/expressions/value-categories.md#reference-binding-rules): int&amp; takes lvalues only, int&amp;&amp; rvalues only, const int&amp;… <sub>`ValueCategories.ReferenceBindingRules`</sub> | ✅ | ✅ | ✅ |
+| [Why it matters](examples/language/expressions/value-categories.md#why-it-matters): std::move is only a cast to an xvalue; it doesn't move anything. <sub>`ValueCategories.StdMoveIsACast`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/expressions/value-categories.md#gotchas): return std::move(local) forces a move and disables NRVO. <sub>`ValueCategories.ReturnStdMoveDisablesNrvo`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [why-it-matters](examples/language/expressions/value-categories.md#why-it-matters) | 1 | ✅ | ✅ | ✅ |
+| [reference-binding-rules](examples/language/expressions/value-categories.md#reference-binding-rules) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/functions/default-variadic-args.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Default arguments](examples/language/functions/default-variadic-args.md#default-arguments): omitted trailing arguments take the declared defaults. <sub>`DefaultVariadicArgs.DefaultArguments`</sub> | ✅ | ✅ | ✅ |
+| **Variadic templates**: log(...) prints every argument; sizeof... gives the count. <sub>`DefaultVariadicArgs.VariadicTemplates`</sub> | ✅ | ✅ | ✅ |
+| **Fold expressions**: sum/all/print, and the four fold forms' associativity. <sub>`DefaultVariadicArgs.FoldExpressions`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/functions/default-variadic-args.md#gotchas): defaults are evaluated at the call site on every call. <sub>`DefaultVariadicArgs.DefaultEvaluatedEachCall`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/functions/default-variadic-args.md#gotchas): a defaulted parameter can make two overloads ambiguous. <sub>`DefaultVariadicArgs.DefaultsPlusOverloadingAmbiguous`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/functions/default-variadic-args.md#gotchas): `...` placement, and perfect forwarding preserving value categories. <sub>`DefaultVariadicArgs.PackExpansionAndForwarding`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [default-arguments](examples/language/functions/default-variadic-args.md#default-arguments) | 1 | ✅ | ✅ | ✅ |
+| [variadic-templates--the-modern-any-number-of-args](examples/language/functions/default-variadic-args.md#variadic-templates--the-modern-any-number-of-args) | 1 | ✅ | ✅ | ✅ |
+| [fold-expressions-c17](examples/language/functions/default-variadic-args.md#fold-expressions-c17) | 1 | ✅ | ✅ | ✅ |
+| [c-style-varargs-avoid](examples/language/functions/default-variadic-args.md#c-style-varargs-avoid) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/functions/functions-and-overloading.md</code>: 5 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Passing parameters**: &amp; modifies the caller's object; by value works on a copy. <sub>`FunctionsAndOverloading.PassingParameters`</sub> | ✅ | ✅ | ✅ |
+| [Overloading](examples/language/functions/functions-and-overloading.md#overloading): the call picks print(int) / print(double) by argument type. <sub>`FunctionsAndOverloading.OverloadResolution`</sub> | ✅ | ✅ | ✅ |
+| [Attributes that matter](examples/language/functions/functions-and-overloading.md#attributes-that-matter): [[noreturn]] fail() leaves by throwing; maybe_unused sile… <sub>`FunctionsAndOverloading.Attributes`</sub> | ✅ | ✅ | ✅ |
+| [Default vs deleted](examples/language/functions/functions-and-overloading.md#default-vs-deleted): = default / = delete members, and a deleted overload. <sub>`FunctionsAndOverloading.DefaultVersusDeleted`</sub> | ✅ | ✅ | ✅ |
+| **`= delete(\**: reason\")` (C++26)": the overload is deleted; the message is in the… <sub>`FunctionsAndOverloading.DeleteWithReason`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [passing-parameters--the-guidelines](examples/language/functions/functions-and-overloading.md#passing-parameters--the-guidelines) | 1 | ✅ | ✅ | ✅ |
+| [overloading](examples/language/functions/functions-and-overloading.md#overloading) | 1 | ✅ | ✅ | ✅ |
+| [attributes-that-matter](examples/language/functions/functions-and-overloading.md#attributes-that-matter) | 1 | ✅ | ✅ | ✅ |
+| [default-vs-deleted](examples/language/functions/functions-and-overloading.md#default-vs-deleted) | 1 | ✅ | ✅ | ✅ |
+| [-deletereason-c26](examples/language/functions/functions-and-overloading.md#-deletereason-c26) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/functions/lambdas.md</code>: 11 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Anatomy](examples/language/functions/lambdas.md#anatomy): and "Captures": by-value captures copy, by-reference captures alias. <sub>`Lambdas.CaptureByValueVersusReference`</sub> | ✅ | ✅ | ✅ |
+| **Generic, mutable, constexpr**: generic lambdas, a mutable counter, compile-time use. <sub>`Lambdas.GenericMutableConstexpr`</sub> | ✅ | ✅ | ✅ |
+| [Generic, mutable, constexpr, consteval](examples/language/functions/lambdas.md#generic-mutable-constexpr-consteval): lambdas are implicitly constexpr (C++17);… <sub>`Lambdas.ImplicitConstexprAndConsteval`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/functions/lambdas.md#gotchas): by-value captures are const unless mutable (the call operator is const). <sub>`Lambdas.ByValueCapturesAreConstWithoutMutable`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/functions/lambdas.md#gotchas): each lambda has a unique type, even with identical text. <sub>`Lambdas.EachLambdaHasAUniqueType`</sub> | ✅ | ✅ | ✅ |
+| [Captures](examples/language/functions/lambdas.md#captures): [this] captures the pointer; [*this] captures a copy of the object. <sub>`Lambdas.ThisVersusStarThis`</sub> | ✅ | ✅ | ✅ |
+| [Captures](examples/language/functions/lambdas.md#captures): C++20 pack init-capture, structured-binding capture; globals aren't cap… <sub>`Lambdas.Cxx20CaptureForms`</sub> | ✅ | ✅ | ✅ |
+| [Captures](examples/language/functions/lambdas.md#captures): [a, &amp;b], [=], [&amp;] and [=, &amp;b] defaults. <sub>`Lambdas.DefaultAndMixedCaptures`</sub> | ✅ | ✅ | ✅ |
+| **Generic, mutable, constexpr**: explicit template parameters (C++20). <sub>`Lambdas.ExplicitTemplateParameters`</sub> | ✅ | ✅ | ✅ |
+| [Where they shine](examples/language/functions/lambdas.md#where-they-shine): sort with a comparator, erase_if with a predicate. <sub>`Lambdas.WhereTheyShine`</sub> | ✅ | ✅ | ✅ |
+| [Where they shine](examples/language/functions/lambdas.md#where-they-shine): std::function / std::move_only_function give a uniform type. <sub>`Lambdas.StoredInTypeErasedWrappers`</sub> | ✅ | ✅ | ⏭<sup>22</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [anatomy](examples/language/functions/lambdas.md#anatomy) | 1 | ✅ | ✅ | ✅ |
+| [captures](examples/language/functions/lambdas.md#captures) | 2 | ✅ | ✅ | ✅ |
+| [generic-mutable-constexpr-consteval](examples/language/functions/lambdas.md#generic-mutable-constexpr-consteval) | 3 | ✅ | ✅ | ✅ |
+| [where-they-shine](examples/language/functions/lambdas.md#where-they-shine) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/modules/building.md</code>: 4 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [import std; and import std.compat;](examples/language/modules/building.md#import-std-and-import-stdcompat): a module unit can import std and hand std typ… <sub>`ImportStd.ModuleUsingImportStd`</sub> | ✅ | ⏭<sup>23</sup> | ✅ |
+| [import std; and import std.compat;](examples/language/modules/building.md#import-std-and-import-stdcompat): (neither exports macros): the module needed &lt;… <sub>`ImportStd.MacrosNeedTheHeader`</sub> | ✅ | ⏭<sup>23</sup> | ✅ |
+| [import std; and import std.compat;](examples/language/modules/building.md#import-std-and-import-stdcompat): std.compat declares the global-namespace C na… <sub>`ImportStd.StdCompatHasGlobalCNames`</sub> | ✅ | ⏭<sup>23</sup> | ✅ |
+| modules.md "Header units": not built here. <sub>`ImportStd.HeaderUnits`</sub> | ⏭<sup>24</sup> | ⏭<sup>24</sup> | ⏭<sup>24</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [import-std-and-import-stdcompat](examples/language/modules/building.md#import-std-and-import-stdcompat) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/modules/modules.md</code>: 10 features, 18 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| building.md "import std; and import std.compat;": the library advertises the st… <sub>`Modules.ImportStdIsAdvertisedByLibrary`</sub> | ✅ | ✅ | ✅ |
+| [Interface and implementation units](examples/language/modules/modules.md#interface-and-implementation-units): exported functions, one defined in math.cpp. <sub>`Modules.InterfaceAndImplementationUnit`</sub> | ✅ | ✅ | ✅ |
+| [Export forms](examples/language/modules/modules.md#export-forms): a class, a function, an export block, an exported namespace, an exp… <sub>`Modules.ExportForms`</sub> | ✅ | ✅ | ✅ |
+| [The global and private module fragments](examples/language/modules/modules.md#the-global-and-private-module-fragments): the module's #define doesn't reach the i… <sub>`Modules.GlobalModuleFragmentMacrosDontLeak`</sub> | ✅ | ✅ | ✅ |
+| [The global and private module fragments](examples/language/modules/modules.md#the-global-and-private-module-fragments): importers call next(); its state lives a… <sub>`Modules.PrivateModuleFragment`</sub> | ⏭<sup>25</sup> | ⏭<sup>25</sup> | ✅ |
+| [Partitions](examples/language/modules/modules.md#partitions): `import geo;` sees what the primary interface re-exports from :types… <sub>`ModulePartitions.ReexportedInterfacePartitions`</sub> | ✅ | ✅ | ✅ |
+| [Module linkage, visibility and reachability](examples/language/modules/modules.md#module-linkage-visibility-and-reachability): module linkage — the program links,… <sub>`ModuleLinkage.ModuleLinkageNamesDontClash`</sub> | ✅ | ✅ | ✅ |
+| [Module linkage, visibility and reachability](examples/language/modules/modules.md#module-linkage-visibility-and-reachability): the non-exported Token is usable thr… <sub>`ModuleLinkage.ReachableButNotVisible`</sub> | ✅ | ✅ | ✅ |
+| [Module linkage, visibility and reachability](examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (visibility): wrapper uses base inte… <sub>`ModuleLinkage.NonExportedImportStillWorksInside`</sub> | ✅ | ✅ | ✅ |
+| [Module linkage, visibility and reachability](examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (reachability): an exported template… <sub>`ModuleLinkage.ExportedTemplateUsesNonExportedHelper`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [interface-and-implementation-units](examples/language/modules/modules.md#interface-and-implementation-units) | 4 | ✅ | ✅ | ✅ |
+| [export-forms](examples/language/modules/modules.md#export-forms) | 3 | ✅ | ✅ | ✅ |
+| [partitions](examples/language/modules/modules.md#partitions) | 4 | ✅ | ✅ | ✅ |
+| [module-linkage-visibility-and-reachability](examples/language/modules/modules.md#module-linkage-visibility-and-reachability) | 3 | ✅ | ✅ | ✅ |
+| [the-global-and-private-module-fragments](examples/language/modules/modules.md#the-global-and-private-module-fragments) | 3 | ✅ ⏭<sup>26</sup> | ✅ ⏭<sup>26</sup> | ✅ ⏭<sup>26</sup> |
+| [header-units](examples/language/modules/modules.md#header-units) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/preprocessor/embed.md</code>: 6 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Examples](examples/language/preprocessor/embed.md#examples): bytes into an array, suffix(, 0) for a terminator, limit(2), vendor off… <sub>`Embed.BytesSuffixLimitOffset`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/language/preprocessor/embed.md#mental-model): / "Gotchas": each element is an int literal, not a byte. <sub>`Embed.ElementsAreIntLiterals`</sub> | ✅ | ✅ | ✅ |
+| [if_empty, prefix, suffix](examples/language/preprocessor/embed.md#if_empty-prefix-suffix): prefix/suffix only for non-empty, if_empty only for emp… <sub>`Embed.IfEmptyPrefixSuffix`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/language/preprocessor/embed.md#declaration): __has_embed returns NOT_FOUND (0), FOUND (1) or EMPTY (2). <sub>`Embed.HasEmbedValues`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/preprocessor/embed.md#gotchas): limit(n) with a constexpr variable is an unknown identifier, i.e. limit(… <sub>`Embed.LimitWithConstexprVariableIsZero`</sub> | ✅ | ✅ | ✅ |
+| [Compiler support (tested)](examples/language/preprocessor/embed.md#compiler-support-tested): __cpp_pp_embed, and the standard offset (C++29) not ye… <sub>`Embed.CompilerSupport`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [bytes-into-an-array](examples/language/preprocessor/embed.md#bytes-into-an-array) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [a-null-terminated-string-suffix](examples/language/preprocessor/embed.md#a-null-terminated-string-suffix) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [limit-and-skipping-bytes-today](examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today) | 2 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [if_empty-prefix-suffix](examples/language/preprocessor/embed.md#if_empty-prefix-suffix) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [optional-resources-with-__has_embed](examples/language/preprocessor/embed.md#optional-resources-with-__has_embed) | 1 | ✅ | ✅ | ✅ |
+| [a-missing-resource-is-an-error](examples/language/preprocessor/embed.md#a-missing-resource-is-an-error) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/preprocessor/preprocessor.md</code>: 10 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Gotchas](examples/language/preprocessor/preprocessor.md#gotchas): an unparenthesized macro gives SQ(1+2) == 5; the parenthesized one gives… <sub>`Preprocessor.FunctionLikeMacroParentheses`</sub> | ✅ | ✅ | ✅ |
+| [Macros (#define)](examples/language/preprocessor/preprocessor.md#macros-define): #undef removes the definition. <sub>`Preprocessor.Undef`</sub> | ✅ | ✅ | ✅ |
+| [Useful predefined macros](examples/language/preprocessor/preprocessor.md#useful-predefined-macros): __FILE__, __LINE__, __func__, __cplusplus. <sub>`Preprocessor.PredefinedMacros`</sub> | ✅ | ✅ | ✅ |
+| [Conditional compilation](examples/language/preprocessor/preprocessor.md#conditional-compilation): __cpp_lib_format &gt;= 201907L means &lt;format&gt; is usable. <sub>`Preprocessor.FeatureTestMacroGatesInclude`</sub> | ✅ | ✅ | ✅ |
+| [#include](examples/language/preprocessor/preprocessor.md#include): the classic include guard skips the body the second time. <sub>`Preprocessor.IncludeGuard`</sub> | ✅ | ✅ | ✅ |
+| **Macros**: no scope — a macro defined inside a namespace is visible everywhere after… <sub>`Preprocessor.MacrosIgnoreScope`</sub> | ✅ | ✅ | ✅ |
+| [Conditional compilation](examples/language/preprocessor/preprocessor.md#conditional-compilation): exactly one platform branch (or none) is kept. <sub>`Preprocessor.PlatformBranches`</sub> | ✅ | ✅ | ✅ |
+| [Useful predefined macros](examples/language/preprocessor/preprocessor.md#useful-predefined-macros): assert is compiled out when NDEBUG is defined. <sub>`Preprocessor.AssertAndNdebug`</sub> | ✅ | ✅ | ✅ |
+| [Variadic macros and __VA_OPT__ (C++20)](examples/language/preprocessor/preprocessor.md#variadic-macros-and-__va_opt__-c20): no dangling comma when the pack is empty. <sub>`Preprocessor.VaOptDropsComma`</sub> | ✅ | ✅ | ✅ |
+| [Conditional compilation](examples/language/preprocessor/preprocessor.md#conditional-compilation): #elifdef / #elifndef (C++23) and __has_include (C++17). <sub>`Preprocessor.ElifdefAndHasInclude`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [include](examples/language/preprocessor/preprocessor.md#include) | 2 | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> | ✅ ⏭<sup>1</sup> |
+| [macros-define](examples/language/preprocessor/preprocessor.md#macros-define) | 1 | ✅ | ✅ | ✅ |
+| [variadic-macros-and-__va_opt__-c20](examples/language/preprocessor/preprocessor.md#variadic-macros-and-__va_opt__-c20) | 1 | ✅ | ✅ | ✅ |
+| [conditional-compilation](examples/language/preprocessor/preprocessor.md#conditional-compilation) | 2 | ✅ | ✅ | ✅ |
+| [useful-predefined-macros](examples/language/preprocessor/preprocessor.md#useful-predefined-macros) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/statements/iteration.md</code>: 6 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **range-for**: auto&amp; mutates in place, init-statement, structured bindings over a map. <sub>`Iteration.RangeFor`</sub> | ✅ | ✅ | ✅ |
+| [Classic for / while / do-while](examples/language/statements/iteration.md#classic-for--while--do-while): while runs zero times, do-while at least once. <sub>`Iteration.ClassicLoops`</sub> | ✅ | ✅ | ✅ |
+| **break / continue**: negatives are skipped, the loop stops at the first x &gt; 100. <sub>`Iteration.BreakContinue`</sub> | ✅ | ✅ | ✅ |
+| **template for**: one body per tuple element, each with its own type (C++26). <sub>`Iteration.ExpansionStatement`</sub> | ⏭<sup>27</sup> | ✅ | ⏭<sup>27</sup> |
+| [Prefer algorithms over hand loops](examples/language/statements/iteration.md#prefer-algorithms-over-hand-loops): any_of and a filter view. <sub>`Iteration.AlgorithmsOverLoops`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/statements/iteration.md#gotchas): C++23 (P2718) keeps temporaries in the range-initializer alive for the l… <sub>`Iteration.TemporaryRangeLifetimeExtended`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [range-for--prefer-this](examples/language/statements/iteration.md#range-for--prefer-this) | 1 | ✅ | ✅ | ✅ |
+| [classic-for--while--do-while](examples/language/statements/iteration.md#classic-for--while--do-while) | 1 | ✅ | ✅ | ✅ |
+| [break--continue-and-loop-control](examples/language/statements/iteration.md#break--continue-and-loop-control) | 1 | ✅ | ✅ | ✅ |
+| [template-for--expansion-statements-c26](examples/language/statements/iteration.md#template-for--expansion-statements-c26) | 1 | ⏭<sup>28</sup> | ⏭<sup>28</sup> | ⏭<sup>28</sup> |
+| [prefer-algorithms-over-hand-loops](examples/language/statements/iteration.md#prefer-algorithms-over-hand-loops) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/statements/jump-statements.md</code>: 7 features, 8 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/language/statements/jump-statements.md#mental-model): break/return/goto out of a scope destroy its locals in reverse orde… <sub>`JumpStatements.JumpsRunDestructors`</sub> | ✅ | ✅ | ✅ |
+| [break and continue](examples/language/statements/jump-statements.md#break-and-continue): first_negative, and break/continue inside a switch in a loop. <sub>`JumpStatements.BreakAndContinue`</sub> | ✅ | ✅ | ✅ |
+| [return](examples/language/statements/jump-statements.md#return): braced result, returning a void expression, implicit move of locals. <sub>`JumpStatements.Return`</sub> | ✅ | ✅ | ✅ |
+| [goto out of nested loops](examples/language/statements/jump-statements.md#goto-out-of-nested-loops): contains() and the ranges::contains equivalent agree. <sub>`JumpStatements.GotoOutOfNestedLoops`</sub> | ✅ | ✅ | ✅ |
+| **break in an expansion statement**: prints 1, then 120, then stops at the double. <sub>`JumpStatements.BreakInExpansionStatement`</sub> | ⏭<sup>27</sup> | ✅ | ⏭<sup>27</sup> |
+| [Labels at the end of a block (C++23)](examples/language/statements/jump-statements.md#labels-at-the-end-of-a-block-c23): report(0) jumps straight to the label. <sub>`JumpStatements.LabelAtEndOfBlock`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/statements/jump-statements.md#gotchas): goto in a constexpr function is fine as long as it isn't evaluated. <sub>`JumpStatements.GotoInConstexprFunction`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [break-and-continue](examples/language/statements/jump-statements.md#break-and-continue) | 1 | ✅ | ✅ | ✅ |
+| [return](examples/language/statements/jump-statements.md#return) | 1 | ✅ | ✅ | ✅ |
+| [goto-out-of-nested-loops](examples/language/statements/jump-statements.md#goto-out-of-nested-loops) | 2 | ✅ | ✅ | ✅ |
+| [break-in-an-expansion-statement-c26](examples/language/statements/jump-statements.md#break-in-an-expansion-statement-c26) | 1 | ⏭<sup>28</sup> | ⏭<sup>28</sup> | ⏭<sup>28</sup> |
+| [labels-at-the-end-of-a-block-c23](examples/language/statements/jump-statements.md#labels-at-the-end-of-a-block-c23) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/language/statements/jump-statements.md#gotchas) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/statements/selection.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [switch](examples/language/statements/selection.md#switch): 1 and 2 share a handler; 3 falls through into 4; others hit default. <sub>`Selection.SwitchFallthrough`</sub> | ✅ | ✅ | ✅ |
+| **if — with an init-statement**: the variable is visible in both branches. <sub>`Selection.IfWithInitStatement`</sub> | ✅ | ✅ | ✅ |
+| **if constexpr**: the untaken branch is discarded per instantiation. <sub>`Selection.IfConstexprDiscardsBranch`</sub> | ✅ | ✅ | ✅ |
+| [switch](examples/language/statements/selection.md#switch): init-statement, enum cases, and a braced case body that declares a variab… <sub>`Selection.SwitchInitEnumAndBracedCase`</sub> | ✅ | ✅ | ✅ |
+| [Structured binding as a condition (C++26)](examples/language/statements/selection.md#structured-binding-as-a-condition-c26): the whole object is tested, then bound. <sub>`Selection.StructuredBindingAsCondition`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [if--with-an-init-statement-c17](examples/language/statements/selection.md#if--with-an-init-statement-c17) | 1 | ✅ | ✅ | ✅ |
+| [structured-binding-as-a-condition-c26](examples/language/statements/selection.md#structured-binding-as-a-condition-c26) | 1 | ✅ | ✅ | ✅ |
+| [if-constexpr--compile-time-branch-c17](examples/language/statements/selection.md#if-constexpr--compile-time-branch-c17) | 1 | ✅ | ✅ | ✅ |
+| [switch](examples/language/statements/selection.md#switch) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/templates/constraints.md</code>: 7 features, 9 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [requires-expressions](examples/language/templates/constraints.md#requires-expressions): all four requirement kinds; Container&lt;vector&lt;int&gt;&gt; holds, C… <sub>`Constraints.RequiresExpressionKinds`</sub> | ✅ | ✅ | ✅ |
+| [requires-expressions](examples/language/templates/constraints.md#requires-expressions): used directly as a bool in if constexpr. <sub>`Constraints.RequiresExpressionInIfConstexpr`</sub> | ✅ | ✅ | ✅ |
+| **Abbreviated function templates**: each constrained auto is an independent parameter. <sub>`Constraints.AbbreviatedTemplatesAndConstrainedAuto`</sub> | ✅ | ✅ | ✅ |
+| **Constraining members**: a conditionally trivial destructor; a member switched off b… <sub>`Constraints.ConstrainedMembers`</sub> | ✅ | ✅ | ✅ |
+| **Partial ordering by constraints**: Pet subsumes Animal; random_access_iterator subs… <sub>`Constraints.SubsumptionPicksMoreConstrained`</sub> | ✅ | ✅ | ✅ |
+| [Subsumption only sees through named concepts](examples/language/templates/constraints.md#subsumption-only-sees-through-named-concepts): with the trait wrapped in a concept… <sub>`Constraints.NamedConceptsSubsume`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/templates/constraints.md#gotchas): `requires N &gt; 0;` tests the value; `N &gt; 0;` only tests validity. <sub>`Constraints.NestedVersusSimpleRequirement`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/language/templates/constraints.md#declaration) | 1 | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ⏭<sup>1</sup> |
+| [requires-expressions](examples/language/templates/constraints.md#requires-expressions) | 2 | ✅ | ✅ | ✅ |
+| [abbreviated-function-templates-and-constrained-auto](examples/language/templates/constraints.md#abbreviated-function-templates-and-constrained-auto) | 3 | ✅ | ✅ | ✅ |
+| [constraining-members-of-class-templates](examples/language/templates/constraints.md#constraining-members-of-class-templates) | 1 | ✅ | ✅ | ✅ |
+| [partial-ordering-by-constraints-subsumption](examples/language/templates/constraints.md#partial-ordering-by-constraints-subsumption) | 1 | ✅ | ✅ | ✅ |
+| [subsumption-only-sees-through-named-concepts](examples/language/templates/constraints.md#subsumption-only-sees-through-named-concepts) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/templates/specialization-ctad.md</code>: 6 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Full specialization](examples/language/templates/specialization-ctad.md#full-specialization): Serializer&lt;bool&gt; replaces the primary for bool. <sub>`SpecializationCtad.FullSpecialization`</sub> | ✅ | ✅ | ✅ |
+| **Partial specialization**: patterns such as T* and std::vector&lt;T&gt;; functions overloa… <sub>`SpecializationCtad.PartialSpecializationAndOverloading`</sub> | ✅ | ✅ | ✅ |
+| **CTAD**: the deduced types listed on the page. <sub>`SpecializationCtad.CtadDeducesFromConstructorArguments`</sub> | ✅ | ✅ | ✅ |
+| **Deduction guides**: the guide maps const char* to std::string; the library's iterat… <sub>`SpecializationCtad.DeductionGuides`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/templates/specialization-ctad.md#gotchas): std::pair p{1, "x"} deduces pair&lt;int, const char*&gt;, not std::string. <sub>`SpecializationCtad.CtadCanSurprise`</sub> | ✅ | ✅ | ✅ |
+| [Full specialization](examples/language/templates/specialization-ctad.md#full-specialization): overload resolution picks the T* primary, never seeing #1's… <sub>`SpecializationCtad.FunctionSpecializationIgnoredByOverloading`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [full-specialization](examples/language/templates/specialization-ctad.md#full-specialization) | 2 | ✅ | ✅ | ✅ |
+| [partial-specialization-class-templates-only](examples/language/templates/specialization-ctad.md#partial-specialization-class-templates-only) | 1 | ✅ | ✅ | ✅ |
+| [ctad--class-template-argument-deduction-c17](examples/language/templates/specialization-ctad.md#ctad--class-template-argument-deduction-c17) | 1 | ✅ | ✅ | ✅ |
+| [deduction-guides--help-ctad-when-needed](examples/language/templates/specialization-ctad.md#deduction-guides--help-ctad-when-needed) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/templates/templates-basics.md</code>: 5 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Function templates](examples/language/templates/templates-basics.md#function-templates): T is deduced from the arguments or supplied explicitly. <sub>`TemplatesBasics.FunctionTemplateDeduction`</sub> | ✅ | ✅ | ✅ |
+| [Class templates](examples/language/templates/templates-basics.md#class-templates): Box&lt;int&gt;, and CTAD deduces Box&lt;std::string&gt; from "hi"s. <sub>`TemplatesBasics.ClassTemplateAndCtad`</sub> | ✅ | ✅ | ✅ |
+| **Non-type template parameters**: sizes, values, and (C++20) floating-point and class… <sub>`TemplatesBasics.NonTypeTemplateParameters`</sub> | ✅ | ✅ | ✅ |
+| **Constraining templates**: the integral and floating_point overloads are picked by c… <sub>`TemplatesBasics.ConstrainedOverloads`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/templates/templates-basics.md#gotchas): `typename T::value_type` and `obj.template method&lt;U&gt;()` in dependent con… <sub>`TemplatesBasics.Disambiguators`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [function-templates](examples/language/templates/templates-basics.md#function-templates) | 1 | ✅ | ✅ | ✅ |
+| [class-templates](examples/language/templates/templates-basics.md#class-templates) | 1 | ✅ | ✅ | ✅ |
+| [non-type-template-parameters-nttps](examples/language/templates/templates-basics.md#non-type-template-parameters-nttps) | 1 | ✅ | ✅ | ✅ |
+| [template-template-parameters](examples/language/templates/templates-basics.md#template-template-parameters) | 1 | ✅ | ✅ | ✅ |
+| [constraining-templates-c20](examples/language/templates/templates-basics.md#constraining-templates-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/language/templates/variadic-templates.md</code>: 7 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Parameter packs](examples/language/templates/variadic-templates.md#parameter-packs): and "Expansion": sizeof... counts; xs... expands into a braced l… <sub>`VariadicTemplates.SizeofAndExpansion`</sub> | ✅ | ✅ | ✅ |
+| **Fold expressions**: sum, all, and right vs left association; empty &amp;&amp; fold is true. <sub>`VariadicTemplates.FoldExpressions`</sub> | ✅ | ✅ | ✅ |
+| **Fold expressions**: and "Recursive expansion": both print each element followed by… <sub>`VariadicTemplates.CommaFoldAndRecursionPrintTheSame`</sub> | ✅ | ✅ | ✅ |
+| [Pack indexing (C++26)](examples/language/templates/variadic-templates.md#pack-indexing-c26): Ts...[0] / args...[i] pick an element directly. <sub>`VariadicTemplates.PackIndexing`</sub> | ✅ | ✅ | ✅ |
+| [Expansion](examples/language/templates/variadic-templates.md#expansion): std::forward&lt;Args&gt;(args)... preserves each argument's value category. <sub>`VariadicTemplates.PerfectForwardingExpansion`</sub> | ✅ | ✅ | ✅ |
+| **Fold expressions**: the two init-value forms; empty \|\| is false and empty , is void. <sub>`VariadicTemplates.InitFoldsAndEmptyPacks`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/language/templates/variadic-templates.md#gotchas): f(g(args)...) calls g per argument; f(g(args...)) passes the whole pack… <sub>`VariadicTemplates.EllipsisPlacementDefinesThePattern`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [parameter-packs](examples/language/templates/variadic-templates.md#parameter-packs) | 1 | ✅ | ✅ | ✅ |
+| [expansion](examples/language/templates/variadic-templates.md#expansion) | 1 | ✅ | ✅ | ✅ |
+| [fold-expressions-c17--reduce-a-pack](examples/language/templates/variadic-templates.md#fold-expressions-c17--reduce-a-pack) | 1 | ✅ | ✅ | ✅ |
+| [recursive-expansion-pre-fold-still-useful](examples/language/templates/variadic-templates.md#recursive-expansion-pre-fold-still-useful) | 1 | ✅ | ✅ | ✅ |
+| [pack-indexing-c26](examples/language/templates/variadic-templates.md#pack-indexing-c26) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. nocompile
+2. needs __cpp_contracts (not defined by this toolchain)
+3. needs contracts
+4. needs a compiler that implements erroneous behaviour (GCC 16)
+5. needs a build with -ffreestanding; the suite builds hosted only (checked by hand: g++-15 and clang++ 22 -ffreestanding give __STDC_HOSTED__…
+6. needs __STDCPP_FLOAT32_T__ (not defined by this toolchain)
+7. contract_assert is a keyword here (the compile-fail fence covers GCC 16)
+8. gtest_main owns main(), so its implicit return and argv can't be observed here
+9. macOS libc has no quick_exit (libc++ declares std::quick_exit only if ::quick_exit exists)
+10. internal vs external linkage and the ODR are only observable across translation units
+11. needs __cpp_lib_generator (not defined by this toolchain)
+12. needs __cpp_structured_bindings &gt;= 202411L (this toolchain has 202403L)
+13. needs structured-binding-packs
+14. needs constexpr-structured-bindings
+15. std::nested_exception doesn't capture current_exception() on this toolchain (seen with Homebrew GCC 15 on macOS); std::rethrow_if_nested wo…
+16. std::fabs isn't constexpr in this library (no __cpp_lib_constexpr_cmath)
+17. needs constexpr-cmath
+18. needs __cpp_constexpr_exceptions &gt;= 202411L (not defined by this toolchain)
+19. needs constexpr-exceptions
+20. needs __cpp_impl_reflection (not defined by this toolchain)
+21. needs reflection
+22. needs __cpp_lib_move_only_function (not defined by this toolchain)
+23. CMake 3.31.6: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions test…
+24. header units (import &lt;vector&gt;;): CMake doesn't support them (cmake-cxxmodules(7), Limitations); checked by tools/check_snippets.py instead
+25. private module fragment: GCC 15/16 say "sorry, unimplemented"
+26. needs private-module-fragment
+27. needs __cpp_expansion_statements (not defined by this toolchain)
+28. needs expansion-statements
+
+</details>
+
+### language-support
+
+7 pages · 44 features · 28 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/language-support/comparison.md](examples/language-support/comparison.md) | 6 | 3 | ✅ |
+| [examples/language-support/initializer-list.md](examples/language-support/initializer-list.md) | 8 | 5 | ✅ |
+| [examples/language-support/non-local-jumps.md](examples/language-support/non-local-jumps.md) | 3 | 4 | 🟡 1 |
+| [examples/language-support/numeric-limits.md](examples/language-support/numeric-limits.md) | 8 | 4 | ✅ |
+| [examples/language-support/signals.md](examples/language-support/signals.md) | 5 | 3 | 🟡 1 |
+| [examples/language-support/source-location.md](examples/language-support/source-location.md) | 7 | 4 | ✅ |
+| [examples/language-support/type-info.md](examples/language-support/type-info.md) | 7 | 5 | 🟡 1 |
+
+<details><summary><code>examples/language-support/comparison.md</code>: 6 features, 3 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Default it — the common case](examples/language-support/comparison.md#default-it--the-common-case): lexicographic on x then y; all six operators; sorta… <sub>`Comparison.DefaultedIsLexicographic`</sub> | ✅ |
+| [Custom ordering](examples/language-support/comparison.md#custom-ordering): field-by-field comparison. <sub>`Comparison.CustomOrdering`</sub> | ✅ |
+| [Using the result](examples/language-support/comparison.md#using-the-result): int &lt;=&gt; int is strong_ordering; floats give partial_ordering, N… <sub>`Comparison.OrderingCategories`</sub> | ✅ |
+| [Gotchas](examples/language-support/comparison.md#gotchas): a user-written &lt;=&gt; does not give ==; a defaulted &lt;=&gt; also declares a def… <sub>`Comparison.EqualityIsNotSynthesizedFromCustomSpaceship`</sub> | ✅ |
+| [The three ordering types](examples/language-support/comparison.md#the-three-ordering-types): weak_ordering for equivalent-but-not-identical values,… <sub>`Comparison.WeakOrderingEquivalence`</sub> | ✅ |
+| [Gotchas](examples/language-support/comparison.md#gotchas): a defaulted &lt;=&gt; compares bases first, then members in declaration order. <sub>`Comparison.BasesBeforeMembers`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [default-it--the-common-case](examples/language-support/comparison.md#default-it--the-common-case) | 1 | ✅ |
+| [custom-ordering](examples/language-support/comparison.md#custom-ordering) | 1 | ✅ |
+| [using-the-result](examples/language-support/comparison.md#using-the-result) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/initializer-list.md</code>: 8 features, 5 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Accepting one](examples/language-support/initializer-list.md#accepting-one): a braced list becomes an initializer_list with begin/end/size. <sub>`InitializerList.AcceptingOne`</sub> | ✅ |
+| [Why containers feel built-in](examples/language-support/initializer-list.md#why-containers-feel-built-in): vector, map and the accumulate lambda (6). <sub>`InitializerList.ContainersAndSum`</sub> | ✅ |
+| [Gotchas](examples/language-support/initializer-list.md#gotchas): v(3, 0) is {0,0,0}; v{3, 0} prefers the initializer_list constructor. <sub>`InitializerList.ParensVersusBraces`</sub> | ✅ |
+| [Gotchas](examples/language-support/initializer-list.md#gotchas): elements are const (contiguous, read-only), so you can't move out (std::… <sub>`InitializerList.ElementsAreConst`</sub> | ✅ |
+| [Gotchas](examples/language-support/initializer-list.md#gotchas): homogeneous — every element converts to one T. <sub>`InitializerList.Homogeneous`</sub> | ✅ |
+| [Declaration](examples/language-support/initializer-list.md#declaration): begin()/end() are const E*; free std::begin/end work; copying copies… <sub>`InitializerList.DeclarationMembers`</sub> | ✅ |
+| [What auto deduces](examples/language-support/initializer-list.md#what-auto-deduces): auto a = {…} is an initializer_list; auto b{1} is int (N3922). <sub>`InitializerList.AutoDeduction`</sub> | ✅ |
+| [Gotchas](examples/language-support/initializer-list.md#gotchas): narrowing is an error inside braces. <sub>`InitializerList.NarrowingRejected`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/initializer-list.md#declaration) | 1 | ✅ |
+| [accepting-one](examples/language-support/initializer-list.md#accepting-one) | 1 | ✅ |
+| [why-containers-feel-built-in](examples/language-support/initializer-list.md#why-containers-feel-built-in) | 1 | ✅ |
+| [what-auto-deduces](examples/language-support/initializer-list.md#what-auto-deduces) | 1 | ✅ |
+| [gotchas](examples/language-support/initializer-list.md#gotchas) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/non-local-jumps.md</code>: 3 features, 4 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Escaping from deep recursion](examples/language-support/non-local-jumps.md#escaping-from-deep-recursion): and "Mental model": four frames entered, all abando… <sub>`NonLocalJumps.EscapeFromDeepRecursion`</sub> | ✅ |
+| [longjmp(env, 0) returns 1](examples/language-support/non-local-jumps.md#longjmpenv-0-returns-1): . <sub>`NonLocalJumps.LongjmpZeroReturnsOne`</sub> | ✅ |
+| [Gotchas](examples/language-support/non-local-jumps.md#gotchas): the volatile local keeps its post-setjmp value; the plain one is indeter… <sub>`NonLocalJumps.VolatileLocalSurvives`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/non-local-jumps.md#declaration) | 1 | ⏭<sup>1</sup> |
+| [escaping-from-deep-recursion](examples/language-support/non-local-jumps.md#escaping-from-deep-recursion) | 1 | ✅ |
+| [longjmpenv-0-returns-1](examples/language-support/non-local-jumps.md#longjmpenv-0-returns-1) | 1 | ✅ |
+| [gotchas](examples/language-support/non-local-jumps.md#gotchas) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/numeric-limits.md</code>: 8 features, 4 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Examples](examples/language-support/numeric-limits.md#examples): the values in the comments. <sub>`NumericLimits.Tour`</sub> | ✅ |
+| [Gotchas](examples/language-support/numeric-limits.md#gotchas): epsilon is the gap at 1.0. <sub>`NumericLimits.EpsilonIsGapAtOne`</sub> | ✅ |
+| [Common uses](examples/language-support/numeric-limits.md#common-uses): a running max starts at lowest(); nearly_equal scales epsilon. <sub>`NumericLimits.CommonUses`</sub> | ✅ |
+| [Gotchas](examples/language-support/numeric-limits.md#gotchas): all constexpr — usable as an array bound. <sub>`NumericLimits.Constexpr`</sub> | ✅ |
+| [Declaration](examples/language-support/numeric-limits.md#declaration): lowest() equals min() for integers; digits10/max_digits10 values. <sub>`NumericLimits.DeclarationTable`</sub> | ✅ |
+| [Check before you overflow](examples/language-support/numeric-limits.md#check-before-you-overflow): checked_add from the page. <sub>`NumericLimits.CheckedAdd`</sub> | ✅ |
+| [Gotchas](examples/language-support/numeric-limits.md#gotchas): an unspecialized type compiles silently with is_specialized false. <sub>`NumericLimits.UnspecializedType`</sub> | ✅ |
+| [Gotchas](examples/language-support/numeric-limits.md#gotchas): char-sized results print as characters; unary + promotes. <sub>`NumericLimits.CharSizedPrintsAsChar`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/numeric-limits.md#declaration) | 1 | ✅ |
+| [examples](examples/language-support/numeric-limits.md#examples) | 1 | ✅ |
+| [common-uses](examples/language-support/numeric-limits.md#common-uses) | 1 | ✅ |
+| [check-before-you-overflow](examples/language-support/numeric-limits.md#check-before-you-overflow) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/signals.md</code>: 5 features, 3 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Set a flag, react outside the handler](examples/language-support/signals.md#set-a-flag-react-outside-the-handler): the handler runs before raise returns. <sub>`Signals.HandlerRunsBeforeRaiseReturns`</sub> | ✅ |
+| **Set a flag**: SIG_IGN ignores SIGTERM; the previous handler was SIG_DFL. <sub>`Signals.IgnoreAndPreviousDefault`</sub> | ✅ |
+| [Gotchas](examples/language-support/signals.md#gotchas): macOS and glibc keep the handler installed after it runs. <sub>`Signals.HandlerStaysInstalled`</sub> | ✅ |
+| [Declaration](examples/language-support/signals.md#declaration): the six standard signals are distinct. <sub>`Signals.SixStandardSignals`</sub> | ✅ |
+| [Gotchas](examples/language-support/signals.md#gotchas): destructors don't run when the default action terminates the process. <sub>`SignalsDeathTest.DefaultActionTerminates`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/signals.md#declaration) | 1 | ⏭<sup>1</sup> |
+| [set-a-flag-react-outside-the-handler](examples/language-support/signals.md#set-a-flag-react-outside-the-handler) | 1 | ✅ |
+| [a-shutdown-loop](examples/language-support/signals.md#a-shutdown-loop) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/source-location.md</code>: 7 features, 4 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Logging that knows its caller](examples/language-support/source-location.md#logging-that-knows-its-caller): as a default argument it captures the call site. <sub>`SourceLocation.DefaultArgumentCapturesCaller`</sub> | ✅ |
+| [Gotchas](examples/language-support/source-location.md#gotchas): inside the body it records the helper's own location. <sub>`SourceLocation.InBodyCapturesHelper`</sub> | ✅ |
+| [What it exposes](examples/language-support/source-location.md#what-it-exposes): the member types. <sub>`SourceLocation.MemberTypes`</sub> | ✅ |
+| [Gotchas](examples/language-support/source-location.md#gotchas): function_name() formatting is implementation-defined — GCC prints the si… <sub>`SourceLocation.FunctionNameIsImplementationDefined`</sub> | ✅ |
+| [Declaration](examples/language-support/source-location.md#declaration): a default-constructed location is "unknown"; it's trivially copyable. <sub>`SourceLocation.DefaultIsUnknown`</sub> | ✅ |
+| [With a variadic function](examples/language-support/source-location.md#with-a-variadic-function): the fmt_loc wrapper reports the caller's line. <sub>`SourceLocation.VariadicWrapper`</sub> | ✅ |
+| [Gotchas](examples/language-support/source-location.md#gotchas): column() differs — GCC reports the '(' of the call, Clang the start of t… <sub>`SourceLocation.ColumnDiffersByCompiler`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/source-location.md#declaration) | 1 | ✅ |
+| [logging-that-knows-its-caller](examples/language-support/source-location.md#logging-that-knows-its-caller) | 1 | ✅ |
+| [what-it-exposes](examples/language-support/source-location.md#what-it-exposes) | 1 | ✅ |
+| [with-a-variadic-function](examples/language-support/source-location.md#with-a-variadic-function) | 1 | ✅ |
+
+</details>
+
+<details><summary><code>examples/language-support/type-info.md</code>: 7 features, 5 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| [Static vs dynamic type](examples/language-support/type-info.md#static-vs-dynamic-type): the three trues. <sub>`TypeInfo.StaticVersusDynamic`</sub> | ✅ |
+| [Mental model](examples/language-support/type-info.md#mental-model): type_info isn't copyable or assignable; type_index is copyable, ord… <sub>`TypeInfo.TypeInfoVersusTypeIndex`</sub> | ✅ |
+| [A map keyed by type](examples/language-support/type-info.md#a-map-keyed-by-type): . <sub>`TypeInfo.MapKeyedByType`</sub> | ✅ |
+| [name() is mangled on GCC and Clang](examples/language-support/type-info.md#name-is-mangled-on-gcc-and-clang): + "Gotchas": the exact spellings. <sub>`TypeInfo.NameIsImplementationDefined`</sub> | ✅ |
+| [Gotchas](examples/language-support/type-info.md#gotchas): before() order differs — false with libstdc++, true with libc++. <sub>`TypeInfo.BeforeIsImplementationDefined`</sub> | ✅ |
+| [typeid on a null pointer throws](examples/language-support/type-info.md#typeid-on-a-null-pointer-throws): bad_typeid. <sub>`TypeInfo.NullPolymorphicThrows`</sub> | ✅ |
+| [Gotchas](examples/language-support/type-info.md#gotchas): the operand is evaluated only for polymorphic glvalues. <sub>`TypeInfo.OperandEvaluatedOnlyIfPolymorphic`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [declaration](examples/language-support/type-info.md#declaration) | 1 | ⏭<sup>1</sup> |
+| [static-vs-dynamic-type](examples/language-support/type-info.md#static-vs-dynamic-type) | 1 | ✅ |
+| [a-map-keyed-by-type](examples/language-support/type-info.md#a-map-keyed-by-type) | 1 | ✅ |
+| [name-is-mangled-on-gcc-and-clang](examples/language-support/type-info.md#name-is-mangled-on-gcc-and-clang) | 1 | ✅ |
+| [typeid-on-a-null-pointer-throws](examples/language-support/type-info.md#typeid-on-a-null-pointer-throws) | 1 | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. nocompile
+
+</details>
+
+### memory
+
+7 pages · 55 features · 30 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/memory/allocators.md](examples/memory/allocators.md) | 7 | 4 | 🟡 2 | 🟡 1 | 🟡 1 |
+| [examples/memory/indirect-polymorphic.md](examples/memory/indirect-polymorphic.md) | 5 | 4 | 🟡 9 | 🟡 4 | 🟡 9 |
+| [examples/memory/memory-resources.md](examples/memory/memory-resources.md) | 7 | 1 | ✅ | ✅ | ✅ |
+| [examples/memory/raw-memory.md](examples/memory/raw-memory.md) | 10 | 7 | 🟡 2 | 🟡 1 | 🟡 2 |
+| [examples/memory/shared_ptr.md](examples/memory/shared_ptr.md) | 8 | 3 | ✅ | ✅ | ✅ |
+| [examples/memory/unique_ptr.md](examples/memory/unique_ptr.md) | 11 | 6 | ✅ | ✅ | ✅ |
+| [examples/memory/weak_ptr.md](examples/memory/weak_ptr.md) | 7 | 5 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/memory/allocators.md</code>: 7 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/memory/allocators.md#mental-model): containers default their trailing Allocator parameter to std::alloc… <sub>`Allocators.DefaultIsStdAllocator`</sub> | ✅ | ✅ | ✅ |
+| **allocator_traits**: a minimal allocator gets construct, max_size, rebind and the pr… <sub>`Allocators.TraitsSupplyDefaults`</sub> | ✅ | ✅ | ✅ |
+| [A minimal C++11+ allocator](examples/memory/allocators.md#a-minimal-c11-allocator): a vector really allocates through it. <sub>`Allocators.VectorUsesCustomAllocator`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/allocators.md#gotchas): the allocator type is part of the container type. <sub>`Allocators.AllocatorIsPartOfType`</sub> | ✅ | ✅ | ✅ |
+| **scoped_allocator_adaptor**: the vector passes its allocator down to each string. <sub>`Allocators.ScopedAdaptorPropagatesToElements`</sub> | ✅ | ✅ | ✅ |
+| **scoped_allocator_adaptor**: PMR containers pass their resource down by default. <sub>`Allocators.PmrPropagatesWithoutAdaptor`</sub> | ✅ | ✅ | ✅ |
+| [allocate_at_least (C++23)](examples/memory/allocators.md#allocate_at_least-c23): count &gt;= n; allocator_traits falls back to {allocate(n… <sub>`Allocators.AllocateAtLeast`</sub> | ⏭<sup>1</sup> | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [allocator_traits--the-indirection-layer](examples/memory/allocators.md#allocator_traits--the-indirection-layer) | 1 | ✅ | ✅ | ✅ |
+| [a-minimal-c11-allocator](examples/memory/allocators.md#a-minimal-c11-allocator) | 1 | ✅ | ✅ | ✅ |
+| [scoped_allocator_adaptor-one-allocator-for-nested-containers](examples/memory/allocators.md#scoped_allocator_adaptor-one-allocator-for-nested-containers) | 1 | ✅ | ✅ | ✅ |
+| [allocate_at_least-c23](examples/memory/allocators.md#allocate_at_least-c23) | 1 | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+
+</details>
+
+<details><summary><code>examples/memory/indirect-polymorphic.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [indirect for pImpl](examples/memory/indirect-polymorphic.md#indirect-for-pimpl): T may be incomplete where the member is declared. <sub>`IndirectPolymorphic.FeatureMacros`</sub> | ⏭<sup>3</sup> | ✅ | ⏭<sup>3</sup> |
+| [indirect: deep copy and value comparison](examples/memory/indirect-polymorphic.md#indirect-deep-copy-and-value-comparison): ; "Declaration": const-correct access. <sub>`IndirectPolymorphic.IndirectDeepCopyAndCompare`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [indirect for pImpl](examples/memory/indirect-polymorphic.md#indirect-for-pimpl): the defaulted copy constructor deep-copies Impl. <sub>`IndirectPolymorphic.IndirectPimplCopies`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [polymorphic: copying without clone()](examples/memory/indirect-polymorphic.md#polymorphic-copying-without-clone): copies keep the derived type; no ==. <sub>`IndirectPolymorphic.PolymorphicCopiesDerived`</sub> | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [Gotchas](examples/memory/indirect-polymorphic.md#gotchas): moved-from means valueless. <sub>`IndirectPolymorphic.MovedFromIsValueless`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/memory/indirect-polymorphic.md#declaration) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [indirect-deep-copy-and-value-comparison](examples/memory/indirect-polymorphic.md#indirect-deep-copy-and-value-comparison) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [indirect-for-pimpl](examples/memory/indirect-polymorphic.md#indirect-for-pimpl) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [polymorphic-copying-without-clone](examples/memory/indirect-polymorphic.md#polymorphic-copying-without-clone) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+
+</details>
+
+<details><summary><code>examples/memory/memory-resources.md</code>: 7 features, 1 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/memory/memory-resources.md#mental-model): every pmr::vector&lt;int&gt; is one type, whatever resource backs it. <sub>`MemoryResources.OneTypeForAllResources`</sub> | ✅ | ✅ | ✅ |
+| **Example**: the vector and string allocate out of the stack buffer, not the heap. <sub>`MemoryResources.MonotonicArenaUsesBuffer`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/memory-resources.md#gotchas): monotonic never frees individually, and grows from upstream past the buf… <sub>`MemoryResources.MonotonicGrowsPastBuffer`</sub> | ✅ | ✅ | ✅ |
+| [The standard resources](examples/memory/memory-resources.md#the-standard-resources): null_memory_resource always throws — caps a buffer. <sub>`MemoryResources.NullResourceThrows`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/memory-resources.md#gotchas): without an explicit resource, pmr containers use the default, which star… <sub>`MemoryResources.DefaultIsNewDelete`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/memory-resources.md#gotchas): pmr::vector&lt;T&gt; and std::vector&lt;T&gt; are different, non-convertible types. <sub>`MemoryResources.PmrVectorIsNotStdVector`</sub> | ✅ | ✅ | ✅ |
+| [The standard resources](examples/memory/memory-resources.md#the-standard-resources): the pool resources hand out usable storage. <sub>`MemoryResources.PoolResourcesAllocate`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [example-a-stack-buffer--monotonic-arena](examples/memory/memory-resources.md#example-a-stack-buffer--monotonic-arena) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/memory/raw-memory.md</code>: 10 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::addressof**: returns the true address even when operator&amp; is overloaded. <sub>`RawMemory.AddressofBypassesOverloadedAmpersand`</sub> | ✅ | ✅ | ✅ |
+| [Constructing into raw storage](examples/memory/raw-memory.md#constructing-into-raw-storage): construct_at builds in place, destroy_at runs the… <sub>`RawMemory.ConstructAtDestroyAt`</sub> | ✅ | ✅ | ✅ |
+| [Bulk uninitialized algorithms](examples/memory/raw-memory.md#bulk-uninitialized-algorithms): copy/fill construct into raw memory; destroy() end… <sub>`RawMemory.UninitializedAlgorithms`</sub> | ✅ | ✅ | ✅ |
+| [Bulk uninitialized algorithms](examples/memory/raw-memory.md#bulk-uninitialized-algorithms): if an element's constructor throws, the already-co… <sub>`RawMemory.UninitializedCopyCleansUpOnThrow`</sub> | ✅ | ✅ | ✅ |
+| [std::start_lifetime_as (C++23)](examples/memory/raw-memory.md#stdstart_lifetime_as-c23): interprets a byte buffer as a trivially-copyable… <sub>`RawMemory.StartLifetimeAs`</sub> | ⏭<sup>7</sup> | ✅ | ⏭<sup>7</sup> |
+| [std::launder (C++17)](examples/memory/raw-memory.md#stdlaunder-c17): launder reaches the int built in a byte buffer through a re… <sub>`RawMemory.LaunderReusedBuffer`</sub> | ✅ | ✅ | ✅ |
+| [std::launder (C++17)](examples/memory/raw-memory.md#stdlaunder-c17): a const complete object replaced in place is reached only t… <sub>`RawMemory.LaunderConstCompleteObject`</sub> | ✅ | ✅ | ✅ |
+| [std::launder (C++17)](examples/memory/raw-memory.md#stdlaunder-c17): since C++20 a class with a const member is transparently re… <sub>`RawMemory.ConstMemberReplacedWithoutLaunder`</sub> | ✅ | ✅ | ✅ |
+| [std::to_address and std::assume_aligned (C++20)](examples/memory/raw-memory.md#stdto_address-and-stdassume_aligned-c20): to_address gives a raw pointer f… <sub>`RawMemory.ToAddressOnEndIterator`</sub> | ✅ | ✅ | ✅ |
+| [std::to_address and std::assume_aligned (C++20)](examples/memory/raw-memory.md#stdto_address-and-stdassume_aligned-c20): assume_aligned returns the same… <sub>`RawMemory.AssumeAlignedReturnsSamePointer`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdaddressof--the-real-address](examples/memory/raw-memory.md#stdaddressof--the-real-address) | 1 | ✅ | ✅ | ✅ |
+| [stdto_address-and-stdassume_aligned-c20](examples/memory/raw-memory.md#stdto_address-and-stdassume_aligned-c20) | 1 | ✅ | ✅ | ✅ |
+| [constructing-into-raw-storage](examples/memory/raw-memory.md#constructing-into-raw-storage) | 1 | ✅ | ✅ | ✅ |
+| [stdlaunder-c17](examples/memory/raw-memory.md#stdlaunder-c17) | 2 | ✅ | ✅ | ✅ |
+| [bulk-uninitialized-algorithms](examples/memory/raw-memory.md#bulk-uninitialized-algorithms) | 1 | ✅ | ✅ | ✅ |
+| [stdstart_lifetime_as-c23](examples/memory/raw-memory.md#stdstart_lifetime_as-c23) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+
+</details>
+
+<details><summary><code>examples/memory/shared_ptr.md</code>: 8 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Create with make_shared](examples/memory/shared_ptr.md#create-with-make_shared): copying bumps the strong count; reset() drops one owner. <sub>`SharedPtr.CopyBumpsCountResetDrops`</sub> | ✅ | ✅ | ✅ |
+| **Sharing into structures**: the node lives until both the local and the vector are g… <sub>`SharedPtr.VectorCoOwns`</sub> | ✅ | ✅ | ✅ |
+| [Custom deleter / aliasing](examples/memory/shared_ptr.md#custom-deleter--aliasing): the deleter runs even when the stored pointer is null. <sub>`SharedPtr.DeleterRunsOnNull`</sub> | ✅ | ✅ | ✅ |
+| [Custom deleter / aliasing](examples/memory/shared_ptr.md#custom-deleter--aliasing): the aliasing constructor shares ownership but points a… <sub>`SharedPtr.AliasingConstructor`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/shared_ptr.md#gotchas): larger than a raw pointer / unique_ptr (pointer + control block pointer). <sub>`SharedPtr.LargerThanUniquePtr`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/memory/shared_ptr.md#mental-model): the count is atomic, so copying/destroying from many threads is saf… <sub>`SharedPtr.ConcurrentCopiesKeepCountExact`</sub> | ✅ | ✅ | ✅ |
+| **Gotchas: cycles leak**: two objects owning each other never reach count 0. <sub>`SharedPtr.CycleKeepsBothAlive`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/shared_ptr.md#gotchas): enable_shared_from_this hands out a pointer sharing the existing control… <sub>`SharedPtr.SharedFromThisSharesControlBlock`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [create-with-make_shared](examples/memory/shared_ptr.md#create-with-make_shared) | 1 | ✅ | ✅ | ✅ |
+| [sharing-into-structuresthreads](examples/memory/shared_ptr.md#sharing-into-structuresthreads) | 1 | ✅ | ✅ | ✅ |
+| [custom-deleter--aliasing](examples/memory/shared_ptr.md#custom-deleter--aliasing) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/memory/unique_ptr.md</code>: 11 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Ownership transfer (move-only)](examples/memory/unique_ptr.md#ownership-transfer-move-only): not copyable; moving leaves the source null. <sub>`UniquePtr.MoveOnlyAndMovedFromIsNull`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/unique_ptr.md#gotchas): release() gives up ownership without deleting; reset() deletes. <sub>`UniquePtr.ReleaseVersusReset`</sub> | ✅ | ✅ | ✅ |
+| [As a class member = automatic cleanup](examples/memory/unique_ptr.md#as-a-class-member--automatic-cleanup): destroying the owner frees the object. <sub>`UniquePtr.ScopeEndDeletes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/unique_ptr.md#gotchas): a function-pointer deleter makes unique_ptr bigger than a raw pointer; a… <sub>`UniquePtr.DeleterChangesSize`</sub> | ✅ | ✅ | ✅ |
+| [Arrays and custom deleters](examples/memory/unique_ptr.md#arrays-and-custom-deleters): the custom deleter isn't called for a null pointer. <sub>`UniquePtr.CustomDeleterNotCalledOnNull`</sub> | ✅ | ✅ | ✅ |
+| [Create with make_unique](examples/memory/unique_ptr.md#create-with-make_unique): get() borrows without transferring ownership. <sub>`UniquePtr.GetBorrowsWithoutTransfer`</sub> | ✅ | ✅ | ✅ |
+| **Ownership transfer**: returning a local by value moves it out, no std::move needed. <sub>`UniquePtr.ReturnByValueMovesOut`</sub> | ✅ | ✅ | ✅ |
+| **As a class member**: the owner frees the member without a user-written destructor. <sub>`UniquePtr.MemberFreedWithOwner`</sub> | ✅ | ✅ | ✅ |
+| [Arrays and custom deleters](examples/memory/unique_ptr.md#arrays-and-custom-deleters): unique_ptr&lt;int[]&gt; indexes and uses delete[]. <sub>`UniquePtr.ArrayFormUsesDeleteArray`</sub> | ✅ | ✅ | ✅ |
+| **C APIs that return through T****: out_ptr adopts the result; inout_ptr passes the o… <sub>`UniquePtr.OutPtrAndInoutPtr`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call (old object freed first… <sub>`UniquePtr.OutPtrResetsBeforeCall`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [create-with-make_unique](examples/memory/unique_ptr.md#create-with-make_unique) | 1 | ✅ | ✅ | ✅ |
+| [ownership-transfer-move-only](examples/memory/unique_ptr.md#ownership-transfer-move-only) | 1 | ✅ | ✅ | ✅ |
+| [as-a-class-member--automatic-cleanup](examples/memory/unique_ptr.md#as-a-class-member--automatic-cleanup) | 1 | ✅ | ✅ | ✅ |
+| [arrays-and-custom-deleters](examples/memory/unique_ptr.md#arrays-and-custom-deleters) | 1 | ✅ | ✅ | ✅ |
+| [c-apis-that-return-through-t-out_ptr-and-inout_ptr-c23](examples/memory/unique_ptr.md#c-apis-that-return-through-t-out_ptr-and-inout_ptr-c23) | 2 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/memory/weak_ptr.md</code>: 7 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Observe without owning](examples/memory/weak_ptr.md#observe-without-owning): a weak_ptr doesn't bump the strong count; lock() returns… <sub>`WeakPtr.LockAndExpired`</sub> | ✅ | ✅ | ✅ |
+| [Breaking a reference cycle](examples/memory/weak_ptr.md#breaking-a-reference-cycle): a weak back-edge lets both nodes be destroyed. <sub>`WeakPtr.WeakBackEdgeBreaksCycle`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/weak_ptr.md#gotchas): no operator* / operator-&gt;; constructing a shared_ptr from an expired wea… <sub>`WeakPtr.NoDerefAndBadWeakPtr`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/memory/weak_ptr.md#gotchas): it pins the control block, not the object — the object is destroyed when… <sub>`WeakPtr.ObjectDestroyedWhileWeakRemains`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/memory/weak_ptr.md#declaration): use_count() counts owners; reset() stops observing; the control bloc… <sub>`WeakPtr.UseCountAndReset`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/memory/weak_ptr.md#declaration): owner_before orders by control block; owner_hash/owner_equal are C++… <sub>`WeakPtr.OwnerBasedComparison`</sub> | ✅ | ✅ | ✅ |
+| [A callback that doesn't keep its target alive](examples/memory/weak_ptr.md#a-callback-that-doesnt-keep-its-target-alive): weak_from_this; empty when no shar… <sub>`WeakPtr.WeakFromThisCallback`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/memory/weak_ptr.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [observe-without-owning](examples/memory/weak_ptr.md#observe-without-owning) | 1 | ✅ | ✅ | ✅ |
+| [breaking-a-reference-cycle](examples/memory/weak_ptr.md#breaking-a-reference-cycle) | 1 | ✅ | ✅ | ✅ |
+| [caches](examples/memory/weak_ptr.md#caches) | 1 | ✅ | ✅ | ✅ |
+| [a-callback-that-doesnt-keep-its-target-alive](examples/memory/weak_ptr.md#a-callback-that-doesnt-keep-its-target-alive) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_allocate_at_least &gt;= 202302L (not defined by this toolchain)
+2. needs allocate_at_least
+3. needs __cpp_lib_indirect &gt;= 202502L (not defined by this toolchain)
+4. needs __cpp_lib_indirect (not defined by this toolchain)
+5. needs __cpp_lib_polymorphic (not defined by this toolchain)
+6. needs indirect
+7. needs __cpp_lib_start_lifetime_as (not defined by this toolchain)
+8. needs start_lifetime_as
+
+</details>
+
+### metaprogramming
+
+6 pages · 40 features · 47 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/metaprogramming/constant-evaluation.md](examples/metaprogramming/constant-evaluation.md) | 4 | 5 | 🟡 3 | 🟡 3 | 🟡 2 |
+| [examples/metaprogramming/integer-sequence.md](examples/metaprogramming/integer-sequence.md) | 7 | 5 | ✅ | ✅ | ✅ |
+| [examples/metaprogramming/ratio.md](examples/metaprogramming/ratio.md) | 6 | 6 | ✅ | ✅ | ✅ |
+| [examples/metaprogramming/reflection-queries.md](examples/metaprogramming/reflection-queries.md) | 6 | 7 | 🟡 13 | ✅ | 🟡 13 |
+| [examples/metaprogramming/reflection.md](examples/metaprogramming/reflection.md) | 7 | 7 | 🟡 14 | ✅ | 🟡 14 |
+| [examples/metaprogramming/type-traits.md](examples/metaprogramming/type-traits.md) | 10 | 17 | ✅ | ✅ | ❌ 1 |
+
+<details><summary><code>examples/metaprogramming/constant-evaluation.md</code>: 4 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [std::is_constant_evaluated (C++20)](examples/metaprogramming/constant-evaluation.md#stdis_constant_evaluated-c20): 1 at compile time, 2 at run time, 1 for stati… <sub>`ConstantEvaluation.IsConstantEvaluated`</sub> | ✅ | ✅ | ✅ |
+| [if consteval (C++23)](examples/metaprogramming/constant-evaluation.md#if-consteval-c23): the compile-time branch may call a consteval function. <sub>`ConstantEvaluation.IfConsteval`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/metaprogramming/constant-evaluation.md#gotchas): if constexpr (std::is_constant_evaluated()) is always true. <sub>`ConstantEvaluation.IfConstexprIsAlwaysTrue`</sub> | ✅ | ✅ | ✅ |
+| **std::is_within_lifetime (C++26)**: tells which union member is active (Clang 22 onl… <sub>`ConstantEvaluation.IsWithinLifetime`</sub> | ⏭<sup>1</sup> | ⏭<sup>1</sup> | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/metaprogramming/constant-evaluation.md#declaration) | 1 | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [stdis_constant_evaluated-c20](examples/metaprogramming/constant-evaluation.md#stdis_constant_evaluated-c20) | 1 | ✅ | ✅ | ✅ |
+| [if-consteval-c23](examples/metaprogramming/constant-evaluation.md#if-consteval-c23) | 2 | ✅ | ✅ | ✅ |
+| [stdis_within_lifetime-c26-which-union-member-is-active](examples/metaprogramming/constant-evaluation.md#stdis_within_lifetime-c26-which-union-member-is-active) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+
+</details>
+
+<details><summary><code>examples/metaprogramming/integer-sequence.md</code>: 7 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/metaprogramming/integer-sequence.md#mental-model): make_index_sequence&lt;3&gt; is index_sequence&lt;0, 1, 2&gt;. <sub>`IntegerSequence.MakeIndexSequenceGeneratesZeroToNMinusOne`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/metaprogramming/integer-sequence.md#gotchas): index_sequence is integer_sequence specialized for std::size_t. <sub>`IntegerSequence.IndexSequenceIsSizeTIntegerSequence`</sub> | ✅ | ✅ | ✅ |
+| **The canonical pattern**: my_apply sums the tuple to 6, the same as std::apply. <sub>`IntegerSequence.MyApplyMatchesStdApply`</sub> | ✅ | ✅ | ✅ |
+| [Building an array from a generator](examples/metaprogramming/integer-sequence.md#building-an-array-from-a-generator): squares is {0, 1, 4, 9, 16}. <sub>`IntegerSequence.SquaresArray`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/metaprogramming/integer-sequence.md#gotchas): std::make_from_tuple constructs an object from a tuple's elements. <sub>`IntegerSequence.MakeFromTupleConstructs`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/metaprogramming/integer-sequence.md#declaration): index_sequence_for gives one index per type. <sub>`IntegerSequence.IndexSequenceFor`</sub> | ✅ | ✅ | ✅ |
+| [Inline, with a templated lambda (C++20)](examples/metaprogramming/integer-sequence.md#inline-with-a-templated-lambda-c20): prints 1, a, 2.5. <sub>`IntegerSequence.TemplatedLambdaPrints`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/metaprogramming/integer-sequence.md#mental-model) | 1 | ✅ | ✅ | ✅ |
+| [declaration](examples/metaprogramming/integer-sequence.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [the-canonical-pattern-call-a-function-with-tuple-elements](examples/metaprogramming/integer-sequence.md#the-canonical-pattern-call-a-function-with-tuple-elements) | 1 | ✅ | ✅ | ✅ |
+| [building-an-array-from-a-generator](examples/metaprogramming/integer-sequence.md#building-an-array-from-a-generator) | 1 | ✅ | ✅ | ✅ |
+| [inline-with-a-templated-lambda-c20](examples/metaprogramming/integer-sequence.md#inline-with-a-templated-lambda-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/metaprogramming/ratio.md</code>: 6 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/metaprogramming/ratio.md#mental-model): num/den are static constexpr members, reduced to lowest terms. <sub>`Ratio.MembersAndReduction`</sub> | ✅ | ✅ | ✅ |
+| [Arithmetic on types](examples/metaprogramming/ratio.md#arithmetic-on-types): the values in the comments. <sub>`Ratio.ArithmeticAndComparison`</sub> | ✅ | ✅ | ✅ |
+| [SI prefixes](examples/metaprogramming/ratio.md#si-prefixes): the predefined prefixes and their use in chrono. <sub>`Ratio.SiPrefixes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/metaprogramming/ratio.md#gotchas): it's type-level — num/den are compile-time intmax_t constants. <sub>`Ratio.TypeLevelIntmax`</sub> | ✅ | ✅ | ✅ |
+| [A custom unit](examples/metaprogramming/ratio.md#a-custom-unit): 60 fps frames convert to ms with a cast, from seconds exactly. <sub>`Ratio.CustomUnit`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/metaprogramming/ratio.md#gotchas): unreduced ratios are different types; ::type normalizes; the ratio_add f… <sub>`Ratio.UnreducedIsDifferentType`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/metaprogramming/ratio.md#mental-model) | 1 | ✅ | ✅ | ✅ |
+| [declaration](examples/metaprogramming/ratio.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [arithmetic-on-types](examples/metaprogramming/ratio.md#arithmetic-on-types) | 1 | ✅ | ✅ | ✅ |
+| [si-prefixes](examples/metaprogramming/ratio.md#si-prefixes) | 2 | ✅ | ✅ | ✅ |
+| [a-custom-unit](examples/metaprogramming/ratio.md#a-custom-unit) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/metaprogramming/reflection-queries.md</code>: 6 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Function parameters (P3096)](examples/metaprogramming/reflection-queries.md#function-parameters-p3096): names, types, default arguments, return type. <sub>`ReflectionQueries.Parameters`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Templates and their arguments](examples/metaprogramming/reflection-queries.md#templates-and-their-arguments): template_of, template_arguments_of, dealias. <sub>`ReflectionQueries.Templates`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Operators](examples/metaprogramming/reflection-queries.md#operators): operator_of returns a std::meta::operators enumerator; symbol_of spell… <sub>`ReflectionQueries.Operators`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Names and source locations](examples/metaprogramming/reflection-queries.md#names-and-source-locations): source_location_of points at the declaration; display… <sub>`ReflectionQueries.SourceLocationAndDisplayString`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Predicates](examples/metaprogramming/reflection-queries.md#predicates): is_virtual, is_static_member, is_const / is_const_type. <sub>`ReflectionQueries.Predicates`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Layout](examples/metaprogramming/reflection-queries.md#layout): member_offset {bytes, bits}, bit_size_of, size_of, alignment_of. <sub>`ReflectionQueries.Layout`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [function-parameters-p3096](examples/metaprogramming/reflection-queries.md#function-parameters-p3096) | 2 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [templates-and-their-arguments](examples/metaprogramming/reflection-queries.md#templates-and-their-arguments) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [operators](examples/metaprogramming/reflection-queries.md#operators) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [names-and-source-locations](examples/metaprogramming/reflection-queries.md#names-and-source-locations) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [predicates](examples/metaprogramming/reflection-queries.md#predicates) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [layout](examples/metaprogramming/reflection-queries.md#layout) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+
+</details>
+
+<details><summary><code>examples/metaprogramming/reflection.md</code>: 7 features, 7 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/metaprogramming/reflection.md#mental-model): std::meta::info is the type of a reflection. <sub>`Reflection.InfoIsTypeOfReflection`</sub> | ⏭<sup>6</sup> | ✅ | ⏭<sup>6</sup> |
+| [Querying entities](examples/metaprogramming/reflection.md#querying-entities): name, type, parent and the category/access predicates. <sub>`Reflection.QueryingEntities`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Listing members, bases, enumerators](examples/metaprogramming/reflection.md#listing-members-bases-enumerators): the counts. <sub>`Reflection.Listing`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Enum ↔ string, generated](examples/metaprogramming/reflection.md#enum--string-generated): to_string(Color::green) is "green". <sub>`Reflection.EnumToString`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| **Type transformations**: the reflection-flavoured traits. <sub>`Reflection.TypeTransformations`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| [Generating and substituting](examples/metaprogramming/reflection.md#generating-and-substituting): substitute, extract and define_aggregate. <sub>`Reflection.GeneratingAndSubstituting`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| **Errors: std::meta::exception**: a failing meta function throws, and a consteval fun… <sub>`Reflection.MetaExceptionCaught`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/metaprogramming/reflection.md#mental-model) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [querying-entities](examples/metaprogramming/reflection.md#querying-entities) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [listing-members-bases-enumerators](examples/metaprogramming/reflection.md#listing-members-bases-enumerators) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [enum--string-generated](examples/metaprogramming/reflection.md#enum--string-generated) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [type-transformations-reflection-flavored-type-traits](examples/metaprogramming/reflection.md#type-transformations-reflection-flavored-type-traits) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [generating-and-substituting](examples/metaprogramming/reflection.md#generating-and-substituting) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+| [errors-stdmetaexception-c26](examples/metaprogramming/reflection.md#errors-stdmetaexception-c26) | 1 | ⏭<sup>5</sup> | ✅ | ⏭<sup>5</sup> |
+
+</details>
+
+<details><summary><code>examples/metaprogramming/type-traits.md</code>: 10 features, 17 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/metaprogramming/type-traits.md#mental-model): value traits have ::value/_v, type traits ::type/_t. <sub>`TypeTraits.ValueAndTypeHelpers`</sub> | ✅ | ✅ | ✅ |
+| [The main families](examples/metaprogramming/type-traits.md#the-main-families): a sample from each family. <sub>`TypeTraits.Families`</sub> | ✅ | ✅ | ✅ |
+| **Constraining**: half/legacy_half accept integers only; describe branches at compile… <sub>`TypeTraits.ConstrainingAndIfConstexpr`</sub> | ✅ | ✅ | ✅ |
+| [Normalizing a deduced type](examples/metaprogramming/type-traits.md#normalizing-a-deduced-type): and "Gotchas: decay_t vs remove_cvref_t". <sub>`TypeTraits.DecayVersusRemoveCvref`</sub> | ✅ | ✅ | ✅ |
+| [static_assert for clear contracts](examples/metaprogramming/type-traits.md#static_assert-for-clear-contracts): the trait store() checks. <sub>`TypeTraits.TriviallyCopyable`</sub> | ✅ | ✅ | ✅ |
+| **std::declval**: names a T&amp;&amp; in unevaluated contexts, even without a default constru… <sub>`TypeTraits.Declval`</sub> | ✅ | ✅ | ✅ |
+| **std::void_t and the detection idiom**: has_size and the HasSize concept agree. <sub>`TypeTraits.VoidTDetectionVersusRequires`</sub> | ✅ | ✅ | ✅ |
+| **std::type_identity**: the type_identity_t parameters are not deduced, so they conve… <sub>`TypeTraits.TypeIdentityBlocksDeduction`</sub> | ✅ | ✅ | ✅ |
+| **conjunction, disjunction, negation**: short-circuit; later traits are not instantia… <sub>`TypeTraits.LogicalTraitsShortCircuit`</sub> | ✅ | ✅ | ✅ |
+| [is_layout_compatible and is_corresponding_member (C++20)](examples/metaprogramming/type-traits.md#is_layout_compatible-and-is_corresponding_member-c20): GCC has them, libc++ do… <sub>`TypeTraits.LayoutCompatibleAndCorrespondingMember`</sub> | ✅ | ✅ | ⏭<sup>7</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/metaprogramming/type-traits.md#mental-model) | 1 | ✅ | ✅ | ✅ |
+| [the-main-families](examples/metaprogramming/type-traits.md#the-main-families) | 5 | ✅ | ✅ | ✅ |
+| [constraining-with-conceptsif-constexpr-modern-vs-enable_if-legacy](examples/metaprogramming/type-traits.md#constraining-with-conceptsif-constexpr-modern-vs-enable_if-legacy) | 1 | ✅ | ✅ | ✅ |
+| [static_assert-for-clear-contracts](examples/metaprogramming/type-traits.md#static_assert-for-clear-contracts) | 1 | ✅ | ✅ | ✅ |
+| [normalizing-a-deduced-type](examples/metaprogramming/type-traits.md#normalizing-a-deduced-type) | 1 | ✅ | ✅ | ✅ |
+| [stddeclval-a-value-you-may-only-name-in-unevaluated-contexts](examples/metaprogramming/type-traits.md#stddeclval-a-value-you-may-only-name-in-unevaluated-contexts) | 2 | ✅ | ✅ | ✅ |
+| [stdvoid_t-and-the-detection-idiom-vs-a-requires-expression](examples/metaprogramming/type-traits.md#stdvoid_t-and-the-detection-idiom-vs-a-requires-expression) | 1 | ✅ | ✅ | ✅ |
+| [stdtype_identity-c20-keep-a-parameter-out-of-deduction](examples/metaprogramming/type-traits.md#stdtype_identity-c20-keep-a-parameter-out-of-deduction) | 2 | ✅ | ✅ | ✅ |
+| [conjunction-disjunction-negation-short-circuiting-traits](examples/metaprogramming/type-traits.md#conjunction-disjunction-negation-short-circuiting-traits) | 2 | ✅ | ✅ | ✅ |
+| [is_layout_compatible-and-is_corresponding_member-c20](examples/metaprogramming/type-traits.md#is_layout_compatible-and-is_corresponding_member-c20) | 1 | ✅ | ✅ | ❌ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_is_within_lifetime &gt;= 202306L (not defined by this toolchain)
+2. nocompile
+3. needs is-within-lifetime
+4. needs __cpp_lib_reflection (not defined by this toolchain)
+5. needs reflection
+6. needs __cpp_impl_reflection (not defined by this toolchain)
+7. needs __cpp_lib_is_layout_compatible (not defined by this toolchain)
+
+</details>
+
+### named-requirements
+
+1 pages · 7 features · 5 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (3 columns, identical here): GCC 15 (local), GCC 16 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** |
+|---|---:|---:|---|
+| [examples/named-requirements/README.md](examples/named-requirements/README.md) | 7 | 5 | ✅ |
+
+<details><summary><code>examples/named-requirements/README.md</code>: 7 features, 5 examples</summary>
+
+| Feature | **A** |
+|---|---|
+| **Satisfying BasicLockable**: lock_guard works with any lock()/unlock() pair. <sub>`NamedRequirements.BasicLockableWithLockGuard`</sub> | ✅ |
+| [Satisfying Hash for an unordered container](examples/named-requirements/README.md#satisfying-hash-for-an-unordered-container): duplicates collapse, size is 2. <sub>`NamedRequirements.HashForUnorderedSet`</sub> | ✅ |
+| [Concepts and named requirements are not the same test](examples/named-requirements/README.md#concepts-and-named-requirements-are-not-the-same-test): iota_view's iterator. <sub>`NamedRequirements.IotaIteratorIsRandomAccessButLegacyInput`</sub> | ✅ |
+| [Gotchas](examples/named-requirements/README.md#gotchas): requirements apply when used — vector&lt;unique_ptr&lt;int&gt;&gt; works until copie… <sub>`NamedRequirements.VectorOfMoveOnlyIsFineUntilCopied`</sub> | ✅ |
+| [Same requirement, two eras of checking](examples/named-requirements/README.md#same-requirement-two-eras-of-checking): ranges::sort is concept-checked, so a lis… <sub>`NamedRequirements.RangesSortRejectsList`</sub> | ✅ |
+| [Gotchas](examples/named-requirements/README.md#gotchas): satisfying a concept is not modeling it — any compiling == satisfies equ… <sub>`NamedRequirements.SatisfyingIsNotModeling`</sub> | ✅ |
+| [The main groups](examples/named-requirements/README.md#the-main-groups): concept/trait counterparts for random numbers and clocks. <sub>`NamedRequirements.ConceptCounterparts`</sub> | ✅ |
+
+| Examples in section | Blocks | **A** |
+|---|---:|---|
+| [satisfying-basiclockable--any-lockunlock-pair-works](examples/named-requirements/README.md#satisfying-basiclockable--any-lockunlock-pair-works) | 1 | ✅ |
+| [satisfying-hash-for-an-unordered-container](examples/named-requirements/README.md#satisfying-hash-for-an-unordered-container) | 1 | ✅ |
+| [same-requirement-two-eras-of-checking](examples/named-requirements/README.md#same-requirement-two-eras-of-checking) | 2 | ✅ |
+| [concepts-and-named-requirements-are-not-the-same-test](examples/named-requirements/README.md#concepts-and-named-requirements-are-not-the-same-test) | 1 | ✅ |
+
+</details>
+
+### numerics
+
+9 pages · 55 features · 36 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/numerics/bit.md](examples/numerics/bit.md) | 8 | 6 | ✅ | ✅ | ❌ 1 |
+| [examples/numerics/cfenv.md](examples/numerics/cfenv.md) | 8 | 5 | ✅ | ✅ | ✅ |
+| [examples/numerics/complex.md](examples/numerics/complex.md) | 9 | 5 | ✅ | ✅ | ✅ |
+| [examples/numerics/linalg.md](examples/numerics/linalg.md) | 3 | 3 | 🟡 6 | 🟡 6 | 🟡 6 |
+| [examples/numerics/math.md](examples/numerics/math.md) | 6 | 4 | ✅ | ✅ | ❌ 1 |
+| [examples/numerics/random.md](examples/numerics/random.md) | 7 | 5 | 🟡 3 | 🟡 1 | 🟡 3 |
+| [examples/numerics/saturation.md](examples/numerics/saturation.md) | 7 | 3 | 🟡 4 | 🟡 3 | 🟡 4 |
+| [examples/numerics/simd.md](examples/numerics/simd.md) | 2 | 1 | 🟡 3 | 🟡 3 | 🟡 3 |
+| [examples/numerics/valarray.md](examples/numerics/valarray.md) | 5 | 4 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/numerics/bit.md</code>: 8 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::bit_cast**: raw IEEE-754 bits of 1.5f, and the round trip is exact. <sub>`Bit.BitCastRoundTrips`</sub> | ✅ | ✅ | ✅ |
+| [Counting and inspecting bits](examples/numerics/bit.md#counting-and-inspecting-bits): the values in the comments. <sub>`Bit.CountingValues`</sub> | ✅ | ✅ | ✅ |
+| [Power-of-two helpers](examples/numerics/bit.md#power-of-two-helpers): and "Rotates": bits wrap around. <sub>`Bit.PowerOfTwoAndRotate`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/numerics/bit.md#gotchas): the counting/rotate functions reject signed types. <sub>`Bit.SignedTypesRejected`</sub> | ✅ | ✅ | ✅ |
+| [Endianness &amp; byte swap](examples/numerics/bit.md#endianness--byte-swap): 0x1234 -&gt; 0x3412; 0x1234u -&gt; 0x34120000 (C++23). <sub>`Bit.Byteswap`</sub> | ✅ | ✅ | ✅ |
+| **std::bit_cast**: both types must be trivially copyable and the same size. <sub>`Bit.BitCastNeedsSameSize`</sub> | ✅ | ✅ | ✅ |
+| **Endianness**: std::endian::native is little on every local toolchain (arm64, x86-64… <sub>`Bit.NativeEndian`</sub> | ✅ | ✅ | ✅ |
+| [C compatibility: &lt;stdbit.h&gt; (C++26)](examples/numerics/bit.md#c-compatibility-stdbith-c26): global-namespace C23 bit functions. GCC 15 s… <sub>`Bit.StdbitH`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdbit_cast--reinterpret-bits-safely](examples/numerics/bit.md#stdbit_cast--reinterpret-bits-safely) | 1 | ✅ | ✅ | ✅ |
+| [counting-and-inspecting-bits](examples/numerics/bit.md#counting-and-inspecting-bits) | 1 | ✅ | ✅ | ✅ |
+| [power-of-two-helpers](examples/numerics/bit.md#power-of-two-helpers) | 1 | ✅ | ✅ | ✅ |
+| [rotates](examples/numerics/bit.md#rotates) | 1 | ✅ | ✅ | ✅ |
+| [endianness--byte-swap](examples/numerics/bit.md#endianness--byte-swap) | 1 | ✅ | ✅ | ✅ |
+| [c-compatibility-stdbith-c26](examples/numerics/bit.md#c-compatibility-stdbith-c26) | 1 | ✅ | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/numerics/cfenv.md</code>: 8 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Clear, compute, test](examples/numerics/cfenv.md#clear-compute-test): 1/0 raises FE_DIVBYZERO, 1/3 FE_INEXACT, sqrt(-1) FE_INVALI… <sub>`Cfenv.ClearComputeTest`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/numerics/cfenv.md#mental-model): flags are sticky until cleared; fetestexcept returns the set subset. <sub>`Cfenv.FlagsAreSticky`</sub> | ✅ | ✅ | ✅ |
+| [Changing the rounding mode](examples/numerics/cfenv.md#changing-the-rounding-mode): the rint values and the printed 1/3 column (printed w… <sub>`Cfenv.RoundingModes`</sub> | ✅ | ✅ | ✅ |
+| [Changing the rounding mode](examples/numerics/cfenv.md#changing-the-rounding-mode): the last digit of the 1/3 column is printf's own roun… <sub>`Cfenv.OneThirdDoublesPerMode`</sub> | ✅ | ✅ | ✅ |
+| [Changing the rounding mode](examples/numerics/cfenv.md#changing-the-rounding-mode): nearbyint never raises FE_INEXACT; rint does. <sub>`Cfenv.NearbyintDoesNotRaiseInexact`</sub> | ✅ | ✅ | ✅ |
+| **Hiding intermediate flags**: r=0 and the caller doesn't see FE_DIVBYZERO, but other… <sub>`Cfenv.HoldAndUpdateEnv`</sub> | ✅ | ✅ | ✅ |
+| [How does &lt;cmath&gt; report errors here?](examples/numerics/cfenv.md#how-does-cmath-report-errors-here): macOS reports 2 (flags only), glibc 3. <sub>`Cfenv.MathErrhandlingPerPlatform`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/numerics/cfenv.md#mental-model): the environment is per thread. Whether a new std::thread starts wit… <sub>`Cfenv.EnvironmentIsPerThread`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [clear-compute-test](examples/numerics/cfenv.md#clear-compute-test) | 1 | ✅ | ✅ | ✅ |
+| [changing-the-rounding-mode](examples/numerics/cfenv.md#changing-the-rounding-mode) | 1 | ✅ | ✅ | ✅ |
+| [hiding-intermediate-flags-from-the-caller](examples/numerics/cfenv.md#hiding-intermediate-flags-from-the-caller) | 1 | ✅ | ✅ | ✅ |
+| [how-does-cmath-report-errors-here](examples/numerics/cfenv.md#how-does-cmath-report-errors-here) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/numerics/cfenv.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/numerics/complex.md</code>: 9 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Examples](examples/numerics/complex.md#examples): the values in the comments for a = 3 + 4i. <sub>`Complex.AccessorsAndFunctions`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/numerics/complex.md#examples): operators, exp, and polar (magnitude &amp; angle). <sub>`Complex.OperatorsExpPolar`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/numerics/complex.md#gotchas): layout is compatible with an array of two T (real, then imag). <sub>`Complex.ArrayOfTwoLayout`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/numerics/complex.md#examples): the i / if / il literals give complex&lt;double/float/long double&gt;. <sub>`Complex.LiteralTypes`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/numerics/complex.md#mental-model): arg(3 + 4i) ≈ 0.927. <sub>`Complex.ArgValue`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/numerics/complex.md#declaration): real(x)/imag(x) set a part; streams as (re,im). <sub>`Complex.SettersAndStreaming`</sub> | ✅ | ✅ | ✅ |
+| [Compile-time arithmetic (C++20)](examples/numerics/complex.md#compile-time-arithmetic-c20): (1 + 2i)² = -3 + 4i in a constant expression; __… <sub>`Complex.ConstexprArithmetic`</sub> | ✅ | ✅ | ✅ |
+| [Square root of a negative number](examples/numerics/complex.md#square-root-of-a-negative-number): real overload gives NaN, complex gives i. <sub>`Complex.SqrtOfNegative`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/numerics/complex.md#gotchas): int * complex&lt;double&gt; doesn't compile; 2.0 * z does. <sub>`Complex.NoMixedIntArithmetic`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/numerics/complex.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/numerics/complex.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [compile-time-arithmetic-c20](examples/numerics/complex.md#compile-time-arithmetic-c20) | 1 | ✅ | ✅ | ✅ |
+| [square-root-of-a-negative-number](examples/numerics/complex.md#square-root-of-a-negative-number) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/numerics/complex.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/numerics/linalg.md</code>: 3 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Example](examples/numerics/linalg.md#example): scale multiplies in place. <sub>`Linalg.ScaleInPlace`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [Vector &amp; matrix ops](examples/numerics/linalg.md#vector--matrix-ops): dot, add, norm, matrix-vector and matrix-matrix products. <sub>`Linalg.VectorAndMatrixOps`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+| [Views without copying](examples/numerics/linalg.md#views-without-copying): transposed(A) shares A's memory. <sub>`Linalg.TransposedIsAView`</sub> | ⏭<sup>2</sup> | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [example](examples/numerics/linalg.md#example) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+| [vector--matrix-ops](examples/numerics/linalg.md#vector--matrix-ops) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+| [views-without-copying](examples/numerics/linalg.md#views-without-copying) | 1 | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ⏭<sup>3</sup> |
+
+</details>
+
+<details><summary><code>examples/numerics/math.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [&lt;cmath&gt; — the workhorse functions](examples/numerics/math.md#cmath--the-workhorse-functions): a value for each family. <sub>`Math.WorkhorseFunctions`</sub> | ✅ | ✅ | ✅ |
+| **&lt;cmath&gt;**: hypot avoids the overflow that sqrt(x*x + y*y) hits; midpoint avoids int… <sub>`Math.HypotAndMidpointAvoidOverflow`</sub> | ✅ | ✅ | ✅ |
+| [Classification](examples/numerics/math.md#classification): sqrt(-1.0) is NaN. <sub>`Math.Classification`</sub> | ✅ | ✅ | ✅ |
+| [Special functions (C++17)](examples/numerics/math.md#special-functions-c17): libstdc++ has them all; libc++ (Clang 22) only hermite. <sub>`Math.SpecialFunctions`</sub> | ✅ | ✅ | ✅ |
+| **&lt;numbers&gt;**: the constants and their precision variants. <sub>`Math.NumbersConstants`</sub> | ✅ | ✅ | ✅ |
+| **Gotchas: std::abs**: since C++17 &lt;cmath&gt; and &lt;cstdlib&gt; both declare every std::abs… <sub>`Math.StdAbsOverloads`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [cmath--the-workhorse-functions](examples/numerics/math.md#cmath--the-workhorse-functions) | 1 | ✅ | ✅ | ✅ |
+| [classification](examples/numerics/math.md#classification) | 1 | ✅ | ✅ | ✅ |
+| [special-functions-c17](examples/numerics/math.md#special-functions-c17) | 1 | ✅ | ✅ | ❌ |
+| [numbers--math-constants-c20](examples/numerics/math.md#numbers--math-constants-c20) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/numerics/random.md</code>: 7 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Reproducible runs](examples/numerics/random.md#reproducible-runs): the same seed gives the same sequence; the engine algorithm is… <sub>`Random.FixedSeedIsReproducible`</sub> | ✅ | ✅ | ✅ |
+| **Gotchas: distribution ranges**: uniform_int is inclusive of b; uniform_real is [a,… <sub>`Random.DistributionRanges`</sub> | ✅ | ✅ | ✅ |
+| **Distributions**: bernoulli{0.25} is true about a quarter of the time. <sub>`Random.BernoulliProbability`</sub> | ✅ | ✅ | ✅ |
+| [Shuffle and sample](examples/numerics/random.md#shuffle-and-sample): shuffle permutes; sample picks 5 distinct elements in order. <sub>`Random.ShuffleAndSample`</sub> | ✅ | ✅ | ✅ |
+| [Engines &amp; distributions](examples/numerics/random.md#engines--distributions): mt19937 is 32-bit, mt19937_64 is 64-bit. <sub>`Random.EngineWidths`</sub> | ✅ | ✅ | ✅ |
+| [Counter-based streams: std::philox_engine (C++26)](examples/numerics/random.md#counter-based-streams-stdphilox_engine-c26): the predefined engines, their… <sub>`Random.PhiloxPredefined`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+| **Counter-based streams**: set_counter jumps to a block (last element is the low word… <sub>`Random.PhiloxSetCounter`</sub> | ⏭<sup>4</sup> | ✅ | ⏭<sup>4</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-standard-recipe](examples/numerics/random.md#the-standard-recipe) | 1 | ✅ | ✅ | ✅ |
+| [engines--distributions](examples/numerics/random.md#engines--distributions) | 1 | ✅ | ✅ | ✅ |
+| [shuffle-and-sample](examples/numerics/random.md#shuffle-and-sample) | 1 | ✅ | ✅ | ✅ |
+| [reproducible-runs](examples/numerics/random.md#reproducible-runs) | 1 | ✅ | ✅ | ✅ |
+| [counter-based-streams-stdphilox_engine-c26](examples/numerics/random.md#counter-based-streams-stdphilox_engine-c26) | 1 | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+
+</details>
+
+<details><summary><code>examples/numerics/saturation.md</code>: 7 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/numerics/saturation.md#mental-model): ordinary uint8_t arithmetic stored back wraps 300 to 44. <sub>`Saturation.PlainArithmeticWraps`</sub> | ✅ | ✅ | ✅ |
+| [Clamp instead of wrap](examples/numerics/saturation.md#clamp-instead-of-wrap): the P4052 names (macro 202603L) clamp to the type's range. <sub>`Saturation.SaturatingNamesClamp`</sub> | ⏭<sup>6</sup> | ✅ | ⏭<sup>6</sup> |
+| [Gotchas](examples/numerics/saturation.md#gotchas): ("Integers only, same type only"): mixed types and bool don't compile. <sub>`Saturation.IntegersOnlySameType`</sub> | ⏭<sup>6</sup> | ✅ | ⏭<sup>6</sup> |
+| **The pre-rename names**: GCC 15 and Clang 22 ship add_sat / saturate_cast at 202311L… <sub>`Saturation.PreRenameNames`</sub> | ✅ | ⏭<sup>7</sup> | ✅ |
+| **The pre-rename names**: GCC 16 has the new names, GCC 15 and Clang 22 the old. <sub>`Saturation.ToolchainSupport`</sub> | ✅ | ✅ | ✅ |
+| **Brighten**: snippet: switching on the macro works on every toolchain. <sub>`Saturation.PortableSwitch`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/numerics/saturation.md#gotchas): ("Not a checked operation"): ckd_add reports overflow by returning true. <sub>`Saturation.CkdAddReportsOverflow`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/numerics/saturation.md#declaration) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+| [clamp-instead-of-wrap](examples/numerics/saturation.md#clamp-instead-of-wrap) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [the-pre-rename-names-add_sat-saturate_cast](examples/numerics/saturation.md#the-pre-rename-names-add_sat-saturate_cast) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/numerics/simd.md</code>: 2 features, 1 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Examples](examples/numerics/simd.md#examples): broadcast, generator, element-wise add, select, reduce, any_of. <sub>`Simd.ElementWiseSelectReduce`</sub> | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+| [Examples](examples/numerics/simd.md#examples): &lt;cmath&gt; functions are overloaded for vec — cos² + sin² ≈ 1 per lane; ve… <sub>`Simd.MathOverloadsAndFixedWidth`</sub> | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ⏭<sup>10</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [examples](examples/numerics/simd.md#examples) | 1 | ⏭<sup>11</sup> | ⏭<sup>11</sup> | ⏭<sup>11</sup> |
+
+</details>
+
+<details><summary><code>examples/numerics/valarray.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/numerics/valarray.md#mental-model): element-wise arithmetic, sqrt, sum and max. <sub>`Valarray.ElementWise`</sub> | ✅ | ✅ | ✅ |
+| [Slicing](examples/numerics/valarray.md#slicing): slice(0, 4, 2) picks {0,2,4,6}; mask assignment zeroes elements &gt; 3. <sub>`Valarray.SliceAndMask`</sub> | ✅ | ✅ | ✅ |
+| [Shift, rotate, apply](examples/numerics/valarray.md#shift-rotate-apply): the values in the comments. <sub>`Valarray.ShiftRotateApply`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/numerics/valarray.md#declaration): comparisons are element-wise and return valarray&lt;bool&gt;. <sub>`Valarray.ComparisonsReturnMask`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/numerics/valarray.md#gotchas): auto may not give a valarray — libstdc++ and libc++ return a proxy for a… <sub>`Valarray.AutoGivesProxy`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [mental-model](examples/numerics/valarray.md#mental-model) | 1 | ✅ | ✅ | ✅ |
+| [declaration](examples/numerics/valarray.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [slicing](examples/numerics/valarray.md#slicing) | 1 | ✅ | ✅ | ✅ |
+| [shift-rotate-apply](examples/numerics/valarray.md#shift-rotate-apply) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. &lt;stdbit.h&gt; (C++26) not provided by this standard library
+2. needs __cpp_lib_linalg (not defined by this toolchain)
+3. needs linalg
+4. needs __cpp_lib_philox_engine (not defined by this toolchain)
+5. needs philox
+6. needs __cpp_lib_saturation_arithmetic &gt;= 202603L (this toolchain has 202311L)
+7. this toolchain has the P4052 names (202603L), not add_sat
+8. nocompile
+9. needs saturating
+10. needs __cpp_lib_simd (not defined by this toolchain)
+11. needs simd
+
+</details>
+
+### ranges
+
+4 pages · 33 features · 21 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/ranges/README.md](examples/ranges/README.md) | 0 | 1 | ✅ | ✅ | ✅ |
+| [examples/ranges/factories.md](examples/ranges/factories.md) | 9 | 5 | 🟡 2 | 🟡 1 | 🟡 1 |
+| [examples/ranges/range-concepts.md](examples/ranges/range-concepts.md) | 6 | 4 | ✅ | ✅ | ✅ |
+| [examples/ranges/views.md](examples/ranges/views.md) | 18 | 11 | 🟡 2 | 🟡 1 | ❌ 5 |
+
+<details><summary><code>examples/ranges/README.md</code>: 0 features, 1 examples</summary>
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-one-paragraph-pitch](examples/ranges/README.md#the-one-paragraph-pitch) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/ranges/factories.md</code>: 9 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **Factories**: iota bounded and unbounded, single, empty. <sub>`RangeFactories.IotaSingleEmpty`</sub> | ✅ | ✅ | ✅ |
+| **Factories**: repeat(7) is infinite, repeat(7, 3) is 7,7,7 (C++23). <sub>`RangeFactories.Repeat`</sub> | ✅ | ✅ | ✅ |
+| **Factories**: views::istream reads ints lazily and is single-pass (an input range). <sub>`RangeFactories.IstreamIsLazySinglePass`</sub> | ✅ | ✅ | ✅ |
+| **Factories**: the first 10 squares, lazily, from iota \| transform \| take. <sub>`RangeFactories.FirstTenSquares`</sub> | ✅ | ✅ | ✅ |
+| **ranges::to**: vector deduced from filter, vector&lt;int&gt; of squares, and a map from pa… <sub>`RangeFactories.RangesTo`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/ranges/factories.md#gotchas): materializing runs the pipeline once; reusing the container doesn't re-r… <sub>`RangeFactories.MaterializingRunsPipelineOnce`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/ranges/factories.md#gotchas): a non-common pipeline is wrapped with views::common for the iterator-pai… <sub>`RangeFactories.CommonForLegacyConstructor`</sub> | ✅ | ✅ | ✅ |
+| **views::indices**: iota(0, v.size()) doesn't compile (signedness mismatch); 0uz does. <sub>`RangeFactories.IotaRejectsMixedSignedness`</sub> | ✅ | ✅ | ✅ |
+| **views::indices**: counts 0..n-1 in n's type. <sub>`RangeFactories.Indices`</sub> | ⏭<sup>1</sup> | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [factories--ranges-out-of-thin-air](examples/ranges/factories.md#factories--ranges-out-of-thin-air) | 2 | ✅ | ✅ | ✅ |
+| [viewsindices--0-to-n-of-ns-type-c26](examples/ranges/factories.md#viewsindices--0-to-n-of-ns-type-c26) | 2 | ✅ ⏭<sup>2</sup> | ✅ ⏭<sup>2</sup> | ✅ ⏭<sup>2</sup> |
+| [rangesto--view--container-c23](examples/ranges/factories.md#rangesto--view--container-c23) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/ranges/range-concepts.md</code>: 6 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [A range is anything with begin/end](examples/ranges/range-concepts.md#a-range-is-anything-with-beginend): containers, arrays, string_view, span and vie… <sub>`RangeConcepts.RangeIsAnythingWithBeginEnd`</sub> | ✅ | ✅ | ✅ |
+| [The refinement hierarchy](examples/ranges/range-concepts.md#the-refinement-hierarchy): each row on standard types. <sub>`RangeConcepts.RefinementHierarchy`</sub> | ✅ | ✅ | ✅ |
+| **Range access**: the customization points on vector&lt;int&gt;{1, 2, 3}, and on a raw arra… <sub>`RangeConcepts.RangeAccess`</sub> | ✅ | ✅ | ✅ |
+| [view vs. container](examples/ranges/range-concepts.md#view-vs-container): a view owns nothing and is lazy; copying it copies no element… <sub>`RangeConcepts.ViewVersusContainer`</sub> | ✅ | ✅ | ✅ |
+| [Dangling protection](examples/ranges/range-concepts.md#dangling-protection): an algorithm over a temporary vector returns ranges::danglin… <sub>`RangeConcepts.DanglingProtection`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/ranges/range-concepts.md#gotchas): wrap a container with views::all (an lvalue becomes a ref_view) instead… <sub>`RangeConcepts.ViewsAllWrapsContainers`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [a-range-is-anything-with-beginend](examples/ranges/range-concepts.md#a-range-is-anything-with-beginend) | 1 | ✅ | ✅ | ✅ |
+| [range-access-customization-points](examples/ranges/range-concepts.md#range-access-customization-points) | 1 | ✅ | ✅ | ✅ |
+| [view-vs-container](examples/ranges/range-concepts.md#view-vs-container) | 1 | ✅ | ✅ | ✅ |
+| [dangling-protection](examples/ranges/range-concepts.md#dangling-protection) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/ranges/views.md</code>: 18 features, 11 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The pipe operator](examples/ranges/views.md#the-pipe-operator): the page's pipeline yields 20,40,60,80 (only four evens); adap… <sub>`Views.PipeOperator`</sub> | ✅ | ✅ | ✅ |
+| [Core adaptors (C++20)](examples/ranges/views.md#core-adaptors-c20): results of r1..r13 on the page's inputs. <sub>`Views.CoreAdaptors`</sub> | ✅ | ✅ | ✅ |
+| [Core adaptors (C++20)](examples/ranges/views.md#core-adaptors-c20): reverse needs a bidirectional range. <sub>`Views.ReverseNeedsBidirectional`</sub> | ✅ | ✅ | ✅ |
+| [New in C++23](examples/ranges/views.md#new-in-c23): zip stops at the shortest; zip_transform; adjacent&lt;2&gt; sliding tuple… <sub>`Views.ZipFamily`</sub> | ✅ | ✅ | ✅ |
+| [New in C++23](examples/ranges/views.md#new-in-c23): enumerate yields (index, element). <sub>`Views.Enumerate`</sub> | ✅ | ✅ | ⏭<sup>3</sup> |
+| [New in C++23](examples/ranges/views.md#new-in-c23): chunk(2) groups, slide(2) windows. <sub>`Views.ChunkAndSlide`</sub> | ✅ | ✅ | ⏭<sup>4</sup> |
+| [New in C++23](examples/ranges/views.md#new-in-c23): chunk_by splits where pred(a, b) is false. <sub>`Views.ChunkBy`</sub> | ✅ | ✅ | ✅ |
+| [New in C++23](examples/ranges/views.md#new-in-c23): stride(2) takes every 2nd element. <sub>`Views.Stride`</sub> | ✅ | ✅ | ⏭<sup>5</sup> |
+| [New in C++23](examples/ranges/views.md#new-in-c23): as_const yields const references, as_rvalue yields rvalues. <sub>`Views.AsConstAsRvalue`</sub> | ✅ | ✅ | ⏭<sup>6</sup> |
+| [Examples](examples/ranges/views.md#examples): sum of squares of the first 3 even numbers in 1..8 is 4 + 16 + 36. <sub>`Views.FilterTransformTake`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/ranges/views.md#examples): split a CSV line into its tokens. <sub>`Views.SplitCsvLine`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/ranges/views.md#gotchas): lazy means re-evaluated — iterating twice runs the transform twice. <sub>`Views.LazyIsReevaluated`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/ranges/views.md#gotchas): filter_view caches its first element's position, so begin() runs the pre… <sub>`Views.FilterCachesBegin`</sub> | ✅ | ✅ | ✅ |
+| [join_with — flatten with a separator](examples/ranges/views.md#join_with--flatten-with-a-separator): a char or a string_view goes between the pi… <sub>`Views.JoinWith`</sub> | ✅ | ✅ | ✅ |
+| [cartesian_product — every combination](examples/ranges/views.md#cartesian_product--every-combination): last range varies fastest; size is the pro… <sub>`Views.CartesianProduct`</sub> | ✅ | ✅ | ⏭<sup>7</sup> |
+| [concat — one range after another](examples/ranges/views.md#concat--one-range-after-another): mixed range types; random access and sized; com… <sub>`Views.Concat`</sub> | ✅ | ✅ | ⏭<sup>8</sup> |
+| [cache_latest — compute each element once](examples/ranges/views.md#cache_latest--compute-each-element-once): 6 transform calls without it, 4 with; i… <sub>`Views.CacheLatest`</sub> | ✅ | ✅ | ⏭<sup>9</sup> |
+| [as_input — downgrade to an input range](examples/ranges/views.md#as_input--downgrade-to-an-input-range): input-only (the P3828 name; GCC 15 has on… <sub>`Views.AsInput`</sub> | ⏭<sup>10</sup> | ✅ | ⏭<sup>10</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-pipe-operator](examples/ranges/views.md#the-pipe-operator) | 1 | ✅ | ✅ | ✅ |
+| [core-adaptors-c20](examples/ranges/views.md#core-adaptors-c20) | 2 | ✅ | ✅ | ✅ |
+| [new-in-c23](examples/ranges/views.md#new-in-c23) | 2 | ✅ | ✅ | ❌2 |
+| [join_with--flatten-with-a-separator](examples/ranges/views.md#join_with--flatten-with-a-separator) | 1 | ✅ | ✅ | ✅ |
+| [cartesian_product--every-combination](examples/ranges/views.md#cartesian_product--every-combination) | 1 | ✅ | ✅ | ❌ |
+| [concat--one-range-after-another](examples/ranges/views.md#concat--one-range-after-another) | 1 | ✅ | ✅ | ❌ |
+| [cache_latest--compute-each-element-once](examples/ranges/views.md#cache_latest--compute-each-element-once) | 1 | ✅ | ✅ | ❌ |
+| [as_input--downgrade-to-an-input-range](examples/ranges/views.md#as_input--downgrade-to-an-input-range) | 1 | ⏭<sup>11</sup> | ⏭<sup>11</sup> | ⏭<sup>11</sup> |
+| [examples](examples/ranges/views.md#examples) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_ranges_indices (not defined by this toolchain)
+2. needs indices
+3. needs __cpp_lib_ranges_enumerate (not defined by this toolchain)
+4. needs __cpp_lib_ranges_chunk (not defined by this toolchain)
+5. needs __cpp_lib_ranges_stride (not defined by this toolchain)
+6. needs __cpp_lib_ranges_as_const (not defined by this toolchain)
+7. needs __cpp_lib_ranges_cartesian_product (not defined by this toolchain)
+8. needs __cpp_lib_ranges_concat (not defined by this toolchain)
+9. needs __cpp_lib_ranges_cache_latest (not defined by this toolchain)
+10. needs __cpp_lib_ranges_as_input (not defined by this toolchain)
+11. needs as_input
+
+</details>
+
+### strings
+
+4 pages · 30 features · 12 examples. Ran on every column.
+
+Columns merged in this area's tables:
+
+- **A** (23 columns, identical here): GCC 13†, GCC 14†, GCC 15, GCC 15 (local), GCC 16, GCC 16†, GCC 16 (local), Clang 18, libstdc++†, Clang 19, libstdc++†, Clang 20, libstdc++†, Clang 21, libstdc++†, Clang 22, libstdc++†, Clang 23, libstdc++†, Clang 18, libc++†, Clang 19, libc++†, Clang 20, libc++†, Clang 21, libc++†, Clang 22, libc++, Clang 22, libc++ (local), Clang 23, libc++†, MSVC 19.44†, MSVC 19.51†, clang-cl 22†
+- **B** (2 columns, identical here): Apple Clang 17†, Apple Clang 21†
+
+| Page | Features | Examples | **A** | **B** |
+|---|---:|---:|---|---|
+| [examples/strings/README.md](examples/strings/README.md) | 3 | 0 | ✅ | ✅ |
+| [examples/strings/char_traits.md](examples/strings/char_traits.md) | 7 | 2 | ✅ | ❌ 2 |
+| [examples/strings/string.md](examples/strings/string.md) | 11 | 5 | ✅ | ❌ 5 |
+| [examples/strings/string_view.md](examples/strings/string_view.md) | 9 | 5 | ✅ | ❌ 5 |
+
+<details><summary><code>examples/strings/README.md</code>: 3 features, 0 examples</summary>
+
+| Feature | **A** | **B** |
+|---|---|---|
+| Table: std::string and char_traits come from &lt;string&gt;; string_view from &lt;string… <sub>`StringsReadme.HeadersAndSince`</sub> | ✅ | ✅ |
+| [Which one?](examples/strings/README.md#which-one): std::string owns and mutates; a string_view reads without copying. <sub>`StringsReadme.OwnVersusView`</sub> | ✅ | ✅ |
+| [Which one?](examples/strings/README.md#which-one): different comparison rules come from a basic_string&lt;CharT, Traits&gt; in… <sub>`StringsReadme.CustomTraitsChangeComparison`</sub> | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/strings/char_traits.md</code>: 7 features, 2 examples</summary>
+
+| Feature | **A** | **B** |
+|---|---|---|
+| [Mental model](examples/strings/char_traits.md#mental-model): basic_string and basic_string_view take Traits, defaulting to char_… <sub>`CharTraits.StringTypesUseTraits`</sub> | ✅ | ✅ |
+| **Interface**: specialized for char, wchar_t, char8_t, char16_t, char32_t. <sub>`CharTraits.Specializations`</sub> | ✅ | ✅ |
+| **Interface**: int_type can also hold EOF, distinct from every char value. <sub>`CharTraits.IntTypeHoldsEof`</sub> | ✅ | ✅ |
+| **Interface**: table and "Many are constexpr": eq, lt, compare, length, find, assign,… <sub>`CharTraits.StaticMembersAreConstexpr`</sub> | ✅ | ✅ |
+| [Example: a case-insensitive string](examples/strings/char_traits.md#example-a-case-insensitive-string): "Hello" == "HELLO" through ci_traits. <sub>`CharTraits.CaseInsensitiveString`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/char_traits.md#gotchas): a custom-traits string is a different type, needing explicit conversion. <sub>`CharTraits.CustomTraitsIsDifferentType`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/char_traits.md#gotchas): length stops at the null character — not a general size. <sub>`CharTraits.LengthStopsAtNull`</sub> | ✅ | ✅ |
+
+| Examples in section | Blocks | **A** | **B** |
+|---|---:|---|---|
+| [interface-static-functions](examples/strings/char_traits.md#interface-static-functions) | 1 | ✅ | ❌ |
+| [example-a-case-insensitive-string](examples/strings/char_traits.md#example-a-case-insensitive-string) | 1 | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/strings/string.md</code>: 11 features, 5 examples</summary>
+
+| Feature | **A** | **B** |
+|---|---|---|
+| Header: std::string is std::basic_string&lt;char&gt;. "The basic_string family": the… <sub>`String.Aliases`</sub> | ✅ | ✅ |
+| [Mental model](examples/strings/string.md#mental-model): a null terminator is always kept just past the last character. <sub>`String.NullTerminatorAlwaysKept`</sub> | ✅ | ✅ |
+| [Mental model](examples/strings/string.md#mental-model): SSO — short strings (typically &lt;= 15 chars) live inside the object.… <sub>`String.SmallStringOptimization`</sub> | ✅ | ✅ |
+| [Construction &amp; growth](examples/strings/string.md#construction--growth): the values in the comments. <sub>`String.ConstructionAndGrowth`</sub> | ✅ | ✅ |
+| [Access &amp; C interop](examples/strings/string.md#access--c-interop): at() is bounds-checked; data() is non-const char* since C++17. <sub>`String.AccessAndCInterop`</sub> | ✅ | ✅ |
+| [Searching &amp; substrings](examples/strings/string.md#searching--substrings): find returns an index or npos; substr gives "key"/"value". <sub>`String.SearchingAndSubstrings`</sub> | ✅ | ✅ |
+| [Numeric conversions](examples/strings/string.md#numeric-conversions): stoi/stod/to_string; stoi throws on bad input. <sub>`String.NumericConversions`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string.md#gotchas): embedded '\0' is allowed; size() (not strlen) is the truth. <sub>`String.EmbeddedNull`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string.md#gotchas): substr copies — the result has its own buffer. <sub>`String.SubstrCopies`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string.md#gotchas): "abc" is a const char*-ish literal; ""s makes a std::string. <sub>`String.StringLiteralSuffix`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string.md#gotchas): growth past capacity reallocates (invalidating pointers); within capacit… <sub>`String.ReallocationAndGrowth`</sub> | ✅ | ✅ |
+
+| Examples in section | Blocks | **A** | **B** |
+|---|---:|---|---|
+| [the-basic_string-family](examples/strings/string.md#the-basic_string-family) | 1 | ✅ | ❌ |
+| [construction--growth](examples/strings/string.md#construction--growth) | 1 | ✅ | ❌ |
+| [access--c-interop](examples/strings/string.md#access--c-interop) | 1 | ✅ | ❌ |
+| [searching--substrings](examples/strings/string.md#searching--substrings) | 1 | ✅ | ❌ |
+| [numeric-conversions](examples/strings/string.md#numeric-conversions) | 1 | ✅ | ❌ |
+
+</details>
+
+<details><summary><code>examples/strings/string_view.md</code>: 9 features, 5 examples</summary>
+
+| Feature | **A** | **B** |
+|---|---|---|
+| [Cheap slicing](examples/strings/string_view.md#cheap-slicing): substr returns views into the same buffer; remove_prefix moves the… <sub>`StringView.CheapSlicing`</sub> | ✅ | ✅ |
+| [Same read API as string](examples/strings/string_view.md#same-read-api-as-string): starts_with / ends_with (C++20), contains (C++23). <sub>`StringView.ReadApi`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string_view.md#gotchas): not null-terminated — a sub-view's data() runs on past its end. <sub>`StringView.NotNullTerminated`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string_view.md#gotchas): remove_prefix/remove_suffix shrink the view, not the data. <sub>`StringView.RemoveSuffixLeavesDataAlone`</sub> | ✅ | ✅ |
+| Declaration / aliases: basic_string_view&lt;CharT, Traits = char_traits&lt;CharT&gt;&gt; an… <sub>`StringView.Aliases`</sub> | ✅ | ✅ |
+| [Mental model](examples/strings/string_view.md#mental-model): a view of a std::string is {ptr -&gt; 'h', len = 11}; copying copies n… <sub>`StringView.PointerPlusLength`</sub> | ✅ | ✅ |
+| [Why it exists](examples/strings/string_view.md#why-it-exists): one count_spaces signature takes literals, std::string, char* and… <sub>`StringView.UniversalParameter`</sub> | ✅ | ✅ |
+| [Same read API as string](examples/strings/string_view.md#same-read-api-as-string): empty, operator[], range-for. <sub>`StringView.ReadApiRest`</sub> | ✅ | ✅ |
+| [Gotchas](examples/strings/string_view.md#gotchas): there is no c_str(); it's read-only. <sub>`StringView.NoCStrAndReadOnly`</sub> | ✅ | ✅ |
+
+| Examples in section | Blocks | **A** | **B** |
+|---|---:|---|---|
+| [declaration](examples/strings/string_view.md#declaration) | 1 | ✅ | ❌ |
+| [why-it-exists](examples/strings/string_view.md#why-it-exists) | 1 | ✅ | ❌ |
+| [cheap-slicing](examples/strings/string_view.md#cheap-slicing) | 1 | ✅ | ❌ |
+| [same-read-api-as-string](examples/strings/string_view.md#same-read-api-as-string) | 1 | ✅ | ❌ |
+| [gotchas](examples/strings/string_view.md#gotchas) | 1 | ✅ | ❌ |
+
+</details>
+
+### text-processing
+
+9 pages · 80 features · 30 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/text-processing/README.md](examples/text-processing/README.md) | 3 | 0 | ✅ | 🟡 1 | 🟡 1 |
+| [examples/text-processing/charconv.md](examples/text-processing/charconv.md) | 9 | 3 | ✅ | ✅ | 🟡 1 |
+| [examples/text-processing/formatting.md](examples/text-processing/formatting.md) | 9 | 3 | 🟡 1 | 🟡 1 | ✅ |
+| [examples/text-processing/localization.md](examples/text-processing/localization.md) | 9 | 3 | 🟡 3 | 🟡 4 | ✅ |
+| [examples/text-processing/null-terminated-byte-strings.md](examples/text-processing/null-terminated-byte-strings.md) | 15 | 6 | ✅ | ✅ | ✅ |
+| [examples/text-processing/null-terminated-multibyte-strings.md](examples/text-processing/null-terminated-multibyte-strings.md) | 10 | 3 | 🟡 3 | 🟡 2 ❔ | 🟡 3 |
+| [examples/text-processing/null-terminated-wide-strings.md](examples/text-processing/null-terminated-wide-strings.md) | 11 | 3 | 🟡 1 | ✅ | 🟡 1 |
+| [examples/text-processing/regex.md](examples/text-processing/regex.md) | 7 | 5 | ✅ | ✅ | ✅ |
+| [examples/text-processing/text-encoding.md](examples/text-processing/text-encoding.md) | 7 | 4 | 🟡 3 | 🟡 3 | ❌ 3 |
+
+<details><summary><code>examples/text-processing/README.md</code>: 3 features, 0 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Picking a conversion tool](examples/text-processing/README.md#picking-a-conversion-tool): format builds a string from values; print writes it st… <sub>`TextProcessingReadme.FormatAndPrint`</sub> | ✅ | ✅ | ✅ |
+| [Picking a conversion tool](examples/text-processing/README.md#picking-a-conversion-tool): to_chars / from_chars round-trip a double exactly. <sub>`TextProcessingReadme.CharconvRoundTrips`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+| [Picking a conversion tool](examples/text-processing/README.md#picking-a-conversion-tool): to_string allocates (returns a std::string) and is loc… <sub>`TextProcessingReadme.ToStringLocale`</sub> | ✅ | ⏭<sup>2</sup> | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/charconv.md</code>: 9 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Number → text](examples/text-processing/charconv.md#number--text): to_chars writes "42" with no terminator; fixed precision 2 gives "… <sub>`Charconv.ToChars`</sub> | ✅ | ✅ | ✅ |
+| [Text → number (and tokenizing)](examples/text-processing/charconv.md#text--number-and-tokenizing): the loop yields 123, 456, 789. <sub>`Charconv.FromCharsTokenizing`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/charconv.md#gotchas): no leading whitespace or '+' for integers, but '-' is accepted. <sub>`Charconv.FromCharsLeadingCharacters`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/charconv.md#gotchas): locale-independent — "1,234" parses as 1 and stops at the comma. <sub>`Charconv.LocaleIndependent`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/text-processing/charconv.md#mental-model): from_chars on "123abc" reads 123 and leaves ptr at "abc"; to_chars… <sub>`Charconv.MentalModel`</sub> | ✅ | ✅ | ✅ |
+| [Signatures](examples/text-processing/charconv.md#signatures): the result structs hold ptr + ec; integers take a base. <sub>`Charconv.ResultStructsAndBase`</sub> | ✅ | ✅ | ✅ |
+| [Signatures](examples/text-processing/charconv.md#signatures): floats take a chars_format (scientific, fixed, hex, general) plus pre… <sub>`Charconv.FloatFormats`</sub> | ✅ | ✅ | ✅ |
+| [Reading the result](examples/text-processing/charconv.md#reading-the-result): invalid_argument, result_out_of_range, value_too_large. <sub>`Charconv.ErrorCodes`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/charconv.md#gotchas): locale-independent float parsing — '.' is the separator, always. "Float… <sub>`Charconv.FloatFromChars`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [signatures](examples/text-processing/charconv.md#signatures) | 1 | ✅ | ✅ | ✅ |
+| [number--text](examples/text-processing/charconv.md#number--text) | 1 | ✅ | ✅ | ✅ |
+| [text--number-and-tokenizing](examples/text-processing/charconv.md#text--number-and-tokenizing) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/formatting.md</code>: 9 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/text-processing/formatting.md#mental-model): "{} = {:.2f}" with "pi", 3.14159 gives "pi = 3.14". <sub>`Formatting.MentalModel`</sub> | ✅ | ✅ | ✅ |
+| [The core functions](examples/text-processing/formatting.md#the-core-functions): format_to, format_to_n, formatted_size, vformat. <sub>`Formatting.CoreFunctions`</sub> | ✅ | ✅ | ✅ |
+| [The core functions](examples/text-processing/formatting.md#the-core-functions): a runtime format string that's malformed throws format_error… <sub>`Formatting.VformatRuntimeError`</sub> | ✅ | ✅ | ✅ |
+| [Format spec mini-reference](examples/text-processing/formatting.md#format-spec-mini-reference): every value in the comments. <sub>`Formatting.SpecMiniReference`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/text-processing/formatting.md#examples): format, print (no newline added), println (newline added), format_to. <sub>`Formatting.Examples`</sub> | ✅ | ✅ | ✅ |
+| [Making your own type formattable](examples/text-processing/formatting.md#making-your-own-type-formattable): Point prints "(3, 4)". <sub>`Formatting.CustomFormatter`</sub> | ✅ | ✅ | ✅ |
+| [Making your own type formattable](examples/text-processing/formatting.md#making-your-own-type-formattable): delegate to an existing formatter to accept its… <sub>`Formatting.DelegatingFormatter`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/formatting.md#gotchas): literal braces are doubled. <sub>`Formatting.DoubledBraces`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/formatting.md#gotchas): locale-independent by default; the L spec with a std::locale opts in. <sub>`Formatting.LocaleOptIn`</sub> | ⏭<sup>3</sup> | ⏭<sup>3</sup> | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [format-spec-mini-reference](examples/text-processing/formatting.md#format-spec-mini-reference) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/text-processing/formatting.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [making-your-own-type-formattable](examples/text-processing/formatting.md#making-your-own-type-formattable) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/localization.md</code>: 9 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [The classic vs. the user's locale](examples/text-processing/localization.md#the-classic-vs-the-users-locale): the "C" locale prints 1234567.89 with no group… <sub>`Localization.ClassicHasNoGrouping`</sub> | ✅ | ✅ | ✅ |
+| [The classic vs. the user's locale](examples/text-processing/localization.md#the-classic-vs-the-users-locale): en_US groups as "1,234,567.89". <sub>`Localization.EnUsGrouping`</sub> | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ✅ |
+| [The classic vs. the user's locale](examples/text-processing/localization.md#the-classic-vs-the-users-locale): de_DE groups as "1.234.567,89" on glibc; macOS… <sub>`Localization.DeDeGrouping`</sub> | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ✅ |
+| [Locale-aware comparison](examples/text-processing/localization.md#locale-aware-comparison): locale::operator() compares strings with the collate fac… <sub>`Localization.OperatorCallUsesCollate`</sub> | ✅ | ✅ | ✅ |
+| [Querying a facet](examples/text-processing/localization.md#querying-a-facet): numpunct gives thousands_sep and decimal_point. <sub>`Localization.QueryNumpunct`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/localization.md#gotchas): a named locale the OS doesn't have throws std::runtime_error. <sub>`Localization.UnknownNamedLocaleThrows`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/localization.md#gotchas): libstdc++ on macOS supports only "C"/"POSIX", so std::locale{""} throws… <sub>`Localization.EnvironmentLocale`</sub> | ✅ | ⏭<sup>6</sup> | ✅ |
+| [Gotchas](examples/text-processing/localization.md#gotchas): std::format is locale-independent by default, even with a grouping globa… <sub>`Localization.FormatIgnoresGlobalLocale`</sub> | ⏭<sup>7</sup> | ⏭<sup>7</sup> | ✅ |
+| [Gotchas](examples/text-processing/localization.md#gotchas): locales are immutable; build a modified one by combining facets. <sub>`Localization.CombineFacets`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [the-classic-vs-the-users-locale](examples/text-processing/localization.md#the-classic-vs-the-users-locale) | 1 | ✅ | ✅ | ✅ |
+| [locale-aware-comparison](examples/text-processing/localization.md#locale-aware-comparison) | 1 | ✅ | ✅ | ✅ |
+| [querying-a-facet](examples/text-processing/localization.md#querying-a-facet) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/null-terminated-byte-strings.md</code>: 15 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/text-processing/null-terminated-byte-strings.md#mental-model): strlen doesn't count the terminator. <sub>`NullTerminatedByteStrings.StrlenExcludesTerminator`</sub> | ✅ | ✅ | ✅ |
+| [Examine and search](examples/text-processing/null-terminated-byte-strings.md#examine-and-search): the documented printf output. <sub>`NullTerminatedByteStrings.ExamineAndSearch`</sub> | ✅ | ✅ | ✅ |
+| [Classify characters safely](examples/text-processing/null-terminated-byte-strings.md#classify-characters-safely): upper() via unsigned char maps ASCII letters only. <sub>`NullTerminatedByteStrings.ClassifySafely`</sub> | ✅ | ✅ | ✅ |
+| [Classify characters safely](examples/text-processing/null-terminated-byte-strings.md#classify-characters-safely): char signedness is implementation-defined (signed on… <sub>`NullTerminatedByteStrings.CharSignedness`</sub> | ✅ | ✅ | ✅ |
+| [Convert text to numbers with error checking](examples/text-processing/null-terminated-byte-strings.md#convert-text-to-numbers-with-error-checking): strtol skips space, stops at 'x', re… <sub>`NullTerminatedByteStrings.Strtol`</sub> | ✅ | ✅ | ✅ |
+| **Convert text to numbers**: atoi returns 0 when there is nothing to parse. <sub>`NullTerminatedByteStrings.AtoiReturnsZeroOnFailure`</sub> | ✅ | ✅ | ✅ |
+| **memmove handles overlap**: overlapping move gives "ababcd". <sub>`NullTerminatedByteStrings.Memmove`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas): strncpy doesn't terminate when the source is &gt;= n, and zero-pads short c… <sub>`NullTerminatedByteStrings.StrncpyTermination`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas): strncat's n is the number of characters appended, not the buffer size. <sub>`NullTerminatedByteStrings.StrncatCountsAppended`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas): strtok modifies its input and merges adjacent delimiters ("a,b,,c" -&gt; a… <sub>`NullTerminatedByteStrings.StrtokMergesDelimiters`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas): strcmp returns any sign, not just -1/0/1 — only compare with zero. <sub>`NullTerminatedByteStrings.StrcmpSign`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas): C++ has const and non-const overloads of strchr — except libstdc++ on ma… <sub>`NullTerminatedByteStrings.StrchrOverloads`</sub> | ✅ | ✅ | ✅ |
+| [Declaration](examples/text-processing/null-terminated-byte-strings.md#declaration): cctype functions follow the C locale; in "C" only ASCII classifies. <sub>`NullTerminatedByteStrings.CctypeInCLocale`</sub> | ✅ | ✅ | ✅ |
+| **Fixed-width integers in printf / scanf**: the values in the comments. <sub>`NullTerminatedByteStrings.CinttypesMacros`</sub> | ✅ | ✅ | ✅ |
+| **Fixed-width integers in printf / scanf**: std::format needs no macro. <sub>`NullTerminatedByteStrings.FormatReplacesMacros`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [examine-and-search](examples/text-processing/null-terminated-byte-strings.md#examine-and-search) | 1 | ✅ | ✅ | ✅ |
+| [classify-characters-safely](examples/text-processing/null-terminated-byte-strings.md#classify-characters-safely) | 1 | ✅ | ✅ | ✅ |
+| [convert-text-to-numbers-with-error-checking](examples/text-processing/null-terminated-byte-strings.md#convert-text-to-numbers-with-error-checking) | 1 | ✅ | ✅ | ✅ |
+| [fixed-width-integers-in-printf--scanf-cinttypes-c11](examples/text-processing/null-terminated-byte-strings.md#fixed-width-integers-in-printf--scanf-cinttypes-c11) | 1 | ✅ | ✅ | ✅ |
+| [memmove-handles-overlap-memcpy-does-not](examples/text-processing/null-terminated-byte-strings.md#memmove-handles-overlap-memcpy-does-not) | 1 | ✅ | ✅ | ✅ |
+| [gotchas](examples/text-processing/null-terminated-byte-strings.md#gotchas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/null-terminated-multibyte-strings.md</code>: 10 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Nothing decodes until you pick a locale](examples/text-processing/null-terminated-multibyte-strings.md#nothing-decodes-until-you-pick-a-locale): programs start in "C", where MB_CUR_MAX… <sub>`NullTerminatedMultibyteStrings.StartsInCLocale`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/text-processing/null-terminated-multibyte-strings.md#mental-model): / "Nothing decodes...": "héllo €" is 10 bytes but 7 characters in U… <sub>`NullTerminatedMultibyteStrings.CountCharacters`</sub> | ✅ | ✅ | ✅ |
+| **Nothing decodes...**: MB_CUR_MAX in a UTF-8 locale is 4 on macOS, 6 on glibc. <sub>`NullTerminatedMultibyteStrings.MbCurMaxInUtf8`</sub> | ✅ | ✅ | ✅ |
+| **Return values**: -1 with EILSEQ for invalid input; -2 for a valid prefix, then fini… <sub>`NullTerminatedMultibyteStrings.InvalidAndIncomplete`</sub> | ✅ | ✅ | ✅ |
+| **Decode to code points and encode back**: U+0068 ... U+20AC, and € back to E2 82 AC. <sub>`NullTerminatedMultibyteStrings.Mbrtoc32AndC32rtomb`</sub> | — | ❔ | — |
+| **mbrtoc8 hands out one UTF-8 code unit per call**: 2/C3, then -3/A9 without input. <sub>`NullTerminatedMultibyteStrings.Mbrtoc8`</sub> | — | ❔ | — |
+| [Gotchas](examples/text-processing/null-terminated-multibyte-strings.md#gotchas): mbrtoc16 needs two calls outside the BMP; the second returns -3. <sub>`NullTerminatedMultibyteStrings.Mbrtoc16SurrogatePair`</sub> | — | ❔ | — |
+| [Gotchas](examples/text-processing/null-terminated-multibyte-strings.md#gotchas): in the "C" locale, mbrtoc32 on "\xC3\xA9" returns (size_t)-1 on glibc. <sub>`NullTerminatedMultibyteStrings.CLocaleRejectsMultibyte`</sub> | — | ❔ | — |
+| [Gotchas](examples/text-processing/null-terminated-multibyte-strings.md#gotchas): &lt;cuchar&gt; is missing on macOS (no &lt;uchar.h&gt; in the SDK). <sub>`NullTerminatedMultibyteStrings.CucharExamples`</sub> | ⏭<sup>8</sup> | ❔ | ⏭<sup>8</sup> |
+| [Gotchas](examples/text-processing/null-terminated-multibyte-strings.md#gotchas): setlocale returns nullptr when a name isn't installed. <sub>`NullTerminatedMultibyteStrings.UnknownLocaleNameReturnsNull`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [nothing-decodes-until-you-pick-a-locale](examples/text-processing/null-terminated-multibyte-strings.md#nothing-decodes-until-you-pick-a-locale) | 1 | ✅ | ✅ | ✅ |
+| [decode-to-code-points-and-encode-back-cuchar](examples/text-processing/null-terminated-multibyte-strings.md#decode-to-code-points-and-encode-back-cuchar) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+| [mbrtoc8-hands-out-one-utf-8-code-unit-per-call-c20](examples/text-processing/null-terminated-multibyte-strings.md#mbrtoc8-hands-out-one-utf-8-code-unit-per-call-c20) | 1 | ⏭<sup>9</sup> | ⏭<sup>9</sup> | ⏭<sup>9</sup> |
+
+</details>
+
+<details><summary><code>examples/text-processing/null-terminated-wide-strings.md</code>: 11 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Counting and classifying characters](examples/text-processing/null-terminated-wide-strings.md#counting-and-classifying-characters): sizeof(wchar_t)=4 and wcslen=7 on macOS and… <sub>`NullTerminatedWideStrings.SizeAndLength`</sub> | ✅ | ✅ | ✅ |
+| [Counting and classifying characters](examples/text-processing/null-terminated-wide-strings.md#counting-and-classifying-characters): C locale: iswalpha(é)=0, towupper(é)=U+00E9. <sub>`NullTerminatedWideStrings.CLocaleClassifiesOnlyAscii`</sub> | ✅ | ✅ | ✅ |
+| [Counting and classifying characters](examples/text-processing/null-terminated-wide-strings.md#counting-and-classifying-characters): UTF-8 locale: iswalpha(é)=1, towupper(é)=U+0… <sub>`NullTerminatedWideStrings.Utf8LocaleClassifiesE`</sub> | ✅ | ✅ | ✅ |
+| [Classification by name](examples/text-processing/null-terminated-wide-strings.md#classification-by-name): wctype("digit") and wctrans("toupper"). <sub>`NullTerminatedWideStrings.ClassificationByName`</sub> | ✅ | ✅ | ✅ |
+| **Wide → UTF-8**: narrow(L"héllo €") is 10 bytes of UTF-8. <sub>`NullTerminatedWideStrings.NarrowToUtf8`</sub> | ✅ | ✅ | ✅ |
+| **Wide → UTF-8**: an unrepresentable char makes wcsrtombs return -1 (narrow gives ""). <sub>`NullTerminatedWideStrings.NarrowUnrepresentable`</sub> | ⏭<sup>10</sup> | ✅ | ⏭<sup>10</sup> |
+| [Declaration](examples/text-processing/null-terminated-wide-strings.md#declaration): wcstok takes a state pointer, so it is reentrant (interleaved tokeni… <sub>`NullTerminatedWideStrings.WcstokIsReentrant`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-wide-strings.md#gotchas): WCHAR_MAX is signed 2147483647 on arm64 macOS, unsigned 4294967295 on ar… <sub>`NullTerminatedWideStrings.WcharMax`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-wide-strings.md#gotchas): printf("[%ls]\n", L"héllo") in the "C" locale returns -1 and prints noth… <sub>`NullTerminatedWideStrings.PrintfLsInCLocale`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-wide-strings.md#gotchas): towupper maps one unit to one unit, so ß stays ß. <sub>`NullTerminatedWideStrings.TowupperOneToOne`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/null-terminated-wide-strings.md#gotchas): wcsncpy doesn't terminate when the source fills the buffer. <sub>`NullTerminatedWideStrings.WcsncpyTermination`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [counting-and-classifying-characters](examples/text-processing/null-terminated-wide-strings.md#counting-and-classifying-characters) | 1 | ✅ | ✅ | ✅ |
+| [classification-by-name](examples/text-processing/null-terminated-wide-strings.md#classification-by-name) | 1 | ✅ | ✅ | ✅ |
+| [wide--utf-8-or-whatever-the-locale-encodes](examples/text-processing/null-terminated-wide-strings.md#wide--utf-8-or-whatever-the-locale-encodes) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/regex.md</code>: 7 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Match vs. search](examples/text-processing/regex.md#match-vs-search): regex_match needs the whole string, regex_search finds it withi… <sub>`Regex.MatchVsSearch`</sub> | ✅ | ✅ | ✅ |
+| [Capture groups](examples/text-processing/regex.md#capture-groups): m[0] is the whole match, m[1]/m[2] the groups, with position/leng… <sub>`Regex.CaptureGroups`</sub> | ✅ | ✅ | ✅ |
+| [Mental model](examples/text-processing/regex.md#mental-model): cmatch is the match_results type for const char*. <sub>`Regex.Cmatch`</sub> | ✅ | ✅ | ✅ |
+| [Iterate every match](examples/text-processing/regex.md#iterate-every-match): sregex_iterator yields a1, b2, c3. <sub>`Regex.IterateEveryMatch`</sub> | ✅ | ✅ | ✅ |
+| [Replace (with backreferences)](examples/text-processing/regex.md#replace-with-backreferences): "$2, $1" turns "John Smith" into "Smith, John". <sub>`Regex.ReplaceWithBackreferences`</sub> | ✅ | ✅ | ✅ |
+| [Grammar &amp; flags](examples/text-processing/regex.md#grammar--flags): icase matches regardless of case; ECMAScript is the default gram… <sub>`Regex.GrammarAndFlags`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/text-processing/regex.md#gotchas): a raw string and a doubled-backslash literal spell the same pattern. <sub>`Regex.RawStringEqualsEscaped`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [match-vs-search](examples/text-processing/regex.md#match-vs-search) | 1 | ✅ | ✅ | ✅ |
+| [capture-groups](examples/text-processing/regex.md#capture-groups) | 1 | ✅ | ✅ | ✅ |
+| [iterate-every-match](examples/text-processing/regex.md#iterate-every-match) | 1 | ✅ | ✅ | ✅ |
+| [replace-with-backreferences](examples/text-processing/regex.md#replace-with-backreferences) | 1 | ✅ | ✅ | ✅ |
+| [grammar--flags](examples/text-processing/regex.md#grammar--flags) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/text-processing/text-encoding.md</code>: 7 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Declaration](examples/text-processing/text-encoding.md#declaration): id::UTF8 is 106, max_name_length is 63, default is unknown with name… <sub>`TextEncoding.DeclarationBasics`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [What am I running with?](examples/text-processing/text-encoding.md#what-am-i-running-with): literal() is UTF-8 (the static_assert in the example hol… <sub>`TextEncoding.LiteralIsUtf8`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [What am I running with?](examples/text-processing/text-encoding.md#what-am-i-running-with): environment()/environment_is() need -lstdc++exp with lib… <sub>`TextEncoding.Environment`</sub> | ⏭<sup>12</sup> | ⏭<sup>12</sup> | ⏭<sup>11</sup> |
+| [Looking encodings up by name](examples/text-processing/text-encoding.md#looking-encodings-up-by-name): the documented output. <sub>`TextEncoding.LookupByName`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [Declaration](examples/text-processing/text-encoding.md#declaration): IANA name matching ignores case, punctuation and leading zeros. <sub>`TextEncoding.LooseNameMatching`</sub> | ✅ | ✅ | ⏭<sup>11</sup> |
+| [The encoding of a locale](examples/text-processing/text-encoding.md#the-encoding-of-a-locale): classic().encoding() is US-ASCII (mib 3). <sub>`TextEncoding.LocaleEncoding`</sub> | ⏭<sup>13</sup> | ⏭<sup>13</sup> | ⏭<sup>11</sup> |
+| [Gotchas](examples/text-processing/text-encoding.md#gotchas): libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 15 and 16. <sub>`TextEncoding.FeatureMacroValue`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/text-processing/text-encoding.md#declaration) | 1 | ⏭<sup>14</sup> | ⏭<sup>14</sup> | ⏭<sup>14</sup> |
+| [what-am-i-running-with](examples/text-processing/text-encoding.md#what-am-i-running-with) | 1 | ✅ | ✅ | ❌ |
+| [looking-encodings-up-by-name](examples/text-processing/text-encoding.md#looking-encodings-up-by-name) | 1 | ✅ | ✅ | ❌ |
+| [the-encoding-of-a-locale](examples/text-processing/text-encoding.md#the-encoding-of-a-locale) | 1 | ✅ | ✅ | ❌ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_to_chars (not defined by this toolchain)
+2. de_DE.UTF-8 C locale not available
+3. en_US.UTF-8 locale not available
+4. en_US locale not available to this C++ library
+5. de_DE locale not available to this C++ library
+6. environment locale is "C", which every library supports
+7. no de_DE/en_US locale available to this C++ library
+8. macOS SDK has no &lt;uchar.h&gt;, so mbrtoc32/c32rtomb/mbrtoc8/mbrtoc16 aren't declared (checked with GCC 16 on Linux)
+9. needs cuchar
+10. what the C locale does with non-ASCII wide chars is libc-specific
+11. needs __cpp_lib_text_encoding &gt;= 202306L (not defined by this toolchain)
+12. environment() needs -lstdc++exp with libstdc++ and its result depends on the LANG/LC_ALL the test runs with; the suite doesn't link stdc++e…
+13. std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 fail to link without it); the suite doesn't link stdc++exp
+14. nocompile
+
+</details>
+
+### utilities
+
+10 pages · 65 features · 43 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+| Page | Features | Examples | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---:|---|---|---|
+| [examples/utilities/any.md](examples/utilities/any.md) | 4 | 4 | ✅ | ✅ | ✅ |
+| [examples/utilities/bitset.md](examples/utilities/bitset.md) | 4 | 3 | ✅ | ✅ | ✅ |
+| [examples/utilities/callable-wrappers.md](examples/utilities/callable-wrappers.md) | 5 | 5 | 🟡 5 | 🟡 3 | ❌ 1 |
+| [examples/utilities/expected.md](examples/utilities/expected.md) | 5 | 3 | ✅ | ✅ | ✅ |
+| [examples/utilities/functional.md](examples/utilities/functional.md) | 12 | 8 | 🟡 4 | 🟡 2 | 🟡 2 |
+| [examples/utilities/optional.md](examples/utilities/optional.md) | 9 | 3 | 🟡 1 | ✅ | ✅ |
+| [examples/utilities/pair.md](examples/utilities/pair.md) | 6 | 5 | ✅ | ✅ | ✅ |
+| [examples/utilities/tuple.md](examples/utilities/tuple.md) | 5 | 4 | ✅ | ✅ | ✅ |
+| [examples/utilities/utility.md](examples/utilities/utility.md) | 9 | 6 | ✅ | ✅ | ✅ |
+| [examples/utilities/variant.md](examples/utilities/variant.md) | 6 | 2 | ✅ | ✅ | ✅ |
+
+<details><summary><code>examples/utilities/any.md</code>: 4 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Examples](examples/utilities/any.md#examples): reassigning changes the held type; any_cast by exact type; pointer form… <sub>`Any.Basics`</sub> | ✅ | ✅ | ✅ |
+| [A heterogeneous bag](examples/utilities/any.md#a-heterogeneous-bag): values of different types in one map, retrieved by their sto… <sub>`Any.HeterogeneousBag`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/any.md#gotchas): no implicit conversions — any_cast&lt;long&gt; on an int throws; the pointer f… <sub>`Any.ExactTypeRequired`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/any.md#gotchas): the stored type must be copy-constructible. <sub>`Any.CopyableTypesOnly`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/utilities/any.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/utilities/any.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [a-heterogeneous-bag](examples/utilities/any.md#a-heterogeneous-bag) | 1 | ✅ | ✅ | ✅ |
+| [build-in-place-modify-through-a-reference](examples/utilities/any.md#build-in-place-modify-through-a-reference) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/bitset.md</code>: 4 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/utilities/bitset.md#mental-model): bitset&lt;8&gt;{0b1011} has bits 0, 1 and 3 set; bit 0 is least significa… <sub>`Bitset.MentalModelBitIndex`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/utilities/bitset.md#examples): each operation's result on the page's value, in order. <sub>`Bitset.Basics`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/bitset.md#gotchas): to_string() shows the most significant bit first. <sub>`Bitset.ToStringMostSignificantFirst`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/bitset.md#gotchas): to_ulong()/to_ullong() throw std::overflow_error when the value doesn't… <sub>`Bitset.ToUlongOverflowThrows`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/utilities/bitset.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/utilities/bitset.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [flags-from-an-enum](examples/utilities/bitset.md#flags-from-an-enum) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/callable-wrappers.md</code>: 5 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [std::function](examples/utilities/callable-wrappers.md#stdfunction): reassign to std::multiplies, 6 * 7 == 42; calling an empty one thr… <sub>`CallableWrappers.StdFunction`</sub> | ✅ | ✅ | ✅ |
+| Gotcha "std::function's const operator() calls non-const targets": a const func… <sub>`CallableWrappers.FunctionConstLies`</sub> | ✅ | ✅ | ✅ |
+| [std::move_only_function (C++23)](examples/utilities/callable-wrappers.md#stdmove_only_function-c23): holds a move-only callable and is itself move-on… <sub>`CallableWrappers.MoveOnlyFunction`</sub> | ✅ | ✅ | ⏭<sup>1</sup> |
+| [std::copyable_function (C++26)](examples/utilities/callable-wrappers.md#stdcopyable_function-c26): copies, converts to move_only_function, rejects a… <sub>`CallableWrappers.CopyableFunction`</sub> | ⏭<sup>2</sup> | ✅ | ⏭<sup>2</sup> |
+| [std::function_ref (C++26)](examples/utilities/callable-wrappers.md#stdfunction_ref-c26): refers to a lambda or function, binds std::cw&lt;f&gt; and a… <sub>`CallableWrappers.FunctionRef`</sub> | ⏭<sup>3</sup> | ✅ | ⏭<sup>3</sup> |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdfunction](examples/utilities/callable-wrappers.md#stdfunction) | 1 | ✅ | ✅ | ✅ |
+| [stdmove_only_function-c23](examples/utilities/callable-wrappers.md#stdmove_only_function-c23) | 1 | ✅ | ✅ | ❌ |
+| [stdcopyable_function-c26](examples/utilities/callable-wrappers.md#stdcopyable_function-c26) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [stdfunction_ref-c26](examples/utilities/callable-wrappers.md#stdfunction_ref-c26) | 1 | ⏭<sup>5</sup> | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+| [gotchas](examples/utilities/callable-wrappers.md#gotchas) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+
+</details>
+
+<details><summary><code>examples/utilities/expected.md</code>: 5 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Returning success or error](examples/utilities/expected.md#returning-success-or-error): each failure path returns its own error. <sub>`Expected.ReturningSuccessOrError`</sub> | ✅ | ✅ | ✅ |
+| [Consuming the result](examples/utilities/expected.md#consuming-the-result): truthy on success; value() throws bad_expected_access&lt;E&gt;; v… <sub>`Expected.ConsumingTheResult`</sub> | ✅ | ✅ | ✅ |
+| **Monadic chaining**: and_then / transform run on success; transform_error maps the e… <sub>`Expected.MonadicChaining`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/expected.md#gotchas): std::unexpected picks the error path even when T and E are the same type. <sub>`Expected.UnexpectedSelectsErrorPath`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/expected.md#gotchas): expected&lt;void, E&gt; is valid — success with no payload, or an error. <sub>`Expected.VoidValueType`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [returning-success-or-error](examples/utilities/expected.md#returning-success-or-error) | 1 | ✅ | ✅ | ✅ |
+| [consuming-the-result](examples/utilities/expected.md#consuming-the-result) | 1 | ✅ | ✅ | ✅ |
+| [monadic-chaining-no-manual-if-ladders](examples/utilities/expected.md#monadic-chaining-no-manual-if-ladders) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/functional.md</code>: 12 features, 8 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::invoke**: calls a member function, reads a data member, calls a lambda. <sub>`Functional.Invoke`</sub> | ✅ | ✅ | ✅ |
+| **std::invoke**: std::invoke_r&lt;R&gt; (C++23) converts the result to R. <sub>`Functional.InvokeR`</sub> | ✅ | ✅ | ✅ |
+| **ref / cref**: reference_wrapper reaches the callable as a reference; bind copies un… <sub>`Functional.RefSurvivesCopy`</sub> | ✅ | ✅ | ✅ |
+| [Operator functors](examples/utilities/functional.md#operator-functors): plus&lt;&gt;{}(2, 3) == 5; transparent functors deduce operand types… <sub>`Functional.OperatorFunctors`</sub> | ✅ | ✅ | ✅ |
+| [std::bind vs. lambdas](examples/utilities/functional.md#stdbind-vs-lambdas): the lambda and the bind expression compute the same thing. <sub>`Functional.BindVsLambda`</sub> | ✅ | ✅ | ✅ |
+| **bind_front / bind_back**: front prepends, back appends; a member function binds to… <sub>`Functional.BindFrontBack`</sub> | ✅ | ✅ | ✅ |
+| Gotcha "bind_front copies its arguments": binding obj by value leaves the origi… <sub>`Functional.BindFrontCopies`</sub> | ✅ | ✅ | ✅ |
+| [not_fn (C++17)](examples/utilities/functional.md#not_fn-c17): counts the odd numbers in {1..5} == 3. <sub>`Functional.NotFn`</sub> | ✅ | ✅ | ✅ |
+| [mem_fn (C++11)](examples/utilities/functional.md#mem_fn-c11): member function predicate, data member through a reference and a… <sub>`Functional.MemFn`</sub> | ✅ | ✅ | ✅ |
+| [Constant-callable forms (C++26)](examples/utilities/functional.md#constant-callable-forms-c26): not_fn&lt;f&gt;() (GCC 16, libc++ 22). <sub>`Functional.NotFnConstant`</sub> | ⏭<sup>7</sup> | ✅ | ✅ |
+| [Constant-callable forms (C++26)](examples/utilities/functional.md#constant-callable-forms-c26): bind_front&lt;f&gt; / bind_back&lt;f&gt; store only the boun… <sub>`Functional.BindConstant`</sub> | ⏭<sup>8</sup> | ✅ | ⏭<sup>9</sup> |
+| [Constant-callable forms (C++26)](examples/utilities/functional.md#constant-callable-forms-c26): libc++ 22 advertises 202306L for bind_front, but… <sub>`Functional.LibcxxNttpGap`</sub> | ⏭<sup>10</sup> | ⏭<sup>10</sup> | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdinvoke--call-anything-uniformly-c17](examples/utilities/functional.md#stdinvoke--call-anything-uniformly-c17) | 1 | ✅ | ✅ | ✅ |
+| [ref--cref--pass-references-through-value-copying-apis](examples/utilities/functional.md#ref--cref--pass-references-through-value-copying-apis) | 1 | ✅ | ✅ | ✅ |
+| [operator-functors](examples/utilities/functional.md#operator-functors) | 1 | ✅ | ✅ | ✅ |
+| [bind_front--bind_back-c20--c23](examples/utilities/functional.md#bind_front--bind_back-c20--c23) | 1 | ✅ | ✅ | ✅ |
+| [not_fn-c17](examples/utilities/functional.md#not_fn-c17) | 1 | ✅ | ✅ | ✅ |
+| [mem_fn-c11](examples/utilities/functional.md#mem_fn-c11) | 1 | ✅ | ✅ | ✅ |
+| [constant-callable-forms-c26](examples/utilities/functional.md#constant-callable-forms-c26) | 1 | ⏭<sup>11</sup> | ⏭<sup>11</sup> | ⏭<sup>11</sup> |
+| [stdbind-vs-lambdas](examples/utilities/functional.md#stdbind-vs-lambdas) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/optional.md</code>: 9 features, 3 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Create, check, access](examples/utilities/optional.md#create-check-access): value() throws bad_optional_access when empty; value_or fa… <sub>`Optional.CreateCheckAccess`</sub> | ✅ | ✅ | ✅ |
+| [In-place construction](examples/utilities/optional.md#in-place-construction): emplace(5, 'x') builds "xxxxx"; reset() empties. <sub>`Optional.InPlaceConstruction`</sub> | ✅ | ✅ | ✅ |
+| [Monadic operations (C++23)](examples/utilities/optional.md#monadic-operations-c23): and_then / transform / or_else chain. <sub>`Optional.MonadicOperations`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/optional.md#gotchas): an engaged optional&lt;bool&gt;{false} is truthy as an optional. <sub>`Optional.OptionalBoolTestsEngagement`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/optional.md#gotchas): optional&lt;T&amp;&gt; is standard since C++26. <sub>`Optional.OptionalReferenceCpp26`</sub> | ⏭<sup>12</sup> | ✅ | ✅ |
+| [Mental model](examples/utilities/optional.md#mental-model): optional&lt;int&gt; a = 42 is engaged; b = std::nullopt (or `return {};`)… <sub>`Optional.MentalModelEngagedOrEmpty`</sub> | ✅ | ✅ | ✅ |
+| [In-place construction](examples/utilities/optional.md#in-place-construction): emplace builds the value in place, no temporary is copied… <sub>`Optional.EmplaceMakesNoTemporary`</sub> | ✅ | ✅ | ✅ |
+| [Monadic operations (C++23)](examples/utilities/optional.md#monadic-operations-c23): transform maps to optional&lt;V&gt;; or_else runs only when… <sub>`Optional.MonadicResultTypesAndLaziness`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/optional.md#gotchas): an engaged optional&lt;T*&gt; holding nullptr is truthy too. <sub>`Optional.OptionalPointerTestsEngagement`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [create-check-access](examples/utilities/optional.md#create-check-access) | 1 | ✅ | ✅ | ✅ |
+| [in-place-construction](examples/utilities/optional.md#in-place-construction) | 1 | ✅ | ✅ | ✅ |
+| [monadic-operations-c23](examples/utilities/optional.md#monadic-operations-c23) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/pair.md</code>: 6 features, 5 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/utilities/pair.md#mental-model): map iteration yields pair&lt;const Key, T&gt;. <sub>`Pair.MapValueTypeIsPairOfConstKey`</sub> | ✅ | ✅ | ✅ |
+| [Examples](examples/utilities/pair.md#examples): first/second, make_pair and CTAD both deduce pair&lt;int, double&gt;, structu… <sub>`Pair.Basics`</sub> | ✅ | ✅ | ✅ |
+| [As function return / map element](examples/utilities/pair.md#as-function-return--map-element): insert returns pair&lt;iterator, bool&gt;; iteration… <sub>`Pair.MapInsertReturnsPair`</sub> | ✅ | ✅ | ✅ |
+| [Comparison](examples/utilities/pair.md#comparison): lexicographic (first, then second), with operator&lt;=&gt;. <sub>`Pair.LexicographicComparison`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/pair.md#gotchas): make_pair unwraps reference_wrapper to a reference; CTAD keeps the wrapp… <sub>`Pair.MakePairUnwrapsReferenceWrapper`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/pair.md#gotchas): the map key is const, so .first can't be reassigned through an iterator. <sub>`Pair.MapKeyIsConst`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [declaration](examples/utilities/pair.md#declaration) | 1 | ✅ | ✅ | ✅ |
+| [examples](examples/utilities/pair.md#examples) | 1 | ✅ | ✅ | ✅ |
+| [as-function-return--map-element](examples/utilities/pair.md#as-function-return--map-element) | 1 | ✅ | ✅ | ✅ |
+| [comparison](examples/utilities/pair.md#comparison) | 1 | ✅ | ✅ | ✅ |
+| [library-algorithms-that-return-one](examples/utilities/pair.md#library-algorithms-that-return-one) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/tuple.md</code>: 5 features, 4 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Make, access, unpack](examples/utilities/tuple.md#make-access-unpack): get by index / by type, tuple_size_v, CTAD, structured bind… <sub>`Tuple.MakeAccessUnpack`</sub> | ✅ | ✅ | ✅ |
+| [Multiple return values](examples/utilities/tuple.md#multiple-return-values): divmod(17, 5) gives q == 3, r == 2. <sub>`Tuple.MultipleReturnValues`</sub> | ✅ | ✅ | ✅ |
+| [tie and ignore](examples/utilities/tuple.md#tie-and-ignore): tie assigns into existing variables; ignore discards; tie compare… <sub>`Tuple.TieAndIgnore`</sub> | ✅ | ✅ | ✅ |
+| [Combine and forward](examples/utilities/tuple.md#combine-and-forward): tuple_cat yields tuple&lt;int,int,char&gt;; apply calls with unpac… <sub>`Tuple.CombineAndForward`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/tuple.md#gotchas): make_tuple decays (strips references); tie keeps lvalue refs; forward_as… <sub>`Tuple.MakeTupleDecaysTieAndForwardAsTupleKeepReferences`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [make-access-unpack](examples/utilities/tuple.md#make-access-unpack) | 1 | ✅ | ✅ | ✅ |
+| [multiple-return-values](examples/utilities/tuple.md#multiple-return-values) | 1 | ✅ | ✅ | ✅ |
+| [tie-and-ignore](examples/utilities/tuple.md#tie-and-ignore) | 1 | ✅ | ✅ | ✅ |
+| [combine-and-forward](examples/utilities/tuple.md#combine-and-forward) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/utility.md</code>: 9 features, 6 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| **std::move**: a cast to an rvalue reference that moves nothing by itself. <sub>`Utility.MoveIsJustACast`</sub> | ✅ | ✅ | ✅ |
+| **std::forward**: lvalue stays lvalue, rvalue stays rvalue. <sub>`Utility.ForwardPreservesValueCategory`</sub> | ✅ | ✅ | ✅ |
+| **std::swap**: x==2, y==1; ADL finds a user swap; std types swap in O(1) (buffers exc… <sub>`Utility.Swap`</sub> | ✅ | ✅ | ✅ |
+| **std::exchange**: x becomes 42, old holds 7; the move-constructor idiom leaves the s… <sub>`Utility.Exchange`</sub> | ✅ | ✅ | ✅ |
+| [Safe integer comparison (C++20)](examples/utilities/utility.md#safe-integer-comparison-c20): -1 &lt; 0u is false, cmp_less(-1, 0u) is true; in_r… <sub>`Utility.SafeIntegerComparison`</sub> | ✅ | ✅ | ✅ |
+| [Smaller helpers](examples/utilities/utility.md#smaller-helpers): as_const gives a const&amp;; to_underlying gives the enum's integer;… <sub>`Utility.SmallerHelpers`</sub> | ✅ | ✅ | ✅ |
+| [Smaller helpers](examples/utilities/utility.md#smaller-helpers): std::unreachable (C++23) exists and is [[noreturn]] void; never… <sub>`Utility.Unreachable`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/utility.md#gotchas): std::move on a const object binds to the copy constructor — it silently… <sub>`Utility.MoveFromConstCopies`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/utility.md#gotchas): return std::move(local) disables elision — it always costs a move. <sub>`Utility.ReturnStdMoveForcesAMove`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [stdmove--cast-to-rvalue](examples/utilities/utility.md#stdmove--cast-to-rvalue) | 1 | ✅ | ✅ | ✅ |
+| [stdforward--perfect-forwarding](examples/utilities/utility.md#stdforward--perfect-forwarding) | 1 | ✅ | ✅ | ✅ |
+| [stdswap--exchange-two-values](examples/utilities/utility.md#stdswap--exchange-two-values) | 1 | ✅ | ✅ | ✅ |
+| [stdexchange--set-new-return-old-c14](examples/utilities/utility.md#stdexchange--set-new-return-old-c14) | 1 | ✅ | ✅ | ✅ |
+| [safe-integer-comparison-c20](examples/utilities/utility.md#safe-integer-comparison-c20) | 1 | ✅ | ✅ | ✅ |
+| [smaller-helpers](examples/utilities/utility.md#smaller-helpers) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>examples/utilities/variant.md</code>: 6 features, 2 examples</summary>
+
+| Feature | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---|---|---|
+| [Mental model](examples/utilities/variant.md#mental-model): variant&lt;int, std::string, double&gt; v = "hi" has index() == 1. <sub>`Variant.MentalModelIndex`</sub> | ✅ | ✅ | ✅ |
+| [Assign, query, access](examples/utilities/variant.md#assign-query-access): index 0 then 1; holds_alternative, get by type / index, ge… <sub>`Variant.AssignQueryAccess`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/variant.md#gotchas): get with the wrong alternative throws std::bad_variant_access. <sub>`Variant.WrongGetThrows`</sub> | ✅ | ✅ | ✅ |
+| **Visiting**: a generic lambda and an overloaded set both dispatch on the active type… <sub>`Variant.Visit`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/variant.md#gotchas): a throw while changing alternatives can leave the variant valueless_by_e… <sub>`Variant.ValuelessByException`</sub> | ✅ | ✅ | ✅ |
+| [Gotchas](examples/utilities/variant.md#gotchas): duplicate types need index access (get&lt;int&gt; on variant&lt;int, int&gt; is ill-… <sub>`Variant.DuplicateTypesByIndex`</sub> | ✅ | ✅ | ✅ |
+
+| Examples in section | Blocks | GCC<br>15<br>*local* | GCC<br>16<br>*local* | Clang<br>22<br>libc++<br>*local* |
+|---|---:|---|---|---|
+| [assign-query-access](examples/utilities/variant.md#assign-query-access) | 1 | ✅ | ✅ | ✅ |
+| [visiting--the-idiomatic-way-to-handle-all-cases](examples/utilities/variant.md#visiting--the-idiomatic-way-to-handle-all-cases) | 1 | ✅ | ✅ | ✅ |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs __cpp_lib_move_only_function (not defined by this toolchain)
+2. needs __cpp_lib_copyable_function (not defined by this toolchain)
+3. needs __cpp_lib_function_ref &gt;= 202603L (not defined by this toolchain)
+4. needs copyable_function
+5. needs function_ref
+6. nocompile
+7. needs __cpp_lib_not_fn &gt;= 202306L (this toolchain has 201603L)
+8. needs __cpp_lib_bind_front &gt;= 202306L (this toolchain has 201907L)
+9. libc++ defines __cpp_lib_bind_front 202306L but lacks bind_front&lt;f&gt;() (the page says so)
+10. libc++-specific claim
+11. needs nttp_callables
+12. needs __cpp_lib_optional &gt;= 202506L (this toolchain has 202110L)
+
+</details>
+
+### Guidelines (snippets only)
+
+8 pages · 0 features · 76 examples. Ran on 3 of 25 columns; the others didn't run this area.
+
+Columns merged in this area's tables:
+
+- **A** (2 columns, identical here): GCC 15 (local), Clang 22, libc++ (local)
+
+| Page | Features | Examples | **A** | GCC<br>16<br>*local* |
+|---|---:|---:|---|---|
+| [guidelines/core-guidelines.md](guidelines/core-guidelines.md) | 0 | 12 | 🟡 1 | ✅ |
+| [guidelines/debugging.md](guidelines/debugging.md) | 0 | 1 | 🟡 1 | 🟡 1 |
+| [guidelines/design-principles.md](guidelines/design-principles.md) | 0 | 17 | 🟡 3 | 🟡 2 |
+| [guidelines/modern-idioms.md](guidelines/modern-idioms.md) | 0 | 22 | 🟡 6 | 🟡 4 |
+| [guidelines/performance-tooling.md](guidelines/performance-tooling.md) | 0 | 1 | 🟡 1 | 🟡 1 |
+| [guidelines/project-conventions.md](guidelines/project-conventions.md) | 0 | 2 | 🟡 2 | 🟡 2 |
+| [guidelines/safety.md](guidelines/safety.md) | 0 | 11 | ✅ | ✅ |
+| [guidelines/testing.md](guidelines/testing.md) | 0 | 10 | 🟡 9 | 🟡 7 |
+
+<details><summary><code>guidelines/core-guidelines.md</code>: 0 features, 12 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [resource-management-r](guidelines/core-guidelines.md#resource-management-r) | 1 | ✅ | ✅ |
+| [functions-f](guidelines/core-guidelines.md#functions-f) | 3 | ✅ ⏭<sup>1</sup> | ✅ |
+| [classes-c](guidelines/core-guidelines.md#classes-c) | 3 | ✅ | ✅ |
+| [expressions-and-statements-es](guidelines/core-guidelines.md#expressions-and-statements-es) | 2 | ✅ | ✅ |
+| [concurrency-cp](guidelines/core-guidelines.md#concurrency-cp) | 1 | ✅ | ✅ |
+| [templates-t](guidelines/core-guidelines.md#templates-t) | 1 | ✅ | ✅ |
+| [performance-per](guidelines/core-guidelines.md#performance-per) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>guidelines/debugging.md</code>: 0 features, 1 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [stdstacktrace-c23](guidelines/debugging.md#stdstacktrace-c23) | 1 | ⏭<sup>2</sup> | ⏭<sup>2</sup> |
+
+</details>
+
+<details><summary><code>guidelines/design-principles.md</code>: 0 features, 17 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [make-illegal-states-unrepresentable](guidelines/design-principles.md#make-illegal-states-unrepresentable) | 1 | ✅ | ✅ |
+| [strong-types-for-identifiers](guidelines/design-principles.md#strong-types-for-identifiers) | 1 | ✅ | ✅ |
+| [closed-sets-use-stdvariant](guidelines/design-principles.md#closed-sets-use-stdvariant) | 1 | ✅ | ✅ |
+| [prefer-named-algorithms](guidelines/design-principles.md#prefer-named-algorithms) | 1 | ✅ | ✅ |
+| [pipelines-for-composition](guidelines/design-principles.md#pipelines-for-composition) | 1 | ✅ | ✅ |
+| [folds-and-monoids](guidelines/design-principles.md#folds-and-monoids) | 2 | ✅ ⏭<sup>3</sup> | ✅ ⏭<sup>3</sup> |
+| [3-errors-in-the-type-system](guidelines/design-principles.md#3-errors-in-the-type-system) | 2 | ✅ ⏭<sup>1</sup> | ✅ |
+| [prefer-regular-types](guidelines/design-principles.md#prefer-regular-types) | 1 | ✅ | ✅ |
+| [const-by-default](guidelines/design-principles.md#const-by-default) | 2 | ✅ | ✅ |
+| [explicit-mutation-boundaries](guidelines/design-principles.md#explicit-mutation-boundaries) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [5-composition-over-inheritance](guidelines/design-principles.md#5-composition-over-inheritance) | 2 | ✅ | ✅ |
+| [6-easy-to-use-hard-to-misuse](guidelines/design-principles.md#6-easy-to-use-hard-to-misuse) | 1 | ✅ | ✅ |
+| [7-test-the-laws](guidelines/design-principles.md#7-test-the-laws) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>guidelines/modern-idioms.md</code>: 0 features, 22 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [structured-bindings](guidelines/modern-idioms.md#structured-bindings) | 1 | ✅ | ✅ |
+| [if--switch-with-initializer](guidelines/modern-idioms.md#if--switch-with-initializer) | 1 | ✅ | ✅ |
+| [stdoptional--a-value-that-may-be-absent](guidelines/modern-idioms.md#stdoptional--a-value-that-may-be-absent) | 1 | ✅ | ✅ |
+| [stdvariant--one-of-a-fixed-set-of-types](guidelines/modern-idioms.md#stdvariant--one-of-a-fixed-set-of-types) | 1 | ✅ | ✅ |
+| [if-constexpr](guidelines/modern-idioms.md#if-constexpr) | 1 | ✅ | ✅ |
+| [concepts](guidelines/modern-idioms.md#concepts) | 1 | ✅ | ✅ |
+| [ranges](guidelines/modern-idioms.md#ranges) | 1 | ✅ | ✅ |
+| [stdspan--a-view-of-contiguous-elements](guidelines/modern-idioms.md#stdspan--a-view-of-contiguous-elements) | 1 | ✅ | ✅ |
+| [consteval-and-constexpr-everywhere](guidelines/modern-idioms.md#consteval-and-constexpr-everywhere) | 2 | ✅ | ✅ |
+| [three-way-comparison](guidelines/modern-idioms.md#three-way-comparison) | 1 | ✅ | ✅ |
+| [designated-initializers-and-using-enum](guidelines/modern-idioms.md#designated-initializers-and-using-enum) | 1 | ✅ | ✅ |
+| [lambdas](guidelines/modern-idioms.md#lambdas) | 1 | ✅ | ✅ |
+| [stdexpected--a-value-or-an-error](guidelines/modern-idioms.md#stdexpected--a-value-or-an-error) | 1 | ✅ | ✅ |
+| [stdprint--stdprintln](guidelines/modern-idioms.md#stdprint--stdprintln) | 1 | ✅ | ✅ |
+| [stdgenerator](guidelines/modern-idioms.md#stdgenerator) | 1 | ⏭<sup>5</sup> | ⏭<sup>5</sup> |
+| [ranges-finished](guidelines/modern-idioms.md#ranges-finished) | 1 | ⏭<sup>6</sup> | ⏭<sup>6</sup> |
+| [deducing-this](guidelines/modern-idioms.md#deducing-this) | 1 | ✅ | ✅ |
+| [contracts](guidelines/modern-idioms.md#contracts) | 1 | ⏭<sup>1</sup> | ✅ |
+| [reflection](guidelines/modern-idioms.md#reflection) | 1 | ⏭<sup>7</sup> | ✅ |
+| [stdexecution-sendersreceivers](guidelines/modern-idioms.md#stdexecution-sendersreceivers) | 1 | ⏭<sup>8</sup> | ⏭<sup>8</sup> |
+| [smaller-language-features](guidelines/modern-idioms.md#smaller-language-features) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary><code>guidelines/performance-tooling.md</code>: 0 features, 1 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [benchmarking](guidelines/performance-tooling.md#benchmarking) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary><code>guidelines/project-conventions.md</code>: 0 features, 2 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [naming](guidelines/project-conventions.md#naming) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [header-shape-and-include-order](guidelines/project-conventions.md#header-shape-and-include-order) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary><code>guidelines/safety.md</code>: 0 features, 11 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [1-type-safety-protype](guidelines/safety.md#1-type-safety-protype) | 1 | ✅ | ✅ |
+| [2-bounds-safety-probounds](guidelines/safety.md#2-bounds-safety-probounds) | 1 | ✅ | ✅ |
+| [ownership-with-smart-pointers](guidelines/safety.md#ownership-with-smart-pointers) | 2 | ✅ | ✅ |
+| [returning-references-to-locals-or-temporaries](guidelines/safety.md#returning-references-to-locals-or-temporaries) | 1 | ✅ | ✅ |
+| [views-that-outlive-their-source](guidelines/safety.md#views-that-outlive-their-source) | 1 | ✅ | ✅ |
+| [lambda-captures](guidelines/safety.md#lambda-captures) | 1 | ✅ | ✅ |
+| [iterator-and-reference-invalidation](guidelines/safety.md#iterator-and-reference-invalidation) | 1 | ✅ | ✅ |
+| [use-after-move](guidelines/safety.md#use-after-move) | 1 | ✅ | ✅ |
+| [null-safety](guidelines/safety.md#null-safety) | 1 | ✅ | ✅ |
+| [c26-erroneous-behaviour](guidelines/safety.md#c26-erroneous-behaviour) | 1 | ✅ | ✅ |
+
+</details>
+
+<details><summary><code>guidelines/testing.md</code>: 0 features, 10 examples</summary>
+
+| Examples in section | Blocks | **A** | GCC<br>16<br>*local* |
+|---|---:|---|---|
+| [choosing-a-framework](guidelines/testing.md#choosing-a-framework) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [property-based-tests](guidelines/testing.md#property-based-tests) | 1 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+| [fuzzing](guidelines/testing.md#fuzzing) | 1 | ✅ | ✅ |
+| [testing-contracts](guidelines/testing.md#testing-contracts) | 2 | ⏭<sup>1</sup>,<sup>4</sup> | ✅ ⏭<sup>4</sup> |
+| [a-throwing-handler-where-you-can-replace-it](guidelines/testing.md#a-throwing-handler-where-you-can-replace-it) | 2 | ⏭<sup>1</sup>,<sup>4</sup> | ✅ ⏭<sup>4</sup> |
+| [compile-time-tests](guidelines/testing.md#compile-time-tests) | 3 | ⏭<sup>4</sup> | ⏭<sup>4</sup> |
+
+</details>
+
+<details><summary>Skip reasons</summary>
+
+1. needs contracts
+2. needs stacktrace
+3. needs pstl
+4. nocompile
+5. needs generator
+6. needs enumerate
+7. needs reflection
+8. needs execution
+
+</details>
 
 ## Known gaps per toolchain
 
@@ -165,3 +4329,16 @@ Snippet baselines (`tools/snippet_baseline/`) list blocks known to fail on a too
 - `docs/examples/utilities/callable-wrappers.md#stdmoveonlyfunction-c23/1`
 
 </details>
+
+### Compiler and platform bugs found
+
+Bugs the runs turned up, each recorded in the suite as a skip or gate that names it, with the vendor's bug and this repo's issue. The list is [`docs/platform-support/known-bugs.json`](platform-support/known-bugs.json), maintained by hand; *seen* counts the jobs in these results whose skip reasons name it.
+
+| Toolchain | Bug | Upstream | Issue | Seen |
+|---|---|---|---|---|
+| clang-cl (Clang 22, Windows) | Microsoft-ABI mangling leaves out C++20 module attachment, so a module-linkage function and a global function of the same name link as duplicates | [llvm/llvm-project#174064](https://github.com/llvm/llvm-project/issues/174064) | [#173](https://github.com/homer6/cpp-docs/issues/173) | 0 job(s) |
+| GCC / libstdc++ off Linux (macOS, Windows MinGW, FreeBSD) | std::call_once with a callable that throws doesn't leave the flag unset for a retry | [GCC PR 66146](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66146) | [#99](https://github.com/homer6/cpp-docs/issues/99) | 1 job(s): macos-arm64-gcc-15 |
+| GCC | -frounding-math doesn't stop all constant folding, so rounding-mode changes can be ignored (the cfenv page notes it) | [GCC bug 34678](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=34678) | [#26](https://github.com/homer6/cpp-docs/issues/26) | 0 job(s) |
+| Homebrew GCC 15, macOS | std::nested_exception doesn't capture current_exception(), so std::rethrow_if_nested would terminate | none found yet ([#185](https://github.com/homer6/cpp-docs/issues/185)) | [#98](https://github.com/homer6/cpp-docs/issues/98), [#185](https://github.com/homer6/cpp-docs/issues/185) | 1 job(s): macos-arm64-gcc-15 |
+| MSVC 19.44 (VS 2022) | rejects a constexpr virtual call through a base reference (C2131; valid since C++20, P1064) and a call inside if consteval (C7595; C++23, P1938); VS 2026 (19.51) accepts both *(its gate isn't in this checkout)* | none found yet ([#185](https://github.com/homer6/cpp-docs/issues/185)) | [#179](https://github.com/homer6/cpp-docs/issues/179), [#185](https://github.com/homer6/cpp-docs/issues/185) | 0 job(s) |
+

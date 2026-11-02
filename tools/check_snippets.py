@@ -53,7 +53,8 @@ tools/snippet_baseline/ (gcc.txt, clang.txt, msvc.txt, clang-cl.txt).
 
 --json FILE also writes the results as JSON (schema "cpp-docs/results/1",
 kind "snippets": platform, compiler, command, counts, failures, skips with
-reasons, baseline), the same shape tools/ctest_to_json.py writes for tests.
+reasons, baseline, and "results": every block's ID with passed, failed or
+skipped), the same shape tools/ctest_to_json.py writes for tests.
 
 Every block has a stable ID, `<file>#<heading-slug>/<n>` (the nth cpp block
 under its nearest heading), so editing a block doesn't change its ID.
@@ -601,6 +602,13 @@ def write_json(path: pathlib.Path, r: dict) -> None:
                  else "needs: another block of its module group is gated"} for b in r["gated"]]
              + [{"id": b.id, "where": b.where, "reason": r["module_skip"]} for b in r["unsupported"]])
     new_ids = {b.id for b, _ in r["new"]}
+    # Every block with its status (optional in the schema; older files lack it), in
+    # document order, for the feature support matrix in docs/platform-support.md.
+    status = {b.id: "passed" for b in r["todo"]}
+    status.update({b.id: "failed" for b, _ in r["failures"]})
+    status.update({s["id"]: "skipped" for s in skips})
+    order = sorted([*r["todo"], *r["nocompile"], *r["gated"], *r["unsupported"]], key=lambda b: (rel(b.path), b.line))
+    results = [{"id": b.id, "status": status[b.id]} for b in order]
     doc = {
         "schema": "cpp-docs/results/1",
         "kind": "snippets",
@@ -629,6 +637,7 @@ def write_json(path: pathlib.Path, r: dict) -> None:
         "baseline": None if r["baseline"] is None else {
             "file": r["baseline"].as_posix(), "known_failing": len(r["failures"]) - len(r["new"]),
             "new": len(r["new"]), "fixed": r["fixed"], "stale": r["stale"]},
+        "results": results,
         "ok": r["ok"],
         "generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }

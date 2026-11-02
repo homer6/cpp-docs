@@ -1,0 +1,37 @@
+[
+ {
+  "toolchain": "clang-cl (Clang 22, Windows)",
+  "summary": "Microsoft-ABI mangling leaves out C++20 module attachment, so a module-linkage function and a global function of the same name link as duplicates",
+  "upstream": [{"label": "llvm/llvm-project#174064", "url": "https://github.com/llvm/llvm-project/issues/174064"}],
+  "issues": [173],
+  "match": "llvm/llvm-project#174064"
+ },
+ {
+  "toolchain": "GCC / libstdc++ off Linux (macOS, Windows MinGW, FreeBSD)",
+  "summary": "std::call_once with a callable that throws doesn't leave the flag unset for a retry",
+  "upstream": [{"label": "GCC PR 66146", "url": "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66146"}],
+  "issues": [99],
+  "match": "PR 66146"
+ },
+ {
+  "toolchain": "GCC",
+  "summary": "-frounding-math doesn't stop all constant folding, so rounding-mode changes can be ignored (the cfenv page notes it)",
+  "upstream": [{"label": "GCC bug 34678", "url": "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=34678"}],
+  "issues": [26],
+  "match": "show_bug\\.cgi\\?id=34678"
+ },
+ {
+  "toolchain": "Homebrew GCC 15, macOS",
+  "summary": "std::nested_exception doesn't capture current_exception(), so std::rethrow_if_nested would terminate",
+  "upstream": [],
+  "issues": [98, 185],
+  "match": "nested_exception doesn't capture current_exception"
+ },
+ {
+  "toolchain": "MSVC 19.44 (VS 2022)",
+  "summary": "rejects a constexpr virtual call through a base reference (C2131; valid since C++20, P1064) and a call inside if consteval (C7595; C++23, P1938); VS 2026 (19.51) accepts both",
+  "upstream": [],
+  "issues": [179, 185],
+  "match": "_MSC_VER < 1950"
+ }
+]

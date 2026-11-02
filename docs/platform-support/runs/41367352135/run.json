@@ -1,0 +1,96 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41367352135,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41367352135",
+ "date": "2026-11-02",
+ "started": "2026-11-02T00:28:40Z",
+ "workflow": "windows-msvc.yml",
+ "branch": "dev",
+ "sha": "37198cd136fcda5171448172a68c62f7ca804b65",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "^strings$",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "windows-2022 · MSVC amd64",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-2025-vs2026 · MSVC amd64",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-11-arm · MSVC arm64",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "windows-11-arm64-msvc-14.51.36231": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2022-x64-msvc-14.44.35207": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "windows-2025-x64-msvc-14.51.36231": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  }
+ }
+}
