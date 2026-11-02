@@ -72,11 +72,21 @@ target_sources(cppdocs_modules
 set_property(TARGET cppdocs_modules PROPERTY CXX_SCAN_FOR_MODULES ON)
 set_source_files_properties(${_mod_tests} PROPERTIES CXX_SCAN_FOR_MODULES ON)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  # GCC 15 and 16: "sorry, unimplemented: private module fragment".
+# The private module fragment: Clang (and clang-cl) and MSVC (since VS 2019
+# 16.8) implement it; GCC 15 and 16 say "sorry, unimplemented: private module
+# fragment". Every compiler that skips it gets its own reason (#228).
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|MSVC")
   target_sources(cppdocs_modules PUBLIC FILE_SET CXX_MODULES FILES ${_units}/tally.cppm)
   set_property(TARGET examples_language_tests APPEND PROPERTY
                COMPILE_DEFINITIONS CPPDOCS_PRIVATE_MODULE_FRAGMENT)
+else()
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(_pmf_skip "GCC ${CMAKE_CXX_COMPILER_VERSION}: private module fragment not implemented (sorry, unimplemented)")
+  else()
+    set(_pmf_skip "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}: private module fragment not built for this compiler")
+  endif()
+  set_property(TARGET examples_language_tests APPEND PROPERTY
+               COMPILE_DEFINITIONS "CPPDOCS_PRIVATE_MODULE_FRAGMENT_SKIP=\"${_pmf_skip}\"")
 endif()
 
 # A BMI and its importers must be compiled with the same flags: where

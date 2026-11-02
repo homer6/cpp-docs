@@ -181,7 +181,8 @@ static_assert(__cpp_lib_ranges > 0);     // the header unit's macro came through
 - **BMIs aren't portable** across compilers, versions or language flags. Ship
   module sources.
 - **GCC 15.2 and 16.2 don't implement the private module fragment** ("sorry,
-  unimplemented"); Clang 22 does. Clang 22 warns that header units are
+  unimplemented"); Clang 22 does, and so does MSVC (since VS 2019 16.8,
+  per [Microsoft](https://devblogs.microsoft.com/cppblog/standard-c20-modules-support-with-msvc-in-visual-studio-2019-version-16-8/)). Clang 22 warns that header units are
   experimental, and CMake doesn't support them.
 
 ## See also
