@@ -3,7 +3,7 @@
 > How the reference is checked: the snippet checker (does each block compile?),
 > the GoogleTest suite (does the code do what the page says?), the toolchain
 > presets, and the manual-only GitHub Actions platform workflows. The results
-> per platform are in [`platform-support.md`](platform-support.md) and in the
+> per platform and per feature are in [`platform-support.md`](platform-support.md) (one page per toolchain in [`platform-support/`](platform-support/)) and in the
 > [README's platform table](../README.md#tested-platforms).
 
 **Verified locally first:** every release passes the full test suite and the
@@ -140,7 +140,10 @@ runs from an MSYS2 MinGW shell (`tools/run_tests.sh mingw`).
 `tools/ctest_to_json.py --build-dir build/<preset>` turns any ctest run
 (`LastTest.log`, or a `ctest --output-junit` file with `--junit`) into JSON:
 platform, compiler and version, preset, counts, failures and skips with their
-reasons. `tools/check_snippets.py --json` writes the same shape for snippets.
+reasons, and `results`: every test with its status (passed, failed, skipped).
+`tools/check_snippets.py --json` writes the same shape for snippets, with
+every block's ID and status in `results`. The text output and counts don't
+change.
 
 `tools/collect_results.py` turns those JSON files into
 [`docs/platform-support.md`](platform-support.md): give it a GitHub
@@ -153,6 +156,55 @@ it alone, `--check` only reports whether either is stale, `--self-test` runs
 its built-in samples). A file that doesn't match the schema fails with the
 file and field named. The page and the table change only from runs the owner
 consented to.
+
+The report has an entry page and one page per toolchain:
+
+```
+docs/platform-support.md        entry page: how to read it, the platform table, the feature
+                                support matrix summary (rows = areas, columns = compilers),
+                                known gaps and the compiler/platform bugs found
+docs/platform-support/
+  <slug>.md                     one per platform × arch × compiler (generated), e.g.
+                                linux-ubuntu-24.04-x86_64-gcc-13.md, local-macos-arm64-gcc-15.md
+  runs/<run-id>/                archived consented runs: results-*.json and run.json
+  local/                        archived local results: results-*.json and local.json
+  known-bugs.json               compiler and platform bugs found (maintained by hand)
+```
+
+A toolchain page (built by `tools/feature_support.py`) has a header (OS or
+image, compiler and version, standard library, architecture and byte order,
+run link, date, commit, areas covered, whether its snippets are
+report-only), totals, then per area every page, every feature (each
+GoogleTest case, labelled by the `// "Section": claim` comment above its
+`TEST`) and every example section: ✅ / ❌ / ⏭ with the skip reason / — not run
+/ ❔ unknown. Rows come from the checkout; a job's cells come from its
+`results` lists, or, for older results without them, are inferred only when
+the job's counts match (else ❔). In the entry page's summary matrix, jobs
+with the same compiler, version, standard library and identical results
+share a column; its header links the toolchain page (or the list of them).
+The known-gaps section ends with the bugs from
+[`platform-support/known-bugs.json`](platform-support/known-bugs.json)
+(toolchain, summary, upstream bug, repo issue, and the skip reason that
+records it).
+
+The results are archived in the repo, so the report can be rebuilt after
+GitHub deletes the artifacts: the first time the collector sees a run ID it
+saves each job's `results-*.json` and a `run.json` (URL, date, commit,
+inputs, jobs and conclusions, a digest of the counts; no logs) under
+[`platform-support/runs/<run-id>/`](platform-support/runs/) and reads the run
+from there afterwards; `--local <folder>` copies the local results into
+[`platform-support/local/`](platform-support/local/) (with the date and
+commit), which later refreshes reuse. Regenerate everything with every
+platform's latest consented run in one command:
+
+```bash
+tools/collect_results.py <linux-run> <macos-run> <windows-msvc-run> \
+  <windows-gnu-run> <freebsd-run> <qemu-run> [--local <folder>]
+```
+
+(or one `all.yml` run ID), then commit the entry page, the toolchain pages,
+the README and any new `runs/` or `local/` files. The collector removes
+toolchain pages it no longer produces, and `--check` covers them all.
 
 GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests
 mirror the pages: `docs/examples/<area>/.../<page>.md` is checked by

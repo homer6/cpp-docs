@@ -1,0 +1,113 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "linux-aarch64-ubuntu-24.04",
+ "arch": "aarch64",
+ "os_version": "Ubuntu 24.04.5 LTS aarch64, kernel 7.0.0-1017-azure",
+ "byte_order": "little",
+ "compiler": "clang-22-libcxx",
+ "compiler_version": "22.1.8",
+ "preset": "clang-libcxx",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "enforced",
+ "steps": {
+  "configure": 0,
+  "build": 0,
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "Linux",
+  "job": "clang",
+  "run_id": "41358257575",
+  "sha": "dfd59ae1f2faf11d04b8e4c057e604e4c3cd5eaa",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41358257575"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "clang-libcxx",
+  "toolchain": "clang-libcxx",
+  "platform": {
+   "system": "Linux",
+   "version": "7.0.0-1017-azure",
+   "arch": "aarch64",
+   "host": "Linux-7.0.0-1017-azure-aarch64-with-glibc2.39"
+  },
+  "compiler": {
+   "id": "Clang",
+   "version": "22.1.8",
+   "path": "/usr/bin/clang++-22",
+   "frontend": "GNU",
+   "stdlib": "libc++"
+  },
+  "cmake": "3.31.6",
+  "source": "junit",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-01T22:40:31Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "clang",
+  "platform": {
+   "system": "Linux",
+   "version": "7.0.0-1017-azure",
+   "arch": "aarch64",
+   "host": "Linux-7.0.0-1017-azure-aarch64-with-glibc2.39"
+  },
+  "compiler": {
+   "id": "clang",
+   "version": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)",
+   "path": "clang++-22"
+  },
+  "command": [
+   "clang++-22",
+   "-std=c++26",
+   "-fsyntax-only",
+   "-pedantic-errors",
+   "-stdlib=libc++",
+   "-fexperimental-library"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/clang.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-01T22:40:39Z"
+ },
+ "generated": "2026-11-01T22:40:39Z"
+}

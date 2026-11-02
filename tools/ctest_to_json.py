@@ -25,8 +25,14 @@ fields with `tools/check_snippets.py --json` (kind "snippets"):
       "counts": {"total": 1234, "passed": 1200, "failed": 0, "skipped": 34},
       "failures": [{"name": "Suite.Test", "labels": [], "message": "...", "output": "..."}],
       "skips": [{"name": "Suite.Test", "labels": [], "reason": "needs __cpp_lib_hive ..."}],
+      "results": [{"name": "Suite.Test", "status": "passed"}, ...],
       "generated": "2026-11-01T12:00:00Z"
     }
+
+"results" (optional in the schema; older files lack it) lists every test with
+its status, passed, failed or skipped, so tools/collect_results.py can build
+the feature support matrix in docs/platform-support.md without inferring
+which tests passed.
 
 Exit status is 0 when the JSON was written, 2 if there are no results to read.
 """
@@ -227,6 +233,8 @@ def main() -> int:
         },
         "failures": sorted(failures, key=lambda f: f["name"]),
         "skips": sorted(skips, key=lambda s: s["name"]),
+        "results": sorted(({"name": r["name"], "status": r["status"]} for r in results),
+                          key=lambda r: r["name"]),
         "generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     text = json.dumps(doc, indent=2) + "\n"

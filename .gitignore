@@ -5,3 +5,5 @@ build/
 out/
 ci-out*/
 results-*.json
+# ...except the archived results the platform support report is built from (#184).
+!docs/platform-support/**/results-*.json

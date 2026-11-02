@@ -1,0 +1,312 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41365429121,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41365429121",
+ "date": "2026-11-02",
+ "started": "2026-11-02T00:07:16Z",
+ "workflow": "macos.yml",
+ "branch": "dev",
+ "sha": "3c864fabbe19be7e30df77db7c1a2ceac6e9e2e9",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "^strings$",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "macos-26 · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15-intel · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-26 · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15 · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15 · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-26 · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15-intel · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-26-intel · homebrew-llvm",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-26-intel · apple-clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15-intel · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-26-intel · homebrew-gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "macos-15 · homebrew-gcc",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "macos-15-arm64-apple-clang-17": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 12,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-arm64-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-arm64-llvm-23": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-x86_64-apple-clang-17": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 12,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-x86_64-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-15-x86_64-llvm-22": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-apple-clang-21": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 12,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-arm64-llvm-23": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-apple-clang-21": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 12,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-gcc-16": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "macos-26-x86_64-llvm-22": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  }
+ }
+}

@@ -1,0 +1,575 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "snippets",
+ "toolchain": "gcc",
+ "platform": {
+  "system": "Linux",
+  "version": "6.10.14-linuxkit",
+  "arch": "aarch64",
+  "host": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.41"
+ },
+ "compiler": {
+  "id": "gcc",
+  "version": "g++ (GCC) 16.2.0",
+  "path": "g++"
+ },
+ "command": [
+  "g++",
+  "-std=c++26",
+  "-fsyntax-only",
+  "-pedantic-errors",
+  "-freflection"
+ ],
+ "modules_command": [
+  "-std=c++26",
+  "-pedantic-errors",
+  "-freflection",
+  "-fmodules",
+  "-c"
+ ],
+ "paths": [
+  "docs"
+ ],
+ "enabled": [
+  "contracts",
+  "reflection"
+ ],
+ "counts": {
+  "total": 820,
+  "checked": 717,
+  "module_units": 19,
+  "module_groups": 9,
+  "failed": 0,
+  "skipped": 103,
+  "nocompile": 40,
+  "gated": 63,
+  "unsupported": 0
+ },
+ "failures": [],
+ "skips": [
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-p2545/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:33",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazardpointer-p2530/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:69",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#declaration/1",
+   "where": "docs/examples/diagnostics/debugging.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/2",
+   "where": "docs/examples/execution/senders-receivers.md:45",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/io/print.md#declaration/1",
+   "where": "docs/examples/io/print.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#declaration/1",
+   "where": "docs/examples/io/syncstream.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#gotchas/2",
+   "where": "docs/examples/language/basic-concepts/comments.md:107",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension/2",
+   "where": "docs/examples/language/basic-concepts/object-model.md:37",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#strict-aliasing/1",
+   "where": "docs/examples/language/basic-concepts/object-model.md:86",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#declaration/1",
+   "where": "docs/examples/language/classes/bit-fields.md:25",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#the-three-keywords/1",
+   "where": "docs/examples/language/coroutines/coroutines.md:20",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#what-awaiting-looks-like-sketch/1",
+   "where": "docs/examples/language/coroutines/coroutines.md:58",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#the-four-named-casts/1",
+   "where": "docs/examples/language/expressions/conversions.md:32",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#declaration/1",
+   "where": "docs/examples/language/expressions/operator-overloading.md:29",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#bytes-into-an-array/1",
+   "where": "docs/examples/language/preprocessor/embed.md:91",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#a-null-terminated-string-suffix/1",
+   "where": "docs/examples/language/preprocessor/embed.md:103",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/1",
+   "where": "docs/examples/language/preprocessor/embed.md:112",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/2",
+   "where": "docs/examples/language/preprocessor/embed.md:122",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#ifempty-prefix-suffix/1",
+   "where": "docs/examples/language/preprocessor/embed.md:140",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#include/1",
+   "where": "docs/examples/language/preprocessor/preprocessor.md:8",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#declaration/1",
+   "where": "docs/examples/language/templates/constraints.md:29",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#declaration/1",
+   "where": "docs/examples/language-support/non-local-jumps.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/signals.md#declaration/1",
+   "where": "docs/examples/language-support/signals.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#declaration/1",
+   "where": "docs/examples/language-support/type-info.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#declaration/1",
+   "where": "docs/examples/metaprogramming/constant-evaluation.md:22",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#declaration/1",
+   "where": "docs/examples/numerics/saturation.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#declaration/1",
+   "where": "docs/examples/text-processing/text-encoding.md:22",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#gotchas/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:125",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#explicit-mutation-boundaries/1",
+   "where": "docs/guidelines/design-principles.md:277",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#smaller-language-features/1",
+   "where": "docs/guidelines/modern-idioms.md:387",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/performance-tooling.md#benchmarking/1",
+   "where": "docs/guidelines/performance-tooling.md:55",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#naming/1",
+   "where": "docs/guidelines/project-conventions.md:36",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#header-shape-and-include-order/1",
+   "where": "docs/guidelines/project-conventions.md:59",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#choosing-a-framework/1",
+   "where": "docs/guidelines/testing.md:31",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#property-based-tests/1",
+   "where": "docs/guidelines/testing.md:51",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#testing-contracts/2",
+   "where": "docs/guidelines/testing.md:141",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#a-throwing-handler-where-you-can-replace-it/2",
+   "where": "docs/guidelines/testing.md:172",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/1",
+   "where": "docs/guidelines/testing.md:234",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/2",
+   "where": "docs/guidelines/testing.md:242",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/3",
+   "where": "docs/guidelines/testing.md:257",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#fetchmax-and-fetchmin-c26/1",
+   "where": "docs/examples/concurrency/atomics.md:109",
+   "reason": "needs atomic_min_max"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:162",
+   "reason": "needs rcu"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:192",
+   "reason": "needs rcu"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-protect-one-node/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:217",
+   "reason": "needs hazard_pointer"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-the-tryprotect-loop/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:246",
+   "reason": "needs hazard_pointer"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#declaration/1",
+   "where": "docs/examples/containers/sequence/hive.md:33",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#examples/1",
+   "where": "docs/examples/containers/sequence/hive.md:90",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#pre-reserve-and-tune-block-sizes/1",
+   "where": "docs/examples/containers/sequence/hive.md:111",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#member-operations-like-list-since-order-isnt-positional/1",
+   "where": "docs/examples/containers/sequence/hive.md:125",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#c20-style-uniform-erase/1",
+   "where": "docs/examples/containers/sequence/hive.md:139",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#examples/1",
+   "where": "docs/examples/containers/sequence/inplace_vector.md:90",
+   "reason": "needs inplace_vector"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#constexpr-use/1",
+   "where": "docs/examples/containers/sequence/inplace_vector.md:118",
+   "reason": "needs inplace_vector"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#declaration/1",
+   "where": "docs/examples/containers/views/mdspan.md:27",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#extents-helpers/1",
+   "where": "docs/examples/containers/views/mdspan.md:49",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#view-a-vector-as-a-matrix/1",
+   "where": "docs/examples/containers/views/mdspan.md:63",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#compile-time-shape/1",
+   "where": "docs/examples/containers/views/mdspan.md:86",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#column-major-view-of-the-same-buffer/1",
+   "where": "docs/examples/containers/views/mdspan.md:98",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#slices-stdsubmdspan-c26/1",
+   "where": "docs/examples/containers/views/mdspan.md:122",
+   "reason": "needs submdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#promise-alignment-stdalignedaccessor-c26/1",
+   "where": "docs/examples/containers/views/mdspan.md:153",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#stop-only-when-someone-is-watching/1",
+   "where": "docs/examples/diagnostics/debugging.md:76",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#a-cant-happen-check-that-traps-under-the-debugger/1",
+   "where": "docs/examples/diagnostics/debugging.md:92",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#replacing-isdebuggerpresent/1",
+   "where": "docs/examples/diagnostics/debugging.md:106",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#inspect-without-rethrowing-stdexceptionptrcast-c26/1",
+   "where": "docs/examples/diagnostics/exception-hierarchy.md:151",
+   "reason": "needs exception_ptr_cast"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#examples/1",
+   "where": "docs/examples/diagnostics/stacktrace.md:55",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#in-error-reporting/1",
+   "where": "docs/examples/diagnostics/stacktrace.md:76",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-factories--make-work-from-nothing/1",
+   "where": "docs/examples/execution/senders-receivers.md:21",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/1",
+   "where": "docs/examples/execution/senders-receivers.md:35",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#running-it--sender-consumers/1",
+   "where": "docs/examples/execution/senders-receivers.md:58",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#worked-example-from-cppreference/1",
+   "where": "docs/examples/execution/senders-receivers.md:70",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#formatting-a-path-c26/1",
+   "where": "docs/examples/io/filesystem.md:34",
+   "reason": "needs format_path"
+  },
+  {
+   "id": "docs/examples/io/print.md#buffered-variants-c26/1",
+   "where": "docs/examples/io/print.md:162",
+   "reason": "needs print_buffered"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26/1",
+   "where": "docs/examples/language/declarations-initialization/declarations-and-auto.md:91",
+   "reason": "needs structured-binding-packs"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26/1",
+   "where": "docs/examples/language/declarations-initialization/declarations-and-auto.md:111",
+   "reason": "needs constexpr-structured-bindings"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library/2",
+   "where": "docs/examples/language/expressions/constant-evaluation-rules.md:252",
+   "reason": "needs constexpr-cmath"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26/1",
+   "where": "docs/examples/language/expressions/constant-expressions.md:114",
+   "reason": "needs constexpr-exceptions"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#the-global-and-private-module-fragments/3",
+   "where": "docs/examples/language/modules/modules.md:154",
+   "reason": "needs private-module-fragment"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#template-for--expansion-statements-c26/1",
+   "where": "docs/examples/language/statements/iteration.md:62",
+   "reason": "needs expansion-statements"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#break-in-an-expansion-statement-c26/1",
+   "where": "docs/examples/language/statements/jump-statements.md:125",
+   "reason": "needs expansion-statements"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#allocateatleast-c23/1",
+   "where": "docs/examples/memory/allocators.md:106",
+   "reason": "needs allocate_at_least"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#declaration/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:26",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-deep-copy-and-value-comparison/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:53",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-for-pimpl/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:75",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#polymorphic-copying-without-clone/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:98",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdstartlifetimeas-c23/1",
+   "where": "docs/examples/memory/raw-memory.md:135",
+   "reason": "needs start_lifetime_as"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#stdiswithinlifetime-c26-which-union-member-is-active/1",
+   "where": "docs/examples/metaprogramming/constant-evaluation.md:94",
+   "reason": "needs is-within-lifetime"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#example/1",
+   "where": "docs/examples/numerics/linalg.md:22",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#vector--matrix-ops/1",
+   "where": "docs/examples/numerics/linalg.md:40",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#views-without-copying/1",
+   "where": "docs/examples/numerics/linalg.md:63",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#counter-based-streams-stdphiloxengine-c26/1",
+   "where": "docs/examples/numerics/random.md:85",
+   "reason": "needs philox"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#clamp-instead-of-wrap/1",
+   "where": "docs/examples/numerics/saturation.md:45",
+   "reason": "needs saturating"
+  },
+  {
+   "id": "docs/examples/numerics/simd.md#examples/1",
+   "where": "docs/examples/numerics/simd.md:33",
+   "reason": "needs simd"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#viewsindices--0-to-n-of-ns-type-c26/2",
+   "where": "docs/examples/ranges/factories.md:46",
+   "reason": "needs indices"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#asinput--downgrade-to-an-input-range/1",
+   "where": "docs/examples/ranges/views.md:162",
+   "reason": "needs as_input"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#decode-to-code-points-and-encode-back-cuchar/1",
+   "where": "docs/examples/text-processing/null-terminated-multibyte-strings.md:103",
+   "reason": "needs cuchar"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#mbrtoc8-hands-out-one-utf-8-code-unit-per-call-c20/1",
+   "where": "docs/examples/text-processing/null-terminated-multibyte-strings.md:137",
+   "reason": "needs cuchar"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdcopyablefunction-c26/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:71",
+   "reason": "needs copyable_function"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdfunctionref-c26/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:92",
+   "reason": "needs function_ref"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#constant-callable-forms-c26/1",
+   "where": "docs/examples/utilities/functional.md:111",
+   "reason": "needs nttp_callables"
+  },
+  {
+   "id": "docs/guidelines/debugging.md#stdstacktrace-c23/1",
+   "where": "docs/guidelines/debugging.md:167",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#folds-and-monoids/1",
+   "where": "docs/guidelines/design-principles.md:132",
+   "reason": "needs pstl"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdgenerator/1",
+   "where": "docs/guidelines/modern-idioms.md:246",
+   "reason": "needs generator"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#ranges-finished/1",
+   "where": "docs/guidelines/modern-idioms.md:259",
+   "reason": "needs enumerate"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdexecution-sendersreceivers/1",
+   "where": "docs/guidelines/modern-idioms.md:345",
+   "reason": "needs execution"
+  }
+ ],
+ "baseline": {
+  "file": "tools/snippet_baseline/gcc.txt",
+  "known_failing": 0,
+  "new": 0,
+  "fixed": [],
+  "stale": []
+ },
+ "ok": true,
+ "generated": "2026-11-01T21:28:21Z"
+}

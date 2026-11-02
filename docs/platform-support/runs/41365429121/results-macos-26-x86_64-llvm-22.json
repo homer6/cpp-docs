@@ -1,0 +1,113 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "macos-26-x86_64",
+ "arch": "x86_64",
+ "os_version": "macOS 26.6.1 (25G76), Xcode 26.6",
+ "byte_order": "little",
+ "compiler": "llvm-22",
+ "compiler_version": "22.1.8",
+ "preset": "clang-libcxx",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "enforced",
+ "steps": {
+  "configure": 0,
+  "build": 0,
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "macOS",
+  "job": "macos",
+  "run_id": "41365429121",
+  "sha": "3c864fabbe19be7e30df77db7c1a2ceac6e9e2e9",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41365429121"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "clang-libcxx",
+  "toolchain": "clang-libcxx",
+  "platform": {
+   "system": "Darwin",
+   "version": "25.6.0",
+   "arch": "x86_64",
+   "host": "macOS-26.6.1-x86_64-i386-64bit-Mach-O"
+  },
+  "compiler": {
+   "id": "Clang",
+   "version": "22.1.8",
+   "path": "/usr/local/opt/llvm/bin/clang++",
+   "frontend": "GNU",
+   "stdlib": "libc++"
+  },
+  "cmake": "4.4.2",
+  "source": "LastTest.log",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-02T00:09:31Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "clang",
+  "platform": {
+   "system": "Darwin",
+   "version": "25.6.0",
+   "arch": "x86_64",
+   "host": "macOS-26.6.1-x86_64-i386-64bit-Mach-O"
+  },
+  "compiler": {
+   "id": "clang",
+   "version": "Homebrew clang version 22.1.8",
+   "path": "/usr/local/opt/llvm/bin/clang++"
+  },
+  "command": [
+   "/usr/local/opt/llvm/bin/clang++",
+   "-std=c++26",
+   "-fsyntax-only",
+   "-pedantic-errors",
+   "-stdlib=libc++",
+   "-fexperimental-library"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/clang.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-02T00:09:44Z"
+ },
+ "generated": "2026-11-02T00:09:44Z"
+}

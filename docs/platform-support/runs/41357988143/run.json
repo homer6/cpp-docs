@@ -1,0 +1,144 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41357988143,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41357988143",
+ "date": "2026-11-01",
+ "started": "2026-11-01T22:36:32Z",
+ "workflow": "freebsd.yml",
+ "branch": "dev",
+ "sha": "b3d13a9930052c063809fcc226158784c3be0a52",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "^strings$",
+   "tests": true,
+   "snippets": true
+  }
+ ],
+ "jobs": [
+  {
+   "name": "FreeBSD 15.1 x86_64 · gcc",
+   "conclusion": "success"
+  },
+  {
+   "name": "FreeBSD 15.1 aarch64 · clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "FreeBSD 14.5 x86_64 · clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "FreeBSD 15.1 x86_64 · clang",
+   "conclusion": "success"
+  },
+  {
+   "name": "FreeBSD 14.5 x86_64 · gcc",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "freebsd-14.5-x86_64-clang-21": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "freebsd-14.5-x86_64-gcc-14": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "freebsd-15.1-aarch64-clang-19": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "freebsd-15.1-x86_64-clang-19": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  },
+  "freebsd-15.1-x86_64-gcc-14": {
+   "tests": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0
+   },
+   "snippets": {
+    "total": 12,
+    "checked": 12,
+    "module_units": 0,
+    "module_groups": 0,
+    "failed": 0,
+    "skipped": 0,
+    "nocompile": 0,
+    "gated": 0,
+    "unsupported": 0
+   },
+   "ok": true
+  }
+ }
+}

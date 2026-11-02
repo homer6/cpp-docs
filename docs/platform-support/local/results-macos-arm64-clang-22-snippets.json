@@ -1,0 +1,4100 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "snippets",
+ "toolchain": "clang",
+ "platform": {
+  "system": "Darwin",
+  "version": "23.6.0",
+  "arch": "arm64",
+  "host": "macOS-14.6.1-arm64-arm-64bit-Mach-O"
+ },
+ "compiler": {
+  "id": "clang",
+  "version": "Homebrew clang version 22.1.8",
+  "path": "/opt/homebrew/opt/llvm/bin/clang++"
+ },
+ "command": [
+  "/opt/homebrew/opt/llvm/bin/clang++",
+  "-std=c++26",
+  "-fsyntax-only",
+  "-pedantic-errors",
+  "-stdlib=libc++",
+  "-fexperimental-library"
+ ],
+ "modules_command": [
+  "-std=c++26",
+  "-pedantic-errors",
+  "-stdlib=libc++",
+  "-fexperimental-library",
+  "-c"
+ ],
+ "paths": [
+  "docs"
+ ],
+ "enabled": [],
+ "counts": {
+  "total": 820,
+  "checked": 691,
+  "module_units": 19,
+  "module_groups": 9,
+  "failed": 19,
+  "skipped": 129,
+  "nocompile": 40,
+  "gated": 89,
+  "unsupported": 0
+ },
+ "failures": [
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#folds-c23/1",
+   "where": "docs/examples/algorithms/execution-and-ranges.md:101",
+   "known": true,
+   "message": "docs/examples/algorithms/execution-and-ranges.md:106:26: error: no member named 'fold_right' in namespace 'std::ranges'\n  106 | int right = std::ranges::fold_right(v, 0, std::minus<>{});   // 1-(2-(3-(4-0)))  = -2\n      |                          ^~~~~~~~~~\ndocs/examples/algorithms/execution-and-ranges.md:107:27: error: no member named 'fold_left_first' in namespace 'std::ranges'\n  107 | auto first = std::ranges::fold_left_first(v, std::plus<>{}); // std::optional<int>{10}, no init\n      |                           ^~~~~~~~~~~~~~~\n2 errors generated."
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#atomicref-and-atomicsharedptr-c20/1",
+   "where": "docs/examples/concurrency/atomics.md:61",
+   "known": true,
+   "message": "In file included from /var/folders/1d/kd_lprp92xgcslzytxr4dhq40000gn/T/tmphqrdnsor.cpp:1:\nIn file included from /Users/stevesperandeo/dev/homer6/cpp-docs-worktrees/issue-184/tools/snippet_prelude.hpp:6:\nIn file included from /opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/algorithm:1929:\nIn file included from /opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__algorithm/pstl.h:26:\nIn file included from /opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__pstl/backend.h:32:\nIn file included from /opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__pstl/backends/libdispatch.h:17:\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: error: static assertion failed due to requirement 'std::is_trivially_copyable<std::shared_ptr<Node>>::value': std::atomic<T> requires that 'T' be a trivially copyable type\n  238 |   static_assert(is_trivially_copyable<_Tp>::value, \"std::atomic<T> requires that 'T' be a trivially copyable type\");\n      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:242:47: note: in instantiation of template class 'std::__check_atomic_mandates<std::shared_ptr<Node>>' requested here\n  242 | struct atomic : public __atomic_base<typename __check_atomic_mandates<_Tp>::type> {\n      |                                               ^\ndocs/examples/concurrency/atomics.md:68:36: note: in instantiation of template class 'std::atomic<std::shared_ptr<Node>>' requested here\n   68 | std::atomic<std::shared_ptr<Node>> head;   // lock-free-ish atomic smart pointer (C++20)\n      |                                    ^\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: 'std::shared_ptr<Node>' is not trivially copyable\n  238 |   static_assert(is_trivially_copyable<_Tp>::value, \"std::atomic<T> requires that 'T' be a trivially copyable type\");\n      |                 ^\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: because it has a user-provided destructor\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: because it has a user provided copy constructor\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: because it has a user provided move constructor\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: because it has a user provided copy assignment operator\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__atomic/atomic.h:238:17: note: because it has a user provided move assignment operator\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__memory/shared_ptr.h:306:38: note: 'shared_ptr<Node>' defined here\n  306 | class _LIBCPP_SHARED_PTR_TRIVIAL_ABI shared_ptr {\n      |                                      ^\n1 error generated."
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#time-zones/1",
+   "where": "docs/examples/datetime/calendar-timezones.md:43",
+   "known": true,
+   "message": "docs/examples/datetime/calendar-timezones.md:47:1: error: unknown type name 'zoned_time'\n   47 | zoned_time local{current_zone(), now};                 // system's zone\n      | ^\ndocs/examples/datetime/calendar-timezones.md:47:18: error: use of undeclared identifier 'current_zone'\n   47 | zoned_time local{current_zone(), now};                 // system's zone\n      |                  ^~~~~~~~~~~~\ndocs/examples/datetime/calendar-timezones.md:48:1: error: unknown type name 'zoned_time'\n   48 | zoned_time ny{\"America/New_York\", now};                 // a named zone\n      | ^\ndocs/examples/datetime/calendar-timezones.md:49:1: error: unknown type name 'zoned_time'\n   49 | zoned_time tokyo{\"Asia/Tokyo\", ny.get_sys_time()};      // convert between zones\n      | ^\n4 errors generated."
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#formatting-and-parsing/1",
+   "where": "docs/examples/datetime/calendar-timezones.md:59",
+   "known": true,
+   "message": "docs/examples/datetime/calendar-timezones.md:61:1: error: unknown type name 'zoned_time'\n   61 | zoned_time ny{\"America/New_York\", system_clock::now()};\n      | ^\ndocs/examples/datetime/calendar-timezones.md:63:1: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]\n   63 | std::format(\"{:%Y-%m-%d}\", 2026y/May/26d);             // \"2026-05-26\"\n      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/datetime/calendar-timezones.md:69:20: error: no member named 'parse' in namespace 'std::chrono'\n   69 | in >> std::chrono::parse(\"%Y-%m-%d %H:%M:%S\", tp);\n      |                    ^~~~~\n1 warning and 2 errors generated."
+  },
+  {
+   "id": "docs/examples/io/string-streams.md#fixed-buffers-stdspanstream-c23/1",
+   "where": "docs/examples/io/string-streams.md:70",
+   "known": true,
+   "message": "docs/examples/io/string-streams.md:71:10: fatal error: 'spanstream' file not found\n   71 | #include <spanstream>\n      |          ^~~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#when-does-the-text-arrive/1",
+   "where": "docs/examples/io/syncstream.md:113",
+   "known": true,
+   "message": "docs/examples/io/syncstream.md:127:21: error: no member named 'emit_on_flush' in namespace 'std'\n  127 |         out << std::emit_on_flush << \"second\" << std::flush;\n      |                     ^~~~~~~~~~~~~\ndocs/examples/io/syncstream.md:129:21: error: no member named 'noemit_on_flush' in namespace 'std'\n  129 |         out << std::noemit_on_flush << \" third\" << std::flush;\n      |                     ^~~~~~~~~~~~~~~\n2 errors generated."
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win/1",
+   "where": "docs/examples/language/coroutines/coroutines.md:35",
+   "known": true,
+   "message": "docs/examples/language/coroutines/coroutines.md:36:10: fatal error: 'generator' file not found\n   36 | #include <generator>\n      |          ^~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#islayoutcompatible-and-iscorrespondingmember-c20/1",
+   "where": "docs/examples/metaprogramming/type-traits.md:212",
+   "known": true,
+   "message": "docs/examples/metaprogramming/type-traits.md:217:20: error: no member named 'is_layout_compatible_v' in namespace 'std'\n  217 | static_assert(std::is_layout_compatible_v<A, B>);\n      |                    ^~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/metaprogramming/type-traits.md:217:43: error: 'A' does not refer to a value\n  217 | static_assert(std::is_layout_compatible_v<A, B>);\n      |                                           ^\ndocs/examples/metaprogramming/type-traits.md:213:8: note: declared here\n  213 | struct A { int x; char c; };\n      |        ^\ndocs/examples/metaprogramming/type-traits.md:218:21: error: no member named 'is_layout_compatible_v' in namespace 'std'\n  218 | static_assert(!std::is_layout_compatible_v<A, C>);\n      |                     ^~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/metaprogramming/type-traits.md:218:44: error: 'A' does not refer to a value\n  218 | static_assert(!std::is_layout_compatible_v<A, C>);\n      |                                            ^\ndocs/examples/metaprogramming/type-traits.md:213:8: note: declared here\n  213 | struct A { int x; char c; };\n      |        ^\ndocs/examples/metaprogramming/type-traits.md:219:20: error: no member named 'is_corresponding_member' in namespace 'std'\n  219 | static_assert(std::is_corresponding_member(&A::c, &B::d));\n      |                    ^~~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/metaprogramming/type-traits.md:220:20: error: no member named 'is_corresponding_member' in namespace 'std'\n  220 | static_assert(std::is_corresponding_member(&A::x, &C::z));   // common initial sequence: int\n      |                    ^~~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/metaprogramming/type-traits.md:221:21: error: no member named 'is_corresponding_member' in namespace 'std'\n  221 | static_assert(!std::is_corresponding_member(&A::c, &C::e));\n      |                     ^~~~~~~~~~~~~~~~~~~~~~~\n7 errors generated."
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#c-compatibility-stdbith-c26/1",
+   "where": "docs/examples/numerics/bit.md:81",
+   "known": true,
+   "message": "docs/examples/numerics/bit.md:82:10: fatal error: 'stdbit.h' file not found\n   82 | #include <stdbit.h>\n      |          ^~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/numerics/math.md#special-functions-c17/1",
+   "where": "docs/examples/numerics/math.md:38",
+   "known": true,
+   "message": "docs/examples/numerics/math.md:39:12: error: no member named 'assoc_legendre' in namespace 'std'\n   39 | using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,\n      |       ~~~~~^\ndocs/examples/numerics/math.md:39:33: error: no member named 'beta' in namespace 'std'; did you mean 'peta'?\n   39 | using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,\n      |                            ~~~~~^~~~\n      |                                 peta\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/ratio:268:41: note: 'peta' declared here\n  268 | typedef ratio< 1000000000000000LL, 1LL> peta;\n      |                                         ^\ndocs/examples/numerics/math.md:39:44: error: no member named 'comp_ellint_1' in namespace 'std'\n   39 | using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,\n      |                                       ~~~~~^\ndocs/examples/numerics/math.md:39:64: error: no member named 'comp_ellint_2' in namespace 'std'\n   39 | using std::assoc_legendre, std::beta, std::comp_ellint_1, std::comp_ellint_2,\n      |                                                           ~~~~~^\ndocs/examples/numerics/math.md:40:12: error: no member named 'comp_ellint_3' in namespace 'std'\n   40 |       std::comp_ellint_3, std::cyl_bessel_i, std::cyl_bessel_j, std::cyl_bessel_k,\n      |       ~~~~~^\ndocs/examples/numerics/math.md:40:32: error: no member named 'cyl_bessel_i' in namespace 'std'\n   40 |       std::comp_ellint_3, std::cyl_bessel_i, std::cyl_bessel_j, std::cyl_bessel_k,\n      |                           ~~~~~^\ndocs/examples/numerics/math.md:40:51: error: no member named 'cyl_bessel_j' in namespace 'std'\n   40 |       std::comp_ellint_3, std::cyl_bessel_i, std::cyl_bessel_j, std::cyl_bessel_k,\n      |                                              ~~~~~^\ndocs/examples/numerics/math.md:40:70: error: no member named 'cyl_bessel_k' in namespace 'std'\n   40 |       std::comp_ellint_3, std::cyl_bessel_i, std::cyl_bessel_j, std::cyl_bessel_k,\n      |                                                                 ~~~~~^\ndocs/examples/numerics/math.md:41:12: error: no member named 'cyl_neumann' in namespace 'std'\n   41 |       std::cyl_neumann, std::expint, std::hermite, std::laguerre, std::legendre,\n      |       ~~~~~^\ndocs/examples/numerics/math.md:41:30: error: no member named 'expint' in namespace 'std'\n   41 |       std::cyl_neumann, std::expint, std::hermite, std::laguerre, std::legendre,\n      |                         ~~~~~^\ndocs/examples/numerics/math.md:41:57: error: no member named 'laguerre' in namespace 'std'\n   41 |       std::cyl_neumann, std::expint, std::hermite, std::laguerre, std::legendre,\n      |                                                    ~~~~~^\ndocs/examples/numerics/math.md:41:72: error: no member named 'legendre' in namespace 'std'\n   41 |       std::cyl_neumann, std::expint, std::hermite, std::laguerre, std::legendre,\n      |                                                                   ~~~~~^"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#new-in-c23/1",
+   "where": "docs/examples/ranges/views.md:61",
+   "known": true,
+   "message": "docs/examples/ranges/views.md:66:20: error: no member named 'enumerate' in namespace 'std::ranges::views'\n   66 | auto r1  = a | rv::enumerate;                         // yields (index, element) pairs\n      |                    ^~~~~~~~~\ndocs/examples/ranges/views.md:70:20: error: no member named 'chunk' in namespace 'std::ranges::views'\n   70 | auto r5  = a | rv::chunk(n);                          // group into sub-ranges of size n\n      |                    ^~~~~\ndocs/examples/ranges/views.md:71:20: error: no member named 'slide' in namespace 'std::ranges::views'\n   71 | auto r6  = a | rv::slide(n);                          // sliding windows of width n\n      |                    ^~~~~\ndocs/examples/ranges/views.md:73:16: error: no member named 'stride' in namespace 'std::ranges::views'; did you mean 'strmode'?\n   73 | auto r8  = a | rv::stride(n);                         // every nth element\n      |                ^~~~~~~~~~\n      |                strmode\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/string.h:164:7: note: 'strmode' declared here\n  164 | void     strmode(int __mode, char *__bp);\n      |          ^\ndocs/examples/ranges/views.md:73:28: error: too few arguments to function call, expected 2, have 1\n   73 | auto r8  = a | rv::stride(n);                         // every nth element\n      |                    ~~~~~~  ^\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/string.h:164:7: note: 'strmode' declared here\n  164 | void     strmode(int __mode, char *__bp);\n      |          ^       ~~~~~~~~~~~~~~~~~~~~~~\ndocs/examples/ranges/views.md:74:16: error: no member named 'as_const' in namespace 'std::ranges::views'; did you mean 'std::as_const'?\n   74 | auto r9  = a | rv::as_const;\n      |                ^~~~~~~~~~~~\n      |                std::as_const\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__utility/as_const.h:22:58: note: 'std::as_const' declared here\n   22 | [[nodiscard]] _LIBCPP_HIDE_FROM_ABI constexpr const _Tp& as_const(_Tp& __t) noexcept {\n      |                                                          ^\ndocs/examples/ranges/views.md:74:20: error: reference to overloaded function could not be resolved; did you mean to call it?\n   74 | auto r9  = a | rv::as_const;\n      |                    ^~~~~~~~\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__utility/as_const.h:22:58: note: possible target for call\n   22 | [[nodiscard]] _LIBCPP_HIDE_FROM_ABI constexpr const _Tp& as_const(_Tp& __t) noexcept {\n      |                                                          ^\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__cstddef/byte.h:26:45: note: candidate function not viable: no known conversion from 'std::vector<int>' to 'byte' for 1st argument\n   26 | _LIBCPP_HIDE_FROM_ABI inline constexpr byte operator|(byte __lhs, byte __rhs) noexcept {\n      |                                             ^         ~~~~~~~~~~\n/opt/homebrew/Cellar/llvm/22.1.8/bin/../include/c++/v1/__charconv/chars_format.h:34:53: note: candidate function not viable: no known conversion from 'std::vector<int>' to 'chars_format' for 1st argument\n   34 | inline _LIBCPP_HIDE_FROM_ABI constexpr chars_format operator|(chars_format __x, chars_format __y) {"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#new-in-c23/2",
+   "where": "docs/examples/ranges/views.md:78",
+   "known": true,
+   "message": "docs/examples/ranges/views.md:82:35: error: no member named 'enumerate' in namespace 'std::ranges::views'\n   82 | for (auto [i, name] : names | rv::enumerate) { /* i = 0,1,2..., name = element */ }\n      |                                   ^~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/ranges/views.md#cartesianproduct--every-combination/1",
+   "where": "docs/examples/ranges/views.md:107",
+   "known": true,
+   "message": "docs/examples/ranges/views.md:112:24: error: no member named 'cartesian_product' in namespace 'std::ranges::views'\n  112 | for (auto [x, y] : rv::cartesian_product(xs, ys)) { /* (1,a) (1,b) (2,a) (2,b) */ }\n      |                        ^~~~~~~~~~~~~~~~~\ndocs/examples/ranges/views.md:113:14: error: no member named 'cartesian_product' in namespace 'std::ranges::views'\n  113 | auto n = rv::cartesian_product(xs, ys).size();   // 4\n      |              ^~~~~~~~~~~~~~~~~\n2 errors generated."
+  },
+  {
+   "id": "docs/examples/ranges/views.md#concat--one-range-after-another/1",
+   "where": "docs/examples/ranges/views.md:124",
+   "known": true,
+   "message": "docs/examples/ranges/views.md:129:14: error: no member named 'concat' in namespace 'std::ranges::views'; did you mean 'wcsncat'?\n  129 | for (int x : rv::concat(a, b, rv::single(5))) { /* 1 2 3 4 5 */ }\n      |              ^~~~~~~~~~\n      |              wcsncat\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/wchar.h:133:10: note: 'wcsncat' declared here\n  133 | wchar_t *wcsncat(wchar_t * __restrict, const wchar_t * __restrict, size_t);\n      |          ^\ndocs/examples/ranges/views.md:129:25: error: no viable conversion from 'std::vector<int>' to 'wchar_t *'\n  129 | for (int x : rv::concat(a, b, rv::single(5))) { /* 1 2 3 4 5 */ }\n      |                         ^\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/wchar.h:133:38: note: passing argument to parameter here\n  133 | wchar_t *wcsncat(wchar_t * __restrict, const wchar_t * __restrict, size_t);\n      |                                      ^\ndocs/examples/ranges/views.md:130:11: error: no member named 'concat' in namespace 'std::ranges::views'; did you mean 'wcsncat'?\n  130 | auto ab = rv::concat(a, b);   // random_access_range, ab.size() == 4\n      |           ^~~~~~~~~~\n      |           wcsncat\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/wchar.h:133:10: note: 'wcsncat' declared here\n  133 | wchar_t *wcsncat(wchar_t * __restrict, const wchar_t * __restrict, size_t);\n      |          ^\ndocs/examples/ranges/views.md:130:26: error: too few arguments to function call, expected 3, have 2\n  130 | auto ab = rv::concat(a, b);   // random_access_range, ab.size() == 4\n      |               ~~~~~~     ^\n/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include/wchar.h:133:10: note: 'wcsncat' declared here\n  133 | wchar_t *wcsncat(wchar_t * __restrict, const wchar_t * __restrict, size_t);\n      |          ^       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n4 errors generated."
+  },
+  {
+   "id": "docs/examples/ranges/views.md#cachelatest--compute-each-element-once/1",
+   "where": "docs/examples/ranges/views.md:139",
+   "known": true,
+   "message": "docs/examples/ranges/views.md:148:46: error: no member named 'cache_latest' in namespace 'std::ranges::views'\n  148 | for (int x : v | rv::transform(square) | rv::cache_latest | rv::filter(even)) {} // calls == 4\n      |                                              ^~~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#what-am-i-running-with/1",
+   "where": "docs/examples/text-processing/text-encoding.md:65",
+   "known": true,
+   "message": "docs/examples/text-processing/text-encoding.md:67:10: fatal error: 'text_encoding' file not found\n   67 | #include <text_encoding>\n      |          ^~~~~~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#looking-encodings-up-by-name/1",
+   "where": "docs/examples/text-processing/text-encoding.md:91",
+   "known": true,
+   "message": "docs/examples/text-processing/text-encoding.md:93:10: fatal error: 'text_encoding' file not found\n   93 | #include <text_encoding>\n      |          ^~~~~~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#the-encoding-of-a-locale/1",
+   "where": "docs/examples/text-processing/text-encoding.md:118",
+   "known": true,
+   "message": "docs/examples/text-processing/text-encoding.md:121:10: fatal error: 'text_encoding' file not found\n  121 | #include <text_encoding>\n      |          ^~~~~~~~~~~~~~~\n1 error generated."
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdmoveonlyfunction-c23/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:58",
+   "known": true,
+   "message": "docs/examples/utilities/callable-wrappers.md:59:6: error: no template named 'move_only_function' in namespace 'std'\n   59 | std::move_only_function<void()> task =\n      | ~~~~~^\n1 error generated."
+  }
+ ],
+ "skips": [
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-p2545/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:33",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazardpointer-p2530/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:69",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#declaration/1",
+   "where": "docs/examples/diagnostics/debugging.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/2",
+   "where": "docs/examples/execution/senders-receivers.md:45",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/io/print.md#declaration/1",
+   "where": "docs/examples/io/print.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#declaration/1",
+   "where": "docs/examples/io/syncstream.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#gotchas/2",
+   "where": "docs/examples/language/basic-concepts/comments.md:107",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension/2",
+   "where": "docs/examples/language/basic-concepts/object-model.md:37",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#strict-aliasing/1",
+   "where": "docs/examples/language/basic-concepts/object-model.md:86",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#declaration/1",
+   "where": "docs/examples/language/classes/bit-fields.md:25",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#the-three-keywords/1",
+   "where": "docs/examples/language/coroutines/coroutines.md:20",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#what-awaiting-looks-like-sketch/1",
+   "where": "docs/examples/language/coroutines/coroutines.md:58",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#the-four-named-casts/1",
+   "where": "docs/examples/language/expressions/conversions.md:32",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#declaration/1",
+   "where": "docs/examples/language/expressions/operator-overloading.md:29",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#bytes-into-an-array/1",
+   "where": "docs/examples/language/preprocessor/embed.md:91",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#a-null-terminated-string-suffix/1",
+   "where": "docs/examples/language/preprocessor/embed.md:103",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/1",
+   "where": "docs/examples/language/preprocessor/embed.md:112",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/2",
+   "where": "docs/examples/language/preprocessor/embed.md:122",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#ifempty-prefix-suffix/1",
+   "where": "docs/examples/language/preprocessor/embed.md:140",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#include/1",
+   "where": "docs/examples/language/preprocessor/preprocessor.md:8",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#declaration/1",
+   "where": "docs/examples/language/templates/constraints.md:29",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#declaration/1",
+   "where": "docs/examples/language-support/non-local-jumps.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/signals.md#declaration/1",
+   "where": "docs/examples/language-support/signals.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#declaration/1",
+   "where": "docs/examples/language-support/type-info.md:26",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#declaration/1",
+   "where": "docs/examples/metaprogramming/constant-evaluation.md:22",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#declaration/1",
+   "where": "docs/examples/numerics/saturation.md:23",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#declaration/1",
+   "where": "docs/examples/text-processing/text-encoding.md:22",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#gotchas/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:125",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#explicit-mutation-boundaries/1",
+   "where": "docs/guidelines/design-principles.md:277",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#smaller-language-features/1",
+   "where": "docs/guidelines/modern-idioms.md:387",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/performance-tooling.md#benchmarking/1",
+   "where": "docs/guidelines/performance-tooling.md:55",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#naming/1",
+   "where": "docs/guidelines/project-conventions.md:36",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#header-shape-and-include-order/1",
+   "where": "docs/guidelines/project-conventions.md:59",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#choosing-a-framework/1",
+   "where": "docs/guidelines/testing.md:31",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#property-based-tests/1",
+   "where": "docs/guidelines/testing.md:51",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#testing-contracts/2",
+   "where": "docs/guidelines/testing.md:141",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#a-throwing-handler-where-you-can-replace-it/2",
+   "where": "docs/guidelines/testing.md:172",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/1",
+   "where": "docs/guidelines/testing.md:234",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/2",
+   "where": "docs/guidelines/testing.md:242",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/3",
+   "where": "docs/guidelines/testing.md:257",
+   "reason": "nocompile"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#fetchmax-and-fetchmin-c26/1",
+   "where": "docs/examples/concurrency/atomics.md:109",
+   "reason": "needs atomic_min_max"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:162",
+   "reason": "needs rcu"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:192",
+   "reason": "needs rcu"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-protect-one-node/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:217",
+   "reason": "needs hazard_pointer"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-the-tryprotect-loop/1",
+   "where": "docs/examples/concurrency/safe-reclamation.md:246",
+   "reason": "needs hazard_pointer"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#declaration/1",
+   "where": "docs/examples/containers/sequence/hive.md:33",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#examples/1",
+   "where": "docs/examples/containers/sequence/hive.md:90",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#pre-reserve-and-tune-block-sizes/1",
+   "where": "docs/examples/containers/sequence/hive.md:111",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#member-operations-like-list-since-order-isnt-positional/1",
+   "where": "docs/examples/containers/sequence/hive.md:125",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#c20-style-uniform-erase/1",
+   "where": "docs/examples/containers/sequence/hive.md:139",
+   "reason": "needs hive"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#examples/1",
+   "where": "docs/examples/containers/sequence/inplace_vector.md:90",
+   "reason": "needs inplace_vector"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#constexpr-use/1",
+   "where": "docs/examples/containers/sequence/inplace_vector.md:118",
+   "reason": "needs inplace_vector"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#declaration/1",
+   "where": "docs/examples/containers/views/mdspan.md:27",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#extents-helpers/1",
+   "where": "docs/examples/containers/views/mdspan.md:49",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#view-a-vector-as-a-matrix/1",
+   "where": "docs/examples/containers/views/mdspan.md:63",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#compile-time-shape/1",
+   "where": "docs/examples/containers/views/mdspan.md:86",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#column-major-view-of-the-same-buffer/1",
+   "where": "docs/examples/containers/views/mdspan.md:98",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#slices-stdsubmdspan-c26/1",
+   "where": "docs/examples/containers/views/mdspan.md:122",
+   "reason": "needs submdspan"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#promise-alignment-stdalignedaccessor-c26/1",
+   "where": "docs/examples/containers/views/mdspan.md:153",
+   "reason": "needs mdspan"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#stop-only-when-someone-is-watching/1",
+   "where": "docs/examples/diagnostics/debugging.md:76",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#a-cant-happen-check-that-traps-under-the-debugger/1",
+   "where": "docs/examples/diagnostics/debugging.md:92",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#replacing-isdebuggerpresent/1",
+   "where": "docs/examples/diagnostics/debugging.md:106",
+   "reason": "needs debugging"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#inspect-without-rethrowing-stdexceptionptrcast-c26/1",
+   "where": "docs/examples/diagnostics/exception-hierarchy.md:151",
+   "reason": "needs exception_ptr_cast"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#examples/1",
+   "where": "docs/examples/diagnostics/stacktrace.md:55",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#in-error-reporting/1",
+   "where": "docs/examples/diagnostics/stacktrace.md:76",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-factories--make-work-from-nothing/1",
+   "where": "docs/examples/execution/senders-receivers.md:21",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/1",
+   "where": "docs/examples/execution/senders-receivers.md:35",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#running-it--sender-consumers/1",
+   "where": "docs/examples/execution/senders-receivers.md:58",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#worked-example-from-cppreference/1",
+   "where": "docs/examples/execution/senders-receivers.md:70",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#formatting-a-path-c26/1",
+   "where": "docs/examples/io/filesystem.md:34",
+   "reason": "needs format_path"
+  },
+  {
+   "id": "docs/examples/io/print.md#buffered-variants-c26/1",
+   "where": "docs/examples/io/print.md:162",
+   "reason": "needs print_buffered"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/contracts.md#mental-model/1",
+   "where": "docs/examples/language/basic-concepts/contracts.md:12",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/contracts.md#contract-violations/1",
+   "where": "docs/examples/language/basic-concepts/contracts.md:45",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#keywords-cant-be-names/2",
+   "where": "docs/examples/language/basic-concepts/keywords.md:159",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26/1",
+   "where": "docs/examples/language/declarations-initialization/declarations-and-auto.md:91",
+   "reason": "needs structured-binding-packs"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26/1",
+   "where": "docs/examples/language/declarations-initialization/declarations-and-auto.md:111",
+   "reason": "needs constexpr-structured-bindings"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library/2",
+   "where": "docs/examples/language/expressions/constant-evaluation-rules.md:252",
+   "reason": "needs constexpr-cmath"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26/1",
+   "where": "docs/examples/language/expressions/constant-expressions.md:114",
+   "reason": "needs constexpr-exceptions"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#reflecting-and-splicing/1",
+   "where": "docs/examples/language/expressions/reflection.md:28",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#the-classic-example-iterate-a-structs-members/1",
+   "where": "docs/examples/language/expressions/reflection.md:48",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#annotations-c26/1",
+   "where": "docs/examples/language/expressions/reflection.md:82",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#the-global-and-private-module-fragments/3",
+   "where": "docs/examples/language/modules/modules.md:156",
+   "reason": "needs private-module-fragment"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#template-for--expansion-statements-c26/1",
+   "where": "docs/examples/language/statements/iteration.md:62",
+   "reason": "needs expansion-statements"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#break-in-an-expansion-statement-c26/1",
+   "where": "docs/examples/language/statements/jump-statements.md:125",
+   "reason": "needs expansion-statements"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#allocateatleast-c23/1",
+   "where": "docs/examples/memory/allocators.md:106",
+   "reason": "needs allocate_at_least"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#declaration/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:26",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-deep-copy-and-value-comparison/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:53",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-for-pimpl/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:75",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#polymorphic-copying-without-clone/1",
+   "where": "docs/examples/memory/indirect-polymorphic.md:98",
+   "reason": "needs indirect"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdstartlifetimeas-c23/1",
+   "where": "docs/examples/memory/raw-memory.md:135",
+   "reason": "needs start_lifetime_as"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#stdiswithinlifetime-c26-which-union-member-is-active/1",
+   "where": "docs/examples/metaprogramming/constant-evaluation.md:94",
+   "reason": "needs is-within-lifetime"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#function-parameters-p3096/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:28",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#function-parameters-p3096/2",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:50",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#templates-and-their-arguments/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:58",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#operators/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:84",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#names-and-source-locations/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:99",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#predicates/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:132",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#layout/1",
+   "where": "docs/examples/metaprogramming/reflection-queries.md:151",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#mental-model/1",
+   "where": "docs/examples/metaprogramming/reflection.md:15",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#querying-entities/1",
+   "where": "docs/examples/metaprogramming/reflection.md:21",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#listing-members-bases-enumerators/1",
+   "where": "docs/examples/metaprogramming/reflection.md:40",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#enum--string-generated/1",
+   "where": "docs/examples/metaprogramming/reflection.md:63",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#type-transformations-reflection-flavored-type-traits/1",
+   "where": "docs/examples/metaprogramming/reflection.md:83",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#generating-and-substituting/1",
+   "where": "docs/examples/metaprogramming/reflection.md:98",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#errors-stdmetaexception-c26/1",
+   "where": "docs/examples/metaprogramming/reflection.md:125",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#example/1",
+   "where": "docs/examples/numerics/linalg.md:22",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#vector--matrix-ops/1",
+   "where": "docs/examples/numerics/linalg.md:40",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#views-without-copying/1",
+   "where": "docs/examples/numerics/linalg.md:63",
+   "reason": "needs linalg"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#counter-based-streams-stdphiloxengine-c26/1",
+   "where": "docs/examples/numerics/random.md:85",
+   "reason": "needs philox"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#clamp-instead-of-wrap/1",
+   "where": "docs/examples/numerics/saturation.md:45",
+   "reason": "needs saturating"
+  },
+  {
+   "id": "docs/examples/numerics/simd.md#examples/1",
+   "where": "docs/examples/numerics/simd.md:33",
+   "reason": "needs simd"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#viewsindices--0-to-n-of-ns-type-c26/2",
+   "where": "docs/examples/ranges/factories.md:46",
+   "reason": "needs indices"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#asinput--downgrade-to-an-input-range/1",
+   "where": "docs/examples/ranges/views.md:162",
+   "reason": "needs as_input"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#decode-to-code-points-and-encode-back-cuchar/1",
+   "where": "docs/examples/text-processing/null-terminated-multibyte-strings.md:103",
+   "reason": "needs cuchar"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#mbrtoc8-hands-out-one-utf-8-code-unit-per-call-c20/1",
+   "where": "docs/examples/text-processing/null-terminated-multibyte-strings.md:137",
+   "reason": "needs cuchar"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdcopyablefunction-c26/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:71",
+   "reason": "needs copyable_function"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdfunctionref-c26/1",
+   "where": "docs/examples/utilities/callable-wrappers.md:92",
+   "reason": "needs function_ref"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#constant-callable-forms-c26/1",
+   "where": "docs/examples/utilities/functional.md:111",
+   "reason": "needs nttp_callables"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#functions-f/3",
+   "where": "docs/guidelines/core-guidelines.md:102",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/guidelines/debugging.md#stdstacktrace-c23/1",
+   "where": "docs/guidelines/debugging.md:167",
+   "reason": "needs stacktrace"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#folds-and-monoids/1",
+   "where": "docs/guidelines/design-principles.md:132",
+   "reason": "needs pstl"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#3-errors-in-the-type-system/2",
+   "where": "docs/guidelines/design-principles.md:207",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdgenerator/1",
+   "where": "docs/guidelines/modern-idioms.md:246",
+   "reason": "needs generator"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#ranges-finished/1",
+   "where": "docs/guidelines/modern-idioms.md:259",
+   "reason": "needs enumerate"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#contracts/1",
+   "where": "docs/guidelines/modern-idioms.md:302",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#reflection/1",
+   "where": "docs/guidelines/modern-idioms.md:319",
+   "reason": "needs reflection"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdexecution-sendersreceivers/1",
+   "where": "docs/guidelines/modern-idioms.md:345",
+   "reason": "needs execution"
+  },
+  {
+   "id": "docs/guidelines/testing.md#testing-contracts/1",
+   "where": "docs/guidelines/testing.md:137",
+   "reason": "needs contracts"
+  },
+  {
+   "id": "docs/guidelines/testing.md#a-throwing-handler-where-you-can-replace-it/1",
+   "where": "docs/guidelines/testing.md:161",
+   "reason": "needs contracts"
+  }
+ ],
+ "baseline": {
+  "file": "tools/snippet_baseline/clang.txt",
+  "known_failing": 19,
+  "new": 0,
+  "fixed": [],
+  "stale": []
+ },
+ "results": [
+  {
+   "id": "docs/examples/algorithms/README.md#two-flavors-of-every-algorithm-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#execution-policies-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#stdranges-algorithms-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#projections/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#borrowed-iterators--dangling/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/execution-and-ranges.md#folds-c23/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#copy--move--transform/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#fill--generate/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#replace/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#remove--and-the-erase-remove-idiom/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#unique--collapse-consecutive-duplicates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#reorder/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/modifying.md#shiftleft--shiftright-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/non-modifying.md#searching/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/non-modifying.md#counting--testing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/non-modifying.md#comparing-ranges/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/non-modifying.md#traversal/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/numeric.md#accumulate--the-classic-left-fold/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/numeric.md#reduce--transformreduce--same-idea-parallelizable-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/numeric.md#scans--running-totals/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/numeric.md#small-but-handy/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/partition-heap-minmax.md#partitioning/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/partition-heap-minmax.md#heap-operations/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/partition-heap-minmax.md#min--max--clamp/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/sorting-searching.md#sorting/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/sorting-searching.md#partial--selection/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/sorting-searching.md#binary-search-range-must-be-sorted/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/algorithms/sorting-searching.md#merge--set-operations-sorted-inputs/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/README.md#the-one-line-pitch/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#the-standard-library-concepts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#the-standard-library-concepts/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#the-standard-library-concepts/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#the-standard-library-concepts/4",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#the-standard-library-concepts/5",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#four-ways-to-apply-a-concept/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#writing-your-own/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concepts/standard-concepts.md#overloading-by-constraint/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#read-modify-write--cas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#memory-order/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#atomicref-and-atomicsharedptr-c20/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#wait-and-notify-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#fetchmax-and-fetchmin-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#false-sharing-and-interference-sizes-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/atomics.md#c-compatibility-stdatomich-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/coordination.md#stdlatch--a-one-shot-countdown/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/coordination.md#stdbarrier--a-reusable-rendezvous/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/coordination.md#stdcountingsemaphore--a-permit-counter/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/futures.md#stdasync--fire-off-work-get-a-future/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/futures.md#promise--future--hand-built-channel/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/futures.md#packagedtask--wrap-a-callable-as-a-future/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/futures.md#checking-without-blocking/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/mutexes.md#lock-with-raii-never-by-hand/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/mutexes.md#the-lock-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/mutexes.md#mutex-flavors/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/mutexes.md#condition-variables--wait-for-a-state-change/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/mutexes.md#run-something-exactly-once--stdcallonce/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-p2545/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazardpointer-p2530/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#compiler-support/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-protect-one-node/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/safe-reclamation.md#hazard-pointers-the-tryprotect-loop/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/concurrency/threads.md#stdthread--the-original/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/threads.md#stdjthread--prefer-this-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/concurrency/threads.md#thisthread/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_map.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_map.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_map.md#access-the-underlying-arrays-directly/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_map.md#build-fast-from-sorted-input/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_map.md#flatmultimap-allows-repeats-no-operator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_set.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_set.md#basics/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_set.md#skip-the-sort-when-input-is-already-ordered/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/flat_set.md#flatmultiset-keeps-duplicates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/priority_queue.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/priority_queue.md#default-max-heap/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/priority_queue.md#min-heap-with-stdgreater/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/priority_queue.md#custom-priority-eg-by-a-field/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/priority_queue.md#build-from-existing-data-in-on/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/queue.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/queue.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/stack.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/stack.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/adaptors/stack.md#choosing-a-different-backing-container/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#the-many-ways-to-insert-and-why-they-differ/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#lookup/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#iterating-sorted-by-key-with-structured-bindings/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#counting-words--the-idiomatic-snippet/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/map.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/multimap.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/multimap.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/multiset.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/multiset.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#basics/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#insert-returns-whether-it-happened/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#ordered-queries/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#custom-ordering--transparent-comparators/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#node-extraction--merge-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/associative/set.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#initialization-mind-the-braces/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#access-and-iteration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#constexpr--compile-time-use/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#structured-bindings--stdget/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/array.md#toarray-deduce-from-a-c-array-literal-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/deque.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/deque.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/deque.md#using-it-as-a-sliding-window/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/forward_list.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/forward_list.md#the-after-interface-and-beforebegin/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/forward_list.md#no-size-count-manually/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/forward_list.md#member-operations-like-list/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/forward_list.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#examples/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#pre-reserve-and-tune-block-sizes/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#member-operations-like-list-since-order-isnt-positional/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/hive.md#c20-style-uniform-erase/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#examples/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/inplace_vector.md#constexpr-use/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/sequence/list.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/list.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/list.md#member-operations-that-algorithms-cant-do-as-well/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/list.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#construction-modern/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#growth-and-the-reserve-idiom/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#access/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#erase-remove-and-the-c20-simplification/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/sequence/vector.md#iterating/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_map.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_map.md#basics--same-insertion-api-as-map/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_map.md#reserve-to-avoid-rehashing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_map.md#custom-key-type-needs-a-hash/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_map.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_multimap.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_multimap.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_multiset.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_multiset.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#dedup-a-vector-in-on-average/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#reserve-for-known-size/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#custom-element-type/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/unordered/unordered_set.md#c20-uniform-erase/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#extents-helpers/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#view-a-vector-as-a-matrix/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#compile-time-shape/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#column-major-view-of-the-same-buffer/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#slices-stdsubmdspan-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/mdspan.md#promise-alignment-stdalignedaccessor-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#why-it-exists/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#constructing-from-various-sources/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#subviews-no-copying/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#const-view--read-only-window/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/containers/views/span.md#as-bytes-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/c-time.md#now-broken-down-and-formatted/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/c-time.md#the-same-thing-with-chrono/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#calendar-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#converting-tofrom-a-time-point/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#time-zones/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/datetime/calendar-timezones.md#formatting-and-parsing/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/datetime/clocks-timepoints.md#measuring-elapsed-time-the-canonical-snippet/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/clocks-timepoints.md#wall-clock-time/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/clocks-timepoints.md#timepoint-arithmetic/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/durations.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/durations.md#literals-and-arithmetic/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/durations.md#converting-between-units/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/datetime/durations.md#floating-point-durations/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#stop-only-when-someone-is-watching/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#a-cant-happen-check-that-traps-under-the-debugger/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/debugging.md#replacing-isdebuggerpresent/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#catch-by-const-reference/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#throwing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#custom-exceptions--derive-from-a-standard-base/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#capture-and-rethrow-stdexceptionptr-c11/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#capture-and-rethrow-stdexceptionptr-c11/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#is-this-scope-failing-stduncaughtexceptions-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/exception-hierarchy.md#inspect-without-rethrowing-stdexceptionptrcast-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#examples/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/stacktrace.md#in-error-reporting/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/diagnostics/system_error.md#the-errorcode-overload-pattern/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/system_error.md#comparing-against-portable-conditions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/diagnostics/system_error.md#throwing-form-stdsystemerror/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-factories--make-work-from-nothing/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#sender-adaptors--compose-with-/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#running-it--sender-consumers/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/execution/senders-receivers.md#worked-example-from-cppreference/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/feature-test-macros/README.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/feature-test-macros/README.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/files.md#write-a-file/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/files.md#read-a-file/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/files.md#read-an-entire-file-into-a-string/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/files.md#open-modes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/files.md#binary-io--positioning/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#paths/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#formatting-a-path-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#querying-the-filesystem/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#directory-iteration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#modifying-operations/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/filesystem.md#error-handling--two-flavors/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/manipulators.md#common-manipulators/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/manipulators.md#quoting-c14/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/manipulators.md#save-and-restore-the-state/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/print.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/io/print.md#destinations/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/print.md#your-own-print-like-function/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/print.md#unicode-text/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/print.md#buffered-variants-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/io/streams.md#the-basics/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/streams.md#stream-state--always-check-reads/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/streams.md#stream-state--always-check-reads/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/streams.md#newlines-and-flushing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/string-streams.md#building-strings/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/string-streams.md#parsing--tokenizing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/string-streams.md#type-conversion-via-streams-legacy/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/string-streams.md#fixed-buffers-stdspanstream-c23/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#whole-lines-from-many-threads/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#when-does-the-text-arrive/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/io/syncstream.md#keep-one-syncstream-for-a-multi-statement-message/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/adaptors.md#insert-iterators--write--grow-the-container/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/adaptors.md#reverseiterator--traverse-backwards/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/adaptors.md#moveiterator--turn-copies-into-moves-c11/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/adaptors.md#stream-iterators--treat-io-as-a-range/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/categories.md#c20-iterator-concepts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/categories.md#c20-iterator-concepts/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/categories.md#the-legacy-tag-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#moving-and-measuring/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#stdsize--stdssize-c17--c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#swappingmoving-the-pointed-to-elements/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#stditeratortraits--uniform-access-to-an-iterators-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#rangesbegin--end-and-sentinels-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/iterators/operations.md#rangesbegin--end-and-sentinels-c20/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/comparison.md#default-it--the-common-case/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/comparison.md#custom-ordering/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/comparison.md#using-the-result/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/initializer-list.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/initializer-list.md#accepting-one/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/initializer-list.md#why-containers-feel-built-in/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/initializer-list.md#what-auto-deduces/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/initializer-list.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#escaping-from-deep-recursion/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#longjmpenv-0-returns-1/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/non-local-jumps.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/numeric-limits.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/numeric-limits.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/numeric-limits.md#common-uses/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/numeric-limits.md#check-before-you-overflow/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/signals.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language-support/signals.md#set-a-flag-react-outside-the-handler/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/signals.md#a-shutdown-loop/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/source-location.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/source-location.md#logging-that-knows-its-caller/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/source-location.md#what-it-exposes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/source-location.md#with-a-variadic-function/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#static-vs-dynamic-type/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#a-map-keyed-by-type/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#name-is-mangled-on-gcc-and-clang/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language-support/type-info.md#typeid-on-a-null-pointer-throws/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#both-forms-and-what-is-not-a-comment/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#comments-in-macros/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#a-comment-is-replaced-by-one-space/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#disabling-code-if-0-not--/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/comments.md#gotchas/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/contracts.md#mental-model/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/contracts.md#contract-violations/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/erroneous-behaviour.md#what-gets-an-erroneous-value/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/erroneous-behaviour.md#opting-out-indeterminate/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/freestanding.md#detect-the-implementation-kind/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/freestanding.md#freestanding-friendly-code/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/freestanding.md#guarding-a-hosted-only-path/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/fundamental-types.md#sizes-are-minimums-not-fixed/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/fundamental-types.md#initialization-defaults--the-boolchar-notes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/fundamental-types.md#type-sizes-and-properties-at-compile-time/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#contextual-identifiers-are-still-ordinary-names/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#alternative-tokens-and-digraphs/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#keywords-cant-be-names/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#keywords-cant-be-names/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/keywords.md#inside-attributes-keywords-arent-reserved/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#objects-and-lifetime/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#implicit-lifetime-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#strict-aliasing/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#strict-aliasing/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#pointer-provenance/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#main--the-entry-point/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/object-model.md#main--the-entry-point/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/scope-storage-linkage.md#scope--where-a-name-is-visible/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/scope-storage-linkage.md#storage-duration--how-long-an-object-lives/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/basic-concepts/scope-storage-linkage.md#linkage--visibility-across-translation-units-tus/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#flags-with-default-member-initializers-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#wraparound-on-overflow/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#enumerations-in-bit-fields/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#nouniqueaddress-is-a-different-tool/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/bit-fields.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#one-accessor-for-every-value-category/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#recursive-lambdas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#replacing-crtp/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#by-value-self/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/explicit-object-parameter.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#inheritance/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#dynamic-dispatch/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#override-and-final/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#covariant-return-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#covariant-return-types/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#multiple-inheritance--virtual-bases-the-diamond/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/inheritance-polymorphism.md#multiple-inheritance--virtual-bases-the-diamond/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#members/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#access-specifiers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#friend--selective-access/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#friend--selective-access/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#nested-classes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#nested-classes/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/members-access.md#this-and-ref-qualified-members/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/special-members.md#the-six-special-members/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/special-members.md#raii--the-reason-it-all-matters/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/special-members.md#rule-of-zero--three--five/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/special-members.md#default-and-delete/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/special-members.md#construction-details/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/unions-aggregates.md#aggregates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/unions-aggregates.md#unions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/classes/unions-aggregates.md#prefer-stdvariant/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#the-three-keywords/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#stdgenerator-c23--the-easy-win/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/language/coroutines/coroutines.md#what-awaiting-looks-like-sketch/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/attributes.md#the-standard-attributes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/attributes.md#the-standard-attributes/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/attributes.md#common-uses/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/attributes.md#assumeexpr-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/const-mutable.md#const--i-wont-modify-this/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/const-mutable.md#mutable--escape-hatch-in-a-const-object/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/const-mutable.md#constexpr--constinit/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/const-mutable.md#volatile--not-for-threading/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#auto--deduce-the-type-from-the-initializer/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#decltype--the-declared-type-of-an-expression/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#trailing-return-types--deduced-returns/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#structured-bindings-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#-the-placeholder-name-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#-the-placeholder-name-c26/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/enumerations.md#scoped-enums-enum-class--the-default-choice/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/enumerations.md#unscoped-enums-plain-enum--legacy/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/enumerations.md#using-scoped-enum-values-conveniently-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/enumerations.md#helpers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/initialization.md#the-forms/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/initialization.md#aggregates--designated-initializers-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/initialization.md#aggregates--designated-initializers-c20/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/initialization.md#the--vs--trap/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/namespaces.md#declaring-and-using/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/namespaces.md#anonymous-unnamed-namespaces--internal-linkage/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/namespaces.md#inline-namespaces--versioning/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/namespaces.md#name-lookup--adl/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/pointers-references-arrays.md#pointers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/pointers-references-arrays.md#references/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/pointers-references-arrays.md#arrays-and-why-to-avoid-raw-ones/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/type-aliases.md#using-vs-typedef/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/type-aliases.md#alias-templates-only-using/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/declarations-initialization/type-aliases.md#member-type-aliases/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/noexcept-and-safety.md#noexcept--this-wont-throw/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/noexcept-and-safety.md#the-noexcept-operator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/noexcept-and-safety.md#why-noexcept-matters-for-moves/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/noexcept-and-safety.md#techniques/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/throw-try-catch.md#the-basics/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/throw-try-catch.md#stack-unwinding/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/throw-try-catch.md#rethrow--nested-exceptions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/exceptions/throw-try-catch.md#catching-throw-by-value-catch-by-const-reference/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#virtual-dynamiccast-and-typeid-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#trycatch-and-union-members-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#transient-allocation-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#transient-allocation-c20/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#static-constexpr-locals-non-literal-variables-goto-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#consteval-propagation-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#placement-new-c26-and-stdconstructat-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#undefined-behaviour-is-a-compile-error/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-evaluation-rules.md#the-constexpr-standard-library/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#constexpr--may-run-at-compile-time/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#consteval--must-run-at-compile-time-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#constinit--guarantee-static-init-at-compile-time-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#if-constexpr--compile-time-branch-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#staticassert-with-a-computed-message-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#casting-from-void-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/constant-expressions.md#exceptions-during-constant-evaluation-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#implicit-conversions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#implicit-conversions/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#the-four-named-casts/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#the-four-named-casts/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#explicit-constructors--conversion-operators/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/conversions.md#autox--make-a-copy-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/literals.md#numeric-literals/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/literals.md#numeric-literals/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/literals.md#character--string-literals/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/literals.md#standard-library-suffix-literals/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/literals.md#user-defined-literals-udls/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#arithmetic-compound-assignment--symmetric-hidden-friend/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#increment-and-decrement/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#subscript-including-multi-dimensional-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#function-call-and-static-operator-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#conversions-explicit-operator-bool/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#conversions-explicit-operator-bool/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#pointer-like-types---and/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operator-overloading.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operators.md#overloading-operators/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/operators.md#evaluation-order/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#reflecting-and-splicing/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#the-classic-example-iterate-a-structs-members/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/reflection.md#annotations-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/expressions/value-categories.md#why-it-matters/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/expressions/value-categories.md#reference-binding-rules/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/default-variadic-args.md#default-arguments/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/default-variadic-args.md#variadic-templates--the-modern-any-number-of-args/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/default-variadic-args.md#fold-expressions-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/default-variadic-args.md#c-style-varargs-avoid/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/functions-and-overloading.md#passing-parameters--the-guidelines/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/functions-and-overloading.md#overloading/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/functions-and-overloading.md#attributes-that-matter/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/functions-and-overloading.md#default-vs-deleted/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/functions-and-overloading.md#-deletereason-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#anatomy/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#captures/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#captures/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#generic-mutable-constexpr-consteval/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#generic-mutable-constexpr-consteval/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#generic-mutable-constexpr-consteval/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/functions/lambdas.md#where-they-shine/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/building.md#import-std-and-import-stdcompat/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/building.md#import-std-and-import-stdcompat/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#interface-and-implementation-units/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#interface-and-implementation-units/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#interface-and-implementation-units/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#interface-and-implementation-units/4",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#export-forms/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#export-forms/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#export-forms/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#partitions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#partitions/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#partitions/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#partitions/4",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#module-linkage-visibility-and-reachability/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#module-linkage-visibility-and-reachability/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#module-linkage-visibility-and-reachability/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#the-global-and-private-module-fragments/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#the-global-and-private-module-fragments/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#the-global-and-private-module-fragments/3",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/modules/modules.md#header-units/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#bytes-into-an-array/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#a-null-terminated-string-suffix/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#limit-and-skipping-bytes-today/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#ifempty-prefix-suffix/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#optional-resources-with-hasembed/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/embed.md#a-missing-resource-is-an-error/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#include/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#include/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#macros-define/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#variadic-macros-and-vaopt-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#conditional-compilation/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#conditional-compilation/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/preprocessor/preprocessor.md#useful-predefined-macros/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#range-for--prefer-this/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#classic-for--while--do-while/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#break--continue-and-loop-control/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#template-for--expansion-statements-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/statements/iteration.md#prefer-algorithms-over-hand-loops/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#break-and-continue/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#return/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#goto-out-of-nested-loops/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#goto-out-of-nested-loops/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#break-in-an-expansion-statement-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#labels-at-the-end-of-a-block-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/jump-statements.md#gotchas/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/selection.md#if--with-an-init-statement-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/selection.md#structured-binding-as-a-condition-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/selection.md#if-constexpr--compile-time-branch-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/statements/selection.md#switch/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#requires-expressions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#requires-expressions/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#abbreviated-function-templates-and-constrained-auto/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#abbreviated-function-templates-and-constrained-auto/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#abbreviated-function-templates-and-constrained-auto/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#constraining-members-of-class-templates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#partial-ordering-by-constraints-subsumption/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/constraints.md#subsumption-only-sees-through-named-concepts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/specialization-ctad.md#full-specialization/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/specialization-ctad.md#full-specialization/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/specialization-ctad.md#partial-specialization-class-templates-only/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/specialization-ctad.md#ctad--class-template-argument-deduction-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/specialization-ctad.md#deduction-guides--help-ctad-when-needed/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/templates-basics.md#function-templates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/templates-basics.md#class-templates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/templates-basics.md#non-type-template-parameters-nttps/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/templates-basics.md#template-template-parameters/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/templates-basics.md#constraining-templates-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#parameter-packs/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#expansion/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#fold-expressions-c17--reduce-a-pack/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#recursive-expansion-pre-fold-still-useful/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#pack-indexing-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/language/templates/variadic-templates.md#pack-indexing-c26/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#allocatortraits--the-indirection-layer/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#a-minimal-c11-allocator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#scopedallocatoradaptor-one-allocator-for-nested-containers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/allocators.md#allocateatleast-c23/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-deep-copy-and-value-comparison/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#indirect-for-pimpl/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/indirect-polymorphic.md#polymorphic-copying-without-clone/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/memory-resources.md#example-a-stack-buffer--monotonic-arena/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdaddressof--the-real-address/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdtoaddress-and-stdassumealigned-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#constructing-into-raw-storage/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdlaunder-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdlaunder-c17/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#bulk-uninitialized-algorithms/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/raw-memory.md#stdstartlifetimeas-c23/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/memory/shared_ptr.md#create-with-makeshared/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/shared_ptr.md#sharing-into-structuresthreads/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/shared_ptr.md#custom-deleter--aliasing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#create-with-makeunique/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#ownership-transfer-move-only/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#as-a-class-member--automatic-cleanup/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#arrays-and-custom-deleters/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#c-apis-that-return-through-t-outptr-and-inoutptr-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/unique_ptr.md#c-apis-that-return-through-t-outptr-and-inoutptr-c23/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/weak_ptr.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/weak_ptr.md#observe-without-owning/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/weak_ptr.md#breaking-a-reference-cycle/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/weak_ptr.md#caches/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/memory/weak_ptr.md#a-callback-that-doesnt-keep-its-target-alive/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#stdisconstantevaluated-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#if-consteval-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#if-consteval-c23/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/constant-evaluation.md#stdiswithinlifetime-c26-which-union-member-is-active/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/integer-sequence.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/integer-sequence.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/integer-sequence.md#the-canonical-pattern-call-a-function-with-tuple-elements/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/integer-sequence.md#building-an-array-from-a-generator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/integer-sequence.md#inline-with-a-templated-lambda-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#arithmetic-on-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#si-prefixes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#si-prefixes/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/ratio.md#a-custom-unit/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#function-parameters-p3096/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#function-parameters-p3096/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#templates-and-their-arguments/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#operators/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#names-and-source-locations/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#predicates/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection-queries.md#layout/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#mental-model/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#querying-entities/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#listing-members-bases-enumerators/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#enum--string-generated/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#type-transformations-reflection-flavored-type-traits/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#generating-and-substituting/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/reflection.md#errors-stdmetaexception-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#the-main-families/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#the-main-families/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#the-main-families/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#the-main-families/4",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#the-main-families/5",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#constraining-with-conceptsif-constexpr-modern-vs-enableif-legacy/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#staticassert-for-clear-contracts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#normalizing-a-deduced-type/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#stddeclval-a-value-you-may-only-name-in-unevaluated-contexts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#stddeclval-a-value-you-may-only-name-in-unevaluated-contexts/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#stdvoidt-and-the-detection-idiom-vs-a-requires-expression/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#stdtypeidentity-c20-keep-a-parameter-out-of-deduction/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#stdtypeidentity-c20-keep-a-parameter-out-of-deduction/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#conjunction-disjunction-negation-short-circuiting-traits/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#conjunction-disjunction-negation-short-circuiting-traits/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/metaprogramming/type-traits.md#islayoutcompatible-and-iscorrespondingmember-c20/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/named-requirements/README.md#satisfying-basiclockable--any-lockunlock-pair-works/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/named-requirements/README.md#satisfying-hash-for-an-unordered-container/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/named-requirements/README.md#same-requirement-two-eras-of-checking/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/named-requirements/README.md#same-requirement-two-eras-of-checking/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/named-requirements/README.md#concepts-and-named-requirements-are-not-the-same-test/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#stdbitcast--reinterpret-bits-safely/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#counting-and-inspecting-bits/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#power-of-two-helpers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#rotates/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#endianness--byte-swap/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/bit.md#c-compatibility-stdbith-c26/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/numerics/cfenv.md#clear-compute-test/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/cfenv.md#changing-the-rounding-mode/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/cfenv.md#hiding-intermediate-flags-from-the-caller/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/cfenv.md#how-does-cmath-report-errors-here/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/cfenv.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/complex.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/complex.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/complex.md#compile-time-arithmetic-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/complex.md#square-root-of-a-negative-number/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/complex.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#example/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#vector--matrix-ops/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/linalg.md#views-without-copying/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/math.md#cmath--the-workhorse-functions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/math.md#classification/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/math.md#special-functions-c17/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/numerics/math.md#numbers--math-constants-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#the-standard-recipe/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#engines--distributions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#shuffle-and-sample/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#reproducible-runs/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/random.md#counter-based-streams-stdphiloxengine-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#clamp-instead-of-wrap/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/saturation.md#the-pre-rename-names-addsat-saturatecast/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/simd.md#examples/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/numerics/valarray.md#mental-model/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/valarray.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/valarray.md#slicing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/numerics/valarray.md#shift-rotate-apply/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/README.md#the-one-paragraph-pitch/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#factories--ranges-out-of-thin-air/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#factories--ranges-out-of-thin-air/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#viewsindices--0-to-n-of-ns-type-c26/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#viewsindices--0-to-n-of-ns-type-c26/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/ranges/factories.md#rangesto--view--container-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/range-concepts.md#a-range-is-anything-with-beginend/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/range-concepts.md#range-access-customization-points/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/range-concepts.md#view-vs-container/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/range-concepts.md#dangling-protection/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#the-pipe-operator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#core-adaptors-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#core-adaptors-c20/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#new-in-c23/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#new-in-c23/2",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#joinwith--flatten-with-a-separator/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#cartesianproduct--every-combination/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#concat--one-range-after-another/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#cachelatest--compute-each-element-once/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#asinput--downgrade-to-an-input-range/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/ranges/views.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/char_traits.md#interface-static-functions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/char_traits.md#example-a-case-insensitive-string/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string.md#the-basicstring-family/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string.md#construction--growth/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string.md#access--c-interop/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string.md#searching--substrings/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string.md#numeric-conversions/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string_view.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string_view.md#why-it-exists/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string_view.md#cheap-slicing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string_view.md#same-read-api-as-string/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/strings/string_view.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/charconv.md#signatures/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/charconv.md#number--text/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/charconv.md#text--number-and-tokenizing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/formatting.md#format-spec-mini-reference/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/formatting.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/formatting.md#making-your-own-type-formattable/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/localization.md#the-classic-vs-the-users-locale/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/localization.md#locale-aware-comparison/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/localization.md#querying-a-facet/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#examine-and-search/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#classify-characters-safely/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#convert-text-to-numbers-with-error-checking/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#fixed-width-integers-in-printf--scanf-cinttypes-c11/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#memmove-handles-overlap-memcpy-does-not/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-byte-strings.md#gotchas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#nothing-decodes-until-you-pick-a-locale/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#decode-to-code-points-and-encode-back-cuchar/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-multibyte-strings.md#mbrtoc8-hands-out-one-utf-8-code-unit-per-call-c20/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-wide-strings.md#counting-and-classifying-characters/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-wide-strings.md#classification-by-name/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/null-terminated-wide-strings.md#wide--utf-8-or-whatever-the-locale-encodes/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/regex.md#match-vs-search/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/regex.md#capture-groups/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/regex.md#iterate-every-match/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/regex.md#replace-with-backreferences/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/regex.md#grammar--flags/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#declaration/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#what-am-i-running-with/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#looking-encodings-up-by-name/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/text-processing/text-encoding.md#the-encoding-of-a-locale/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/utilities/any.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/any.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/any.md#a-heterogeneous-bag/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/any.md#build-in-place-modify-through-a-reference/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/bitset.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/bitset.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/bitset.md#flags-from-an-enum/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdfunction/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdmoveonlyfunction-c23/1",
+   "status": "failed"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdcopyablefunction-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#stdfunctionref-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/utilities/callable-wrappers.md#gotchas/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/utilities/expected.md#returning-success-or-error/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/expected.md#consuming-the-result/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/expected.md#monadic-chaining-no-manual-if-ladders/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#stdinvoke--call-anything-uniformly-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#ref--cref--pass-references-through-value-copying-apis/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#operator-functors/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#bindfront--bindback-c20--c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#notfn-c17/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#memfn-c11/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#constant-callable-forms-c26/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/examples/utilities/functional.md#stdbind-vs-lambdas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/optional.md#create-check-access/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/optional.md#in-place-construction/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/optional.md#monadic-operations-c23/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/pair.md#declaration/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/pair.md#examples/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/pair.md#as-function-return--map-element/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/pair.md#comparison/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/pair.md#library-algorithms-that-return-one/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/tuple.md#make-access-unpack/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/tuple.md#multiple-return-values/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/tuple.md#tie-and-ignore/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/tuple.md#combine-and-forward/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#stdmove--cast-to-rvalue/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#stdforward--perfect-forwarding/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#stdswap--exchange-two-values/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#stdexchange--set-new-return-old-c14/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#safe-integer-comparison-c20/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/utility.md#smaller-helpers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/variant.md#assign-query-access/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/examples/utilities/variant.md#visiting--the-idiomatic-way-to-handle-all-cases/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#resource-management-r/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#functions-f/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#functions-f/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#functions-f/3",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#classes-c/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#classes-c/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#classes-c/3",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#expressions-and-statements-es/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#expressions-and-statements-es/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#concurrency-cp/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#templates-t/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/core-guidelines.md#performance-per/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/debugging.md#stdstacktrace-c23/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#make-illegal-states-unrepresentable/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#strong-types-for-identifiers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#closed-sets-use-stdvariant/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#prefer-named-algorithms/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#pipelines-for-composition/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#folds-and-monoids/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#folds-and-monoids/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#3-errors-in-the-type-system/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#3-errors-in-the-type-system/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#prefer-regular-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#const-by-default/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#const-by-default/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#explicit-mutation-boundaries/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#5-composition-over-inheritance/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#5-composition-over-inheritance/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#6-easy-to-use-hard-to-misuse/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/design-principles.md#7-test-the-laws/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#structured-bindings/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#if--switch-with-initializer/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdoptional--a-value-that-may-be-absent/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdvariant--one-of-a-fixed-set-of-types/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#if-constexpr/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#concepts/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#ranges/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdspan--a-view-of-contiguous-elements/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#consteval-and-constexpr-everywhere/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#consteval-and-constexpr-everywhere/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#three-way-comparison/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#designated-initializers-and-using-enum/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#lambdas/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdexpected--a-value-or-an-error/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdprint--stdprintln/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdgenerator/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#ranges-finished/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#deducing-this/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#contracts/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#reflection/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#stdexecution-sendersreceivers/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/modern-idioms.md#smaller-language-features/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/performance-tooling.md#benchmarking/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#naming/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/project-conventions.md#header-shape-and-include-order/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/safety.md#1-type-safety-protype/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#2-bounds-safety-probounds/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#ownership-with-smart-pointers/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#ownership-with-smart-pointers/2",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#returning-references-to-locals-or-temporaries/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#views-that-outlive-their-source/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#lambda-captures/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#iterator-and-reference-invalidation/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#use-after-move/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#null-safety/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/safety.md#c26-erroneous-behaviour/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/testing.md#choosing-a-framework/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#property-based-tests/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#fuzzing/1",
+   "status": "passed"
+  },
+  {
+   "id": "docs/guidelines/testing.md#testing-contracts/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#testing-contracts/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#a-throwing-handler-where-you-can-replace-it/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#a-throwing-handler-where-you-can-replace-it/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/1",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/2",
+   "status": "skipped"
+  },
+  {
+   "id": "docs/guidelines/testing.md#compile-time-tests/3",
+   "status": "skipped"
+  }
+ ],
+ "ok": true,
+ "generated": "2026-11-02T00:55:13Z"
+}

@@ -1,0 +1,113 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "run",
+ "platform": "windows-2025-x64",
+ "arch": "AMD64",
+ "os_version": "Microsoft Windows Server 2025 Datacenter 10.0.26100, VS 18.0, MS STL from VC tools 14.51.36231",
+ "byte_order": "little",
+ "compiler": "clang-cl-22",
+ "compiler_version": "22.1.3",
+ "preset": "clang-cl",
+ "inputs": {
+  "areas": "^strings$",
+  "tests": true,
+  "snippets": true
+ },
+ "snippets_mode": "report-only",
+ "steps": {
+  "tests": 0,
+  "snippets": 0
+ },
+ "ok": true,
+ "run": {
+  "workflow": "Windows (clang-cl, MinGW)",
+  "job": "clang-cl",
+  "run_id": "41366615444",
+  "sha": "4ef07d3ed6ab41ccaa4d8a3d8dee013144f130d0",
+  "url": "https://github.com/homer6/cpp-docs/actions/runs/41366615444"
+ },
+ "tests": {
+  "schema": "cpp-docs/results/1",
+  "kind": "tests",
+  "preset": "clang-cl",
+  "toolchain": "clang-cl",
+  "platform": {
+   "system": "Windows",
+   "version": "10.0.26100",
+   "arch": "AMD64",
+   "host": "Windows-2025Server-10.0.26100-SP0"
+  },
+  "compiler": {
+   "id": "Clang",
+   "version": "22.1.3",
+   "path": "C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+   "frontend": "MSVC",
+   "stdlib": "MS STL"
+  },
+  "cmake": "4.4.4",
+  "source": "LastTest.log",
+  "counts": {
+   "total": 30,
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0
+  },
+  "failures": [],
+  "skips": [],
+  "generated": "2026-11-02T00:23:28Z"
+ },
+ "snippets": {
+  "schema": "cpp-docs/results/1",
+  "kind": "snippets",
+  "toolchain": "clang-cl",
+  "platform": {
+   "system": "Windows",
+   "version": "2025Server",
+   "arch": "AMD64",
+   "host": "Windows-2025Server-10.0.26100-SP0"
+  },
+  "compiler": {
+   "id": "clang-cl",
+   "version": "clang version 22.1.3 (https://github.com/llvm/llvm-project e9846648fd6183ee6d8cbdb4502213fcf902a211)",
+   "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\\\Tools\\Llvm\\x64\\bin\\clang-cl.exe"
+  },
+  "command": [
+   "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+   "/nologo",
+   "/std:c++latest",
+   "/permissive-",
+   "/EHsc",
+   "/Zs",
+   "/utf-8",
+   "/FID:\\a\\cpp-docs\\cpp-docs\\tools\\snippet_prelude.hpp"
+  ],
+  "modules_command": null,
+  "paths": [
+   "docs/examples/strings"
+  ],
+  "enabled": [],
+  "counts": {
+   "total": 12,
+   "checked": 12,
+   "module_units": 0,
+   "module_groups": 0,
+   "failed": 0,
+   "skipped": 0,
+   "nocompile": 0,
+   "gated": 0,
+   "unsupported": 0
+  },
+  "failures": [],
+  "skips": [],
+  "baseline": {
+   "file": "tools/snippet_baseline/clang-cl.txt",
+   "known_failing": 0,
+   "new": 0,
+   "fixed": [],
+   "stale": []
+  },
+  "ok": true,
+  "generated": "2026-11-02T00:23:37Z"
+ },
+ "generated": "2026-11-02T00:23:37Z"
+}

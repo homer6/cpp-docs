@@ -1,0 +1,7 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-local",
+ "date": "2026-11-02",
+ "commit": "9f6bd1f",
+ "note": "Local runs (the owner's machine and the gcc:16 Docker image); commit is the checkout the results were archived from."
+}

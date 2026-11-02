@@ -1,0 +1,221 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "tests",
+ "preset": "gcc-16",
+ "toolchain": "",
+ "platform": {
+  "system": "Linux",
+  "version": "6.10.14-linuxkit",
+  "arch": "aarch64",
+  "host": "macOS-14.6.1-arm64-arm-64bit-Mach-O"
+ },
+ "compiler": {
+  "id": "GNU",
+  "version": "16.2.0",
+  "path": "/usr/local/bin/g++",
+  "frontend": "GNU",
+  "stdlib": "libstdc++"
+ },
+ "cmake": "3.31.6",
+ "source": "LastTest.log",
+ "counts": {
+  "total": 1100,
+  "passed": 1062,
+  "failed": 0,
+  "skipped": 38
+ },
+ "failures": [],
+ "skips": [
+  {
+   "name": "ConstantEvaluation.IsWithinLifetime",
+   "labels": [],
+   "reason": "needs __cpp_lib_is_within_lifetime >= 202306L (not defined by this toolchain)"
+  },
+  {
+   "name": "ContainersReadme.Hive",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "Formatting.LocaleOptIn",
+   "labels": [],
+   "reason": "en_US.UTF-8 locale not available"
+  },
+  {
+   "name": "Freestanding.FfreestandingFlag",
+   "labels": [],
+   "reason": "needs a build with -ffreestanding; the suite builds hosted only (checked by hand: g++-15 and clang++ 22 -ffreestanding give __STDC_HOSTED__ 0)"
+  },
+  {
+   "name": "Functional.LibcxxNttpGap",
+   "labels": [],
+   "reason": "libc++-specific claim"
+  },
+  {
+   "name": "Hive.DeclarationAndRequirements",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "Hive.ReserveAndLimits",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "Hive.SortUnique",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "Hive.StableAcrossInsertAndErase",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "Hive.UniformErase",
+   "labels": [],
+   "reason": "needs __cpp_lib_hive (not defined by this toolchain)"
+  },
+  {
+   "name": "ImportStd.HeaderUnits",
+   "labels": [],
+   "reason": "header units (import <vector>;): CMake doesn't support them (cmake-cxxmodules(7), Limitations); checked by tools/check_snippets.py instead"
+  },
+  {
+   "name": "ImportStd.MacrosNeedTheHeader",
+   "labels": [],
+   "reason": "CMake 3.31.6: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions tested)"
+  },
+  {
+   "name": "ImportStd.ModuleUsingImportStd",
+   "labels": [],
+   "reason": "CMake 3.31.6: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions tested)"
+  },
+  {
+   "name": "ImportStd.StdCompatHasGlobalCNames",
+   "labels": [],
+   "reason": "CMake 3.31.6: import std is experimental before 4.5, and the top-level CMakeLists.txt sets the gate only for 4.3 and 4.4 (the versions tested)"
+  },
+  {
+   "name": "Keywords.ContractAssertReservedOnlyWithContracts",
+   "labels": [],
+   "reason": "contract_assert is a keyword here (the compile-fail fence covers GCC 16)"
+  },
+  {
+   "name": "Linalg.ScaleInPlace",
+   "labels": [],
+   "reason": "needs __cpp_lib_linalg (not defined by this toolchain)"
+  },
+  {
+   "name": "Linalg.TransposedIsAView",
+   "labels": [],
+   "reason": "needs __cpp_lib_linalg (not defined by this toolchain)"
+  },
+  {
+   "name": "Linalg.VectorAndMatrixOps",
+   "labels": [],
+   "reason": "needs __cpp_lib_linalg (not defined by this toolchain)"
+  },
+  {
+   "name": "Localization.DeDeGrouping",
+   "labels": [],
+   "reason": "de_DE locale not available to this C++ library"
+  },
+  {
+   "name": "Localization.EnUsGrouping",
+   "labels": [],
+   "reason": "en_US locale not available to this C++ library"
+  },
+  {
+   "name": "Localization.EnvironmentLocale",
+   "labels": [],
+   "reason": "environment locale is \"C\", which every library supports"
+  },
+  {
+   "name": "Localization.FormatIgnoresGlobalLocale",
+   "labels": [],
+   "reason": "no de_DE/en_US locale available to this C++ library"
+  },
+  {
+   "name": "Modules.PrivateModuleFragment",
+   "labels": [],
+   "reason": "private module fragment: GCC 15/16 say \"sorry, unimplemented\""
+  },
+  {
+   "name": "ObjectModel.MainFunction",
+   "labels": [],
+   "reason": "gtest_main owns main(), so its implicit return and argv can't be observed here"
+  },
+  {
+   "name": "SafeReclamation.HazardPointerProtects",
+   "labels": [],
+   "reason": "needs __cpp_lib_hazard_pointer (not defined by this toolchain)"
+  },
+  {
+   "name": "SafeReclamation.RcuRetireWaitsForReaders",
+   "labels": [],
+   "reason": "needs __cpp_lib_rcu (not defined by this toolchain)"
+  },
+  {
+   "name": "Saturation.PreRenameNames",
+   "labels": [],
+   "reason": "this toolchain has the P4052 names (202603L), not add_sat"
+  },
+  {
+   "name": "ScopeStorageLinkage.Linkage",
+   "labels": [],
+   "reason": "internal vs external linkage and the ODR are only observable across translation units"
+  },
+  {
+   "name": "SendersReceivers.OnRunLoopRunsOnWorker",
+   "labels": [],
+   "reason": "needs __cpp_lib_senders (not defined by this toolchain)"
+  },
+  {
+   "name": "SendersReceivers.SendersAreLazy",
+   "labels": [],
+   "reason": "needs __cpp_lib_senders (not defined by this toolchain)"
+  },
+  {
+   "name": "SendersReceivers.StoppedAndUponError",
+   "labels": [],
+   "reason": "needs __cpp_lib_senders (not defined by this toolchain)"
+  },
+  {
+   "name": "SendersReceivers.SyncWaitRethrowsError",
+   "labels": [],
+   "reason": "needs __cpp_lib_senders (not defined by this toolchain)"
+  },
+  {
+   "name": "SendersReceivers.ThenChainSyncWait",
+   "labels": [],
+   "reason": "needs __cpp_lib_senders (not defined by this toolchain)"
+  },
+  {
+   "name": "Simd.ElementWiseSelectReduce",
+   "labels": [],
+   "reason": "needs __cpp_lib_simd (not defined by this toolchain)"
+  },
+  {
+   "name": "Simd.MathOverloadsAndFixedWidth",
+   "labels": [],
+   "reason": "needs __cpp_lib_simd (not defined by this toolchain)"
+  },
+  {
+   "name": "TextEncoding.Environment",
+   "labels": [],
+   "reason": "environment() needs -lstdc++exp with libstdc++ and its result depends on the LANG/LC_ALL the test runs with; the suite doesn't link stdc++exp"
+  },
+  {
+   "name": "TextEncoding.LocaleEncoding",
+   "labels": [],
+   "reason": "std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 fail to link without it); the suite doesn't link stdc++exp"
+  },
+  {
+   "name": "TextProcessingReadme.ToStringLocale",
+   "labels": [],
+   "reason": "de_DE.UTF-8 C locale not available"
+  }
+ ],
+ "generated": "2026-11-01T21:26:58Z"
+}

@@ -14,8 +14,10 @@ The goal is every documented feature and every example on every supported platfo
 - **Local runs are the primary proof.** The owner's machine (GCC 15, Clang 22) and the GCC 16 Docker image are checked for every release; their results are labelled *local*.
 - **Skipped** means a test or snippet didn't run on that toolchain, for the reason given: a missing library feature (`CPPDOCS_REQUIRE`, `needs=`), a `nocompile` snippet, or an implementation-defined result. A skip isn't a pass or a failure; it's a known gap.
 - **Tests** are the GoogleTest suite (`tests/`); **snippets** are the compile-checked blocks in `docs/` (`tools/check_snippets.py`). Snippet *passed* = checked − failed; baselined failures are counted as failed and noted. The top skip reasons leave out `nocompile` snippets, which skip on every toolchain alike.
+- **Per feature:** the [feature support matrix](#feature-support-matrix) below summarizes every area per toolchain; **each toolchain has its own page** in [`platform-support/`](platform-support/) (linked from every table row and column) with every area, page, feature and example. The [bugs found](#compiler-and-platform-bugs-found) close this page.
+- **Archived:** each consented run's results and metadata are kept in [`platform-support/runs/<run-id>/`](platform-support/runs/) and the local results in [`platform-support/local/`](platform-support/local/), so this page and the toolchain pages can be rebuilt after GitHub's artifact retention runs out.
 
-Generated 2026-11-01.
+Generated 2026-11-02.
 
 ## GitHub Actions
 
@@ -23,8 +25,8 @@ Generated 2026-11-01.
 |---|---|---|
 | [Linux (x86_64 and arm64)](https://github.com/homer6/cpp-docs/actions/workflows/linux.yml) (`linux.yml`) | ubuntu-24.04/26.04 x64 and arm: GCC 13-16, Clang 18-22 with libstdc++ and libc++ | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) (success) |
 | [macOS](https://github.com/homer6/cpp-docs/actions/workflows/macos.yml) (`macos.yml`) | macos-15/26 arm64, macos-15-intel/26-intel: Apple Clang, Homebrew GCC and LLVM | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) (success) |
-| [Windows (MSVC)](https://github.com/homer6/cpp-docs/actions/workflows/windows-msvc.yml) (`windows-msvc.yml`) | windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) (failure) |
-| [Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml) (`windows-gnu.yml`) | windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) (failure) |
+| [Windows (MSVC)](https://github.com/homer6/cpp-docs/actions/workflows/windows-msvc.yml) (`windows-msvc.yml`) | windows-2025, windows-2025-vs2026, windows-11-arm, windows-11-vs2026-arm: MSVC | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) (success) |
+| [Windows (clang-cl, MinGW)](https://github.com/homer6/cpp-docs/actions/workflows/windows-gnu.yml) (`windows-gnu.yml`) | windows-2025: clang-cl, MSYS2 UCRT64 GCC and Clang | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) (success) |
 | [FreeBSD](https://github.com/homer6/cpp-docs/actions/workflows/freebsd.yml) (`freebsd.yml`) | FreeBSD 14.x/15.x VM, x86_64 (and aarch64 if supported): base Clang/libc++, pkg GCC | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) (success) |
 | [Other architectures (QEMU)](https://github.com/homer6/cpp-docs/actions/workflows/qemu.yml) (`qemu.yml`) | riscv64, s390x (big-endian), ppc64le under QEMU | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) (success) |
 
@@ -32,92 +34,183 @@ Run [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575): l
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| linux-aarch64-debian-13-gcc-15 | Debian 13 | arm64 | GCC 15.3.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-debian-13-gcc-16 | Debian 13 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-ubuntu-24.04-clang-22-libcxx | Ubuntu 24.04 | arm64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-ubuntu-24.04-clang-22-libstdcxx | Ubuntu 24.04 | arm64 | Clang 22.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-ubuntu-26.04-clang-22-libcxx | Ubuntu 26.04 | arm64 | Clang 22.1.2, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-ubuntu-26.04-clang-22-libstdcxx | Ubuntu 26.04 | arm64 | Clang 22.1.2, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-aarch64-ubuntu-26.04-gcc-15 | Ubuntu 26.04 | arm64 | GCC 15.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-debian-12-gcc-13 | Debian 12 | x86_64 | GCC 13.5.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-debian-13-gcc-14 | Debian 13 | x86_64 | GCC 14.4.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-debian-13-gcc-15 | Debian 13 | x86_64 | GCC 15.3.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-debian-13-gcc-16 | Debian 13 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-18-libcxx | Ubuntu 24.04 | x86_64 | Clang 18.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-18-libstdcxx | Ubuntu 24.04 | x86_64 | Clang 18.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-19-libcxx | Ubuntu 24.04 | x86_64 | Clang 19.1.7, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-19-libstdcxx | Ubuntu 24.04 | x86_64 | Clang 19.1.7, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-20-libcxx | Ubuntu 24.04 | x86_64 | Clang 20.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-20-libstdcxx | Ubuntu 24.04 | x86_64 | Clang 20.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-21-libcxx | Ubuntu 24.04 | x86_64 | Clang 21.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-21-libstdcxx | Ubuntu 24.04 | x86_64 | Clang 21.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-22-libcxx | Ubuntu 24.04 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-24.04-clang-22-libstdcxx | Ubuntu 24.04 | x86_64 | Clang 22.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-26.04-clang-22-libcxx | Ubuntu 26.04 | x86_64 | Clang 22.1.2, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-26.04-clang-22-libstdcxx | Ubuntu 26.04 | x86_64 | Clang 22.1.2, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
-| linux-x86_64-ubuntu-26.04-gcc-15 | Ubuntu 26.04 | x86_64 | GCC 15.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-debian-13-gcc-15](platform-support/linux-debian-13-arm64-gcc-15.md) | Debian 13 | arm64 | GCC 15.3.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-debian-13-gcc-16](platform-support/linux-debian-13-arm64-gcc-16.md) | Debian 13 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-ubuntu-24.04-clang-22-libcxx](platform-support/linux-ubuntu-24.04-arm64-clang-22-libcxx.md) | Ubuntu 24.04 | arm64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-ubuntu-24.04-clang-22-libstdcxx](platform-support/linux-ubuntu-24.04-arm64-clang-22-libstdcxx.md) | Ubuntu 24.04 | arm64 | Clang 22.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-ubuntu-26.04-clang-22-libcxx](platform-support/linux-ubuntu-26.04-arm64-clang-22-libcxx.md) | Ubuntu 26.04 | arm64 | Clang 22.1.2, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-ubuntu-26.04-clang-22-libstdcxx](platform-support/linux-ubuntu-26.04-arm64-clang-22-libstdcxx.md) | Ubuntu 26.04 | arm64 | Clang 22.1.2, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-aarch64-ubuntu-26.04-gcc-15](platform-support/linux-ubuntu-26.04-arm64-gcc-15.md) | Ubuntu 26.04 | arm64 | GCC 15.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-debian-12-gcc-13](platform-support/linux-debian-12-x86_64-gcc-13.md) | Debian 12 | x86_64 | GCC 13.5.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-debian-13-gcc-14](platform-support/linux-debian-13-x86_64-gcc-14.md) | Debian 13 | x86_64 | GCC 14.4.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-debian-13-gcc-15](platform-support/linux-debian-13-x86_64-gcc-15.md) | Debian 13 | x86_64 | GCC 15.3.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-debian-13-gcc-16](platform-support/linux-debian-13-x86_64-gcc-16.md) | Debian 13 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-18-libcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libcxx.md) | Ubuntu 24.04 | x86_64 | Clang 18.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-18-libstdcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libstdcxx.md) | Ubuntu 24.04 | x86_64 | Clang 18.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-19-libcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libcxx.md) | Ubuntu 24.04 | x86_64 | Clang 19.1.7, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-19-libstdcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libstdcxx.md) | Ubuntu 24.04 | x86_64 | Clang 19.1.7, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-20-libcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libcxx.md) | Ubuntu 24.04 | x86_64 | Clang 20.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-20-libstdcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libstdcxx.md) | Ubuntu 24.04 | x86_64 | Clang 20.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-21-libcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libcxx.md) | Ubuntu 24.04 | x86_64 | Clang 21.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-21-libstdcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libstdcxx.md) | Ubuntu 24.04 | x86_64 | Clang 21.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-22-libcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-22-libcxx.md) | Ubuntu 24.04 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-24.04-clang-22-libstdcxx](platform-support/linux-ubuntu-24.04-x86_64-clang-22-libstdcxx.md) | Ubuntu 24.04 | x86_64 | Clang 22.1.8, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-26.04-clang-22-libcxx](platform-support/linux-ubuntu-26.04-x86_64-clang-22-libcxx.md) | Ubuntu 26.04 | x86_64 | Clang 22.1.2, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-26.04-clang-22-libstdcxx](platform-support/linux-ubuntu-26.04-x86_64-clang-22-libstdcxx.md) | Ubuntu 26.04 | x86_64 | Clang 22.1.2, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
+| [linux-x86_64-ubuntu-26.04-gcc-15](platform-support/linux-ubuntu-26.04-x86_64-gcc-15.md) | Ubuntu 26.04 | x86_64 | GCC 15.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41358257575) |
 
 Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121): macos.yml · dev · 3c864fa · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| macos-15-arm64-apple-clang-17 | macOS 15 | arm64 | Apple Clang 17.0.0.17000013, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-15-arm64-gcc-16 | macOS 15 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-15-arm64-llvm-23 | macOS 15 | arm64 | Clang 23.1.4, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-15-x86_64-apple-clang-17 | macOS 15 | x86_64 | Apple Clang 17.0.0.17000013, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-15-x86_64-gcc-16 | macOS 15 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-15-x86_64-llvm-22 | macOS 15 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-arm64-apple-clang-21 | macOS 26 | arm64 | Apple Clang 21.0.0.21000101, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-arm64-gcc-16 | macOS 26 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-arm64-llvm-23 | macOS 26 | arm64 | Clang 23.1.4, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-x86_64-apple-clang-21 | macOS 26 | x86_64 | Apple Clang 21.0.0.21000101, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-x86_64-gcc-16 | macOS 26 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
-| macos-26-x86_64-llvm-22 | macOS 26 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-arm64-apple-clang-17](platform-support/macos-15-arm64-apple-clang-17.md) | macOS 15 | arm64 | Apple Clang 17.0.0.17000013, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-arm64-gcc-16](platform-support/macos-15-arm64-gcc-16.md) | macOS 15 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-arm64-llvm-23](platform-support/macos-15-arm64-clang-23-libcxx.md) | macOS 15 | arm64 | Clang 23.1.4, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-x86_64-apple-clang-17](platform-support/macos-15-x86_64-apple-clang-17.md) | macOS 15 | x86_64 | Apple Clang 17.0.0.17000013, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-x86_64-gcc-16](platform-support/macos-15-x86_64-gcc-16.md) | macOS 15 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-15-x86_64-llvm-22](platform-support/macos-15-x86_64-clang-22-libcxx.md) | macOS 15 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-arm64-apple-clang-21](platform-support/macos-26-arm64-apple-clang-21.md) | macOS 26 | arm64 | Apple Clang 21.0.0.21000101, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-arm64-gcc-16](platform-support/macos-26-arm64-gcc-16.md) | macOS 26 | arm64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-arm64-llvm-23](platform-support/macos-26-arm64-clang-23-libcxx.md) | macOS 26 | arm64 | Clang 23.1.4, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-x86_64-apple-clang-21](platform-support/macos-26-x86_64-apple-clang-21.md) | macOS 26 | x86_64 | Apple Clang 21.0.0.21000101, libc++ | `clang` | 30 / 0 / 0 | 0 / 12 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-x86_64-gcc-16](platform-support/macos-26-x86_64-gcc-16.md) | macOS 26 | x86_64 | GCC 16.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
+| [macos-26-x86_64-llvm-22](platform-support/macos-26-x86_64-clang-22-libcxx.md) | macOS 26 | x86_64 | Clang 22.1.8, libc++ | `clang-libcxx` | 30 / 0 / 0 | 12 / 0 / 0 | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365429121) |
 
-Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411): windows-msvc.yml · dev · 3c864fa · areas `^strings$`.
-
-| Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
-|---|---|---|---|---|---|---|---|---|
-| windows-11-arm64-msvc-14.51.36231 | Windows 11 | arm64 | MSVC 19.51.36260 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
-| windows-2022-x64-msvc-14.44.35207 | Windows Server 2022 | x86_64 | MSVC 19.44.35229 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
-| windows-2025-x64-msvc-14.51.36231 | Windows Server 2025 | x86_64 | MSVC 19.51.36260 | `msvc` | failed: no results (tests step exit 2) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365431411) |
-
-Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810): windows-gnu.yml · dev · 3c864fa · areas `^strings$`.
+Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135): windows-msvc.yml · dev · 37198cd · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| windows-2025-x64-CLANG64-clang-23 | Windows Server 2025, MSYS2 CLANG64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-UCRT64-clang-23 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-UCRT64-gcc-16 | Windows Server 2025, MSYS2 UCRT64 | x86_64 | GCC 16.2.0, libstdc++ | `mingw` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
-| windows-2025-x64-clang-cl-22 | Windows Server 2025 | x86_64 | clang-cl 22.1.3 | `clang-cl` | failed: no results (tests step exit -1) | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41365433810) |
+| [windows-11-arm64-msvc-14.51.36231](platform-support/windows-11-arm64-msvc-19.51.md) | Windows 11 | arm64 | MSVC 19.51.36260.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
+| [windows-2022-x64-msvc-14.44.35207](platform-support/windows-server-2022-x86_64-msvc-19.44.md) | Windows Server 2022 | x86_64 | MSVC 19.44.35229.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
+| [windows-2025-x64-msvc-14.51.36231](platform-support/windows-server-2025-x86_64-msvc-19.51.md) | Windows Server 2025 | x86_64 | MSVC 19.51.36260.0, MS STL | `msvc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41367352135) |
+
+Run [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444): windows-gnu.yml · dev · 4ef07d3 · areas `^strings$`.
+
+| Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
+|---|---|---|---|---|---|---|---|---|
+| [windows-2025-x64-CLANG64-clang-23](platform-support/windows-server-2025-msys2-clang64-x86_64-clang-23-libstdcxx.md) | Windows Server 2025, MSYS2 CLANG64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| [windows-2025-x64-UCRT64-clang-23](platform-support/windows-server-2025-msys2-ucrt64-x86_64-clang-23-libstdcxx.md) | Windows Server 2025, MSYS2 UCRT64 | x86_64 | Clang 23.1.4, libstdc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| [windows-2025-x64-UCRT64-gcc-16](platform-support/windows-server-2025-msys2-ucrt64-x86_64-gcc-16.md) | Windows Server 2025, MSYS2 UCRT64 | x86_64 | GCC 16.2.0, libstdc++ | `mingw` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
+| [windows-2025-x64-clang-cl-22](platform-support/windows-server-2025-x86_64-clang-cl-22.md) | Windows Server 2025 | x86_64 | clang-cl 22.1.3, MS STL | `clang-cl` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41366615444) |
 
 Run [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143): freebsd.yml · dev · b3d13a9 · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| freebsd-14.5-x86_64-clang-21 | FreeBSD 14.5 | x86_64 | Clang 21.1.8, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| freebsd-14.5-x86_64-gcc-14 | FreeBSD 14.5 | x86_64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| freebsd-15.1-aarch64-clang-19 | FreeBSD 15.1 | arm64 | Clang 19.1.7, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| freebsd-15.1-x86_64-clang-19 | FreeBSD 15.1 | x86_64 | Clang 19.1.7, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
-| freebsd-15.1-x86_64-gcc-14 | FreeBSD 15.1 | x86_64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
+| [freebsd-14.5-x86_64-clang-21](platform-support/freebsd-14.5-x86_64-clang-21-libcxx.md) | FreeBSD 14.5 | x86_64 | Clang 21.1.8, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
+| [freebsd-14.5-x86_64-gcc-14](platform-support/freebsd-14.5-x86_64-gcc-14.md) | FreeBSD 14.5 | x86_64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
+| [freebsd-15.1-aarch64-clang-19](platform-support/freebsd-15.1-arm64-clang-19-libcxx.md) | FreeBSD 15.1 | arm64 | Clang 19.1.7, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
+| [freebsd-15.1-x86_64-clang-19](platform-support/freebsd-15.1-x86_64-clang-19-libcxx.md) | FreeBSD 15.1 | x86_64 | Clang 19.1.7, libc++ | `clang` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
+| [freebsd-15.1-x86_64-gcc-14](platform-support/freebsd-15.1-x86_64-gcc-14.md) | FreeBSD 15.1 | x86_64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357988143) |
 
 Run [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400): qemu.yml · dev · b3d13a9 · areas `^strings$`.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| linux-ppc64le-qemu-gcc-14 | Debian 13 (QEMU user-mode) | ppc64le | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
-| linux-riscv64-qemu-gcc-14 | Debian 13 (QEMU user-mode) | riscv64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
-| linux-s390x-qemu-gcc-14 | Debian 13 (QEMU user-mode) | s390x | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
+| [linux-ppc64le-qemu-gcc-14](platform-support/linux-debian-13-qemu-ppc64le-gcc-14.md) | Debian 13 (QEMU user-mode) | ppc64le | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
+| [linux-riscv64-qemu-gcc-14](platform-support/linux-debian-13-qemu-riscv64-gcc-14.md) | Debian 13 (QEMU user-mode) | riscv64 | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
+| [linux-s390x-qemu-gcc-14](platform-support/linux-debian-13-qemu-s390x-gcc-14.md) | Debian 13 (QEMU user-mode) | s390x | GCC 14.2.0, libstdc++ | `gcc` | 30 / 0 / 0 | 12 / 0 / 0 (report-only) | - | [2026-11-01](https://github.com/homer6/cpp-docs/actions/runs/41357990400) |
 
 ## Local runs
 
-Run on the owner's machine (macOS, Apple silicon) and in the `gcc:16` Docker image for the host's architecture, 2026-11-01. These are **local runs**, not GitHub Actions.
+Run on the owner's machine (macOS, Apple silicon) and in the `gcc:16` Docker image for the host's architecture, 2026-11-02. These are **local runs**, not GitHub Actions.
 
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
-| linux-arm64-gcc-16 | Linux (Docker) | arm64 | GCC 16.2.0, libstdc++ | `gcc-16` | 1062 / 0 / 38 | 717 / 0 / 103 | 6× needs __cpp_lib_hive (not defined by this toolchain)<br>6× needs mdspan<br>5× needs __cpp_lib_senders (not defined by this toolchain) | local |
-| macos-arm64-clang-22 | macOS (Darwin 23.6.0) | arm64 | Clang 22.1.8, libc++ | `clang-22` | 969 / 0 / 128 | 672 / 19 / 129 (19 in baseline) | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
-| macos-arm64-gcc-15 | macOS (Darwin 23.6.0) | arm64 | GCC 15.2.0, libstdc++ | `gcc-15` | 986 / 0 / 111 | 691 / 0 / 129 | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
+| [linux-arm64-gcc-16](platform-support/local-linux-docker-arm64-gcc-16.md) | Linux (Docker) | arm64 | GCC 16.2.0, libstdc++ | `gcc-16` | 1062 / 0 / 38 | 717 / 0 / 103 | 6× needs __cpp_lib_hive (not defined by this toolchain)<br>6× needs mdspan<br>5× needs __cpp_lib_senders (not defined by this toolchain) | local |
+| [macos-arm64-clang-22](platform-support/local-macos-arm64-clang-22-libcxx.md) | macOS (Darwin 23.6.0) | arm64 | Clang 22.1.8, libc++ | `clang-22` | 969 / 0 / 128 | 672 / 19 / 129 (19 in baseline) | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
+| [macos-arm64-gcc-15](platform-support/local-macos-arm64-gcc-15.md) | macOS (Darwin 23.6.0) | arm64 | GCC 15.2.0, libstdc++ | `gcc-15` | 986 / 0 / 111 | 691 / 0 / 129 | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
+
+## Feature support matrix
+
+Every feature this reference documents and every example it shows, per toolchain: **measured results, not vendor claims.** A *feature* is one GoogleTest case in `tests/`, which checks one claim of one page section; an *example* is one compile-checked ```` ```cpp ```` block in `docs/`. This summary has one row per area; **each toolchain's own page** in [`platform-support/`](platform-support/) (linked from the column headers, the tables above and the list below) has every area, page, feature and example with its result and skip reason.
+
+- **Cells:** ✅ everything that ran passed · 🟡 *n* skipped, none failed · ❌ *n* failed · — not run (outside the run's areas) · ❔ unknown (the job's results couldn't be matched to this checkout).
+- **Columns:** jobs with the same compiler, version and standard library and identical results share a column (the [Columns](#columns) list names every toolchain page behind it); when results differ the column splits (*a*, *b*, …). *local* marks the owner's local runs; † marks report-only snippet results (no reviewed snippet baseline yet, #159).
+- **Rows come from this checkout** (test names and section comments, snippet IDs). A job that lists every test's status (`results`) is matched exactly; otherwise *passed* is inferred only when the job's counts match, and its cells are ❔ when they don't.
+
+**GitHub Actions coverage: 30 of 1095 features and 12 of 820 examples** ran on at least one GitHub Actions toolchain (areas: `strings`). **Coverage is partial:** the other areas show — on those columns until a consented every-area run (empty `areas`) is collected.
+
+Features (GoogleTest cases) per area:
+
+| Area | Features | [GCC<br>13†](platform-support/linux-debian-12-x86_64-gcc-13.md) | [GCC<br>14†](#columns) | [GCC<br>15](#columns) | [GCC<br>15<br>*local*](platform-support/local-macos-arm64-gcc-15.md) | [GCC<br>16](#columns) | [GCC<br>16†](platform-support/windows-server-2025-msys2-ucrt64-x86_64-gcc-16.md) | [GCC<br>16<br>*local*](platform-support/local-linux-docker-arm64-gcc-16.md) | [Clang<br>18<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libstdcxx.md) | [Clang<br>19<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libstdcxx.md) | [Clang<br>20<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libstdcxx.md) | [Clang<br>21<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libstdcxx.md) | [Clang<br>22<br>libstdc++†](#columns) | [Clang<br>23<br>libstdc++†](#columns) | [Clang<br>18<br>libc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libcxx.md) | [Clang<br>19<br>libc++†](#columns) | [Clang<br>20<br>libc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libcxx.md) | [Clang<br>21<br>libc++†](#columns) | [Clang<br>22<br>libc++](#columns) | [Clang<br>22<br>libc++<br>*local*](platform-support/local-macos-arm64-clang-22-libcxx.md) | [Clang<br>23<br>libc++†](#columns) | [Apple Clang<br>17†](#columns) | [Apple Clang<br>21†](#columns) | [MSVC<br>19.44†](platform-support/windows-server-2022-x86_64-msvc-19.44.md) | [MSVC<br>19.51†](#columns) | [clang-cl<br>22†](platform-support/windows-server-2025-x86_64-clang-cl-22.md) |
+|---|---:|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| algorithms | 56 | — | — | — | 🟡 1 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| concepts | 9 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| concurrency | 48 | — | — | — | 🟡 4 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | 🟡 4 | — | — | — | — | — | — |
+| containers | 165 | — | — | — | 🟡 24 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 17 | — | — | — | — | — | — |
+| datetime | 22 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 3 | — | — | — | — | — | — |
+| diagnostics | 25 | — | — | — | 🟡 10 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 11 | — | — | — | — | — | — |
+| execution | 5 | — | — | — | 🟡 5 | — | — | 🟡 5 | — | — | — | — | — | — | — | — | — | — | — | 🟡 5 | — | — | — | — | — | — |
+| feature-test-macros | 6 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| io | 48 | — | — | — | 🟡 2 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 9 | — | — | — | — | — | — |
+| iterators | 24 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| language | 278 | — | — | — | 🟡 19 | — | — | 🟡 9 | — | — | — | — | — | — | — | — | — | — | — | 🟡 21 | — | — | — | — | — | — |
+| language-support | 44 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| memory | 55 | — | — | — | 🟡 7 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| metaprogramming | 40 | — | — | — | 🟡 14 | — | — | 🟡 1 | — | — | — | — | — | — | — | — | — | — | — | 🟡 14 | — | — | — | — | — | — |
+| named-requirements | 7 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| numerics | 55 | — | — | — | 🟡 9 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 10 | — | — | — | — | — | — |
+| ranges | 33 | — | — | — | 🟡 2 | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | 🟡 8 | — | — | — | — | — | — |
+| strings | 30 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| text-processing | 80 | — | — | — | 🟡 8 | — | — | 🟡 8 ❔ | — | — | — | — | — | — | — | — | — | — | — | 🟡 10 | — | — | — | — | — | — |
+| utilities | 65 | — | — | — | 🟡 6 | — | — | 🟡 1 | — | — | — | — | — | — | — | — | — | — | — | 🟡 4 | — | — | — | — | — | — |
+
+Examples (compile-checked snippets) per area:
+
+| Area | Examples | [GCC<br>13†](platform-support/linux-debian-12-x86_64-gcc-13.md) | [GCC<br>14†](#columns) | [GCC<br>15](#columns) | [GCC<br>15<br>*local*](platform-support/local-macos-arm64-gcc-15.md) | [GCC<br>16](#columns) | [GCC<br>16†](platform-support/windows-server-2025-msys2-ucrt64-x86_64-gcc-16.md) | [GCC<br>16<br>*local*](platform-support/local-linux-docker-arm64-gcc-16.md) | [Clang<br>18<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libstdcxx.md) | [Clang<br>19<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libstdcxx.md) | [Clang<br>20<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libstdcxx.md) | [Clang<br>21<br>libstdc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libstdcxx.md) | [Clang<br>22<br>libstdc++†](#columns) | [Clang<br>23<br>libstdc++†](#columns) | [Clang<br>18<br>libc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libcxx.md) | [Clang<br>19<br>libc++†](#columns) | [Clang<br>20<br>libc++†](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libcxx.md) | [Clang<br>21<br>libc++†](#columns) | [Clang<br>22<br>libc++](#columns) | [Clang<br>22<br>libc++<br>*local*](platform-support/local-macos-arm64-clang-22-libcxx.md) | [Clang<br>23<br>libc++†](#columns) | [Apple Clang<br>17†](#columns) | [Apple Clang<br>21†](#columns) | [MSVC<br>19.44†](platform-support/windows-server-2022-x86_64-msvc-19.44.md) | [MSVC<br>19.51†](#columns) | [clang-cl<br>22†](platform-support/windows-server-2025-x86_64-clang-cl-22.md) |
+|---|---:|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| algorithms | 28 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| concepts | 9 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| concurrency | 30 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| containers | 96 | — | — | — | 🟡 14 | — | — | 🟡 14 | — | — | — | — | — | — | — | — | — | — | — | 🟡 14 | — | — | — | — | — | — |
+| datetime | 13 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| diagnostics | 17 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | 🟡 7 | — | — | — | — | — | — |
+| execution | 5 | — | — | — | 🟡 5 | — | — | 🟡 5 | — | — | — | — | — | — | — | — | — | — | — | 🟡 5 | — | — | — | — | — | — |
+| feature-test-macros | 2 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| io | 31 | — | — | — | 🟡 4 | — | — | 🟡 4 | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| iterators | 13 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| language | 248 | — | — | — | 🟡 28 | — | — | 🟡 22 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| language-support | 28 | — | — | — | 🟡 3 | — | — | 🟡 3 | — | — | — | — | — | — | — | — | — | — | — | 🟡 3 | — | — | — | — | — | — |
+| memory | 30 | — | — | — | 🟡 6 | — | — | 🟡 6 | — | — | — | — | — | — | — | — | — | — | — | 🟡 6 | — | — | — | — | — | — |
+| metaprogramming | 47 | — | — | — | 🟡 16 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| named-requirements | 5 | — | — | — | ✅ | — | — | ✅ | — | — | — | — | — | — | — | — | — | — | — | ✅ | — | — | — | — | — | — |
+| numerics | 36 | — | — | — | 🟡 7 | — | — | 🟡 7 | — | — | — | — | — | — | — | — | — | — | — | ❌ 2 | — | — | — | — | — | — |
+| ranges | 21 | — | — | — | 🟡 2 | — | — | 🟡 2 | — | — | — | — | — | — | — | — | — | — | — | ❌ 5 | — | — | — | — | — | — |
+| strings | 12 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ 12 | ❌ 12 | ✅ | ✅ | ✅ |
+| text-processing | 30 | — | — | — | 🟡 3 | — | — | 🟡 3 | — | — | — | — | — | — | — | — | — | — | — | ❌ 3 | — | — | — | — | — | — |
+| utilities | 43 | — | — | — | 🟡 4 | — | — | 🟡 4 | — | — | — | — | — | — | — | — | — | — | — | ❌ 1 | — | — | — | — | — | — |
+| Guidelines (snippets only) | 76 | — | — | — | 🟡 23 | — | — | 🟡 17 | — | — | — | — | — | — | — | — | — | — | — | 🟡 23 | — | — | — | — | — | — |
+
+### Columns
+
+| Column | Toolchain pages |
+|---|---|
+| GCC 13† | [GCC 13.5.0 on Debian 12, x86_64](platform-support/linux-debian-12-x86_64-gcc-13.md) |
+| GCC 14† | [GCC 14.2.0 on FreeBSD 14.5, x86_64](platform-support/freebsd-14.5-x86_64-gcc-14.md)<br>[GCC 14.2.0 on FreeBSD 15.1, x86_64](platform-support/freebsd-15.1-x86_64-gcc-14.md)<br>[GCC 14.2.0 on Debian 13 (QEMU user-mode), ppc64le](platform-support/linux-debian-13-qemu-ppc64le-gcc-14.md)<br>[GCC 14.2.0 on Debian 13 (QEMU user-mode), riscv64](platform-support/linux-debian-13-qemu-riscv64-gcc-14.md)<br>[GCC 14.2.0 on Debian 13 (QEMU user-mode), s390x](platform-support/linux-debian-13-qemu-s390x-gcc-14.md)<br>[GCC 14.4.0 on Debian 13, x86_64](platform-support/linux-debian-13-x86_64-gcc-14.md) |
+| GCC 15 | [GCC 15.3.0 on Debian 13, arm64](platform-support/linux-debian-13-arm64-gcc-15.md)<br>[GCC 15.3.0 on Debian 13, x86_64](platform-support/linux-debian-13-x86_64-gcc-15.md)<br>[GCC 15.2.0 on Ubuntu 26.04, arm64](platform-support/linux-ubuntu-26.04-arm64-gcc-15.md)<br>[GCC 15.2.0 on Ubuntu 26.04, x86_64](platform-support/linux-ubuntu-26.04-x86_64-gcc-15.md) |
+| GCC 15 (local) | [GCC 15.2.0 on macOS (Darwin 23.6.0), arm64 (local)](platform-support/local-macos-arm64-gcc-15.md) |
+| GCC 16 | [GCC 16.2.0 on Debian 13, arm64](platform-support/linux-debian-13-arm64-gcc-16.md)<br>[GCC 16.2.0 on Debian 13, x86_64](platform-support/linux-debian-13-x86_64-gcc-16.md)<br>[GCC 16.2.0 on macOS 15, arm64](platform-support/macos-15-arm64-gcc-16.md)<br>[GCC 16.2.0 on macOS 15, x86_64](platform-support/macos-15-x86_64-gcc-16.md)<br>[GCC 16.2.0 on macOS 26, arm64](platform-support/macos-26-arm64-gcc-16.md)<br>[GCC 16.2.0 on macOS 26, x86_64](platform-support/macos-26-x86_64-gcc-16.md) |
+| GCC 16† | [GCC 16.2.0 on Windows Server 2025, MSYS2 UCRT64, x86_64](platform-support/windows-server-2025-msys2-ucrt64-x86_64-gcc-16.md) |
+| GCC 16 (local) | [GCC 16.2.0 on Linux (Docker), arm64 (local)](platform-support/local-linux-docker-arm64-gcc-16.md) |
+| Clang 18, libstdc++† | [Clang 18.1.8, libstdc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libstdcxx.md) |
+| Clang 19, libstdc++† | [Clang 19.1.7, libstdc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libstdcxx.md) |
+| Clang 20, libstdc++† | [Clang 20.1.8, libstdc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libstdcxx.md) |
+| Clang 21, libstdc++† | [Clang 21.1.8, libstdc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libstdcxx.md) |
+| Clang 22, libstdc++† | [Clang 22.1.8, libstdc++ on Ubuntu 24.04, arm64](platform-support/linux-ubuntu-24.04-arm64-clang-22-libstdcxx.md)<br>[Clang 22.1.8, libstdc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-22-libstdcxx.md)<br>[Clang 22.1.2, libstdc++ on Ubuntu 26.04, arm64](platform-support/linux-ubuntu-26.04-arm64-clang-22-libstdcxx.md)<br>[Clang 22.1.2, libstdc++ on Ubuntu 26.04, x86_64](platform-support/linux-ubuntu-26.04-x86_64-clang-22-libstdcxx.md) |
+| Clang 23, libstdc++† | [Clang 23.1.4, libstdc++ on Windows Server 2025, MSYS2 CLANG64, x86_64](platform-support/windows-server-2025-msys2-clang64-x86_64-clang-23-libstdcxx.md)<br>[Clang 23.1.4, libstdc++ on Windows Server 2025, MSYS2 UCRT64, x86_64](platform-support/windows-server-2025-msys2-ucrt64-x86_64-clang-23-libstdcxx.md) |
+| Clang 18, libc++† | [Clang 18.1.8, libc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-18-libcxx.md) |
+| Clang 19, libc++† | [Clang 19.1.7, libc++ on FreeBSD 15.1, arm64](platform-support/freebsd-15.1-arm64-clang-19-libcxx.md)<br>[Clang 19.1.7, libc++ on FreeBSD 15.1, x86_64](platform-support/freebsd-15.1-x86_64-clang-19-libcxx.md)<br>[Clang 19.1.7, libc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-19-libcxx.md) |
+| Clang 20, libc++† | [Clang 20.1.8, libc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-20-libcxx.md) |
+| Clang 21, libc++† | [Clang 21.1.8, libc++ on FreeBSD 14.5, x86_64](platform-support/freebsd-14.5-x86_64-clang-21-libcxx.md)<br>[Clang 21.1.8, libc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-21-libcxx.md) |
+| Clang 22, libc++ | [Clang 22.1.8, libc++ on Ubuntu 24.04, arm64](platform-support/linux-ubuntu-24.04-arm64-clang-22-libcxx.md)<br>[Clang 22.1.8, libc++ on Ubuntu 24.04, x86_64](platform-support/linux-ubuntu-24.04-x86_64-clang-22-libcxx.md)<br>[Clang 22.1.2, libc++ on Ubuntu 26.04, arm64](platform-support/linux-ubuntu-26.04-arm64-clang-22-libcxx.md)<br>[Clang 22.1.2, libc++ on Ubuntu 26.04, x86_64](platform-support/linux-ubuntu-26.04-x86_64-clang-22-libcxx.md)<br>[Clang 22.1.8, libc++ on macOS 15, x86_64](platform-support/macos-15-x86_64-clang-22-libcxx.md)<br>[Clang 22.1.8, libc++ on macOS 26, x86_64](platform-support/macos-26-x86_64-clang-22-libcxx.md) |
+| Clang 22, libc++ (local) | [Clang 22.1.8, libc++ on macOS (Darwin 23.6.0), arm64 (local)](platform-support/local-macos-arm64-clang-22-libcxx.md) |
+| Clang 23, libc++† | [Clang 23.1.4, libc++ on macOS 15, arm64](platform-support/macos-15-arm64-clang-23-libcxx.md)<br>[Clang 23.1.4, libc++ on macOS 26, arm64](platform-support/macos-26-arm64-clang-23-libcxx.md) |
+| Apple Clang 17† | [Apple Clang 17.0.0 on macOS 15, arm64](platform-support/macos-15-arm64-apple-clang-17.md)<br>[Apple Clang 17.0.0 on macOS 15, x86_64](platform-support/macos-15-x86_64-apple-clang-17.md) |
+| Apple Clang 21† | [Apple Clang 21.0.0 on macOS 26, arm64](platform-support/macos-26-arm64-apple-clang-21.md)<br>[Apple Clang 21.0.0 on macOS 26, x86_64](platform-support/macos-26-x86_64-apple-clang-21.md) |
+| MSVC 19.44† | [MSVC 19.44.35229 on Windows Server 2022, x86_64](platform-support/windows-server-2022-x86_64-msvc-19.44.md) |
+| MSVC 19.51† | [MSVC 19.51.36260 on Windows 11, arm64](platform-support/windows-11-arm64-msvc-19.51.md)<br>[MSVC 19.51.36260 on Windows Server 2025, x86_64](platform-support/windows-server-2025-x86_64-msvc-19.51.md) |
+| clang-cl 22† | [clang-cl 22.1.3 on Windows Server 2025, x86_64](platform-support/windows-server-2025-x86_64-clang-cl-22.md) |
 
 ## Known gaps per toolchain
 
@@ -165,3 +258,16 @@ Snippet baselines (`tools/snippet_baseline/`) list blocks known to fail on a too
 - `docs/examples/utilities/callable-wrappers.md#stdmoveonlyfunction-c23/1`
 
 </details>
+
+### Compiler and platform bugs found
+
+Bugs the runs turned up, each recorded in the suite as a skip or gate that names it, with the vendor's bug and this repo's issue. The list is [`docs/platform-support/known-bugs.json`](platform-support/known-bugs.json), maintained by hand; *seen* counts the jobs in these results whose skip reasons name it.
+
+| Toolchain | Bug | Upstream | Issue | Seen |
+|---|---|---|---|---|
+| clang-cl (Clang 22, Windows) | Microsoft-ABI mangling leaves out C++20 module attachment, so a module-linkage function and a global function of the same name link as duplicates | [llvm/llvm-project#174064](https://github.com/llvm/llvm-project/issues/174064) | [#173](https://github.com/homer6/cpp-docs/issues/173) | 0 job(s) |
+| GCC / libstdc++ off Linux (macOS, Windows MinGW, FreeBSD) | std::call_once with a callable that throws doesn't leave the flag unset for a retry | [GCC PR 66146](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66146) | [#99](https://github.com/homer6/cpp-docs/issues/99) | 1 job(s): macos-arm64-gcc-15 |
+| GCC | -frounding-math doesn't stop all constant folding, so rounding-mode changes can be ignored (the cfenv page notes it) | [GCC bug 34678](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=34678) | [#26](https://github.com/homer6/cpp-docs/issues/26) | 0 job(s) |
+| Homebrew GCC 15, macOS | std::nested_exception doesn't capture current_exception(), so std::rethrow_if_nested would terminate | none found yet ([#185](https://github.com/homer6/cpp-docs/issues/185)) | [#98](https://github.com/homer6/cpp-docs/issues/98), [#185](https://github.com/homer6/cpp-docs/issues/185) | 1 job(s): macos-arm64-gcc-15 |
+| MSVC 19.44 (VS 2022) | rejects a constexpr virtual call through a base reference (C2131; valid since C++20, P1064) and a call inside if consteval (C7595; C++23, P1938); VS 2026 (19.51) accepts both | none found yet ([#185](https://github.com/homer6/cpp-docs/issues/185)) | [#179](https://github.com/homer6/cpp-docs/issues/179), [#185](https://github.com/homer6/cpp-docs/issues/185) | 0 job(s) |
+
