@@ -58,6 +58,7 @@ the assumption you're making.
 |---|---|
 | Any Core Guidelines rule or section: find it by ID or topic | `docs/guidelines/core-guidelines/README.md`, then the section page (e.g. `resource.md` for R, `class.md` for C, `expr.md` for ES, `profile.md` for Type/Bounds/Lifetime) |
 | Worked examples for ownership, RAII, parameters, classes and more | `docs/guidelines/core-guidelines.md` |
+| Our BAD/GOOD example for a specific rule | `docs/guidelines/core-guidelines/examples/<section page>.md` (the rule's index entry links it when there is one) |
 | Dangling, invalidation, bounds, uninitialized data, hardening | `docs/guidelines/safety.md` |
 | Which modern feature to use (C++17–26) | `docs/guidelines/modern-idioms.md` |
 | API shape, variants, strong types, error handling, loops | `docs/guidelines/design-principles.md` |
