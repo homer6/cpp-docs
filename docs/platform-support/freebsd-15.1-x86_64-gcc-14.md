@@ -10,7 +10,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | GCC 14.2.0 (preset `gcc`) |
 | Standard library | libstdc++ |
 | Architecture | x86_64, little-endian |
-| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41393465801), commit `0e9f9fe` |
+| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778), commit `a9fbaa7` |
 | Areas | all |
 | Tests | 1102 run |
 | Snippets | 820 blocks in `docs`, **report-only** |
@@ -1858,8 +1858,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | Feature | Test | Result |
 |---|---|---|
 | [import std; and import std.compat;](../examples/language/modules/building.md#import-std-and-import-stdcompat): a module unit can import std and hand std typ… | `ImportStd.ModuleUsingImportStd` | ⏭ needs __cpp_lib_modules &gt;= 202207L (not defined by this toolchain) |
-| [import std; and import std.compat;](../examples/language/modules/building.md#import-std-and-import-stdcompat): (neither exports macros): the module needed &lt;… | `ImportStd.MacrosNeedTheHeader` | ⏭ import std isn't available in this configuration |
-| [import std; and import std.compat;](../examples/language/modules/building.md#import-std-and-import-stdcompat): std.compat declares the global-namespace C na… | `ImportStd.StdCompatHasGlobalCNames` | ⏭ import std isn't available in this configuration |
+| [import std; and import std.compat;](../examples/language/modules/building.md#import-std-and-import-stdcompat): (neither exports macros): the module needed &lt;… | `ImportStd.MacrosNeedTheHeader` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [import std; and import std.compat;](../examples/language/modules/building.md#import-std-and-import-stdcompat): std.compat declares the global-namespace C na… | `ImportStd.StdCompatHasGlobalCNames` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
 | modules.md "Header units": not built here. | `ImportStd.HeaderUnits` | ⏭ header units (import &lt;vector&gt;;): CMake doesn't support them (cmake-cxxmodules(7), Limitations); checked by tools/check_snippets.py instead |
 
 | Examples in section | Blocks | Result |
@@ -1871,15 +1871,15 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | Feature | Test | Result |
 |---|---|---|
 | building.md "import std; and import std.compat;": the library advertises the st… | `Modules.ImportStdIsAdvertisedByLibrary` | ⏭ needs __cpp_lib_modules &gt;= 202207L (not defined by this toolchain) |
-| [Interface and implementation units](../examples/language/modules/modules.md#interface-and-implementation-units): exported functions, one defined in math.cpp. | `Modules.InterfaceAndImplementationUnit` | ⏭ named modules aren't built by this configuration |
-| [Export forms](../examples/language/modules/modules.md#export-forms): a class, a function, an export block, an exported namespace, an exp… | `Modules.ExportForms` | ⏭ named modules aren't built by this configuration |
-| [The global and private module fragments](../examples/language/modules/modules.md#the-global-and-private-module-fragments): the module's #define doesn't reach the i… | `Modules.GlobalModuleFragmentMacrosDontLeak` | ⏭ named modules aren't built by this configuration |
-| [The global and private module fragments](../examples/language/modules/modules.md#the-global-and-private-module-fragments): importers call next(); its state lives a… | `Modules.PrivateModuleFragment` | ⏭ named modules aren't built by this configuration |
-| [Partitions](../examples/language/modules/modules.md#partitions): `import geo;` sees what the primary interface re-exports from :types… | `ModulePartitions.ReexportedInterfacePartitions` | ⏭ named modules aren't built by this configuration |
-| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): module linkage — the program links,… | `ModuleLinkage.ModuleLinkageNamesDontClash` | ⏭ named modules aren't built by this configuration |
-| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): the non-exported Token is usable thr… | `ModuleLinkage.ReachableButNotVisible` | ⏭ named modules aren't built by this configuration |
-| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (visibility): wrapper uses base inte… | `ModuleLinkage.NonExportedImportStillWorksInside` | ⏭ named modules aren't built by this configuration |
-| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (reachability): an exported template… | `ModuleLinkage.ExportedTemplateUsesNonExportedHelper` | ⏭ named modules aren't built by this configuration |
+| [Interface and implementation units](../examples/language/modules/modules.md#interface-and-implementation-units): exported functions, one defined in math.cpp. | `Modules.InterfaceAndImplementationUnit` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Export forms](../examples/language/modules/modules.md#export-forms): a class, a function, an export block, an exported namespace, an exp… | `Modules.ExportForms` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [The global and private module fragments](../examples/language/modules/modules.md#the-global-and-private-module-fragments): the module's #define doesn't reach the i… | `Modules.GlobalModuleFragmentMacrosDontLeak` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [The global and private module fragments](../examples/language/modules/modules.md#the-global-and-private-module-fragments): importers call next(); its state lives a… | `Modules.PrivateModuleFragment` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Partitions](../examples/language/modules/modules.md#partitions): `import geo;` sees what the primary interface re-exports from :types… | `ModulePartitions.ReexportedInterfacePartitions` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): module linkage — the program links,… | `ModuleLinkage.ModuleLinkageNamesDontClash` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): the non-exported Token is usable thr… | `ModuleLinkage.ReachableButNotVisible` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (visibility): wrapper uses base inte… | `ModuleLinkage.NonExportedImportStillWorksInside` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
+| [Module linkage, visibility and reachability](../examples/language/modules/modules.md#module-linkage-visibility-and-reachability): (reachability): an exported template… | `ModuleLinkage.ExportedTemplateUsesNonExportedHelper` | ⏭ GCC 14.2.0 on FreeBSD 15.1-RELEASE-p3: internal compiler error (segfault) on every module unit (issue 209) |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|

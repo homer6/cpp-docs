@@ -13,6 +13,7 @@ links and counts, from `tools/collect_results.py --summary`).
 
 | Version | Date | Notes |
 |---|---|---|
+| v0.3.0 | 2026-11-02 | [Platform support release](v0.3.0.md): every example and feature tested on Linux, macOS, Windows and FreeBSD across GCC, Clang, Apple Clang, MSVC and clang-cl, x86_64 and arm64; the generated support report |
 | v0.2.1 | 2026-11-01 | [Skills release](v0.2.1.md): `make install`/`update`, both skills usable from any project, `/modern-cpp` as the entry point |
 | v0.2.0 | 2026-11-01 | [Coverage release](v0.2.0.md): 7 new pages, C++23/26 gaps across 13 areas, constexpr and reflection, the `add-to-topic` and `modern-cpp` skills |
 | v0.1.0 | 2026-10-31 | [First release](v0.1.0.md): 147 reference pages, 12 guidelines pages, test suite and snippet checker |

@@ -10,17 +10,17 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | GCC 16.2.0 (preset `gcc-16`) |
 | Standard library | libstdc++ |
 | Architecture | arm64 |
-| Run | local run, 2026-11-02, commit `9f6bd1f` |
+| Run | local run, 2026-11-02, commit `a9fbaa7` |
 | Areas | all (local run) |
-| Tests | 1100 run |
+| Tests | 1102 run |
 | Snippets | 820 blocks in `docs`, enforced |
 
 ## Totals
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1098) | 1051 | 0 | 38 | 0 | 9 |
-| Examples (820) | 717 | 0 | 103 | 0 | 0 |
+| Features (1098) | 1061 | 0 | 36 | 1 | 0 |
+| Examples (820) | 691 | 0 | 129 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout).
 
@@ -38,17 +38,17 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [feature-test-macros](#feature-test-macros) | ✅ | ✅ |
 | [io](#io) | ✅ | 🟡 4 |
 | [iterators](#iterators) | ✅ | ✅ |
-| [language](#language) | 🟡 9 | 🟡 22 |
+| [language](#language) | 🟡 9 | 🟡 28 |
 | [language-support](#language-support) | ✅ | 🟡 3 |
-| [memory](#memory) | ✅ ❔ | 🟡 6 |
-| [metaprogramming](#metaprogramming) | 🟡 1 | 🟡 2 |
+| [memory](#memory) | ✅ | 🟡 6 |
+| [metaprogramming](#metaprogramming) | 🟡 1 | 🟡 16 |
 | [named-requirements](#named-requirements) | ✅ | ✅ |
 | [numerics](#numerics) | 🟡 6 | 🟡 7 |
 | [ranges](#ranges) | ✅ | 🟡 2 |
 | [strings](#strings) | ✅ | ✅ |
-| [text-processing](#text-processing) | 🟡 8 ❔ | 🟡 3 |
+| [text-processing](#text-processing) | 🟡 6 | 🟡 3 |
 | [utilities](#utilities) | 🟡 1 | 🟡 4 |
-| [Guidelines (snippets only)](#guidelines-snippets-only) |  | 🟡 17 |
+| [Guidelines (snippets only)](#guidelines-snippets-only) |  | 🟡 23 |
 
 ## algorithms
 
@@ -1210,7 +1210,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## language
 
-<details><summary>47 pages · 278 features · 248 examples: 🟡 31</summary>
+<details><summary>47 pages · 278 features · 248 examples: 🟡 37</summary>
 
 **[examples/language/basic-concepts/comments.md](../examples/language/basic-concepts/comments.md)**
 
@@ -1238,8 +1238,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [mental-model](../examples/language/basic-concepts/contracts.md#mental-model) | 1 | ✅ |
-| [contract-violations](../examples/language/basic-concepts/contracts.md#contract-violations) | 1 | ✅ |
+| [mental-model](../examples/language/basic-concepts/contracts.md#mental-model) | 1 | ⏭ (needs contracts) |
+| [contract-violations](../examples/language/basic-concepts/contracts.md#contract-violations) | 1 | ⏭ (needs contracts) |
 
 **[examples/language/basic-concepts/erroneous-behaviour.md](../examples/language/basic-concepts/erroneous-behaviour.md)**
 
@@ -1300,7 +1300,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 |---|---:|---|
 | [contextual-identifiers-are-still-ordinary-names](../examples/language/basic-concepts/keywords.md#contextual-identifiers-are-still-ordinary-names) | 1 | ✅ |
 | [alternative-tokens-and-digraphs](../examples/language/basic-concepts/keywords.md#alternative-tokens-and-digraphs) | 1 | ✅ |
-| [keywords-cant-be-names](../examples/language/basic-concepts/keywords.md#keywords-cant-be-names) | 2 | ✅ |
+| [keywords-cant-be-names](../examples/language/basic-concepts/keywords.md#keywords-cant-be-names) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
 | [inside-attributes-keywords-arent-reserved](../examples/language/basic-concepts/keywords.md#inside-attributes-keywords-arent-reserved) | 1 | ✅ |
 
 **[examples/language/basic-concepts/object-model.md](../examples/language/basic-concepts/object-model.md)**
@@ -1773,9 +1773,9 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [reflecting-and-splicing](../examples/language/expressions/reflection.md#reflecting-and-splicing) | 1 | ✅ |
-| [the-classic-example-iterate-a-structs-members](../examples/language/expressions/reflection.md#the-classic-example-iterate-a-structs-members) | 1 | ✅ |
-| [annotations-c26](../examples/language/expressions/reflection.md#annotations-c26) | 1 | ✅ |
+| [reflecting-and-splicing](../examples/language/expressions/reflection.md#reflecting-and-splicing) | 1 | ⏭ (needs reflection) |
+| [the-classic-example-iterate-a-structs-members](../examples/language/expressions/reflection.md#the-classic-example-iterate-a-structs-members) | 1 | ⏭ (needs reflection) |
+| [annotations-c26](../examples/language/expressions/reflection.md#annotations-c26) | 1 | ⏭ (needs reflection) |
 
 **[examples/language/expressions/value-categories.md](../examples/language/expressions/value-categories.md)**
 
@@ -2205,7 +2205,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## memory
 
-<details><summary>7 pages · 57 features · 30 examples: 🟡 6 ❔</summary>
+<details><summary>7 pages · 57 features · 30 examples: 🟡 6</summary>
 
 **[examples/memory/allocators.md](../examples/memory/allocators.md)**
 
@@ -2315,10 +2315,10 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | **Ownership transfer**: returning a local by value moves it out, no std::move needed. | `UniquePtr.ReturnByValueMovesOut` | ✅ |
 | **As a class member**: the owner frees the member without a user-written destructor. | `UniquePtr.MemberFreedWithOwner` | ✅ |
 | [Arrays and custom deleters](../examples/memory/unique_ptr.md#arrays-and-custom-deleters): unique_ptr&lt;int[]&gt; indexes and uses delete[]. | `UniquePtr.ArrayFormUsesDeleteArray` | ✅ |
-| **C APIs that return through T****: out_ptr adopts the result; inout_ptr passes the o… | `UniquePtr.OutPtrAndInoutPtr` | ❔ |
-| [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call (old object freed first… | `UniquePtr.OutPtrResetsBeforeCall` | ❔ |
-| **C APIs that return through T****: std::out_ptr / std::inout_ptr (C++23). | `UniquePtr.OutPtrAndInoutPtr` | ❔ |
-| [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call. | `UniquePtr.OutPtrResetsBeforeCall` | ❔ |
+| **C APIs that return through T****: out_ptr adopts the result; inout_ptr passes the o… | `UniquePtr.OutPtrAndInoutPtr` | ✅ |
+| [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call (old object freed first… | `UniquePtr.OutPtrResetsBeforeCall` | ✅ |
+| **C APIs that return through T****: std::out_ptr / std::inout_ptr (C++23). | `UniquePtr.OutPtrAndInoutPtr` | ✅ |
+| [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call. | `UniquePtr.OutPtrResetsBeforeCall` | ✅ |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
@@ -2352,7 +2352,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## metaprogramming
 
-<details><summary>6 pages · 40 features · 47 examples: 🟡 3</summary>
+<details><summary>6 pages · 40 features · 47 examples: 🟡 17</summary>
 
 **[examples/metaprogramming/constant-evaluation.md](../examples/metaprogramming/constant-evaluation.md)**
 
@@ -2422,12 +2422,12 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [function-parameters-p3096](../examples/metaprogramming/reflection-queries.md#function-parameters-p3096) | 2 | ✅ |
-| [templates-and-their-arguments](../examples/metaprogramming/reflection-queries.md#templates-and-their-arguments) | 1 | ✅ |
-| [operators](../examples/metaprogramming/reflection-queries.md#operators) | 1 | ✅ |
-| [names-and-source-locations](../examples/metaprogramming/reflection-queries.md#names-and-source-locations) | 1 | ✅ |
-| [predicates](../examples/metaprogramming/reflection-queries.md#predicates) | 1 | ✅ |
-| [layout](../examples/metaprogramming/reflection-queries.md#layout) | 1 | ✅ |
+| [function-parameters-p3096](../examples/metaprogramming/reflection-queries.md#function-parameters-p3096) | 2 | ⏭ 2 (needs reflection) |
+| [templates-and-their-arguments](../examples/metaprogramming/reflection-queries.md#templates-and-their-arguments) | 1 | ⏭ (needs reflection) |
+| [operators](../examples/metaprogramming/reflection-queries.md#operators) | 1 | ⏭ (needs reflection) |
+| [names-and-source-locations](../examples/metaprogramming/reflection-queries.md#names-and-source-locations) | 1 | ⏭ (needs reflection) |
+| [predicates](../examples/metaprogramming/reflection-queries.md#predicates) | 1 | ⏭ (needs reflection) |
+| [layout](../examples/metaprogramming/reflection-queries.md#layout) | 1 | ⏭ (needs reflection) |
 
 **[examples/metaprogramming/reflection.md](../examples/metaprogramming/reflection.md)**
 
@@ -2443,13 +2443,13 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [mental-model](../examples/metaprogramming/reflection.md#mental-model) | 1 | ✅ |
-| [querying-entities](../examples/metaprogramming/reflection.md#querying-entities) | 1 | ✅ |
-| [listing-members-bases-enumerators](../examples/metaprogramming/reflection.md#listing-members-bases-enumerators) | 1 | ✅ |
-| [enum--string-generated](../examples/metaprogramming/reflection.md#enum--string-generated) | 1 | ✅ |
-| [type-transformations-reflection-flavored-type-traits](../examples/metaprogramming/reflection.md#type-transformations-reflection-flavored-type-traits) | 1 | ✅ |
-| [generating-and-substituting](../examples/metaprogramming/reflection.md#generating-and-substituting) | 1 | ✅ |
-| [errors-stdmetaexception-c26](../examples/metaprogramming/reflection.md#errors-stdmetaexception-c26) | 1 | ✅ |
+| [mental-model](../examples/metaprogramming/reflection.md#mental-model) | 1 | ⏭ (needs reflection) |
+| [querying-entities](../examples/metaprogramming/reflection.md#querying-entities) | 1 | ⏭ (needs reflection) |
+| [listing-members-bases-enumerators](../examples/metaprogramming/reflection.md#listing-members-bases-enumerators) | 1 | ⏭ (needs reflection) |
+| [enum--string-generated](../examples/metaprogramming/reflection.md#enum--string-generated) | 1 | ⏭ (needs reflection) |
+| [type-transformations-reflection-flavored-type-traits](../examples/metaprogramming/reflection.md#type-transformations-reflection-flavored-type-traits) | 1 | ⏭ (needs reflection) |
+| [generating-and-substituting](../examples/metaprogramming/reflection.md#generating-and-substituting) | 1 | ⏭ (needs reflection) |
+| [errors-stdmetaexception-c26](../examples/metaprogramming/reflection.md#errors-stdmetaexception-c26) | 1 | ⏭ (needs reflection) |
 
 **[examples/metaprogramming/type-traits.md](../examples/metaprogramming/type-traits.md)**
 
@@ -2840,7 +2840,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## text-processing
 
-<details><summary>9 pages · 80 features · 30 examples: 🟡 11 ❔</summary>
+<details><summary>9 pages · 80 features · 30 examples: 🟡 9</summary>
 
 **[examples/text-processing/README.md](../examples/text-processing/README.md)**
 
@@ -2947,11 +2947,11 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Mental model](../examples/text-processing/null-terminated-multibyte-strings.md#mental-model): / "Nothing decodes...": "héllo €" is 10 bytes but 7 characters in U… | `NullTerminatedMultibyteStrings.CountCharacters` | ✅ |
 | **Nothing decodes...**: MB_CUR_MAX in a UTF-8 locale is 4 on macOS, 6 on glibc. | `NullTerminatedMultibyteStrings.MbCurMaxInUtf8` | ✅ |
 | **Return values**: -1 with EILSEQ for invalid input; -2 for a valid prefix, then fini… | `NullTerminatedMultibyteStrings.InvalidAndIncomplete` | ✅ |
-| **Decode to code points and encode back**: U+0068 ... U+20AC, and € back to E2 82 AC. | `NullTerminatedMultibyteStrings.Mbrtoc32AndC32rtomb` | ❔ |
-| **mbrtoc8 hands out one UTF-8 code unit per call**: 2/C3, then -3/A9 without input. | `NullTerminatedMultibyteStrings.Mbrtoc8` | ❔ |
-| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): mbrtoc16 needs two calls outside the BMP; the second returns -3. | `NullTerminatedMultibyteStrings.Mbrtoc16SurrogatePair` | ❔ |
-| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): in the "C" locale, mbrtoc32 on "\xC3\xA9" returns (size_t)-1 on glibc. | `NullTerminatedMultibyteStrings.CLocaleRejectsMultibyte` | ❔ |
-| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): &lt;cuchar&gt; is missing on macOS (no &lt;uchar.h&gt; in the SDK). | `NullTerminatedMultibyteStrings.CucharExamples` | ❔ |
+| **Decode to code points and encode back**: U+0068 ... U+20AC, and € back to E2 82 AC. | `NullTerminatedMultibyteStrings.Mbrtoc32AndC32rtomb` | ✅ |
+| **mbrtoc8 hands out one UTF-8 code unit per call**: 2/C3, then -3/A9 without input. | `NullTerminatedMultibyteStrings.Mbrtoc8` | ✅ |
+| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): mbrtoc16 needs two calls outside the BMP; the second returns -3. | `NullTerminatedMultibyteStrings.Mbrtoc16SurrogatePair` | ✅ |
+| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): in the "C" locale, mbrtoc32 on "\xC3\xA9" returns (size_t)-1 on glibc. | `NullTerminatedMultibyteStrings.CLocaleRejectsMultibyte` | ✅ |
+| [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): &lt;cuchar&gt; is missing on macOS (no &lt;uchar.h&gt; in the SDK). | `NullTerminatedMultibyteStrings.CucharExamples` | — |
 | [Gotchas](../examples/text-processing/null-terminated-multibyte-strings.md#gotchas): setlocale returns nullptr when a name isn't installed. | `NullTerminatedMultibyteStrings.UnknownLocaleNameReturnsNull` | ✅ |
 
 | Examples in section | Blocks | Result |
@@ -3008,10 +3008,10 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 |---|---|---|
 | [Declaration](../examples/text-processing/text-encoding.md#declaration): id::UTF8 is 106, max_name_length is 63, default is unknown with name… | `TextEncoding.DeclarationBasics` | ✅ |
 | [What am I running with?](../examples/text-processing/text-encoding.md#what-am-i-running-with): literal() is UTF-8 (the static_assert in the example hol… | `TextEncoding.LiteralIsUtf8` | ✅ |
-| [What am I running with?](../examples/text-processing/text-encoding.md#what-am-i-running-with): environment()/environment_is() need -lstdc++exp with lib… | `TextEncoding.Environment` | ⏭ environment() needs -lstdc++exp with libstdc++ and its result depends on the LANG/LC_ALL the test runs with; the suite doesn't link stdc++e… |
+| [What am I running with?](../examples/text-processing/text-encoding.md#what-am-i-running-with): environment()/environment_is() need -lstdc++exp with lib… | `TextEncoding.Environment` | ✅ |
 | [Looking encodings up by name](../examples/text-processing/text-encoding.md#looking-encodings-up-by-name): the documented output. | `TextEncoding.LookupByName` | ✅ |
 | [Declaration](../examples/text-processing/text-encoding.md#declaration): IANA name matching ignores case, punctuation and leading zeros. | `TextEncoding.LooseNameMatching` | ✅ |
-| [The encoding of a locale](../examples/text-processing/text-encoding.md#the-encoding-of-a-locale): classic().encoding() is US-ASCII (mib 3), except libc++… | `TextEncoding.LocaleEncoding` | ⏭ std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 fail to link without it); the suite doesn't link stdc++exp |
+| [The encoding of a locale](../examples/text-processing/text-encoding.md#the-encoding-of-a-locale): classic().encoding() is US-ASCII (mib 3), except libc++… | `TextEncoding.LocaleEncoding` | ✅ |
 | [Gotchas](../examples/text-processing/text-encoding.md#gotchas): libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 14, 15 and 1… | `TextEncoding.FeatureMacroValue` | ✅ |
 
 | Examples in section | Blocks | Result |
@@ -3219,14 +3219,14 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## Guidelines (snippets only)
 
-<details><summary>8 pages · 0 features · 76 examples: 🟡 17</summary>
+<details><summary>8 pages · 0 features · 76 examples: 🟡 23</summary>
 
 **[guidelines/core-guidelines.md](../guidelines/core-guidelines.md)**
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
 | [resource-management-r](../guidelines/core-guidelines.md#resource-management-r) | 1 | ✅ |
-| [functions-f](../guidelines/core-guidelines.md#functions-f) | 3 | ✅ |
+| [functions-f](../guidelines/core-guidelines.md#functions-f) | 3 | ✅ 2 · ⏭ 1 (needs contracts) |
 | [classes-c](../guidelines/core-guidelines.md#classes-c) | 3 | ✅ |
 | [expressions-and-statements-es](../guidelines/core-guidelines.md#expressions-and-statements-es) | 2 | ✅ |
 | [concurrency-cp](../guidelines/core-guidelines.md#concurrency-cp) | 1 | ✅ |
@@ -3249,7 +3249,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [prefer-named-algorithms](../guidelines/design-principles.md#prefer-named-algorithms) | 1 | ✅ |
 | [pipelines-for-composition](../guidelines/design-principles.md#pipelines-for-composition) | 1 | ✅ |
 | [folds-and-monoids](../guidelines/design-principles.md#folds-and-monoids) | 2 | ✅ 1 · ⏭ 1 (needs pstl) |
-| [3-errors-in-the-type-system](../guidelines/design-principles.md#3-errors-in-the-type-system) | 2 | ✅ |
+| [3-errors-in-the-type-system](../guidelines/design-principles.md#3-errors-in-the-type-system) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
 | [prefer-regular-types](../guidelines/design-principles.md#prefer-regular-types) | 1 | ✅ |
 | [const-by-default](../guidelines/design-principles.md#const-by-default) | 2 | ✅ |
 | [explicit-mutation-boundaries](../guidelines/design-principles.md#explicit-mutation-boundaries) | 1 | ⏭ (nocompile) |
@@ -3278,8 +3278,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [stdgenerator](../guidelines/modern-idioms.md#stdgenerator) | 1 | ⏭ (needs generator) |
 | [ranges-finished](../guidelines/modern-idioms.md#ranges-finished) | 1 | ⏭ (needs enumerate) |
 | [deducing-this](../guidelines/modern-idioms.md#deducing-this) | 1 | ✅ |
-| [contracts](../guidelines/modern-idioms.md#contracts) | 1 | ✅ |
-| [reflection](../guidelines/modern-idioms.md#reflection) | 1 | ✅ |
+| [contracts](../guidelines/modern-idioms.md#contracts) | 1 | ⏭ (needs contracts) |
+| [reflection](../guidelines/modern-idioms.md#reflection) | 1 | ⏭ (needs reflection) |
 | [stdexecution-sendersreceivers](../guidelines/modern-idioms.md#stdexecution-sendersreceivers) | 1 | ⏭ (needs execution) |
 | [smaller-language-features](../guidelines/modern-idioms.md#smaller-language-features) | 1 | ⏭ (nocompile) |
 
@@ -3318,8 +3318,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [choosing-a-framework](../guidelines/testing.md#choosing-a-framework) | 1 | ⏭ (nocompile) |
 | [property-based-tests](../guidelines/testing.md#property-based-tests) | 1 | ⏭ (nocompile) |
 | [fuzzing](../guidelines/testing.md#fuzzing) | 1 | ✅ |
-| [testing-contracts](../guidelines/testing.md#testing-contracts) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
-| [a-throwing-handler-where-you-can-replace-it](../guidelines/testing.md#a-throwing-handler-where-you-can-replace-it) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [testing-contracts](../guidelines/testing.md#testing-contracts) | 2 | ⏭ 2 (needs contracts; nocompile) |
+| [a-throwing-handler-where-you-can-replace-it](../guidelines/testing.md#a-throwing-handler-where-you-can-replace-it) | 2 | ⏭ 2 (needs contracts; nocompile) |
 | [compile-time-tests](../guidelines/testing.md#compile-time-tests) | 3 | ⏭ 3 (nocompile) |
 
 </details>

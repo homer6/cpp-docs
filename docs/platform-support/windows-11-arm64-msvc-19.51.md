@@ -10,7 +10,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | MSVC 19.51.36260.0 (preset `msvc`) |
 | Standard library | MS STL |
 | Architecture | arm64, little-endian |
-| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41380889279), commit `2d25ca3` |
+| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778), commit `a9fbaa7` |
 | Areas | all |
 | Tests | 1102 run |
 | Snippets | 820 blocks in `docs`, **report-only** |
@@ -19,7 +19,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1098) | 943 | 0 | 154 | 1 | 0 |
+| Features (1098) | 942 | 0 | 155 | 1 | 0 |
 | Examples (820) | 652 | 20 | 148 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout). Snippet results are **report-only** here: no reviewed snippet baseline yet (#159).
@@ -35,7 +35,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [datetime](#datetime) | 🟡 1 | ✅ |
 | [diagnostics](#diagnostics) | 🟡 7 | 🟡 7 |
 | [execution](#execution) | 🟡 5 | 🟡 5 |
-| [feature-test-macros](#feature-test-macros) | 🟡 1 | ✅ |
+| [feature-test-macros](#feature-test-macros) | 🟡 2 | ✅ |
 | [io](#io) | 🟡 3 | 🟡 4 |
 | [iterators](#iterators) | ✅ | ✅ |
 | [language](#language) | 🟡 48 | ❌ 10 |
@@ -983,7 +983,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## feature-test-macros
 
-<details><summary>1 pages · 6 features · 2 examples: 🟡 1</summary>
+<details><summary>1 pages · 6 features · 2 examples: 🟡 2</summary>
 
 **[examples/feature-test-macros/README.md](../examples/feature-test-macros/README.md)**
 
@@ -994,7 +994,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Mental model](../examples/feature-test-macros/README.md#mental-model): the std::format gate from the page takes the format branch. | `FeatureTestMacros.FormatGate` | ✅ |
 | [Examples](../examples/feature-test-macros/README.md#examples): the __cpp_lib_expected-gated branch picks std::expected when available. | `FeatureTestMacros.GateOnLibraryMacroValue` | ✅ |
 | [Examples](../examples/feature-test-macros/README.md#examples): the __cpp_lib_ranges-gated views::filter keeps the evens. | `FeatureTestMacros.RangesBranch` | ✅ |
-| [Gotchas](../examples/feature-test-macros/README.md#gotchas): __cplusplus says which standard was requested (C++26 mode is newer than… | `FeatureTestMacros.CplusplusReflectsRequestedStandard` | ✅ |
+| [Gotchas](../examples/feature-test-macros/README.md#gotchas): __cplusplus says which standard was requested (C++26 mode is newer than… | `FeatureTestMacros.CplusplusReflectsRequestedStandard` | ⏭ built as C++23 (no C++26 mode); __cplusplus is 202400 |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|

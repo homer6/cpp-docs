@@ -10,7 +10,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | Clang 23.1.4 (preset `clang`) |
 | Standard library | libc++ |
 | Architecture | x86_64, little-endian |
-| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41393465801), commit `0e9f9fe` |
+| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778), commit `a9fbaa7` |
 | Areas | all |
 | Tests | 1102 run |
 | Snippets | 820 blocks in `docs`, **report-only** |
