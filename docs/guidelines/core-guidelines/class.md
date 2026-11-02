@@ -6,23 +6,23 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official section](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-class) · [All sections](README.md)
 
-- [C.1: Organize related data into structures (`struct`s or `class`es)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-org)
-- [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-struct) · ours: [core-guidelines](../core-guidelines.md)
-- [C.3: Represent the distinction between an interface and an implementation using a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-interface)
-- [C.4: Make a function a member only if it needs direct access to the representation of a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-member) · ours: [core-guidelines](../core-guidelines.md)
-- [C.5: Place helper functions in the same namespace as the class they support](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-helper)
-- [C.7: Don't define a class or enum and declare a variable of its type in the same statement](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-standalone)
-- [C.8: Use `class` rather than `struct` if any member is non-public](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-class)
-- [C.9: Minimize exposure of members](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-private) · ours: [core-guidelines](../core-guidelines.md)
+- [C.1: Organize related data into structures (`struct`s or `class`es)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-org) · [example](examples/class.md#c1-organize-related-data-into-structures-structs-or-classes)
+- [C.2: Use `class` if the class has an invariant; use `struct` if the data members can vary independently](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-struct) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c2-use-class-if-the-class-has-an-invariant-use-struct-if-the-data-members-can-vary-independently) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.3: Represent the distinction between an interface and an implementation using a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-interface) · [example](examples/class.md#c3-represent-the-distinction-between-an-interface-and-an-implementation-using-a-class)
+- [C.4: Make a function a member only if it needs direct access to the representation of a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-member) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c4-make-a-function-a-member-only-if-it-needs-direct-access-to-the-representation-of-a-class)
+- [C.5: Place helper functions in the same namespace as the class they support](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-helper) · [example](examples/class.md#c5-place-helper-functions-in-the-same-namespace-as-the-class-they-support) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.7: Don't define a class or enum and declare a variable of its type in the same statement](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-standalone) · [example](examples/class.md#c7-dont-define-a-class-or-enum-and-declare-a-variable-of-its-type-in-the-same-statement)
+- [C.8: Use `class` rather than `struct` if any member is non-public](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-class) · [example](examples/class.md#c8-use-class-rather-than-struct-if-any-member-is-non-public)
+- [C.9: Minimize exposure of members](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-private) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c9-minimize-exposure-of-members) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.concrete: Concrete types
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concrete)
 
-- [C.10: Prefer concrete types over class hierarchies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-concrete)
-- [C.11: Make concrete types regular](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-regular)
-- [C.12: Don't make data members `const` or references in a copyable or movable type](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-constref)
-- [C.13: If data member `B` uses another data member `A`, declare `A` before `B`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-lifetime) · ours: [core-guidelines](../core-guidelines.md), [safety](../safety.md)
+- [C.10: Prefer concrete types over class hierarchies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-concrete) · [example](examples/class.md#c10-prefer-concrete-types-over-class-hierarchies) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.11: Make concrete types regular](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-regular) · [example](examples/class.md#c11-make-concrete-types-regular) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.12: Don't make data members `const` or references in a copyable or movable type](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-constref) · [example](examples/class.md#c12-dont-make-data-members-const-or-references-in-a-copyable-or-movable-type) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.13: If data member `B` uses another data member `A`, declare `A` before `B`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-lifetime) · ours: [core-guidelines](../core-guidelines.md), [safety](../safety.md) · [example](examples/class.md#c13-if-data-member-b-uses-another-data-member-a-declare-a-before-b) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.ctor: Constructors, assignments, and destructors
 
@@ -32,78 +32,78 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-defop)
 
-- [C.20: If you can avoid defining default operations, do](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-zero) · ours: [core-guidelines](../core-guidelines.md)
-- [C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-five) · ours: [core-guidelines](../core-guidelines.md)
-- [C.22: Make default operations consistent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-matched)
+- [C.20: If you can avoid defining default operations, do](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-zero) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c20-if-you-can-avoid-defining-default-operations-do) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.21: If you define or `=delete` any copy, move, or destructor function, define or `=delete` them all](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-five) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.22: Make default operations consistent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-matched) · [example](examples/class.md#c22-make-default-operations-consistent) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.dtor: Destructors
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-dtor)
 
-- [C.30: Define a destructor if a class needs an explicit action at object destruction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor)
-- [C.31: All resources acquired by a class must be released by the class's destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-release)
-- [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-ptr)
-- [C.33: If a class has an owning pointer member, define a destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-ptr2)
-- [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-virtual) · ours: [core-guidelines](../core-guidelines.md)
-- [C.36: A destructor must not fail](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-fail)
-- [C.37: Make destructors `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-noexcept)
+- [C.30: Define a destructor if a class needs an explicit action at object destruction](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor) · [example](examples/class.md#c30-define-a-destructor-if-a-class-needs-an-explicit-action-at-object-destruction) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.31: All resources acquired by a class must be released by the class's destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-release) · [example](examples/class.md#c31-all-resources-acquired-by-a-class-must-be-released-by-the-classs-destructor) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.32: If a class has a raw pointer (`T*`) or reference (`T&`), consider whether it might be owning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-ptr) · [example](examples/class.md#c32-if-a-class-has-a-raw-pointer-t-or-reference-t-consider-whether-it-might-be-owning)
+- [C.33: If a class has an owning pointer member, define a destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-ptr2) · [example](examples/class.md#c33-if-a-class-has-an-owning-pointer-member-define-a-destructor) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.35: A base class destructor should be either public and virtual, or protected and non-virtual](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-virtual) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.36: A destructor must not fail](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-fail) · [example](examples/class.md#c36-a-destructor-must-not-fail) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.37: Make destructors `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-dtor-noexcept) · [example](examples/class.md#c37-make-destructors-noexcept) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.ctor: Constructors
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-ctor)
 
-- [C.40: Define a constructor if a class has an invariant](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-ctor)
-- [C.41: A constructor should create a fully initialized object](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-complete)
-- [C.42: If a constructor cannot construct a valid object, throw an exception](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-throw)
-- [C.43: Ensure that a copyable class has a default constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default0)
-- [C.44: Prefer default constructors to be simple and non-throwing](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default00)
-- [C.45: Don't define a default constructor that only initializes data members; use default member initializers instead](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default) · ours: [core-guidelines](../core-guidelines.md)
-- [C.46: By default, declare single-argument constructors explicit](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-explicit) · ours: [core-guidelines](../core-guidelines.md)
-- [C.47: Define and initialize data members in the order of member declaration](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-order)
-- [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-in-class-initializer) · ours: [core-guidelines](../core-guidelines.md)
-- [C.49: Prefer initialization to assignment in constructors](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-initialize) · ours: [core-guidelines](../core-guidelines.md)
-- [C.50: Use a factory function if you need "virtual behavior" during initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-factory)
-- [C.51: Use delegating constructors to represent common actions for all constructors of a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-delegating)
-- [C.52: Use inheriting constructors to import constructors into a derived class that does not need further explicit initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-inheriting)
+- [C.40: Define a constructor if a class has an invariant](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-ctor) · [example](examples/class.md#c40-define-a-constructor-if-a-class-has-an-invariant) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.41: A constructor should create a fully initialized object](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-complete) · [example](examples/class.md#c41-a-constructor-should-create-a-fully-initialized-object) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.42: If a constructor cannot construct a valid object, throw an exception](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-throw) · [example](examples/class.md#c42-if-a-constructor-cannot-construct-a-valid-object-throw-an-exception) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.43: Ensure that a copyable class has a default constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default0) · [example](examples/class.md#c43-ensure-that-a-copyable-class-has-a-default-constructor) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.44: Prefer default constructors to be simple and non-throwing](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default00) · [example](examples/class.md#c44-prefer-default-constructors-to-be-simple-and-non-throwing) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.45: Don't define a default constructor that only initializes data members; use default member initializers instead](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-default) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c45-dont-define-a-default-constructor-that-only-initializes-data-members-use-default-member-initializers-instead) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.46: By default, declare single-argument constructors explicit](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-explicit) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c46-by-default-declare-single-argument-constructors-explicit) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.47: Define and initialize data members in the order of member declaration](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-order) · [example](examples/class.md#c47-define-and-initialize-data-members-in-the-order-of-member-declaration) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.48: Prefer default member initializers to member initializers in constructors for constant initializers](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-in-class-initializer) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c48-prefer-default-member-initializers-to-member-initializers-in-constructors-for-constant-initializers) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.49: Prefer initialization to assignment in constructors](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-initialize) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/class.md#c49-prefer-initialization-to-assignment-in-constructors) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.50: Use a factory function if you need "virtual behavior" during initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-factory) · [example](examples/class.md#c50-use-a-factory-function-if-you-need-virtual-behavior-during-initialization) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.51: Use delegating constructors to represent common actions for all constructors of a class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-delegating) · [example](examples/class.md#c51-use-delegating-constructors-to-represent-common-actions-for-all-constructors-of-a-class) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.52: Use inheriting constructors to import constructors into a derived class that does not need further explicit initialization](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-inheriting) · [example](examples/class.md#c52-use-inheriting-constructors-to-import-constructors-into-a-derived-class-that-does-not-need-further-explicit-initialization) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.copy: Copy and move
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-copy)
 
-- [C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-assignment)
-- [C.61: A copy operation should copy](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-semantic)
-- [C.62: Make copy assignment safe for self-assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-self)
-- [C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const&`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-assignment)
-- [C.64: A move operation should move and leave its source in a valid state](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-semantic)
-- [C.65: Make move assignment safe for self-assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-self)
-- [C.66: Make move operations `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-noexcept)
-- [C.67: A polymorphic class should suppress public copy/move](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-virtual)
+- [C.60: Make copy assignment non-`virtual`, take the parameter by `const&`, and return by non-`const&`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-assignment) · [example](examples/class.md#c60-make-copy-assignment-non-virtual-take-the-parameter-by-const-and-return-by-non-const) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.61: A copy operation should copy](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-semantic) · [example](examples/class.md#c61-a-copy-operation-should-copy) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.62: Make copy assignment safe for self-assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-self) · [example](examples/class.md#c62-make-copy-assignment-safe-for-self-assignment) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.63: Make move assignment non-`virtual`, take the parameter by `&&`, and return by non-`const&`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-assignment) · [example](examples/class.md#c63-make-move-assignment-non-virtual-take-the-parameter-by--and-return-by-non-const) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.64: A move operation should move and leave its source in a valid state](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-semantic) · [example](examples/class.md#c64-a-move-operation-should-move-and-leave-its-source-in-a-valid-state) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.65: Make move assignment safe for self-assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-self) · [example](examples/class.md#c65-make-move-assignment-safe-for-self-assignment) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.66: Make move operations `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-move-noexcept) · [example](examples/class.md#c66-make-move-operations-noexcept) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.67: A polymorphic class should suppress public copy/move](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-copy-virtual) · [example](examples/class.md#c67-a-polymorphic-class-should-suppress-public-copymove) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.other: Other default operation rules
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-class)
 
-- [C.80: Use `=default` if you have to be explicit about using the default semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eqdefault)
-- [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-delete)
-- [C.82: Don't call virtual functions in constructors and destructors](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-ctor-virtual)
-- [C.83: For value-like types, consider providing a `noexcept` swap function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap)
-- [C.84: A `swap` function must not fail](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap-fail)
-- [C.85: Make `swap` `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap-noexcept)
-- [C.86: Make `==` symmetric with respect to operand types and `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eq)
-- [C.87: Beware of `==` on base classes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eq-base)
-- [C.89: Make a `hash` `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-hash)
-- [C.90: Rely on constructors and assignment operators, not `memset` and `memcpy`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-memset)
+- [C.80: Use `=default` if you have to be explicit about using the default semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eqdefault) · [example](examples/class.md#c80-use-default-if-you-have-to-be-explicit-about-using-the-default-semantics) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.81: Use `=delete` when you want to disable default behavior (without wanting an alternative)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-delete) · [example](examples/class.md#c81-use-delete-when-you-want-to-disable-default-behavior-without-wanting-an-alternative) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.82: Don't call virtual functions in constructors and destructors](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-ctor-virtual) · [example](examples/class.md#c82-dont-call-virtual-functions-in-constructors-and-destructors) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.83: For value-like types, consider providing a `noexcept` swap function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap) · [example](examples/class.md#c83-for-value-like-types-consider-providing-a-noexcept-swap-function) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.84: A `swap` function must not fail](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap-fail) · [example](examples/class.md#c84-a-swap-function-must-not-fail) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.85: Make `swap` `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-swap-noexcept) · [example](examples/class.md#c85-make-swap-noexcept) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.86: Make `==` symmetric with respect to operand types and `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eq) · [example](examples/class.md#c86-make--symmetric-with-respect-to-operand-types-and-noexcept) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.87: Beware of `==` on base classes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-eq-base) · [example](examples/class.md#c87-beware-of--on-base-classes) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.89: Make a `hash` `noexcept`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-hash) · [example](examples/class.md#c89-make-a-hash-noexcept) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.90: Rely on constructors and assignment operators, not `memset` and `memcpy`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rc-memset) · [example](examples/class.md#c90-rely-on-constructors-and-assignment-operators-not-memset-and-memcpy) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.con: Containers and other resource handles
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-containers)
 
-- [C.100: Follow the STL when defining a container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-stl)
-- [C.101: Give a container value semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-val)
-- [C.102: Give a container move operations](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-move)
-- [C.103: Give a container an initializer list constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-init)
-- [C.104: Give a container a default constructor that sets it to empty](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-empty)
-- [C.109: If a resource handle has pointer semantics, provide `*` and `->`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-ptr)
+- [C.100: Follow the STL when defining a container](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-stl) · [example](examples/class.md#c100-follow-the-stl-when-defining-a-container) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.101: Give a container value semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-val) · [example](examples/class.md#c101-give-a-container-value-semantics) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.102: Give a container move operations](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-move) · [example](examples/class.md#c102-give-a-container-move-operations) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.103: Give a container an initializer list constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-init) · [example](examples/class.md#c103-give-a-container-an-initializer-list-constructor) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.104: Give a container a default constructor that sets it to empty](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-empty) · [example](examples/class.md#c104-give-a-container-a-default-constructor-that-sets-it-to-empty) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.109: If a resource handle has pointer semantics, provide `*` and `->`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rcon-ptr) · [example](examples/class.md#c109-if-a-resource-handle-has-pointer-semantics-provide--and--) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.lambdas: Function objects and lambdas
 
@@ -113,64 +113,64 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-hier)
 
-- [C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-domain)
-- [C.121: If a base class is used as an interface, make it a pure abstract class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-abstract)
-- [C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-separation)
+- [C.120: Use class hierarchies to represent concepts with inherent hierarchical structure (only)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-domain) · [example](examples/class.md#c120-use-class-hierarchies-to-represent-concepts-with-inherent-hierarchical-structure-only)
+- [C.121: If a base class is used as an interface, make it a pure abstract class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-abstract) · [example](examples/class.md#c121-if-a-base-class-is-used-as-an-interface-make-it-a-pure-abstract-class) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.122: Use abstract classes as interfaces when complete separation of interface and implementation is needed](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-separation) · [example](examples/class.md#c122-use-abstract-classes-as-interfaces-when-complete-separation-of-interface-and-implementation-is-needed) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.hierclass: Designing classes in a hierarchy:
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-class)
 
-- [C.126: An abstract class typically doesn't need a user-written constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-abstract-ctor)
-- [C.127: A class with a virtual function should have a virtual or protected destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-dtor)
-- [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-override)
-- [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-kind)
-- [C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of public copy construction/assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-copy)
-- [C.131: Avoid trivial getters and setters](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-get)
-- [C.132: Don't make a function `virtual` without reason](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-virtual)
-- [C.133: Avoid `protected` data](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-protected)
-- [C.134: Ensure all non-`const` data members have the same access level](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-public)
-- [C.135: Use multiple inheritance to represent multiple distinct interfaces](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-mi-interface)
-- [C.136: Use multiple inheritance to represent the union of implementation attributes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-mi-implementation)
-- [C.137: Use `virtual` bases to avoid overly general base classes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-vbase)
-- [C.138: Create an overload set for a derived class and its bases with `using`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-using)
-- [C.139: Use `final` on classes sparingly](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-final)
-- [C.140: Do not provide different default arguments for a virtual function and an overrider](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-virtual-default-arg)
+- [C.126: An abstract class typically doesn't need a user-written constructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-abstract-ctor) · [example](examples/class.md#c126-an-abstract-class-typically-doesnt-need-a-user-written-constructor)
+- [C.127: A class with a virtual function should have a virtual or protected destructor](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-dtor) · [example](examples/class.md#c127-a-class-with-a-virtual-function-should-have-a-virtual-or-protected-destructor) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.128: Virtual functions should specify exactly one of `virtual`, `override`, or `final`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-override) · [example](examples/class.md#c128-virtual-functions-should-specify-exactly-one-of-virtual-override-or-final) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.129: When designing a class hierarchy, distinguish between implementation inheritance and interface inheritance](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-kind) · [example](examples/class.md#c129-when-designing-a-class-hierarchy-distinguish-between-implementation-inheritance-and-interface-inheritance)
+- [C.130: For making deep copies of polymorphic classes prefer a virtual `clone` function instead of public copy construction/assignment](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-copy) · [example](examples/class.md#c130-for-making-deep-copies-of-polymorphic-classes-prefer-a-virtual-clone-function-instead-of-public-copy-constructionassignment) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.131: Avoid trivial getters and setters](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-get) · [example](examples/class.md#c131-avoid-trivial-getters-and-setters)
+- [C.132: Don't make a function `virtual` without reason](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-virtual) · [example](examples/class.md#c132-dont-make-a-function-virtual-without-reason) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.133: Avoid `protected` data](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-protected) · [example](examples/class.md#c133-avoid-protected-data)
+- [C.134: Ensure all non-`const` data members have the same access level](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-public) · [example](examples/class.md#c134-ensure-all-non-const-data-members-have-the-same-access-level)
+- [C.135: Use multiple inheritance to represent multiple distinct interfaces](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-mi-interface) · [example](examples/class.md#c135-use-multiple-inheritance-to-represent-multiple-distinct-interfaces) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.136: Use multiple inheritance to represent the union of implementation attributes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-mi-implementation) · [example](examples/class.md#c136-use-multiple-inheritance-to-represent-the-union-of-implementation-attributes) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.137: Use `virtual` bases to avoid overly general base classes](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-vbase) · [example](examples/class.md#c137-use-virtual-bases-to-avoid-overly-general-base-classes) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.138: Create an overload set for a derived class and its bases with `using`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-using) · [example](examples/class.md#c138-create-an-overload-set-for-a-derived-class-and-its-bases-with-using) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.139: Use `final` on classes sparingly](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-final) · [example](examples/class.md#c139-use-final-on-classes-sparingly) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.140: Do not provide different default arguments for a virtual function and an overrider](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-virtual-default-arg) · [example](examples/class.md#c140-do-not-provide-different-default-arguments-for-a-virtual-function-and-an-overrider) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.hier-access: Accessing objects in a hierarchy
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-class)
 
-- [C.145: Access polymorphic objects through pointers and references](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-poly)
-- [C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-dynamic_cast)
-- [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-ref-cast)
-- [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-ptr-cast)
-- [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-smart)
-- [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-make_unique)
-- [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-make_shared)
-- [C.152: Never assign a pointer to an array of derived class objects to a pointer to its base](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-array)
-- [C.153: Prefer virtual function to casting](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-use-virtual)
+- [C.145: Access polymorphic objects through pointers and references](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-poly) · [example](examples/class.md#c145-access-polymorphic-objects-through-pointers-and-references) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.146: Use `dynamic_cast` where class hierarchy navigation is unavoidable](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-dynamic_cast) · [example](examples/class.md#c146-use-dynamic_cast-where-class-hierarchy-navigation-is-unavoidable) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.147: Use `dynamic_cast` to a reference type when failure to find the required class is considered an error](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-ref-cast) · [example](examples/class.md#c147-use-dynamic_cast-to-a-reference-type-when-failure-to-find-the-required-class-is-considered-an-error) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.148: Use `dynamic_cast` to a pointer type when failure to find the required class is considered a valid alternative](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-ptr-cast) · [example](examples/class.md#c148-use-dynamic_cast-to-a-pointer-type-when-failure-to-find-the-required-class-is-considered-a-valid-alternative) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.149: Use `unique_ptr` or `shared_ptr` to avoid forgetting to `delete` objects created using `new`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-smart) · [example](examples/class.md#c149-use-unique_ptr-or-shared_ptr-to-avoid-forgetting-to-delete-objects-created-using-new) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.150: Use `make_unique()` to construct objects owned by `unique_ptr`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-make_unique) · [example](examples/class.md#c150-use-make_unique-to-construct-objects-owned-by-unique_ptrs) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.151: Use `make_shared()` to construct objects owned by `shared_ptr`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-make_shared) · [example](examples/class.md#c151-use-make_shared-to-construct-objects-owned-by-shared_ptrs) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.152: Never assign a pointer to an array of derived class objects to a pointer to its base](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-array) · [example](examples/class.md#c152-never-assign-a-pointer-to-an-array-of-derived-class-objects-to-a-pointer-to-its-base) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.153: Prefer virtual function to casting](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rh-use-virtual) · [example](examples/class.md#c153-prefer-virtual-function-to-casting) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.over: Overloading and overloaded operators
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-overload)
 
-- [C.160: Define operators primarily to mimic conventional usage](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-conventional)
-- [C.161: Use non-member functions for symmetric operators](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-symmetric)
-- [C.162: Overload operations that are roughly equivalent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-equivalent)
-- [C.163: Overload only for operations that are roughly equivalent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-equivalent-2)
-- [C.164: Avoid implicit conversion operators](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-conversion)
-- [C.165: Use `using` for customization points](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-custom)
-- [C.166: Overload unary `&` only as part of a system of smart pointers and references](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-address-of)
-- [C.167: Use an operator for an operation with its conventional meaning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-overload)
-- [C.168: Define overloaded operators in the namespace of their operands](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-namespace)
-- [C.170: If you feel like overloading a lambda, use a generic lambda](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-lambda)
+- [C.160: Define operators primarily to mimic conventional usage](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-conventional) · [example](examples/class.md#c160-define-operators-primarily-to-mimic-conventional-usage) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.161: Use non-member functions for symmetric operators](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-symmetric) · [example](examples/class.md#c161-use-non-member-functions-for-symmetric-operators) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.162: Overload operations that are roughly equivalent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-equivalent) · [example](examples/class.md#c162-overload-operations-that-are-roughly-equivalent) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.163: Overload only for operations that are roughly equivalent](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-equivalent-2) · [example](examples/class.md#c163-overload-only-for-operations-that-are-roughly-equivalent)
+- [C.164: Avoid implicit conversion operators](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-conversion) · [example](examples/class.md#c164-avoid-implicit-conversion-operators) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.165: Use `using` for customization points](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-custom) · [example](examples/class.md#c165-use-using-for-customization-points) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.166: Overload unary `&` only as part of a system of smart pointers and references](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-address-of) · [example](examples/class.md#c166-overload-unary--only-as-part-of-a-system-of-smart-pointers-and-references) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.167: Use an operator for an operation with its conventional meaning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-overload) · [example](examples/class.md#c167-use-an-operator-for-an-operation-with-its-conventional-meaning) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.168: Define overloaded operators in the namespace of their operands](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-namespace) · [example](examples/class.md#c168-define-overloaded-operators-in-the-namespace-of-their-operands) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.170: If you feel like overloading a lambda, use a generic lambda](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ro-lambda) · [example](examples/class.md#c170-if-you-feel-like-overloading-a-lambda-use-a-generic-lambda) · [test](../../../tests/guidelines/class_test.cpp)
 
 ## C.union: Unions
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-union)
 
-- [C.180: Use `union`s to save memory](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-union)
-- [C.181: Avoid "naked" `union`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-naked)
-- [C.182: Use anonymous `union`s to implement tagged unions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-anonymous)
-- [C.183: Don't use a `union` for type punning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-pun)
+- [C.180: Use `union`s to save memory](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-union) · [example](examples/class.md#c180-use-unions-to-save-memory) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.181: Avoid "naked" `union`s](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-naked) · [example](examples/class.md#c181-avoid-naked-unions) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.182: Use anonymous `union`s to implement tagged unions](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-anonymous) · [example](examples/class.md#c182-use-anonymous-unions-to-implement-tagged-unions) · [test](../../../tests/guidelines/class_test.cpp)
+- [C.183: Don't use a `union` for type punning](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ru-pun) · [example](examples/class.md#c183-dont-use-a-union-for-type-punning) · [test](../../../tests/guidelines/class_test.cpp)
