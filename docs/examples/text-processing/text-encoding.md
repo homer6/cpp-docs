@@ -134,7 +134,10 @@ unavailable`): no macOS release ships them in the system libc++ yet.
 ## Gotchas
 
 - **Library support is partial.** libstdc++ has it
-  (`__cpp_lib_text_encoding == 202306L` in GCC 14, 15 and 16, verified locally); libc++ in Clang 22
+  (`__cpp_lib_text_encoding == 202306L` in GCC 14, 15 and 16, verified locally), but only
+  where the C library has `nl_langinfo_l` (the header's guard is `_GLIBCXX_USE_NL_LANGINFO_L`).
+  MinGW doesn't, so GCC 16 on MSYS2 UCRT64 has no `std::text_encoding` and leaves
+  `__cpp_lib_text_encoding` undefined: test the macro, not the compiler. libc++ in Clang 22
   has no `<text_encoding>` header at all, and LLVM 23's libc++ adds it (seen on the
   macOS and MSYS2 CLANG64 runners). MSVC status not verified locally.
 - **With libstdc++, `environment()`, `environment_is()` and
