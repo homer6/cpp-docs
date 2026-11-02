@@ -33,6 +33,11 @@ a whole, supports modern C++. That's why:
   MinGW), FreeBSD VMs and QEMU for other architectures, and grow as new
   toolchains become available.
 
+Keeping the results current (asking for runs, processing every log,
+capturing findings as tests, vendor bugs, re-running what failed and
+regenerating the report) follows the
+[`platform-support`](../.claude/skills/platform-support/SKILL.md) skill.
+
 ## Checking the snippets
 
 Run the checker locally:
