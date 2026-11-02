@@ -19,7 +19,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1095) | 980 | 0 | 111 | 4 | 0 |
+| Features (1098) | 982 | 0 | 111 | 5 | 0 |
 | Examples (820) | 691 | 0 | 129 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout).
@@ -238,7 +238,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Mental model](../examples/concurrency/atomics.md#mental-model): increments from many threads aren't lost. | `Atomics.NoLostUpdates` | ✅ |
 | [Read-modify-write &amp; CAS](../examples/concurrency/atomics.md#read-modify-write--cas): the arithmetic results and CAS semantics. | `Atomics.RmwAndCas` | ✅ |
 | [Memory order](../examples/concurrency/atomics.md#memory-order): a release store publishes the plain write to an acquire load. | `Atomics.ReleaseAcquirePublishes` | ✅ |
-| [atomic_ref and atomic&lt;shared_ptr&gt; (C++20)](../examples/concurrency/atomics.md#atomic_ref-and-atomicshared_ptr-c20): atomic_ref works everywhere; atomic&lt;sh… | `Atomics.AtomicRef` | ✅ |
+| [atomic_ref and atomic&lt;shared_ptr&gt; (C++20)](../examples/concurrency/atomics.md#atomic_ref-and-atomicshared_ptr-c20): atomic_ref (libc++ 19+); atomic&lt;shared… | `Atomics.AtomicRef` | ✅ |
 | Atomics.AtomicSharedPtr | `Atomics.AtomicSharedPtr` | ✅ |
 | [Gotchas](../examples/concurrency/atomics.md#gotchas): not always lock-free — a large struct isn't; int is. | `Atomics.LockFreeness` | ✅ |
 | [wait and notify (C++20)](../examples/concurrency/atomics.md#wait-and-notify-c20): wait blocks while the value equals old; a store followed… | `Atomics.WaitNotifyAll` | ✅ |
@@ -1519,7 +1519,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | Gotchas: auto&amp;&amp; is a forwarding reference — lvalue ref for lvalues, rvalue ref… | `DeclarationsAuto.AutoForwardingReference` | ✅ |
 | [`_` — the placeholder name (C++26)](../examples/language/declarations-initialization/declarations-and-auto.md#_--the-placeholder-name-c26): `_` may be declared more than once in a scope. | `DeclarationsAuto.PlaceholderName` | ✅ |
 | [Binding a pack (C++26)](../examples/language/declarations-initialization/declarations-and-auto.md#binding-a-pack-c26): `...xs` binds every element; only inside a template. | `DeclarationsAuto.StructuredBindingPack` | ⏭ needs __cpp_structured_bindings &gt;= 202411L (this toolchain has 202403L) |
-| [`constexpr` structured bindings (C++26)](../examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26): . P2686 has no macro of its own; the too… | `DeclarationsAuto.ConstexprStructuredBindings` | ⏭ needs __cpp_structured_bindings &gt;= 202411L (this toolchain has 202403L) |
+| [`constexpr` structured bindings (C++26)](../examples/language/declarations-initialization/declarations-and-auto.md#constexpr-structured-bindings-c26): (P2686; see CPPDOCS_CONSTEXPR_STRUCTURED… | `DeclarationsAuto.ConstexprStructuredBindings` | ⏭ needs __cpp_structured_bindings &gt;= 202411L (this toolchain has 202403L) |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
@@ -2189,7 +2189,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Mental model](../examples/language-support/type-info.md#mental-model): type_info isn't copyable or assignable; type_index is copyable, ord… | `TypeInfo.TypeInfoVersusTypeIndex` | ✅ |
 | [A map keyed by type](../examples/language-support/type-info.md#a-map-keyed-by-type): . | `TypeInfo.MapKeyedByType` | ✅ |
 | [name() is mangled on GCC and Clang](../examples/language-support/type-info.md#name-is-mangled-on-gcc-and-clang): + "Gotchas": the exact spellings. | `TypeInfo.NameIsImplementationDefined` | ✅ |
-| [Gotchas](../examples/language-support/type-info.md#gotchas): before() order differs — false with libstdc++, true with libc++. | `TypeInfo.BeforeIsImplementationDefined` | ✅ |
+| [Gotchas](../examples/language-support/type-info.md#gotchas): before() order differs — false with libstdc++, true with libc++ on ELF a… | `TypeInfo.BeforeIsImplementationDefined` | ✅ |
 | [typeid on a null pointer throws](../examples/language-support/type-info.md#typeid-on-a-null-pointer-throws): bad_typeid. | `TypeInfo.NullPolymorphicThrows` | ✅ |
 | [Gotchas](../examples/language-support/type-info.md#gotchas): the operand is evaluated only for polymorphic glvalues. | `TypeInfo.OperandEvaluatedOnlyIfPolymorphic` | ✅ |
 
@@ -2205,7 +2205,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## memory
 
-<details><summary>7 pages · 55 features · 30 examples: 🟡 13</summary>
+<details><summary>7 pages · 57 features · 30 examples: 🟡 13</summary>
 
 **[examples/memory/allocators.md](../examples/memory/allocators.md)**
 
@@ -2317,6 +2317,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Arrays and custom deleters](../examples/memory/unique_ptr.md#arrays-and-custom-deleters): unique_ptr&lt;int[]&gt; indexes and uses delete[]. | `UniquePtr.ArrayFormUsesDeleteArray` | ✅ |
 | **C APIs that return through T****: out_ptr adopts the result; inout_ptr passes the o… | `UniquePtr.OutPtrAndInoutPtr` | ✅ |
 | [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call (old object freed first… | `UniquePtr.OutPtrResetsBeforeCall` | ✅ |
+| **C APIs that return through T****: std::out_ptr / std::inout_ptr (C++23). | `UniquePtr.OutPtrAndInoutPtr` | ✅ |
+| [Gotchas](../examples/memory/unique_ptr.md#gotchas): out_ptr resets the smart pointer before the call. | `UniquePtr.OutPtrResetsBeforeCall` | ✅ |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
@@ -2506,7 +2508,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## numerics
 
-<details><summary>9 pages · 55 features · 36 examples: 🟡 16</summary>
+<details><summary>9 pages · 56 features · 36 examples: 🟡 16</summary>
 
 **[examples/numerics/bit.md](../examples/numerics/bit.md)**
 
@@ -2537,6 +2539,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [Clear, compute, test](../examples/numerics/cfenv.md#clear-compute-test): 1/0 raises FE_DIVBYZERO, 1/3 FE_INEXACT, sqrt(-1) FE_INVALI… | `Cfenv.ClearComputeTest` | ✅ |
 | [Mental model](../examples/numerics/cfenv.md#mental-model): flags are sticky until cleared; fetestexcept returns the set subset. | `Cfenv.FlagsAreSticky` | ✅ |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): the rint values and the printed 1/3 column (printed w… | `Cfenv.RoundingModes` | ✅ |
+| [Gotchas](../examples/numerics/cfenv.md#gotchas): without FENV_ACCESS the compiler may assume round-to-nearest. On x86-64… | `Cfenv.RoundWithoutFenvAccess` | — |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): the last digit of the 1/3 column is printf's own roun… | `Cfenv.OneThirdDoublesPerMode` | ✅ |
 | [Changing the rounding mode](../examples/numerics/cfenv.md#changing-the-rounding-mode): nearbyint never raises FE_INEXACT; rint does. | `Cfenv.NearbyintDoesNotRaiseInexact` | ✅ |
 | **Hiding intermediate flags**: r=0 and the caller doesn't see FE_DIVBYZERO, but other… | `Cfenv.HoldAndUpdateEnv` | ✅ |
@@ -2893,7 +2896,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 |---|---|---|
 | [The classic vs. the user's locale](../examples/text-processing/localization.md#the-classic-vs-the-users-locale): the "C" locale prints 1234567.89 with no group… | `Localization.ClassicHasNoGrouping` | ✅ |
 | [The classic vs. the user's locale](../examples/text-processing/localization.md#the-classic-vs-the-users-locale): en_US groups as "1,234,567.89". | `Localization.EnUsGrouping` | ⏭ en_US locale not available to this C++ library |
-| [The classic vs. the user's locale](../examples/text-processing/localization.md#the-classic-vs-the-users-locale): de_DE groups as "1.234.567,89" on glibc; macOS… | `Localization.DeDeGrouping` | ⏭ de_DE locale not available to this C++ library |
+| [The classic vs. the user's locale](../examples/text-processing/localization.md#the-classic-vs-the-users-locale): de_DE groups as "1.234.567,89" on glibc and on… | `Localization.DeDeGrouping` | ⏭ de_DE locale not available to this C++ library |
 | [Locale-aware comparison](../examples/text-processing/localization.md#locale-aware-comparison): locale::operator() compares strings with the collate fac… | `Localization.OperatorCallUsesCollate` | ✅ |
 | [Querying a facet](../examples/text-processing/localization.md#querying-a-facet): numpunct gives thousands_sep and decimal_point. | `Localization.QueryNumpunct` | ✅ |
 | [Gotchas](../examples/text-processing/localization.md#gotchas): a named locale the OS doesn't have throws std::runtime_error. | `Localization.UnknownNamedLocaleThrows` | ✅ |
@@ -2969,7 +2972,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | **Wide → UTF-8**: an unrepresentable char makes wcsrtombs return -1 (narrow gives ""). | `NullTerminatedWideStrings.NarrowUnrepresentable` | ⏭ what the C locale does with non-ASCII wide chars is libc-specific |
 | [Declaration](../examples/text-processing/null-terminated-wide-strings.md#declaration): wcstok takes a state pointer, so it is reentrant (interleaved tokeni… | `NullTerminatedWideStrings.WcstokIsReentrant` | ✅ |
 | [Gotchas](../examples/text-processing/null-terminated-wide-strings.md#gotchas): WCHAR_MAX is signed 2147483647 on arm64 macOS, unsigned 4294967295 on ar… | `NullTerminatedWideStrings.WcharMax` | ✅ |
-| [Gotchas](../examples/text-processing/null-terminated-wide-strings.md#gotchas): printf("[%ls]\n", L"héllo") in the "C" locale returns -1 and prints noth… | `NullTerminatedWideStrings.PrintfLsInCLocale` | ✅ |
+| [Gotchas](../examples/text-processing/null-terminated-wide-strings.md#gotchas): printf("[%ls]\n", L"héllo") in the "C" locale returns -1 on glibc. glibc… | `NullTerminatedWideStrings.PrintfLsInCLocale` | ✅ |
 | [Gotchas](../examples/text-processing/null-terminated-wide-strings.md#gotchas): towupper maps one unit to one unit, so ß stays ß. | `NullTerminatedWideStrings.TowupperOneToOne` | ✅ |
 | [Gotchas](../examples/text-processing/null-terminated-wide-strings.md#gotchas): wcsncpy doesn't terminate when the source fills the buffer. | `NullTerminatedWideStrings.WcsncpyTermination` | ✅ |
 
@@ -3008,8 +3011,8 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [What am I running with?](../examples/text-processing/text-encoding.md#what-am-i-running-with): environment()/environment_is() need -lstdc++exp with lib… | `TextEncoding.Environment` | ⏭ environment() needs -lstdc++exp with libstdc++ and its result depends on the LANG/LC_ALL the test runs with; the suite doesn't link stdc++e… |
 | [Looking encodings up by name](../examples/text-processing/text-encoding.md#looking-encodings-up-by-name): the documented output. | `TextEncoding.LookupByName` | ✅ |
 | [Declaration](../examples/text-processing/text-encoding.md#declaration): IANA name matching ignores case, punctuation and leading zeros. | `TextEncoding.LooseNameMatching` | ✅ |
-| [The encoding of a locale](../examples/text-processing/text-encoding.md#the-encoding-of-a-locale): classic().encoding() is US-ASCII (mib 3). | `TextEncoding.LocaleEncoding` | ⏭ std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 fail to link without it); the suite doesn't link stdc++exp |
-| [Gotchas](../examples/text-processing/text-encoding.md#gotchas): libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 15 and 16. | `TextEncoding.FeatureMacroValue` | ✅ |
+| [The encoding of a locale](../examples/text-processing/text-encoding.md#the-encoding-of-a-locale): classic().encoding() is US-ASCII (mib 3), except libc++… | `TextEncoding.LocaleEncoding` | ⏭ std::locale::encoding() needs -lstdc++exp with libstdc++ (GCC 15 and 16 fail to link without it); the suite doesn't link stdc++exp |
+| [Gotchas](../examples/text-processing/text-encoding.md#gotchas): libstdc++ defines __cpp_lib_text_encoding == 202306L in GCC 14, 15 and 1… | `TextEncoding.FeatureMacroValue` | ✅ |
 
 | Examples in section | Blocks | Result |
 |---|---:|---|

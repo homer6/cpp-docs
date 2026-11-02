@@ -51,7 +51,8 @@ gh run list -R homer6/cpp-docs --workflow all.yml --limit 1      # the run ID
 ```
 
 Watch it in the background (`gh run watch <id> --interval 120`, run in the
-background so you're notified). QEMU and FreeBSD can take hours.
+background so you're notified). FreeBSD can take hours. There are no emulated
+platforms (QEMU) for now (#207); don't add one without the owner.
 
 ## 2. Gather everything the run produced
 
@@ -157,7 +158,7 @@ When the runs are in, regenerate from the latest consented run of **every**
 platform workflow at once, plus the local results:
 
 ```bash
-tools/collect_results.py <linux-id> <macos-id> <windows-msvc-id> <windows-gnu-id> <freebsd-id> <qemu-id>
+tools/collect_results.py <linux-id> <macos-id> <windows-msvc-id> <windows-gnu-id> <freebsd-id>
 tools/collect_results.py <the same ids> --check     # nothing stale
 tools/collect_results.py --self-test
 ```

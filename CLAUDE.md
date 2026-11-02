@@ -241,7 +241,7 @@ these local runs.
 |---|---|
 | Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
 | Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
-| A claim about a platform we can't run locally (MSVC, FreeBSD, big-endian…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
+| A claim about a platform we can't run locally (MSVC, FreeBSD, MinGW…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
 
 One area, without building the rest of the suite:
 
@@ -333,8 +333,11 @@ language support and feature support in the entire industry"*. So:
   or hidden test, so the counts and skip reasons say how far each compiler
   and standard library has got. A skip for a compiler bug names the bug.
 - **New platforms, compilers and architectures** that are supported and
-  can run on GitHub's runners (natively, in a VM or under QEMU) belong in
-  the workflows; widening the matrix is part of the goal.
+  can run on GitHub's runners natively or in a KVM-accelerated VM belong in
+  the workflows; widening the matrix is part of the goal. **No emulated
+  platforms for now** (the owner, #207: *"let's remove support for qemu and
+  emulated platforms"*): no QEMU user-mode jobs and no VM under emulation
+  (FreeBSD aarch64). Ask the owner before adding one back.
 - **Every every-area run is read in full, captured and archived**, with the
   `platform-support` skill, which has the commands and the
   `digest_run.py` log digest (the
@@ -412,7 +415,7 @@ run automatically... manual invocation only"*.
   - **before a release**: required (the release gate, #140). Every platform
     workflow needs a green consented run on `dev` first;
   - **for a claim about a platform we can't run locally** (MSVC, clang-cl,
-    MinGW, FreeBSD, big-endian or other architectures): a page that states
+    MinGW, FreeBSD or other architectures): a page that states
     how that toolchain behaves is better backed by a run than by a vendor
     status page alone.
 
@@ -446,7 +449,7 @@ run automatically... manual invocation only"*.
     `tools/collect_results.py <run-id> …` (see "Platform support page and
     badges") and commit it in a PR.
 - **Platform workflows** (`linux.yml`, `macos.yml`, `windows-msvc.yml`,
-  `windows-gnu.yml`, `freebsd.yml`, `qemu.yml`; #143–#149) take the inputs
+  `windows-gnu.yml`, `freebsd.yml`; #143–#148) take the inputs
   `areas` (ctest label regex), `tests` and `snippets`, and keep their steps in
   `tools/ci/`: `run.sh` / `run.ps1` (configure, build, test, snippets, then
   `cppdocs_ci.py collect` writes `results-<platform>-<compiler>.json` and the
@@ -517,7 +520,7 @@ snippets, the local runs first, then each run's link. Never edit that block
 by hand either (`gen_index.py` leaves it alone, and the collector leaves the
 index alone). The README's badge row has one badge per platform workflow file
 (`linux.yml`, `macos.yml`, `windows-msvc.yml`, `windows-gnu.yml`,
-`freebsd.yml`, `qemu.yml`) on `branch=main&event=workflow_dispatch`, linked to
+`freebsd.yml`) on `branch=main&event=workflow_dispatch`, linked to
 each workflow's page, next to a line saying runs are manual.
 
 - **The badges and the page change only from consented runs.** Never start a
@@ -685,7 +688,7 @@ A release (the owner names the version) needs all of these, in order:
 1. **Local runs** (still required): everything in the "Cutting a release"
    row of "Running the tests", with the counts.
 2. **Green consented Actions runs of every platform workflow** (`linux`,
-   `macos`, `windows-msvc`, `windows-gnu`, `freebsd`, `qemu`) on the `dev`
+   `macos`, `windows-msvc`, `windows-gnu`, `freebsd`) on the `dev`
    commit being released, each started only with the owner's consent for
    that run. Every failure is fixed through the fix loop in "GitHub
    Actions" (an issue and a PR into `dev` each), then re-run green. A fix

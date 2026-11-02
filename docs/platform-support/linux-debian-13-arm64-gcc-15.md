@@ -19,7 +19,7 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1095) | 30 | 0 | 0 | 1065 | 0 |
+| Features (1098) | 30 | 0 | 0 | 1068 | 0 |
 | Examples (820) | 12 | 0 | 0 | 808 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout).

@@ -20,7 +20,7 @@ on:
       platforms:
         description: >-
           "all", or a comma list of: linux, macos, windows-msvc, windows-gnu,
-          freebsd, qemu
+          freebsd
         type: string
         default: all
       areas:
@@ -57,7 +57,7 @@ jobs:
           TESTS: ${{ inputs.tests }}
         run: |
           set -euo pipefail
-          known="linux macos windows-msvc windows-gnu freebsd qemu"
+          known="linux macos windows-msvc windows-gnu freebsd"
           if [[ "$SNIPPETS" != true && "$TESTS" != true ]]; then
             echo "::error::Both snippets and tests are off; nothing to run."
             exit 1
@@ -143,22 +143,12 @@ jobs:
       snippets: ${{ inputs.snippets }}
       tests: ${{ inputs.tests }}
 
-  qemu:
-    name: qemu.yml
-    needs: plan
-    if: contains(fromJSON(needs.plan.outputs.platforms), 'qemu')
-    uses: ./.github/workflows/qemu.yml
-    with:
-      areas: ${{ inputs.areas }}
-      snippets: ${{ inputs.snippets }}
-      tests: ${{ inputs.tests }}
-
   # One matrix for the whole run in the run's summary page, built by the same
   # collector that writes docs/platform-support.md (that page is refreshed
   # locally, never committed from here).
   summary:
     name: summary
-    needs: [plan, linux, macos, windows-msvc, windows-gnu, freebsd, qemu]
+    needs: [plan, linux, macos, windows-msvc, windows-gnu, freebsd]
     if: ${{ !cancelled() && needs.plan.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
