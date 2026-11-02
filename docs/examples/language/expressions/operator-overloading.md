@@ -66,7 +66,7 @@ Implement `@=` as a member, then `@` in terms of it as a *hidden friend* — a
 take part in implicit conversion, so `1 + m` and `m + 1` both work if `T` is
 constructible from `int`.
 
-```cpp
+```cpp run
 #include <iostream>
 
 class Money {
@@ -97,7 +97,7 @@ operand, and you can't add members to `std::ostream`.
 
 ### Increment and decrement
 
-```cpp
+```cpp run
 #include <iostream>
 
 struct Counter {
@@ -119,7 +119,7 @@ make a copy.
 
 ### Subscript, including multi-dimensional (C++23)
 
-```cpp
+```cpp run
 #include <cstddef>
 #include <iostream>
 #include <vector>
@@ -195,7 +195,7 @@ equal to unrelated handles.
 
 ### Pointer-like types: `->` and `*`
 
-```cpp
+```cpp run
 #include <iostream>
 #include <memory>
 #include <string>

@@ -19,7 +19,7 @@ function defined in it is then defined once per file, which breaks the
 one-definition rule: the link fails with "multiple definition". Declare in
 the header, or make the definition `inline`, `constexpr` or a template.
 
-```cpp nocompile
+```cpp bad
 // --- counter.h, included by a.cpp and b.cpp ---
 int hits = 0;                       // BAD: defined in every file that includes it
 int next_hit() { return ++hits; }   // BAD: the same; the link fails
@@ -43,7 +43,7 @@ where it's defined. A declaration copied by hand into each user can drift
 from the definition, and the mismatch shows up late, at link time, or not at
 all.
 
-```cpp nocompile
+```cpp bad
 // --- report.cpp ---
 void log_event(const char* msg, int level) { /* ... */ }
 // --- main.cpp ---
@@ -67,7 +67,7 @@ whatever was declared above it (macros, `using` directives, overloads), so
 its meaning can depend on the including file. Includes at the top also show
 a file's dependencies at a glance.
 
-```cpp nocompile
+```cpp bad
 #define max(a, b) ((a) > (b) ? (a) : (b))   // some code, then...
 #include <algorithm>                         // BAD: the macro rewrites std::max inside the header
 #include <vector>
@@ -80,9 +80,9 @@ a file's dependencies at a glance.
 int biggest(const std::vector<int>& v) { return std::ranges::max(v); }
 ```
 
-The BAD block is `nocompile`: the prelude has already included
-`<algorithm>`, so here it would hide the problem, and in a real file the
-error appears deep inside the standard header.
+The BAD block is tagged `bad`: it compiles here only because the snippet
+prelude has already included `<algorithm>`. In a real file the mistake shows
+up as an error deep inside the standard header.
 
 ## SF.5: A `.cpp` file must include the header file(s) that defines its interface
 
@@ -90,7 +90,7 @@ error appears deep inside the standard header.
 definition against its declaration, so a wrong return type is a compile
 error in `widget.cpp`, not a link error (or a crash) somewhere else.
 
-```cpp nocompile
+```cpp bad
 // --- area.h ---
 //   double area(double w, double h);
 // --- area.cpp, which doesn't include area.h ---
@@ -225,7 +225,7 @@ already happens to bring it in. What a standard header includes varies
 between libraries and versions, so code that relies on it breaks when you
 change compiler.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>   // BAD: std::string and std::getline happen to work through
 void echo() {         // <iostream> on some libraries, but nothing guarantees it
     std::string line;
@@ -244,8 +244,9 @@ void echo() {
 }
 ```
 
-The BAD block is `nocompile` because the prelude includes `<string>` anyway;
-on its own it compiles or not depending on the standard library.
+The BAD block is tagged `bad`: it compiles here because the snippet prelude
+includes `<string>`. On its own, whether it compiles depends on which headers
+the standard library happens to pull in.
 
 ## SF.11: Header files should be self-contained
 
@@ -253,7 +254,7 @@ A header should compile when it's the first (or only) thing a file includes:
 it includes what it uses itself. Otherwise every user has to know its
 dependencies and include them first, in the right order.
 
-```cpp nocompile
+```cpp bad
 // --- names.h ---
 // BAD: uses std::string and std::vector but includes neither;
 // it only compiles if the includer happened to include them first
@@ -268,8 +269,8 @@ std::vector<std::string> split(const std::string& text, char sep);
 ```
 
 A simple check: compile a `.cpp` file that includes only the header. The
-BAD block is `nocompile` because the prelude would supply the missing
-headers.
+BAD block is tagged `bad`: it compiles here only because the snippet prelude
+supplies the missing headers.
 
 ## SF.12: Prefer the quoted form of `#include` for files relative to the including file and the angle bracket form everywhere else
 
@@ -343,7 +344,7 @@ unnamed namespace there: a separate variable per file, duplicate code, and
 inline functions or templates that refer to it break the one-definition
 rule. In a header, use a named namespace and `inline`.
 
-```cpp nocompile
+```cpp bad
 // --- config.h ---
 namespace {
     int load_count = 0;                         // BAD: one variable per including file
@@ -368,7 +369,7 @@ They get internal linkage, so they can't clash with a same-named function in
 another file and nothing outside can come to depend on them. It also works
 for types, which `static` doesn't.
 
-```cpp nocompile
+```cpp bad
 // --- report.cpp ---
 int format_row(int x) { return x * 2; }   // BAD: external linkage; another file's format_row
 int report(int x) { return format_row(x); }   // clashes at link time

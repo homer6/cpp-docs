@@ -21,10 +21,15 @@ The index links each rule's example and test, and counts what's still to do
   - the BAD block is `compile-fail="regex"` when the compiler rejects the
     mistake (the repo's question: can the compiler reject it?), with a regex
     that matches both GCC's and Clang's diagnostic;
-  - otherwise `nocompile`, with a comment saying why it's wrong (UB, a leak,
-    a race), since it compiles;
+  - otherwise `bad`: the checker compiles it, so it must compile, and a
+    comment says why it's wrong (UB, a leak, a race). Add `warns="regex"`
+    when `-Wall -Wextra` warns about it, and `run` (with a `main`) when a
+    sanitizer can catch it at run time;
+  - `nocompile` only when the block can't compile here at all (it uses names
+    it doesn't declare, a third-party header, another platform's syntax);
   - the GOOD block compiles (`cpp`, or `cpp body` for statements), with
-    `needs=<feature>` for what not every compiler has.
+    `needs=<feature>` for what not every compiler has, and `run` when it has
+    a `main`: it's then run under ASan and UBSan and must exit clean.
 - **A rule that isn't about code** (philosophy, naming advice, FAQ entries)
   gets one line instead of code: `*No example: <reason>.*`. The index shows
   the reason, copied into a page one folder up, so keep links out of it: put

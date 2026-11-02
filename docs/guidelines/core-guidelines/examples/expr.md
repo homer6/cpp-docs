@@ -15,7 +15,7 @@ The standard library is already written, tested and known to every reader.
 A hand-written loop for a well-known algorithm is longer and hides what it
 computes.
 
-```cpp nocompile
+```cpp bad
 double total(const std::vector<double>& prices) {
     double sum = 0;
     for (std::size_t i = 0; i != prices.size(); i++)   // BAD: a hand-made accumulate
@@ -102,7 +102,7 @@ A name that lives longer than it is needed can be misused later, and an object
 that owns a resource holds it for the whole scope. Give each object the
 smallest scope that does the job.
 
-```cpp nocompile
+```cpp bad
 std::mutex m;
 std::vector<int> pending;
 
@@ -131,7 +131,7 @@ void drain() {
 A variable declared in the `for`, `if` or `switch` header exists only for that
 statement, so it can't be reused by mistake afterwards.
 
-```cpp nocompile
+```cpp bad
 void report(const std::map<std::string, int>& ages, const std::string& name) {
     auto it = ages.find(name);             // BAD: it stays in scope for the rest of the function
     if (it != ages.end())
@@ -152,7 +152,7 @@ Short conventional names (`i`, `v`, `x`) read best in a few lines of local
 code. A name used far from its declaration needs enough words to be
 understood there.
 
-```cpp nocompile
+```cpp bad
 std::string tt(std::string s);    // BAD: a public function with a cryptic name
 
 void print(const std::vector<int>& the_vector_of_values) {   // BAD: long names for local, generic things
@@ -257,7 +257,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A name declared again in an inner block hides the outer one, and a later
 assignment silently goes to the wrong variable.
 
-```cpp nocompile
+```cpp bad
 int score(const std::vector<int>& rounds) {
     int total = 0;
     for (int r : rounds) {
@@ -336,7 +336,7 @@ void ship(const Order& order) {
 Declaring first and assigning later leaves a window where the variable holds
 a meaningless value, and every path must remember to set it.
 
-```cpp nocompile
+```cpp bad
 std::string label(int errors) {
     std::string text;          // BAD: empty until some branch assigns it
     if (errors == 0) text = "ok";
@@ -383,7 +383,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A raw owning pointer leaks on every early return or exception that skips its
 `delete`. `std::unique_ptr` frees the object on every path at no extra cost.
 
-```cpp nocompile
+```cpp bad
 void load(bool cancel) {
     int* buffer = new int[256]{};   // BAD: owned by a raw pointer
     if (cancel) return;             // leak
@@ -407,7 +407,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A `const` object can't be changed by mistake, and it tells the reader the value
 is fixed. Leave it non-`const` only when you mean to change it.
 
-```cpp nocompile
+```cpp bad
 int buffer_size(int lines) {
     int width = 80;                 // BAD: never changes, but nothing says so
     int size = lines * width + 1;
@@ -428,7 +428,7 @@ int buffer_size(int lines) {
 Reusing one variable for a second meaning makes both uses harder to follow,
 and leftover state from the first use leaks into the second.
 
-```cpp nocompile
+```cpp bad
 void greet(const std::string& user) {
     std::string s = "Hello, " + user;   // s is a greeting...
     use(s);
@@ -476,7 +476,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 When a value takes several statements to compute, an immediately invoked
 lambda keeps the scratch variables inside it and lets the result be `const`.
 
-```cpp nocompile
+```cpp bad
 void plan(const std::vector<int>& sizes) {
     int largest_even = 0;              // BAD: should be const once computed, but can't be
     for (int s : sizes)
@@ -504,7 +504,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A macro rewrites text before the compiler sees it, ignoring scopes and types,
 so what you read isn't what gets compiled.
 
-```cpp nocompile
+```cpp bad
 #define Case break; case       // BAD: hides a break inside a "case"
 #define NAME_OF(x) #x          // BAD: text tricks tools can't follow
 
@@ -535,7 +535,7 @@ A function-like macro pastes its argument's text, so precedence and repeated
 evaluation surprise the caller. A `constexpr` variable or function obeys the
 normal rules and costs nothing at run time.
 
-```cpp nocompile
+```cpp bad
 #define PI 3.14159
 #define SQUARE(x) x * x       // BAD: SQUARE(1 + 2) is 1 + 2 * 1 + 2, which is 5
 ```
@@ -585,7 +585,7 @@ struct Config { int VERSION = 1; };
 A `...` function gets no type checking: the callee guesses each argument's type
 and where the list ends. A variadic template knows every type at compile time.
 
-```cpp nocompile
+```cpp bad
 #include <cstdarg>
 void log_all(int count, ...) {        // BAD: trusts the caller for count and types
     va_list args;
@@ -634,7 +634,7 @@ for (int n : {10, 20, 30}) {      // GOOD: one step per statement
 `==` and `!=` bind tighter than `&`, `|` and `^`, so a bit test without
 parentheses compares first and masks afterwards.
 
-```cpp nocompile
+```cpp bad
 bool is_set(unsigned flags, unsigned mask) {
     return flags & mask != 0;     // BAD: means flags & (mask != 0)
 }
@@ -653,7 +653,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 Pointer arithmetic and subscripts on a bare pointer can't be checked: nothing
 knows how many elements there are. Pass a `std::span`, which carries its size.
 
-```cpp nocompile
+```cpp bad
 void clear(int* p, int n) {
     for (int i = 0; i <= n; ++i)  // BAD: writes one element past the end
         *(p + i) = 0;
@@ -679,7 +679,7 @@ sequenced, the behaviour is undefined. C++17 sequenced more operators, but not
 all of them (`+`, for one), so don't read a variable in the same expression
 that writes it.
 
-```cpp nocompile
+```cpp bad
 int next_pair(int i) {
     return i++ + i;   // BAD: undefined: the read of i isn't sequenced with i++
 }
@@ -700,7 +700,7 @@ with side effects can run either way round. Evaluate them in separate
 statements first. (A braced initializer list, and since C++17 `<<` chains, are
 evaluated left to right.)
 
-```cpp nocompile
+```cpp bad
 int next_id();
 // BAD: which call gets the smaller id is unspecified
 auto ids = std::make_pair(next_id(), next_id());
@@ -722,7 +722,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A bare number in an expression says nothing about where it came from, and
 changing it means finding every copy. Name it once.
 
-```cpp nocompile
+```cpp bad
 double shipping(double kg) {
     return kg > 20 ? kg * 1.75 : 4.99;   // BAD: what are 20, 1.75 and 4.99?
 }
@@ -768,7 +768,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 integer constant too, so overload resolution can pick the integer overload.
 `nullptr` has its own type, which converts only to pointers.
 
-```cpp nocompile
+```cpp bad
 void notify(int user_id);
 void notify(const char* message);
 void reset() { notify(0); }   // BAD: calls notify(int), not the pointer overload
@@ -789,7 +789,7 @@ an integer pointer is undefined behaviour; `std::bit_cast` copies the bits with
 the types checked. To discard a `[[nodiscard]]` result, assign it to
 `std::ignore` instead of casting to `void`.
 
-```cpp nocompile
+```cpp bad
 std::uint64_t bits_of(double d) {
     return *(std::uint64_t*)&d;   // BAD: undefined: reads a double through the wrong type
 }
@@ -810,7 +810,7 @@ A C-style cast does whatever conversion makes the code compile, even between
 unrelated classes. `static_cast` and the other named casts do one kind of
 conversion each, so the compiler rejects the wrong kind.
 
-```cpp nocompile
+```cpp bad
 struct Account {};
 struct Report {};             // used to derive from Account, not any more
 Report* as_report(Account* a) {
@@ -834,7 +834,7 @@ Writing through a `const_cast` breaks the promise `const` made, and if the
 object itself was declared `const` the write is undefined behaviour. For a
 cache inside a `const` member function, use `mutable`.
 
-```cpp nocompile
+```cpp bad
 struct Prices {
     std::map<int, double> cache;
     double lookup(int id) const {
@@ -861,7 +861,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 Constructs that can't go out of range (range-`for`, algorithms) need no index
 checks at all, and are usually as fast or faster.
 
-```cpp nocompile
+```cpp bad
 bool contains(const std::vector<int>& v, int x) {
     for (std::size_t i = 0; i < v.size() + 1; ++i)    // BAD: the bound is easy to get wrong
         if (i < v.size() && v[i] == x) return true;  // and needs a check to stay in range
@@ -882,7 +882,7 @@ extra `std::move` adds noise and can block copy elision. Write it when you
 hand a named object to a sink, and never on a `const` object, where it
 silently copies.
 
-```cpp nocompile
+```cpp bad
 std::vector<int> make() {
     std::vector<int> result{1, 2, 3};
     return std::move(result);                  // BAD: prevents copy elision
@@ -909,7 +909,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 A naked `new` in application code needs a matching `delete` on every path,
 including exceptions. Let a container or smart pointer own the memory.
 
-```cpp nocompile
+```cpp bad
 void render(int n) {
     Widget* items = new Widget[n];   // BAD: a throw below skips the delete[]
     for (int i = 0; i < n; ++i) items[i].run();
@@ -977,7 +977,7 @@ Copying a derived object into a base object keeps only the base part: the
 derived data and the derived overrides are lost. Use references or pointers to
 the base, and make a polymorphic base non-copyable so slicing doesn't compile.
 
-```cpp nocompile
+```cpp bad
 struct Shape { virtual ~Shape() = default; virtual double area() const { return 0; } };
 struct Square : Shape { double side = 2; double area() const override { return side * side; } };
 
@@ -1005,7 +1005,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 `T{e}` constructs a `T` and refuses narrowing. `T(e)` and `(T)e` are casts that
 also allow truncation and even pointer-to-integer conversions.
 
-```cpp nocompile
+```cpp bad
 int whole(double d) { return int(d); }   // BAD: silently truncates 7.9 to 7
 ```
 
@@ -1053,7 +1053,7 @@ static_assert(latest() == 42);
 A `switch` on constants is easier to read than an `if` chain, usually compiles
 better, and lets the compiler warn when an enumerator is missing.
 
-```cpp nocompile
+```cpp bad
 enum class Level { low, mid, high };
 int fan_speed(Level l) {
     if (l == Level::low) return 1;          // BAD: a chain of comparisons with constants
@@ -1079,7 +1079,7 @@ int fan_speed(Level l) {
 When a loop just visits each element, range-`for` removes the index and its
 off-by-one and signed/unsigned mistakes. Bind by `const&` to avoid copies.
 
-```cpp nocompile
+```cpp bad
 void print(const std::vector<std::string>& names) {
     for (int i = 0; i < names.size(); ++i)   // BAD: an index nobody needs
         std::cout << names[i] << '\n';
@@ -1098,7 +1098,7 @@ void print(const std::vector<std::string>& names) {
 A `for` header shows the start, the end and the step together, and keeps the
 loop variable inside the loop.
 
-```cpp nocompile
+```cpp bad body
 int i = 0;
 while (i < 10) {    // BAD: start, test and step are spread out
     use(i);
@@ -1296,7 +1296,7 @@ There is no unnamed local variable: `T{args};` creates a temporary that is
 destroyed at the end of the statement. For a lock guard, that means the lock is
 released at once.
 
-```cpp nocompile
+```cpp bad
 std::mutex m;
 int counter = 0;
 void bump() {
@@ -1409,7 +1409,7 @@ On an unsigned type every bit is a value bit, so shifts and masks do what the
 bit pattern says. A signed right shift copies the sign bit in, and small
 unsigned types are promoted to `int` before `~`.
 
-```cpp nocompile
+```cpp bad
 int top_nibble(int word) {
     return word >> 28;               // BAD: for a negative word the sign bit is copied in: -1, not 15
 }
@@ -1432,7 +1432,7 @@ People expect `a - b` to be negative when `b > a`. With unsigned types the
 result wraps around to a large positive value instead. Use unsigned only when
 you really want arithmetic modulo 2ⁿ, and say so.
 
-```cpp nocompile
+```cpp bad
 unsigned in_stock = 5;
 unsigned ordered = 7;
 auto shortfall = in_stock - ordered;   // BAD: wraps to 4294967294, not -2
@@ -1528,7 +1528,7 @@ Tested by [`tests/guidelines/expr_test.cpp`](../../../../tests/guidelines/expr_t
 An `unsigned` parameter doesn't stop a negative number: it converts it to a
 huge positive one without complaint. Take a signed value and check it.
 
-```cpp nocompile
+```cpp bad
 unsigned area(unsigned w, unsigned h) { return w * h; }
 int height = -2;             // e.g. from input
 auto a = area(height, 2);    // BAD: -2 becomes 4294967294; a is 4294967292

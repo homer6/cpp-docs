@@ -40,7 +40,7 @@ by rehash.** Erasing affects only the erased element.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <unordered_map>
 
 int main() {

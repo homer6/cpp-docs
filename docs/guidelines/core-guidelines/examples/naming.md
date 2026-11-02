@@ -11,7 +11,7 @@ A comment that repeats the code adds nothing and goes stale when the code
 changes. Put the meaning in names and types, and save comments for what code
 can't say.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the comment restates the expression and will drift from it.
 double f(double a, double b) {
     return a * 1.13 + b;   // multiply a by 1.13 and add b
@@ -31,7 +31,7 @@ Code shows what it does; it can't show what it was meant to do. A comment
 that states the intent (the contract, the reason for an odd choice) lets a
 reader check the code against it.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles; the comment narrates the loop instead of saying why it's backwards.
 void drop_negatives(std::vector<int>& v) {
@@ -54,7 +54,7 @@ void drop_negatives(std::vector<int>& v) {
 Long, chatty comments are skimmed or skipped. Say the one thing the reader
 needs, in plain, correct English.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; three lines of chatter to say one thing.
 // so basically this function is the one that we use whenever we kind of
 // want to get the thing clamped, like between low and high, you know, so it
@@ -74,7 +74,7 @@ Indentation tells the reader what's inside what. When it disagrees with the
 code, the reader believes the indentation; consistent indentation (best
 applied by a formatter) makes such mistakes stand out.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; the stray ';' ends the loop, and the indentation hides it.
 int count_hits(const int* v, int n) {
     int hits = 0;
@@ -102,7 +102,7 @@ Names like `print_int` or `strName` repeat what the type already says, go
 wrong when the type changes, and make the caller pick the function by hand.
 Name the operation and let overloading pick by type.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles; the caller must match each name to the argument's type.
 void print_int(int);
@@ -122,7 +122,7 @@ void caller() { print(3); print("hi"); }
 A short name is fine where its whole scope fits on screen; a name visible
 across a program needs to say what it is and not clash with others.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; a global named n says nothing and clashes easily,
 // while the loop index has a long name for a two-line scope.
 int n = 0;
@@ -151,7 +151,7 @@ tells you nothing surprising. Leave imported libraries in their own style. Also
 avoid names with a double underscore or a leading underscore and capital
 letter: those are reserved for the implementation.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but mixes three styles, and _Buffer is a reserved name.
 struct http_request {};
 struct HttpResponse {};
@@ -190,7 +190,7 @@ With no house style to follow, the default is the standard library's:
 lower case words separated by underscores. Consistency with an existing style
 beats this default.
 
-```cpp nocompile
+```cpp bad
 // BAD (only as a default): compiles; camelCase where the standard library uses underscores.
 #include <string>
 std::size_t wordCount(const std::string& inputText);
@@ -207,7 +207,7 @@ Digit separators (`'`, C++14) make long numbers readable and typos visible.
 Literal suffixes say what type you mean: `"text"s` is a `std::string`,
 `250ms` a `std::chrono::milliseconds`.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; is that 100 million or 10 million? And is the timeout in ms or s?
 long long budget = 100000000;
 int timeout = 250;
@@ -247,7 +247,7 @@ A familiar order lets readers find things: types, then constructors and
 assignments and the destructor, then functions, then data; and `public`
 before `protected` before `private`, each in one block.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles; data first, then the interface split across two public blocks.
 class Player {
@@ -282,7 +282,7 @@ The default layout is K&R's (often called "Stroustrup" style in C++): the
 opening brace of a class or a control statement on the same line, a function's
 opening brace on its own line, one statement per line, and a space after `if`.
 
-```cpp nocompile
+```cpp bad
 // BAD (only as a default): compiles; braces and statements packed in no particular style.
 struct Point{int x;int y;};
 int sign(int x){if(x<0){return -1;}else if(x>0)return 1;return 0;}
@@ -311,7 +311,7 @@ C++ style attaches `*` and `&` to the type (`int* p`, `T& r`), which reads as
 ([NL.21](#nl21-declare-one-name-only-per-declaration)), it avoids the
 confusion that C style was designed around.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD (only as a default): compiles; C-style and mixed spacing.
 std::string &longest(std::string &a, std::string & b);
@@ -330,7 +330,7 @@ int* find_slot(int* table);
 `items_count`) are easy to confuse, on screen and in review. Pick names that
 differ clearly.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; l1 and ll, O0 and OO, look alike.
 int l1 = 1, ll = 2;
 int O0 = 0, OO = 3;
@@ -349,7 +349,7 @@ int total_items = 5;
 A second statement on a line is easy to miss, especially after an `if`,
 where it looks guarded but isn't.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; reset() looks like part of the if, but it always runs.
 void reset();
 void notify();
@@ -398,7 +398,7 @@ Tested by [`tests/guidelines/naming_test.cpp`](../../../../tests/guidelines/nami
 In C++, `f()` already means "no arguments"; `f(void)` is a C habit that
 only matters in a header shared with C.
 
-```cpp nocompile
+```cpp bad
 // BAD (in C++-only code): compiles; the void is noise.
 int next_id(void);
 ```
@@ -414,7 +414,7 @@ Tested by [`tests/guidelines/naming_test.cpp`](../../../../tests/guidelines/nami
 `const int` and `int const` are the same type, but most code and teaching
 material writes `const` first, so that's what readers expect.
 
-```cpp nocompile
+```cpp bad
 // BAD (only as a default): compiles; east const where readers expect west const.
 int const limit = 10;
 char const* const name = "x";

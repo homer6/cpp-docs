@@ -11,7 +11,7 @@ Hidden shared state, such as a function-local `static` that caches a result,
 becomes a data race the day a second thread calls the function. Keep the state
 in an object the caller owns (or make it `thread_local`).
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: compiles, but the two statics are shared by every thread that calls this:
 // two callers at once race on them (undefined behaviour).
@@ -58,7 +58,7 @@ with nothing ordering the accesses, is a data race: undefined behaviour, not
 just a wrong number. Make the shared object atomic, guard it with a mutex, or
 stop sharing it.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles; ++ on a plain long is a read, an add and a write. Request handlers
 // on several threads race on it: updates get lost, and the behaviour is undefined.
 long requests_served = 0;
@@ -80,7 +80,7 @@ Data nobody writes can be read by any number of threads without a lock. Give
 tasks read-only (`const`) input and let each produce its own result, rather
 than having them all write into one shared object.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 #include <vector>
 // BAD: compiles; both threads push_back into the same vector with no lock: a data race.
@@ -122,7 +122,7 @@ facility worry about threads. A raw thread makes you invent a channel for the
 result and remember to join; a task returns its result, or its exception,
 through a future.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 // BAD: compiles, but the result travels through a variable the caller must not touch
 // until join(), and an exception thrown by parse() would call std::terminate.
@@ -156,7 +156,7 @@ It doesn't make an operation atomic and doesn't order memory between threads,
 so a `volatile` flag or counter shared by threads is still a data race. Use
 `std::atomic` (or a mutex).
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but volatile is not synchronization: the read of `ready` races with
 // the write, and nothing makes `payload` visible to the reader when it sees true.
 volatile bool ready = false;
@@ -195,7 +195,7 @@ throws, and then every other thread waiting on the mutex hangs. A lock object
 (`std::scoped_lock`, `std::lock_guard`, `std::unique_lock`) unlocks in its
 destructor, on every path out of the scope.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 #include <vector>
 std::mutex m;
@@ -233,7 +233,7 @@ up holding one and waiting for the other: a deadlock. `std::scoped_lock` (or
 `std::lock`) takes them all with a deadlock-avoidance algorithm, so the order
 you list them in no longer matters.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 struct Account { std::mutex m; long balance = 0; };
 // BAD: compiles; transfer(a, b) and transfer(b, a) running at once lock the two
@@ -266,7 +266,7 @@ asking for the lock you already hold (a deadlock with `std::mutex`), or
 blocking for a long time while everyone else waits. Copy what you need under
 the lock, release it, then call out.
 
-```cpp nocompile
+```cpp bad
 #include <functional>
 #include <mutex>
 #include <vector>
@@ -317,7 +317,7 @@ use pointers and references to anything that outlives it in that scope.
 Locals are destroyed in reverse order of declaration, so declare the data
 *before* the `std::jthread` that uses it; then the thread is joined first.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 #include <vector>
 // BAD: compiles, but `out` is declared after the thread, so it is destroyed first,
@@ -350,7 +350,7 @@ If a thread might be detached, assume it outlives the function that started
 it: it may only use objects with static storage or objects it owns. A pointer
 or reference to a local is a dangling pointer waiting to happen.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <thread>
 void log_line(const std::string* s);
@@ -381,7 +381,7 @@ A joining thread joins in its destructor. The standard one is C++20's
 `std::jthread`, which also offers a stop token; `gsl::joining_thread` from the
 GSL is the older equivalent.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 void tick();
 // BAD: compiles; if anything between the two lines throws (or returns), t is
@@ -412,7 +412,7 @@ still be running while static objects are destroyed at exit. Give a
 long-running thread an owner instead: a `std::jthread` member of an object
 whose destructor asks it to stop and joins it.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 void heartbeat_once();
 // BAD: compiles, but nobody can stop this thread, tell whether it is still alive,
@@ -474,7 +474,7 @@ object, neither can safely delete it. Give each a `std::shared_ptr` copy: the
 reference count is updated atomically, and the last owner to let go deletes
 the object.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 struct Config { int level = 1; };
 void apply(const Config& c);
@@ -509,7 +509,7 @@ and loses warm caches. Handing work over one tiny item at a time, waking the
 consumer for each, spends more on switching than on the work; hand it over in
 batches.
 
-```cpp nocompile
+```cpp bad
 #include <condition_variable>
 #include <deque>
 #include <mutex>
@@ -551,7 +551,7 @@ Starting a thread costs an OS call, a stack and scheduling, often far more
 than a small piece of work. Start a few workers once and give them many
 items (or use a thread pool) instead of a thread per item.
 
-```cpp nocompile
+```cpp bad
 #include <thread>
 #include <vector>
 void handle(int request);
@@ -586,7 +586,7 @@ wait is lost, and `wait` may also return for no reason (a spurious wake-up).
 Always wait for a condition on shared state, with the overload that takes a
 predicate.
 
-```cpp nocompile
+```cpp bad
 #include <condition_variable>
 #include <mutex>
 std::mutex m;
@@ -626,7 +626,7 @@ work that doesn't touch shared data (formatting, I/O, heavy computation)
 outside the lock, and wrap only the shared access in a block with its own
 guard.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 #include <string>
 #include <vector>
@@ -679,7 +679,7 @@ The temporary form compiles, and protects nothing. Recent standard libraries
 mark the lock constructors `[[nodiscard]]`, so GCC 15 with libstdc++ and
 Clang 22 with libc++ at least warn about it with `-Wall`:
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 std::mutex m;
 int counter = 0;
@@ -709,7 +709,7 @@ through the lock. `synchronized_value<T>` (proposed in P0290, not yet
 standard) does that; a small wrapper with a `with()` function gives the same
 guarantee today.
 
-```cpp nocompile
+```cpp bad
 #include <map>
 #include <mutex>
 #include <string>
@@ -753,7 +753,7 @@ coroutine frame. Once the closure is gone (often right after the call), the
 suspended coroutine reads freed memory when it resumes. Pass the values as
 parameters instead: parameters are copied into the frame.
 
-```cpp nocompile
+```cpp bad
 #include <coroutine>
 #include <exception>
 #include <string>
@@ -822,7 +822,7 @@ suspended, which may be forever, and it may be resumed on another thread,
 which then unlocks a mutex it doesn't own (undefined behaviour). Release the
 lock before every `co_await`.
 
-```cpp nocompile
+```cpp bad
 #include <coroutine>
 #include <exception>
 #include <mutex>
@@ -891,7 +891,7 @@ arguments (temporaries especially) may be gone by the time it resumes. A
 reference parameter then dangles; a by-value parameter is a copy in the
 coroutine frame.
 
-```cpp nocompile
+```cpp bad
 #include <coroutine>
 #include <exception>
 #include <string>
@@ -961,7 +961,7 @@ A future is the return channel of a concurrent call: `get()` waits for the
 task and gives you its value, or rethrows the exception it ended with. No
 shared variable, no flag and no lock to get right.
 
-```cpp nocompile
+```cpp bad
 #include <atomic>
 #include <thread>
 long checksum(const char* path);
@@ -992,7 +992,7 @@ promise or packaged task to manage. Pass `std::launch::async` when the task
 must really run concurrently; without it the library may defer it until
 `get()`.
 
-```cpp nocompile
+```cpp bad
 #include <future>
 #include <thread>
 int score(int);
@@ -1024,7 +1024,7 @@ memory reclamation, memory orders) and the bugs rarely show up in tests.
 Unless a measurement shows the lock is the bottleneck, a mutex around a
 standard container is correct and usually fast enough.
 
-```cpp nocompile
+```cpp bad
 #include <atomic>
 struct Node { int value; Node* next; };
 std::atomic<Node*> head{nullptr};
@@ -1071,7 +1071,7 @@ another: x86 keeps most stores in order, ARM doesn't, and optimizers reorder
 too. Use the orders the C++ memory model requires (here release and acquire),
 not what happened to work, and re-test on every new platform.
 
-```cpp nocompile
+```cpp bad
 #include <atomic>
 int data = 0;
 std::atomic<bool> ready{false};
@@ -1109,7 +1109,7 @@ initialized exactly once even when several threads reach it at the same time
 (since C++11), and `std::call_once` covers the rest. A hand-written "check,
 lock, check again" with a plain pointer is a data race.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 struct Registry { /* expensive to build */ };
 Registry* instance = nullptr;
@@ -1144,7 +1144,7 @@ correct form: an atomic flag read outside the lock, a mutex, and a second
 check under it. A `volatile` or plain `bool` flag makes the first check a
 data race.
 
-```cpp nocompile
+```cpp bad
 #include <mutex>
 std::mutex flush_mutex;
 volatile bool needs_flush = false;   // BAD: volatile doesn't make the unlocked read safe
@@ -1183,7 +1183,7 @@ writes: a hardware register, memory shared with a device. Every access really
 happens, in order. On an ordinary variable it only makes the code slower and
 suggests a thread-safety it doesn't give.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but a volatile local can't be seen by hardware or another program;
 // it isn't atomic either, so it fixes nothing (CP.8).
 int sum(const int* p, int n) {
@@ -1210,7 +1210,7 @@ the middle of `malloc` or holding a stream's lock, so calling those from it
 can deadlock or corrupt state. Have it set a `volatile std::sig_atomic_t` (or
 lock-free atomic) flag, and act on the flag in normal code.
 
-```cpp nocompile
+```cpp bad
 #include <csignal>
 #include <iostream>
 // BAD: compiles, but iostreams (and malloc, printf, mutexes) aren't safe in a signal handler.

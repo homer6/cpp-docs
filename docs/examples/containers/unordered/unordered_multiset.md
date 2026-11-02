@@ -39,7 +39,7 @@ by rehash, erasure affects only the erased element.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <unordered_set>
 
 int main() {

@@ -10,7 +10,7 @@ Write the algorithm once, in terms of what it needs from a type (a number you
 can add), instead of once per type. The template states the idea; each copy by
 hand is a chance for the copies to drift apart.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: the same loop, copied per element type; a fix to one won't reach the other
 int total_ints(const std::vector<int>& v) { int s = 0; for (int x : v) s += x; return s; }
@@ -79,7 +79,7 @@ A container's element type belongs in its type. A `void*` buffer with a byte
 size hides the element type from the compiler, so every access needs a cast
 and nothing stops the wrong one.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 // BAD: the element type lives only in the programmer's head
 struct Buffer {
@@ -116,7 +116,7 @@ Templates can build a tree of an expression at compile time and evaluate it
 later in one pass (expression templates). `a + b + c` on vectors then makes no
 temporary vector per `+`.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 using Vec = std::vector<double>;
 // BAD: each + allocates and fills a whole temporary vector
@@ -270,7 +270,7 @@ Tested by [`tests/guidelines/templates_test.cpp`](../../../../tests/guidelines/t
 of value it is, and the compiler checks it if the initializer's type ever
 changes.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 void f(const std::vector<int>& v) {
     auto n = v.size();            // BAD: a reader has to look up what size() returns,
@@ -293,7 +293,7 @@ When a concept constrains one type parameter, put it where the parameter is
 introduced (`template<std::integral T>`) or use `std::integral auto`. A
 separate `requires` clause for the same thing only adds words.
 
-```cpp nocompile
+```cpp bad
 #include <concepts>
 template <typename T>
     requires std::integral<T>         // BAD: two lines to say "T is integral"
@@ -319,7 +319,7 @@ A concept that checks a single operator, such as "has `+`", says nothing
 about meaning: `std::string` has a `+` that concatenates. Name a real idea
 (a number) and require the operations that idea implies.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 template <class T>
 concept Addable = requires(T a, T b) { a + b; };   // BAD: syntax only
@@ -383,7 +383,7 @@ The compiler checks a concept's syntax, never its meaning. Write the meaning
 down next to the concept, as the laws a type must obey; the act of writing them
 often shows the concept is wrong, and tests can check them for sample values.
 
-```cpp nocompile
+```cpp bad
 template <class T>
 concept Monoid = requires(T a, T b) { a + b; T{}; };   // BAD: which + ? which T{} ? no laws stated
 ```
@@ -546,7 +546,7 @@ The official rule has only its title so far. Define a concept by what a type
 can do; use `!` only to carve a small exception out of a positive concept. A
 concept that is mostly a negation matches far more types than you meant.
 
-```cpp nocompile
+```cpp bad
 #include <type_traits>
 template <class T>
 concept Text = !std::is_arithmetic_v<T>;   // BAD: "not a number" isn't "text":
@@ -603,7 +603,7 @@ A function object (a lambda, `std::less<>`) carries state such as a threshold,
 and its type names exactly one operation, so the algorithm can inline it. A
 function pointer has neither: state goes in a global and the call is indirect.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <vector>
 int g_limit = 0;                                 // BAD: state smuggled in a global
@@ -757,7 +757,7 @@ argument-dependent lookup finds it, it beats a function that needs a
 conversion, such as derived-to-base. Constrain it, or give it an uncommon
 name.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 namespace geo {
     struct Shape {};
@@ -817,7 +817,7 @@ indirect call (and maybe an allocation). When the operation is known at compile
 time, take it as a template parameter. Erase types when you need to store
 different callables in one place.
 
-```cpp nocompile
+```cpp bad
 #include <functional>
 #include <vector>
 // BAD: every caller passes a lambda, but each call goes through std::function
@@ -933,7 +933,7 @@ The primary template gives the general implementation; a specialization swaps
 in a different one for a type that needs it, behind the same interface. Users
 don't change their code.
 
-```cpp nocompile
+```cpp bad
 #include <cstring>
 #include <string>
 #include <vector>
@@ -1014,7 +1014,7 @@ Some types don't behave like values: `==` on `const char*` compares
 addresses, not text. A general template written for regular types gives the
 wrong answer for them; specialize it for the irregular type.
 
-```cpp nocompile
+```cpp bad
 template <class T>
 struct Same {
     bool operator()(const T& a, const T& b) const { return a == b; }
@@ -1147,7 +1147,7 @@ An array of `Derived` converts to a `Base*` silently, and indexing that pointer
 steps by `sizeof(Base)`, landing in the middle of objects. Pass a typed
 container or a `std::span<Derived>`, which doesn't convert to `std::span<Base>`.
 
-```cpp nocompile
+```cpp bad
 struct Base { int id = 0; };
 struct Derived : Base { double extra = 0; };
 void reset(Base* p, int n) { for (int i = 0; i < n; ++i) p[i] = Base{}; }   // steps by sizeof(Base)
@@ -1174,7 +1174,7 @@ When behaviour is fixed at compile time, stack it as a chain of class
 templates, each deriving from its parameter. Every call is direct and can be
 inlined; there's no vtable and no virtual call per event.
 
-```cpp nocompile
+```cpp bad
 // BAD: layers chained through virtual calls, though the stack never changes at run time
 struct Handler { virtual ~Handler() = default; virtual void handle(int) = 0; };
 struct Core : Handler { void handle(int) override {} };
@@ -1237,7 +1237,7 @@ Put the real work (linking nodes, counting) in an ordinary class that can be
 compiled once, in a `.cpp`, and keep the template a thin, type-safe layer of
 casts over it. Every `List<T>` then shares one copy of the code.
 
-```cpp nocompile
+```cpp bad
 // BAD: all the linking logic is in the template, so it's compiled again for
 // every T, and any change to it means recompiling every user
 template <class T>
@@ -1283,7 +1283,7 @@ C varargs (`...` with `va_arg`) lose every argument's type: the callee guesses
 and a wrong guess is undefined behaviour. A variadic template keeps each type,
 so every argument is handled correctly and checked.
 
-```cpp nocompile
+```cpp bad
 #include <cstdarg>
 double sum(int count, ...) {             // BAD: the types are lost
     va_list args;
@@ -1368,7 +1368,7 @@ When every argument has the same type, say so: a `std::initializer_list<T>`
 or a `std::span<const T>`. A variadic template accepts any mix of types and
 creates a new instantiation for each argument count.
 
-```cpp nocompile
+```cpp bad
 template <class... Ts>
 int sum(Ts... xs) { return (0 + ... + xs); }   // BAD: meant for ints, takes anything
 int s = sum(1, 2.9, 3);                        // compiles: 2.9 is silently truncated to 2
@@ -1392,7 +1392,7 @@ Template metaprograms are hard to read, slow to compile and painful to
 debug. Before writing one, check whether a fold expression, a `constexpr`
 function or a concept says it directly.
 
-```cpp nocompile
+```cpp bad
 #include <type_traits>
 // BAD: a recursive metaprogram for "is T one of these types?"
 template <class T, class... Ts> struct one_of : std::false_type {};
@@ -1445,7 +1445,7 @@ When a type depends on properties of other types, compute it with an alias
 template over the standard traits, rather than spelling out a choice for each
 type by hand.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 // BAD: the "pass small types by value" decision repeated by hand for each type
 void send(int v);
@@ -1474,7 +1474,7 @@ To compute a value, write a function: a `constexpr` function reads like
 ordinary code, works at run time too, and usually compiles faster than a
 recursive class template.
 
-```cpp nocompile
+```cpp bad
 // BAD: a value computed by recursive instantiation
 template <long B, int E> struct Power { static constexpr long value = B * Power<B, E - 1>::value; };
 template <long B> struct Power<B, 0> { static constexpr long value = 1; };
@@ -1523,7 +1523,7 @@ The same rule as F.10 for templates: an operation used in several places gets
 a name, so it's written, tested and fixed once, and the call sites say what
 they do.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -1555,7 +1555,7 @@ Tested by [`tests/guidelines/templates_test.cpp`](../../../../tests/guidelines/t
 The same rule as F.11: a small operation used once reads best where it's
 used. A named function object declared elsewhere makes the reader jump away.
 
-```cpp nocompile
+```cpp bad
 #include <algorithm>
 #include <vector>
 struct IsNegative { bool operator()(int x) const { return x < 0; } };   // BAD: named, used once, far away
@@ -1578,7 +1578,7 @@ A variable template (C++14) names a value that depends on a type, so callers
 write `tau<float>` instead of `constants<float>::tau()` or
 `trait<T>::value`.
 
-```cpp nocompile
+```cpp bad
 #include <numbers>
 template <class T>
 struct Constants {   // BAD: a class and a function call just to name a value
@@ -1636,7 +1636,7 @@ overload resolution: the compiler first picks a primary template, and only then
 looks at that template's specializations. So a specialization can be silently
 ignored. Overload instead.
 
-```cpp nocompile
+```cpp bad
 template <class T> int which(T)  { return 0; }
 template <> int which<int*>(int*) { return 1; }   // BAD: specializes which(T) ...
 template <class T> int which(T*) { return 2; }    // ... but this overload is a better match

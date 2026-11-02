@@ -66,7 +66,7 @@ namespace std {
 
 ### `<hazard_pointer>` (P2530)
 
-```cpp nocompile
+```cpp
 namespace std {
   template <class T, class D = default_delete<T>>
   class hazard_pointer_obj_base {            // CRTP base for hazard-protectable types

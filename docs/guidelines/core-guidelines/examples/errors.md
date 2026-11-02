@@ -14,7 +14,7 @@ When a function can't do its job, throwing tells the caller in a way it can't
 ignore, and the return type stays the plain result. A special "error" return
 value is easy to miss and steals a value from the result's range.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 int port_from(const std::string& text) {
     if (text.empty()) return -1;   // BAD: -1 is easy to forget to check,
@@ -41,7 +41,7 @@ An exception is for a failure, not for ordinary control flow. Using `throw`
 to return a found value is harder to read and much slower than a `return`,
 because implementations make the non-throwing path fast.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 #include <vector>
 std::ptrdiff_t index_of(const std::vector<int>& v, int x) {
@@ -67,7 +67,7 @@ std::optional<std::size_t> index_of(const std::vector<int>& v, int x) {
 ```
 
 The BAD version compiles and even works; it's wrong as a design, so it's
-`nocompile`.
+tagged `bad` (compiles, but is wrong).
 
 Tested by [`tests/guidelines/errors_test.cpp`](../../../../tests/guidelines/errors_test.cpp).
 
@@ -77,7 +77,7 @@ Each class states what must hold for its objects (the invariant). Errors are
 handled so that every object still alive afterwards still satisfies it: an
 operation either finishes or leaves the object as it was.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 class Roster {
@@ -111,7 +111,7 @@ A constructor that can't make a valid object should throw, so no half-built
 object ever exists. A separate `init()` call leaves a window where the object
 is unusable and every member function has to check.
 
-```cpp nocompile
+```cpp bad
 class Percent {
     int value_ = 0;
 public:
@@ -148,7 +148,7 @@ runs when the scope is left by any route, a `return`, a `throw` here or a
 throw from a called function, so nothing leaks and no path needs its own
 cleanup.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 void copy_header(const char* path) {
     std::FILE* f = std::fopen(path, "r");
@@ -182,7 +182,7 @@ instead of corrupting something later. C++26 contracts (`pre`) state it in
 the declaration; before them, check it at the top of the function
 (`assert`, or throw for a checked interface).
 
-```cpp nocompile
+```cpp bad
 double average(const std::vector<double>& v) {
     // BAD: nothing says v must not be empty; with an empty v this divides by zero
     double sum = 0;
@@ -213,7 +213,7 @@ and a broken implementation is caught at the function that broke it. C++26
 contracts write it as `post`; before them, check it before returning or in a
 test.
 
-```cpp nocompile
+```cpp bad
 int clamp_percent(int v) {
     // BAD: callers assume 0..100, but nothing says so or checks it
     return v < 0 ? 0 : v > 100 ? 100 : v;
@@ -270,7 +270,7 @@ If a function holds a resource through a raw pointer or handle when it
 throws, the resource leaks: the code that would release it never runs. Hand
 the resource to an owning object before anything can throw.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 void build(int n) {
     int* buffer = new int[100];
@@ -300,7 +300,7 @@ Throw a type made for the error. Its name says what went wrong, it can carry
 details, and a handler can catch exactly it. An `int` or a string literal
 carries no meaning, and could clash with anyone else's `int`.
 
-```cpp nocompile
+```cpp bad
 void load(int id) {
     if (id < 0) throw 42;                 // BAD: what does 42 mean, and who catches int?
     if (id == 0) throw "no such record";  // BAD: a const char*, caught by nobody expecting std::exception
@@ -329,7 +329,7 @@ Throw an object, not a pointer to one (who would delete it?). Catch by
 handler loses the derived type and its overrides (slicing). To rethrow, write
 `throw;`, which rethrows the original object.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 void handle() {
     try {
@@ -364,7 +364,7 @@ and `swap` never throw. A destructor is `noexcept` by default, so a `throw`
 that escapes one calls `std::terminate`. Report a failure some other way
 (log it, or offer an explicit `close()` that can throw).
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 struct Connection {
     bool flush();
@@ -395,7 +395,7 @@ Catch an exception only where something useful can be done about it. A
 function that can't recover should let it pass: RAII cleans up on the way,
 and a handler higher up deals with it.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 std::string read_config(const std::string& path);
 std::string settings(const std::string& path) {
@@ -426,7 +426,7 @@ A `try`/`catch` written to free a resource is a sign the resource has no
 owner. Use an owning object instead; the code gets shorter and handles every
 exception, not just the ones you listed.
 
-```cpp nocompile
+```cpp bad
 #include <stdexcept>
 void run_job() {
     Widget* w = new Widget;
@@ -460,7 +460,7 @@ a small object whose destructor runs the step: `gsl::finally` from the GSL,
 or a few lines of your own as below. It still runs on every exit path. A real
 resource type is better when one exists.
 
-```cpp nocompile
+```cpp bad
 void with_lock_flag(bool& busy) {
     busy = true;
     process();
@@ -495,7 +495,7 @@ Without exceptions, keep RAII anyway: the destructor still releases the
 resource, and the object records whether construction succeeded. Make the
 check hard to forget, with `[[nodiscard]]` on what reports it.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 int save(const char* path) {
     std::FILE* f = std::fopen(path, "w");
@@ -536,7 +536,7 @@ systematically either, stop the program at once (`std::abort`, after logging)
 rather than continue in a corrupt state. A supervisor or the next level up
 can restart it.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 int* table(std::size_t n) {
     auto p = static_cast<int*>(std::malloc(n * sizeof(int)));
@@ -566,7 +566,7 @@ returns the result and the error together, and every caller checks. C++23's
 `std::expected<T, E>` is that shape; `[[nodiscard]]` on a plain error code is
 the minimum.
 
-```cpp nocompile
+```cpp bad
 int parse_port(const char* s, int& out);   // BAD: returns 0 on success? errno? out set on failure?
 void connect(const char* s) {
     int port;
@@ -604,7 +604,7 @@ next call, and is shared between callers. Return the error with the result
 instead. The standard library's newer functions do: `std::from_chars`
 returns its error, where `std::strtol` sets `errno`.
 
-```cpp nocompile
+```cpp bad
 #include <cerrno>
 #include <cstdlib>
 long to_long(const char* s) {

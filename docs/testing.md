@@ -56,7 +56,17 @@ python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
 All three must pass cleanly. The GCC list of known failures
 (`tools/snippet_baseline/gcc.txt`) is empty and stays that way; the Clang one
 (`tools/snippet_baseline/clang.txt`) lists only libc++ gaps and only shrinks. Fence tags (`body`,
-`nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](../CLAUDE.md).
+`bad`, `nocompile`, `compile-fail`, `needs=…`, `run`) are explained in [`CLAUDE.md`](../CLAUDE.md).
+
+**Code that compiles but is wrong, and run blocks** (#262). A BAD example that
+compiles is tagged `bad`, so the checker compiles it and it has to keep
+compiling. `bad warns="regex"` also requires a matching `-Wall -Wextra`
+warning. A block with a `main` can be tagged `run`: the checker builds it with
+`-fsanitize=address,undefined` and runs it, and it must exit clean, or, for
+`bad run`, a sanitizer must catch it. The summary has a line such as
+`364 bad (compile but wrong; 0 must warn); 84 run blocks: 84 run under ASan+UBSan`.
+Runs need the sanitizer runtimes (Clang 22 locally, GCC on Linux); elsewhere
+they're reported as skipped with the reason, and `--no-run` skips them.
 
 Other toolchains: `--toolchain msvc` drives `cl /Zs` (syntax only, the prelude
 via `/FI`) and `--toolchain clang-cl` drives `clang-cl /Zs`, both from a VS

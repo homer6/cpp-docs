@@ -52,7 +52,7 @@ behaviour.
 
 ### Set a flag, react outside the handler
 
-```cpp
+```cpp run
 #include <atomic>
 #include <csignal>
 #include <cstdio>

@@ -29,7 +29,7 @@ Compilers are very good at simple loops: they unroll and vectorize them
 themselves. Unrolling by hand makes the code longer and easier to get wrong,
 and usually buys nothing over what the optimizer already does.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 #include <vector>
 // BAD: compiles, but hand-unrolled "for speed": four accumulators, and the tail loop
@@ -58,7 +58,7 @@ A standard algorithm knows things a hand-written loop hides: for trivially
 copyable types `std::ranges::copy` typically becomes a single `memmove`. Writing it
 out by hand with raw pointers is no faster and easier to get wrong.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 // BAD: compiles, but hand-rolled pointer code: easy to get the bounds or overlap
 // wrong, and no faster than the library's copy.
@@ -91,7 +91,7 @@ types and calls through function pointers stops the compiler from inlining
 and stops you from changing the implementation later; one that keeps the
 types (a template, a range, a callable) leaves both open.
 
-```cpp nocompile
+```cpp bad
 #include <cstddef>
 // BAD: compiles, but every element goes through void* and an opaque function pointer:
 // no inlining, no type checking, and the element size is the caller's problem.
@@ -116,7 +116,7 @@ Types tell the optimizer what can alias and what a comparison means, and
 tell the compiler what to check. `void*` interfaces throw that away: a
 comparator for the wrong type still compiles.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 #include <vector>
 // BAD: compiles, but the comparator reads the doubles as ints: a silent, wrong sort.
@@ -177,7 +177,7 @@ through them after every write, and the code can do something surprising
 when they really do alias. Take small inputs by value so there's nothing to
 alias.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but `step` may alias `total`, so the compiler must reload it after the
 // first write, and add_twice(x, x) gives 4x, not 3x.
 void add_twice(int& total, const int& step) {
@@ -202,7 +202,7 @@ Each pointer you follow is a possible cache miss. Small values stored behind
 pointers (a vector of `unique_ptr<Point>`) scatter across the heap; stored
 directly, they sit next to each other in one allocation.
 
-```cpp nocompile
+```cpp bad
 #include <memory>
 #include <vector>
 struct Point { float x, y; };
@@ -233,7 +233,7 @@ Allocation is slow compared with most arithmetic, and a growing vector
 reallocates (and moves everything) several times on the way up. When you
 know the size, reserve it once; reuse buffers instead of rebuilding them.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 #include <vector>
 // BAD: compiles, but the vector reallocates repeatedly as it grows.
@@ -264,7 +264,7 @@ On a latency-critical path, an allocation can take a lock inside the
 allocator or go to the OS, and its cost varies. Allocate up front, outside
 the critical path, and reuse the memory: `clear()` keeps a vector's capacity.
 
-```cpp nocompile
+```cpp bad
 #include <span>
 #include <vector>
 void send(std::span<const char>);
@@ -304,7 +304,7 @@ tightly runs faster. A `std::list<int>` spends two pointers and a heap
 allocation on every 4-byte value; a `std::vector<int>` stores the values back
 to back.
 
-```cpp nocompile
+```cpp bad
 #include <list>
 #include <numeric>
 // BAD: compiles, but each element is a separate node: pointer-chasing and wasted space.
@@ -330,7 +330,7 @@ The first member is at the object's address, so it shares a cache line with
 the start of the object, and on some machines it's reached with the shortest
 instruction. Put the hot field first and the bulky, rarely used ones after it.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but the field read on every lookup sits behind 128 bytes of
 // rarely used name, on another cache line from the start of the object.
 struct Session {
@@ -355,7 +355,7 @@ Smaller data means more of it per cache line and fewer misses. Members are
 padded to their alignment, so the order you declare them in can change a
 struct's size: largest first wastes the least.
 
-```cpp nocompile
+```cpp bad
 // BAD: compiles, but padding after each bool makes this 24 bytes on typical 64-bit ABIs.
 struct Order {
     bool   paid;
@@ -384,7 +384,7 @@ Caches and prefetchers reward walking memory in order. In row-major storage
 are adjacent, so the inner loop should run along the row; striding down a
 column touches a new cache line every step.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 // BAD: compiles, but the inner loop jumps `cols` elements at a time.
 double sum(const std::vector<double>& m, int rows, int cols) {
@@ -415,7 +415,7 @@ to sleep and cost a context switch, with microseconds of latency and cold
 caches after. On the critical path, do the small work inline and hand
 anything slow to another thread without waiting for it.
 
-```cpp nocompile
+```cpp bad
 #include <future>
 int price(int order);
 // BAD: compiles, but each order starts a task and blocks on it: up to two context

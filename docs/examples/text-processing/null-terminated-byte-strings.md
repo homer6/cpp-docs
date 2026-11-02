@@ -55,7 +55,7 @@ not characters ([multibyte strings](null-terminated-multibyte-strings.md)).
 
 ### Examine and search
 
-```cpp
+```cpp run
 #include <cstdio>
 #include <cstring>
 
@@ -92,7 +92,7 @@ undefined behaviour. Convert to `unsigned char` first.
 
 ### Convert text to numbers with error checking
 
-```cpp
+```cpp run
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -121,7 +121,7 @@ for `printf`, `SCNd64`, `SCNu32`… for `scanf`. They're pasted into the format
 string by literal concatenation. It also has `strtoimax` / `strtoumax`, the
 `strtol` family for `intmax_t`.
 
-```cpp
+```cpp run
 #include <cerrno>
 #include <cinttypes>
 #include <cstdio>
@@ -149,7 +149,7 @@ logging APIs and for code shared with C.
 
 ### `memmove` handles overlap, `memcpy` does not
 
-```cpp
+```cpp run
 #include <cstdio>
 #include <cstring>
 
@@ -166,7 +166,7 @@ int main() {
   long, no `'\0'` is written; GCC 15 even warns `-Wstringop-truncation`. It also
   pads short copies with zeros up to `n`.
 
-  ```cpp
+  ```cpp run
   #include <cstdio>
   #include <cstring>
   int main() {

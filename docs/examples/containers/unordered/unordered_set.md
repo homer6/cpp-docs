@@ -49,7 +49,7 @@ Same split as `unordered_map`: **references/pointers to elements stay valid**
 
 ## Examples
 
-```cpp
+```cpp run
 #include <unordered_set>
 
 int main() {

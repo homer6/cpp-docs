@@ -101,7 +101,7 @@ a unit test** (#235). Examples go in
 named like its index page; the conventions and template are in that folder's
 `README.md`): a `## <ID>: <official title>` heading per rule in official
 order, our own BAD/GOOD code (`compile-fail="regex"` when the compiler
-rejects the mistake, `nocompile` when it compiles but is wrong), or
+rejects the mistake, `bad` when it compiles but is wrong), or
 `*No example: <reason>.*` for a rule that isn't about code. Never copy the
 Guidelines' text or examples. Tests go in `tests/guidelines/<page>_test.cpp`
 (the `guidelines` area), with a `// <ID>: <claim>` comment above each `TEST`
@@ -188,7 +188,7 @@ Run the checks locally; GitHub Actions workflows are manual only and never
 replace them (see "GitHub Actions (manual only)"). `tools/check_snippets.py`
 compiles every ```cpp block with `-std=c++26 -fsyntax-only -pedantic-errors`. **Both `docs/guidelines/` and
 `docs/examples/` must pass cleanly** — every block compiles, or carries an
-honest `nocompile` / `compile-fail` / `needs=` tag. Each block is
+honest `bad` / `nocompile` / `compile-fail` / `needs=` tag. Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
 like `Widget`, `use()`, `process()`). Tag the fence's info string:
 
@@ -196,7 +196,11 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 |---|---|
 | ` ```cpp ` | Must compile at namespace scope |
 | ` ```cpp body ` | Statements; checked inside a function body |
-| ` ```cpp nocompile ` | Depends on undeclared context, third-party headers, or is wrong but still compiles (UB, dangling) |
+| ` ```cpp nocompile ` | Can't compile here: depends on undeclared context, third-party headers or another platform's syntax |
+| ` ```cpp bad ` | A BAD example that compiles but is wrong (UB, dangling, a leak, a race, a missing `const`). It **must** compile, and is counted separately (#262) |
+| ` ```cpp bad warns="regex" ` | … and with `-Wall -Wextra` the compiler must warn, matching the regex (GCC/Clang; not checked on MSVC) |
+| ` ```cpp run ` | Has a `main`: also built with `-fsanitize=address,undefined` and run; it must exit 0 with no sanitizer report |
+| ` ```cpp bad run ` | Built and run the same way, and a sanitizer **must** catch it: proves "this is UB / a memory error" |
 | ` ```cpp compile-fail="regex" ` | A BAD example that must **not** compile; the diagnostics must match the regex (plain `compile-fail` accepts any error) |
 | ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
 | ` ```cpp module ` | A C++20 module unit, or a file that imports modules (`import std;`, `import <vector>;`). Compiled **without** the prelude, with `-c` and modules enabled for the compiler |
@@ -214,8 +218,13 @@ builds `std`/`std.compat` once for `import std;`, and builds header units for
 Clang too: `--cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++
 --enable private-module-fragment`.
 
-Prefer making a snippet self-contained over tagging it `nocompile`, and
-`compile-fail` over `nocompile` for type errors. For an issue, check only the
+Prefer making a snippet self-contained over tagging it `nocompile`,
+`compile-fail` over `nocompile` for type errors, and `bad` over `nocompile`
+for code that compiles but is wrong. Run blocks need the sanitizer runtimes:
+Clang 22 has them locally, GCC on Linux has them, Homebrew GCC on macOS
+doesn't, and MSVC/clang-cl skip runs; where they're missing the block is still
+compile-checked and the run is reported as skipped with the reason
+(`--no-run` skips runs on purpose). For an issue, check only the
 pages you changed (`python3 tools/check_snippets.py <pages> --cxx …` with
 both compilers). The full runs below are for a release (see "Running the
 tests"):
@@ -258,7 +267,8 @@ entries if one is ever added.
 errors in templates that are instantiated, and failed constant evaluation —
 the same as `-c`. It misses templates that are never instantiated, link errors
 (a declared but undefined function), and anything at run time. The summary
-counts skipped blocks by reason; keep the `nocompile` count falling.
+counts skipped blocks by reason, then the `bad` blocks and the runs; keep the
+`nocompile` count falling.
 
 ## Running the tests
 

@@ -59,7 +59,7 @@ element**. (Same guarantee across `set`/`map`/`multiset`/`multimap`.)
 
 ### Basics
 
-```cpp
+```cpp run
 #include <set>
 
 int main() {

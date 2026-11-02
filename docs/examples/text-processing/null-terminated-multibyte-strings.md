@@ -66,7 +66,7 @@ Unicode library such as ICU. To *identify* the encoding, see
 
 ### Nothing decodes until you pick a locale
 
-```cpp
+```cpp run
 #include <clocale>
 #include <cstdio>
 #include <cstdlib>

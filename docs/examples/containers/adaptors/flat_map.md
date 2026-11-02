@@ -64,7 +64,7 @@ node-based `map`. Don't cache references across modifications.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <flat_map>
 
 int main() {
@@ -81,7 +81,7 @@ int main() {
 
 ### Access the underlying arrays directly
 
-```cpp
+```cpp run
 #include <flat_map>
 #include <string>
 
@@ -95,7 +95,7 @@ int main() {
 
 ### Build fast from sorted input
 
-```cpp
+```cpp run
 #include <flat_map>
 #include <string>
 #include <vector>
@@ -110,7 +110,7 @@ int main() {
 
 ### flat_multimap allows repeats; no operator[]
 
-```cpp
+```cpp run
 #include <flat_map>
 #include <string>
 

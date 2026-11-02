@@ -9,7 +9,7 @@ Before writing an algorithm or a data structure, look for one that exists.
 A library function is already written, tested and documented, and it gets
 faster and safer without you doing anything.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 int largest(const std::vector<int>& v) {
     int best = v[0];                       // BAD: a hand-written max
@@ -54,7 +54,7 @@ Declaring your own names in `std` is undefined behaviour and can clash with a
 later standard. Put them in your own namespace. What *is* allowed is
 specializing a standard template, such as `std::hash`, for your own type.
 
-```cpp nocompile
+```cpp bad
 #include <string>
 namespace std {
     string trim(const string& s);   // BAD: undefined behaviour; a future std::trim could clash
@@ -86,7 +86,7 @@ trusts its format string, so a mismatch is undefined behaviour at run time;
 `std::format` and `std::print` (C++20/23) check the format string against
 the arguments at compile time.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 void report(long bytes) {
     std::printf("%d bytes\n", bytes);   // BAD: %d expects int: undefined behaviour (a warning at best)
@@ -166,7 +166,7 @@ classic security hole. Loop with range-`for` or algorithms, which can't run
 off the end, and use `at()` (which throws `std::out_of_range`) for an index
 you haven't checked.
 
-```cpp nocompile
+```cpp bad
 #include <vector>
 int last(const std::vector<int>& v) {
     return v[v.size()];   // BAD: one past the end: undefined behaviour
@@ -197,7 +197,7 @@ Tested by [`tests/guidelines/stdlib_test.cpp`](../../../../tests/guidelines/stdl
 object owns or its vtable pointer, so the result is a broken object. Use
 assignment and value-initialization; check the type when you do need bytes.
 
-```cpp nocompile
+```cpp bad
 #include <cstring>
 #include <string>
 struct Entry { std::string key; int hits; };
@@ -226,7 +226,7 @@ Tested by [`tests/guidelines/stdlib_test.cpp`](../../../../tests/guidelines/stdl
 Owning text through `char*` means computing sizes, remembering the
 terminator and freeing it, which is where the bugs are.
 
-```cpp nocompile
+```cpp bad
 #include <cstdlib>
 #include <cstring>
 char* join(const char* a, const char* b) {
@@ -290,7 +290,7 @@ GSL's `zstring` (`char*`) and `czstring` (`const char*`) aliases say "a
 zero-terminated string, not owned". Without the GSL, a local alias does the
 same.
 
-```cpp nocompile
+```cpp bad
 void set_title(const char* p);   // BAD: a C string? a single char? may it be null? who frees it?
 ```
 
@@ -307,7 +307,7 @@ Keep `char*` for what it literally is, a pointer to one `char`. An array of
 characters without a terminator passed as `const char*` is read until some
 zero byte happens to turn up.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>
 const char letters[] = {'a', 'b', 'c'};   // no '\0'
 void show() {
@@ -333,7 +333,7 @@ Raw memory isn't text. `std::byte` (C++17) is a byte with only bitwise
 operations: no arithmetic, and it doesn't print as a character, so it can't
 be mistaken for a `char` or a small number.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>
 void dump(const unsigned char* data, int n) {
     for (int i = 0; i < n; ++i)
@@ -433,7 +433,7 @@ Reading one character at a time and assembling tokens yourself is long,
 easy to get wrong (buffer sizes, whitespace) and slower. Let `>>` or
 `std::getline` read whole words and lines into a `std::string`.
 
-```cpp nocompile
+```cpp bad
 #include <cctype>
 #include <iostream>
 void read_word(char (&buf)[16]) {
@@ -465,7 +465,7 @@ stream after each read, and validate the value, before using it. On a failed
 `>>` into a number, the stream is in a failed state and the target is set to
 0.
 
-```cpp nocompile
+```cpp bad
 #include <istream>
 int read_age(std::istream& in) {
     int age;
@@ -526,7 +526,7 @@ costs time on every operation. A program that uses only streams can turn that
 off once, at the start, before any I/O. After that, mixing `printf` and
 `std::cout` can interleave output out of order.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 #include <iostream>
 int main() {
@@ -536,7 +536,7 @@ int main() {
 }
 ```
 
-```cpp
+```cpp run
 #include <iostream>
 int main() {
     std::ios_base::sync_with_stdio(false);   // GOOD: once, before any I/O; streams only from here
@@ -553,7 +553,7 @@ needed (the terminal and file buffers flush on their own) and can make
 line-by-line output much slower. Write `'\n'`; call `std::flush` when you
 really need it.
 
-```cpp nocompile
+```cpp bad
 #include <iostream>
 #include <vector>
 void print_all(const std::vector<int>& v) {
@@ -581,7 +581,7 @@ the objects in between, so RAII owners leak; when any of them has a
 non-trivial destructor, the behaviour is undefined. Use exceptions, which
 unwind and destroy.
 
-```cpp nocompile
+```cpp bad
 #include <csetjmp>
 #include <vector>
 std::jmp_buf on_error;

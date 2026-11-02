@@ -77,7 +77,7 @@ void bump() {
 
 ### Satisfying *Hash* for an unordered container
 
-```cpp
+```cpp run
 #include <cstddef>
 #include <functional>
 #include <print>

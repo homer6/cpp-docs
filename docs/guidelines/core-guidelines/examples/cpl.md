@@ -61,7 +61,7 @@ When a library only has a C interface, keep the C at the edge: wrap its
 handles in C++ types whose destructors call the library's release function.
 Then the calling code gets RAII and exception safety.
 
-```cpp nocompile
+```cpp bad
 #include <cstdio>
 // BAD: compiles, but if use() throws, or a return is added later, the file stays open.
 void dump(const char* path) {

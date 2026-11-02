@@ -34,7 +34,7 @@ A temporary normally dies at the end of the full-expression. Binding it
 `const int& x = std::pair{1, 2}.first;`) extends it to the reference's
 lifetime. Anything in between breaks the chain:
 
-```cpp nocompile
+```cpp bad
 const int& m = std::min(1, 2);   // dangles: min returns a reference, not the temporary
 ```
 
@@ -88,7 +88,7 @@ ignoring cv-qualifiers), its signed or unsigned counterpart, or `char`,
 the **strict aliasing rule**, and it lets the optimizer assume that an `int*`
 and a `float*` never point at the same object.
 
-```cpp nocompile
+```cpp bad
 float f = 1.0f;
 auto bits = *reinterpret_cast<std::uint32_t*>(&f);   // UB: no uint32_t object lives there
 
@@ -145,13 +145,13 @@ bool before = std::less<int*>{}(a, &b);    // a total order, where < is unspecif
 
 ## `main` — the entry point
 
-```cpp
+```cpp run
 int main() { /* ... */ }                      // implicit `return 0;` if you fall off the end
 ```
 
 or, to receive the command-line arguments:
 
-```cpp
+```cpp run
 int main(int argc, char* argv[]) { /* ... */ }// command-line args
 ```
 

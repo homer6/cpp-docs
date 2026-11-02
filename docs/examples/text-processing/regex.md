@@ -18,7 +18,7 @@ Capture groups land in a `std::smatch` (for `std::string`) / `std::cmatch` (for
 
 ### Match vs. search
 
-```cpp
+```cpp run
 #include <regex>
 
 int main() {
@@ -32,7 +32,7 @@ int main() {
 
 ### Capture groups
 
-```cpp
+```cpp run
 #include <regex>
 #include <string>
 
@@ -51,7 +51,7 @@ int main() {
 
 ### Iterate every match
 
-```cpp
+```cpp run
 #include <regex>
 #include <string>
 
@@ -65,7 +65,7 @@ int main() {
 
 ### Replace (with backreferences)
 
-```cpp
+```cpp run
 #include <regex>
 #include <string>
 
@@ -78,7 +78,7 @@ int main() {
 
 ### Grammar & flags
 
-```cpp
+```cpp run
 #include <regex>
 
 int main() {

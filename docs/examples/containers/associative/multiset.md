@@ -45,7 +45,7 @@ to each other (stable).
 
 ## Examples
 
-```cpp
+```cpp run
 #include <set>
 
 int main() {
