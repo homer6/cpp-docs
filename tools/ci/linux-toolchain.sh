@@ -58,7 +58,7 @@ clang-apt-llvm|clang-ubuntu)
     pkgs=("${base[@]}" "clang-$ver")
     if [[ "$stdlib" == libcxx ]]; then
         pkgs+=("libc++-$ver-dev" "libc++abi-$ver-dev")
-        env+=("CPPDOCS_PRESET=clang-libcxx" "CPPDOCS_BASELINE=tools/snippet_baseline/clang.txt"
+        env+=("CPPDOCS_PRESET=clang-libcxx" "CPPDOCS_BASELINE=tools/snippet_baseline/clang-linux.txt"
               "CPPDOCS_SNIPPET_ARGS=--flag=-stdlib=libc++ --flag=-fexperimental-library")
     else
         # libstdc++ from the newest GCC on the machine; clang.txt lists libc++
