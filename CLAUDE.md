@@ -525,7 +525,9 @@ by hand either (`gen_index.py` leaves it alone, and the collector leaves the
 index alone). The README's badge row has one badge per platform workflow file
 (`linux.yml`, `macos.yml`, `windows-msvc.yml`, `windows-gnu.yml`,
 `freebsd.yml`) on `branch=main&event=workflow_dispatch`, linked to
-each workflow's page, next to a line saying runs are manual.
+each workflow's page, next to a line saying runs are manual. Above them, right under the title, a
+bold link points to the full support per platform, compiler and architecture
+(`docs/platform-support/`, whose README indexes every toolchain page; #215).
 
 - **The badges and the page change only from consented runs.** Never start a
   workflow to refresh them (that needs the owner's consent, asked in the

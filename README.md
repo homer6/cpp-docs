@@ -1,5 +1,7 @@
 # cpp-docs
 
+**[Full platform / compiler / architecture support →](docs/platform-support/)**
+
 A hands-on reference for learning **modern C++** — the language and the standard
 library, from C++11 through the latest standard (C++26) — organized as
 bite-sized, example-driven Markdown notes, plus opinionated guidelines on how to
