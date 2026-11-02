@@ -66,7 +66,8 @@ The value is a date; compare with `>=` against the value from cppreference's
   other headers; `<version>` is the portable, cheap way to get them all.
 - **Don't lean on `__cplusplus` alone.** It says which standard was *requested*,
   not which features the implementation actually finished. Feature-test macros are
-  the precise tool.
+  the precise tool. Compilers also report pre-publication values for a mode they
+  haven't finished: GCC 13 gives `202100L` for `-std=c++23`, not `202302L`.
 - **Each feature's cppreference page lists its macro and value** in a "Feature-test
   macro" box — that's the authoritative number to compare against.
 

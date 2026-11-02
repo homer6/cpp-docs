@@ -89,6 +89,11 @@ TEST(FeatureTestMacros, RangesBranch) {
 TEST(FeatureTestMacros, CplusplusReflectsRequestedStandard) {
 #if defined(_MSC_VER) && !defined(__clang__) && __cplusplus <= 202302L
     GTEST_SKIP() << "MSVC has no C++26 mode; /std:c++latest sets __cplusplus to " << __cplusplus;
+#elif defined(CPPDOCS_CXX_STANDARD) && CPPDOCS_CXX_STANDARD < 26
+    // GCC 13 has no C++26 flag CMake knows, so the suite builds as C++23 there, and
+    // GCC 13's C++23 __cplusplus is the pre-publication 202100L.
+    GTEST_SKIP() << "built as C++" << CPPDOCS_CXX_STANDARD << " (no C++26 mode); __cplusplus is "
+                 << __cplusplus;
 #else
     EXPECT_GT(__cplusplus, 202302L);
 #endif

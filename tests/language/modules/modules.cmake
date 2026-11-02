@@ -21,6 +21,11 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   set(_skip "Apple Clang ${CMAKE_CXX_COMPILER_VERSION}: no clang-scan-deps, so CMake can't scan it for modules")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
   set(_skip "GCC ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with GCC 14 and newer")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15
+       AND CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" AND CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL 15)
+  # Compiler bug: pkg GCC 14.2 on FreeBSD 15.1 segfaults (internal compiler error) on every
+  # module unit; the same GCC on FreeBSD 14.5 builds them (run 41380889279, #209).
+  set(_skip "GCC ${CMAKE_CXX_COMPILER_VERSION} on FreeBSD ${CMAKE_SYSTEM_VERSION}: internal compiler error (segfault) on every module unit (#209)")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
   set(_skip "Clang ${CMAKE_CXX_COMPILER_VERSION}: CMake scans modules with Clang 16 and newer")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC"

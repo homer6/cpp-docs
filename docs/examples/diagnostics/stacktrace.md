@@ -97,6 +97,8 @@ where you throw and store it in the exception object.
 
 - **Needs debug/symbol info to be useful.** Without it (release builds stripped of
   symbols), entries may lack names, files, and lines — you get addresses only.
+  With FreeBSD's packaged GCC 14, entries are empty even in a debug build
+  ([measured](../../platform-support.md)).
 - **The last entry can be empty.** libstdc++ 14 and 15 end every trace with an
   empty entry (`operator bool` is false, no name or file), so `size()` is one more
   than the real frames; GCC 16 drops it. Check `if (entry)` before using one.

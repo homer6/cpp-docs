@@ -20,6 +20,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   set(cppdocs_warnings -Wall -Wextra)
 endif()
 
+# The standard the suite is built as (26, or 23 where CMake knows no C++26 flag:
+# MSVC, GCC 13), so tests about __cplusplus can tell what was requested (#209).
+add_compile_definitions(CPPDOCS_CXX_STANDARD=${CMAKE_CXX_STANDARD})
+
 # GTest links Threads::Threads, which carries -pthread as a compile option
 # wherever FindThreads uses the flag (FreeBSD, for one; not glibc 2.34+,
 # macOS or Windows). A module's BMI and its importers must be compiled alike,

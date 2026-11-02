@@ -47,6 +47,10 @@ TEST(Preprocessor, PredefinedMacros) {
     // MSVC /std:c++latest (with /Zc:__cplusplus): "at least one higher than the highest supported
     // __cplusplus standard value" (Microsoft Learn, /Zc:__cplusplus), e.g. 202004L in VS 2022.
     EXPECT_GT(__cplusplus, 202002L);
+#elif defined(CPPDOCS_CXX_STANDARD) && CPPDOCS_CXX_STANDARD < 26
+    // Built as C++23 (GCC 13: no C++26 flag CMake knows); GCC 13 reports the
+    // pre-publication 202100L there, so only "newer than C++20" holds.
+    EXPECT_GT(__cplusplus, 202002L);
 #else
     EXPECT_GT(__cplusplus, 202302L);  // built with -std=c++26: newer than C++23's value
 #endif

@@ -110,7 +110,8 @@ TEST(Localization, EnvironmentLocale) {
     if (env_name.empty() || env_name == "C" || env_name == "POSIX")
         GTEST_SKIP() << "environment locale is \"" << env_name
                      << "\", which every library supports";
-#if defined(__GLIBCXX__) && defined(__APPLE__)
+#if defined(__GLIBCXX__) && (defined(__APPLE__) || defined(__MINGW32__))
+    // libstdc++'s generic locale model (macOS, MinGW) supports only "C" and "POSIX".
     EXPECT_THROW(std::locale{""}, std::runtime_error);
 #else
     EXPECT_NO_THROW(std::locale{""});

@@ -23,10 +23,22 @@ namespace {
 }  // namespace
 #endif
 
+// FreeBSD with pkg GCC 14's libstdc++: the frames are captured, but every entry's
+// description, file and line are empty (run 41380889279, #209). The tests that read
+// them skip there with this reason.
+#if defined(__FreeBSD__) && defined(__GLIBCXX__)
+#define CPPDOCS_STACKTRACE_NO_SYMBOLS() \
+    GTEST_SKIP() << "FreeBSD, libstdc++ (GCC " << __GNUC__ << "): stacktrace entries carry no " \
+                    "description, file or line"
+#else
+#define CPPDOCS_STACKTRACE_NO_SYMBOLS() (void)0
+#endif
+
 // "Mental model": current() snapshots the calls leading here; frames report
 // function name, file and line when debug info is present (Debug build: -g).
 TEST(Stacktrace, FramesHaveNameFileLine) {
     CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
+    CPPDOCS_STACKTRACE_NO_SYMBOLS();
 #ifdef __cpp_lib_stacktrace
     auto trace = capture_here();
     ASSERT_FALSE(trace.empty());
@@ -54,6 +66,7 @@ TEST(Stacktrace, FramesHaveNameFileLine) {
 // "Examples": operator<< pretty-prints all frames; std::format has a formatter.
 TEST(Stacktrace, StreamAndFormat) {
     CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
+    CPPDOCS_STACKTRACE_NO_SYMBOLS();
 #ifdef __cpp_lib_stacktrace
     auto trace = capture_here();
     std::ostringstream os;
@@ -77,6 +90,7 @@ TEST(Stacktrace, PmrStacktrace) {
 // "Declaration": current(skip, max_depth) drops the innermost frames and caps the depth.
 TEST(Stacktrace, SkipAndMaxDepth) {
     CPPDOCS_REQUIRE(__cpp_lib_stacktrace);
+    CPPDOCS_STACKTRACE_NO_SYMBOLS();
 #ifdef __cpp_lib_stacktrace
     auto full = std::stacktrace::current();
     auto capped = std::stacktrace::current(0, 1);
@@ -100,6 +114,7 @@ TEST(Stacktrace, CatchBlockDoesNotShowThrowSite) {
     GTEST_SKIP() << "MSVC ABI (MSVC, clang-cl): the catch block runs before the throwing frames' "
                     "stack is popped, so a trace taken there can still show the throw site";
 #elif defined(__cpp_lib_stacktrace)
+    CPPDOCS_STACKTRACE_NO_SYMBOLS();
     std::string text;
     try {
         thrower_fn();

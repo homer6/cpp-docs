@@ -109,18 +109,25 @@ jobs:
             preset: mingw
             baseline: tools/snippet_baseline/gcc.txt
             snippet_args: ""
+            # libatomic-1.dll: an optional dependency of UCRT64 gcc, needed at run
+            # time once the tests link -latomic (#201, #209).
+            extra: libatomic:p
           - msystem: UCRT64       # Clang + libstdc++ (UCRT64's clang uses GCC's library)
             compiler: clang
             package: clang
             preset: clang
             baseline: ""
             snippet_args: ""
+            # libatomic-1.dll: an optional dependency of UCRT64 gcc, needed at run
+            # time once the tests link -latomic (#201, #209).
+            extra: libatomic:p
           - msystem: CLANG64      # Clang + libc++, UCRT
             compiler: clang
             package: clang
             preset: clang
             baseline: tools/snippet_baseline/clang.txt
             snippet_args: --flag=-fexperimental-library
+            extra: ""
     defaults:
       run:
         shell: msys2 {0}
@@ -141,7 +148,7 @@ jobs:
         with:
           msystem: ${{ matrix.msystem }}
           update: true
-          pacboy: ${{ matrix.package }}:p cmake:p ninja:p python:p
+          pacboy: ${{ matrix.package }}:p ${{ matrix.extra }} cmake:p ninja:p python:p
 
       - name: Record compiler and OS versions
         run: |
