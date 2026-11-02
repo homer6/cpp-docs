@@ -70,6 +70,8 @@ std::atomic<std::shared_ptr<Node>> head;   // lock-free-ish atomic smart pointer
 
 libc++ (Clang 22) doesn't provide `std::atomic<std::shared_ptr>` yet
 (`__cpp_lib_atomic_shared_ptr` undefined); libstdc++ has it since GCC 12.
+`std::atomic_ref` (`__cpp_lib_atomic_ref`) came to libc++ in LLVM 19: Clang 18's
+libc++ and Apple Clang 15 don't have it.
 
 ## wait and notify (C++20)
 
@@ -145,6 +147,8 @@ static_assert(sizeof(Hot) <= std::hardware_constructive_interference_size);
 GCC 15, GCC 16 and Clang 22 all define them (`__cpp_lib_hardware_interference_size`
 `201703L`). The values depend on the target: 64/64 with GCC on x86-64, and
 256 (destructive) / 64 (constructive) on AArch64 with all three toolchains.
+Clang 23 changed Apple AArch64 (Apple silicon) to 128 / 64, Apple's cache line
+size ([llvm/llvm-project#208716](https://github.com/llvm/llvm-project/pull/208716)).
 **GCC warns** (`-Winterference-size`, on by default) when a header uses them,
 because the value can change with the compiler version or `-mtune`/`-mcpu`, so a
 struct laid out with it isn't a stable ABI. Clang doesn't warn. In a public

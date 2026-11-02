@@ -1,7 +1,9 @@
 // Checks claims made by docs/examples/language/statements/iteration.md.
 #include <algorithm>
 #include <map>
+#if __has_include(<print>)  // GCC 13 has no <print>
 #include <print>
+#endif
 #include <ranges>
 #include <string>
 #include <tuple>
@@ -22,7 +24,7 @@ struct Owner {  // a temporary that owns the range it hands out
     ~Owner() { owner_alive = false; }
     const std::vector<int>& items() const { return v; }
 };
-Owner make_owner() { return {}; }
+[[maybe_unused]] Owner make_owner() { return {}; }  // unused before C++23's P2718
 }  // namespace
 
 // "range-for": auto& mutates in place, init-statement, structured bindings over a map.
@@ -71,7 +73,8 @@ TEST(Iteration, BreakContinue) {
 // "template for": one body per tuple element, each with its own type (C++26).
 TEST(Iteration, ExpansionStatement) {
     CPPDOCS_REQUIRE(__cpp_expansion_statements);
-#ifdef __cpp_expansion_statements
+    CPPDOCS_REQUIRE(__cpp_lib_print);
+#if defined(__cpp_expansion_statements) && defined(__cpp_lib_print)
     std::tuple<int, std::string, double> t{1, "two", 3.0};
     std::string types;
     auto out = cppdocs::capture_stdout([&] {

@@ -131,6 +131,9 @@ TEST(NullTerminatedMultibyteStrings, Mbrtoc8) {
 #if defined(_WIN32)
     GTEST_SKIP() << "MS STL's <cuchar> declares no mbrtoc8/c8rtomb, and MinGW-w64's <uchar.h> "
                     "isn't known to declare them either";
+#elif defined(__FreeBSD__)
+    GTEST_SKIP() << "FreeBSD's <uchar.h> (14.5, 15.1) declares no mbrtoc8/c8rtomb (C23), so "
+                    "<cuchar> has no std::mbrtoc8 with GCC or Clang/libc++";
 #else
     Utf8Locale loc;
     REQUIRE_UTF8(loc);

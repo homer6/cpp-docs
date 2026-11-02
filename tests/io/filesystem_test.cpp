@@ -24,6 +24,24 @@
 namespace fs = std::filesystem;
 
 namespace {
+// std::chrono::is_clock_v (C++20) has no feature-test macro of its own, and libc++
+// added it only in LLVM 22 (Clang 18-21 libc++, Apple and FreeBSD libc++ lack it).
+// There, check the Cpp17Clock members it tests for directly.
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 220000
+template <class C>
+constexpr bool is_clock_v = requires {
+    typename C::rep;
+    typename C::period;
+    typename C::duration;
+    typename C::time_point;
+    C::is_steady;
+    C::now();
+};
+#else
+template <class C>
+constexpr bool is_clock_v = std::chrono::is_clock_v<C>;
+#endif
+
 int process_id() {
 #if defined(_WIN32)
     return ::_getpid();
@@ -73,7 +91,7 @@ TEST_F(Filesystem, Querying) {
     EXPECT_TRUE(fs::is_directory(dir));
     EXPECT_EQ(fs::file_size(f), 3u);
     static_assert(std::is_same_v<decltype(fs::last_write_time(f)), fs::file_time_type>);
-    static_assert(std::chrono::is_clock_v<fs::file_time_type::clock>);
+    static_assert(is_clock_v<fs::file_time_type::clock>);
     EXPECT_TRUE(fs::current_path().is_absolute());
     EXPECT_TRUE(fs::absolute("x").is_absolute());
     EXPECT_EQ(fs::canonical(dir / "." / "a.txt"), fs::canonical(f));

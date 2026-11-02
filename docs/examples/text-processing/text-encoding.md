@@ -125,13 +125,18 @@ int main() {
 }
 ```
 
-Like `environment()`, this needs `-lstdc++exp` with libstdc++.
+Like `environment()`, this needs `-lstdc++exp` with libstdc++. libc++ (LLVM 23)
+on Windows (MSYS2 CLANG64) prints the ANSI code page instead (`GetACP()`, for
+example `windows-1252`), and on macOS libc++ marks `locale::encoding()` and
+`environment()` unavailable, so they don't compile (`'encoding' is
+unavailable`): no macOS release ships them in the system libc++ yet.
 
 ## Gotchas
 
 - **Library support is partial.** libstdc++ has it
-  (`__cpp_lib_text_encoding == 202306L` in GCC 15 and 16, verified locally); libc++ in Clang 22
-  has no `<text_encoding>` header at all. MSVC status not verified locally.
+  (`__cpp_lib_text_encoding == 202306L` in GCC 14, 15 and 16, verified locally); libc++ in Clang 22
+  has no `<text_encoding>` header at all, and LLVM 23's libc++ adds it (seen on the
+  macOS and MSYS2 CLANG64 runners). MSVC status not verified locally.
 - **With libstdc++, `environment()`, `environment_is()` and
   `std::locale::encoding()` need `-lstdc++exp`.** Without it, GCC 15 (macOS)
   and GCC 16 (Linux) both fail to link with

@@ -52,16 +52,26 @@ TEST(Freestanding, FindByteIsConstexpr) {
 
 // "Feature-test macros": the table of __cpp_lib_freestanding_* each local library defines.
 TEST(Freestanding, LibraryFreestandingMacros) {
-#if defined(__GLIBCXX__)
+#if defined(__GLIBCXX__) && !defined(__cpp_lib_freestanding_algorithm)
+    GTEST_SKIP() << "libstdc++ before GCC 14 (here GCC " << __GNUC__
+                 << ") defines no __cpp_lib_freestanding_* macros";
+#elif defined(__GLIBCXX__)
     static_assert(__cpp_lib_freestanding_algorithm == 202311L);
     static_assert(__cpp_lib_freestanding_array == 202311L);
     static_assert(__cpp_lib_freestanding_cstring == 202311L);
-    static_assert(__cpp_lib_freestanding_expected == 202311L);
     static_assert(__cpp_lib_freestanding_optional == 202311L);
     static_assert(__cpp_lib_freestanding_string_view == 202311L);
     static_assert(__cpp_lib_freestanding_variant == 202311L);
 #if defined(__cpp_lib_freestanding_memory) || defined(__cpp_lib_freestanding_feature_test_macros)
     FAIL() << "libstdc++ now defines more freestanding macros than the page lists";
+#endif
+#ifdef __cpp_lib_freestanding_expected
+    static_assert(__cpp_lib_freestanding_expected == 202311L);
+#else
+    // libstdc++ defines it only where <expected> is enabled (__cpp_concepts >= 202002L).
+    GTEST_SKIP() << "__cpp_lib_freestanding_expected not defined: libstdc++ gates it on "
+                    "std::expected, which needs __cpp_concepts >= 202002L (Clang 18 has "
+                 << __cpp_concepts << "L); the other six macros checked";
 #endif
 #elif defined(_LIBCPP_VERSION)
 #if defined(__cpp_lib_freestanding_algorithm) || defined(__cpp_lib_freestanding_array) || \

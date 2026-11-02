@@ -14,10 +14,30 @@
 #include <type_traits>
 #include <unordered_set>
 #include <vector>
+#include <version>
 
 #include <gtest/gtest.h>
 
 namespace {
+
+// std::chrono::is_clock_v (C++20) has no feature-test macro of its own, and libc++
+// added it only in LLVM 22 (Clang 18-21 libc++, Apple and FreeBSD libc++ lack it).
+// There, check the Cpp17Clock members it tests for directly.
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 220000
+template <class C>
+constexpr bool is_clock_v = requires {
+    typename C::rep;
+    typename C::period;
+    typename C::duration;
+    typename C::time_point;
+    C::is_steady;
+    C::now();
+};
+#else
+template <class C>
+constexpr bool is_clock_v = std::chrono::is_clock_v<C>;
+#endif
+
 
 class SpinLock {
     std::atomic_flag flag_;
@@ -103,8 +123,8 @@ TEST(NamedRequirements, SatisfyingIsNotModeling) {
 // "The main groups": concept/trait counterparts for random numbers and clocks.
 TEST(NamedRequirements, ConceptCounterparts) {
     static_assert(std::uniform_random_bit_generator<std::mt19937>);
-    static_assert(std::chrono::is_clock_v<std::chrono::steady_clock>);
-    static_assert(!std::chrono::is_clock_v<int>);
+    static_assert(is_clock_v<std::chrono::steady_clock>);
+    static_assert(!is_clock_v<int>);
     static_assert(std::default_initializable<Point> && std::copy_constructible<Point>);
     SUCCEED();
 }

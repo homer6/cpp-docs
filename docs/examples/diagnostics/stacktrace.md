@@ -97,6 +97,9 @@ where you throw and store it in the exception object.
 
 - **Needs debug/symbol info to be useful.** Without it (release builds stripped of
   symbols), entries may lack names, files, and lines — you get addresses only.
+- **The last entry can be empty.** libstdc++ 14 and 15 end every trace with an
+  empty entry (`operator bool` is false, no name or file), so `size()` is one more
+  than the real frames; GCC 16 drops it. Check `if (entry)` before using one.
 - **Capturing a trace is relatively expensive.** Don't grab one on a hot path;
   reserve it for error/diagnostic paths.
 - **Support and quality vary.** It's C++23 and depends on a platform backend; some

@@ -51,7 +51,12 @@ TEST(Math, Classification) {
 
 // "Special functions (C++17)": libstdc++ has them all; libc++ (Clang 22) only hermite.
 TEST(Math, SpecialFunctions) {
+#if defined(_LIBCPP_VERSION) && _LIBCPP_VERSION < 190000
+    GTEST_SKIP() << "libc++ added std::hermite in LLVM 19; libc++ " << _LIBCPP_VERSION
+                 << " has no special math functions (and no feature-test macro for hermite)";
+#else
     EXPECT_EQ(std::hermite(2, 3.0), 34.0);  // H2(x) = 4x² − 2
+#endif
 #if defined(_LIBCPP_VERSION)
 #ifdef __cpp_lib_math_special_functions
     FAIL() << "page says libc++ provides only std::hermite";

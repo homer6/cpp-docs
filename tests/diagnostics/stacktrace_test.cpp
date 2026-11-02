@@ -1,7 +1,8 @@
 // Checks claims made by docs/examples/diagnostics/stacktrace.md.
 //
-// GCC 16 links this area with -lstdc++exp (see tests/CMakeLists.txt); Homebrew
-// GCC 15 on macOS and libc++ don't define __cpp_lib_stacktrace, so these skip.
+// libstdc++ needs -lstdc++exp (GCC 14+), which tests/CMakeLists.txt links where a
+// try-link shows it's needed. Homebrew GCC 15 on macOS and libc++ don't define
+// __cpp_lib_stacktrace, so these skip there.
 #include <string>
 #include <version>
 
@@ -33,9 +34,20 @@ TEST(Stacktrace, FramesHaveNameFileLine) {
     EXPECT_NE(top.description().find("capture_here"), std::string::npos) << top.description();
     EXPECT_NE(top.source_file().find("stacktrace_test.cpp"), std::string::npos) << top.source_file();
     EXPECT_GT(top.source_line(), 0u);
-    int n = 0;
-    for (const std::stacktrace_entry& f : trace) n += static_cast<bool>(f);
-    EXPECT_EQ(n, static_cast<int>(trace.size()));  // it's a container of entries
+    std::size_t n = 0, empty = 0;
+    for (const std::stacktrace_entry& f : trace) {
+        ++n;
+        empty += !static_cast<bool>(f);
+    }
+    EXPECT_EQ(n, trace.size());  // it's a container of entries
+#if defined(_GLIBCXX_RELEASE) && _GLIBCXX_RELEASE < 16
+    // libstdc++ 14 and 15 end the trace with one empty entry (libbacktrace's
+    // outermost pc); GCC 16 drops it. An empty entry is allowed, so tolerate it.
+    EXPECT_LE(empty, 1u);
+    if (empty == 1) EXPECT_FALSE(static_cast<bool>(trace[trace.size() - 1]));
+#else
+    EXPECT_EQ(empty, 0u);  // every frame refers to a real location
+#endif
 #endif
 }
 
