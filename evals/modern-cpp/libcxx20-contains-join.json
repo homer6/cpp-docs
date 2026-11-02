@@ -1,0 +1,12 @@
+{
+  "id": "libcxx20-contains-join",
+  "task": "Check whether a value appears anywhere in a constexpr 2-D array (an array of arrays), using ranges.",
+  "context": {"std": "c++23", "compilers": ["Clang 20 with libc++ 20", "GCC 15"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["std::ranges::contains over views::join without a caveat"],
+    "must_use_any": ["std::ranges::any_of over the rows with std::ranges::find", "std::ranges::find over views::join"],
+    "must_cite_any": ["docs/platform-support/known-bugs.json"],
+    "must_say": ["libc++ 19/20 has a bug in ranges::contains over views::join"]
+  },
+  "notes": "known-bugs.json / #218: libc++ 19 and 20 return true for a missing value from ranges::contains over views::join of a constexpr 2-D array (fixed in libc++ 21)."
+}

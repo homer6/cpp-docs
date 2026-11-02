@@ -1,0 +1,12 @@
+{
+  "id": "gcc13-print",
+  "task": "Print 'total: 42 items' to stdout in modern C++.",
+  "context": {"std": "c++23", "compilers": ["GCC 13"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["std::print", "std::println"],
+    "must_use_any": ["std::format with std::cout", "std::format_to"],
+    "must_cite_any": ["docs/examples/text-processing/formatting.md", "docs/platform-support/notes.md"],
+    "must_say": ["GCC 13 has no <print>"]
+  },
+  "notes": "<print> arrived in libstdc++ 14; the notes say GCC 13 has no <print>. std::format is in GCC 13."
+}

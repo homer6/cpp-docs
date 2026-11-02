@@ -1,0 +1,12 @@
+{
+  "id": "gcc14-flat-map",
+  "task": "I have a small, read-mostly map from int ids to names (about 50 entries, built once, looked up often). What's the best container?",
+  "context": {"std": "c++23", "compilers": ["GCC 14", "Clang 22 with libc++"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["std::flat_map without a fallback"],
+    "must_use_any": ["sorted std::vector of pairs with std::ranges::lower_bound", "std::flat_map guarded by __cpp_lib_flat_map"],
+    "must_cite_any": ["docs/examples/containers/adaptors/flat_map.md", "docs/platform-support/notes.md"],
+    "must_say": ["GCC 14's libstdc++ has no std::flat_map"]
+  },
+  "notes": "flat_map fits the access pattern, but libstdc++ 14 doesn't ship it (notes: GCC 14 has no flat_map/flat_set). A sorted vector gives the same layout everywhere."
+}

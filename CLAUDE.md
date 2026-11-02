@@ -15,7 +15,9 @@ skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl
 verification on all three toolchains, placement, snippet and test.
 To write C++ with this reference (here or in another project), use the
 `modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
-right pages, toolchain support, the guidelines, validation.
+right pages, toolchain support from the measured platform results (the
+support notes, toolchain pages, known bugs), the guidelines, validation. Its
+eval cases are in `evals/modern-cpp/` (#251); `evals/check.py` validates them.
 It's the preferred entry point and calls `cpp-guidelines` itself. Use
 `cpp-guidelines` directly only for a Core Guidelines review or audit with rule
 IDs, a question about one rule, a focused ownership or lifetime fix, or the
