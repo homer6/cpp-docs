@@ -6,6 +6,8 @@
 
 #include <gtest/gtest.h>
 
+#include "support/feature.hpp"
+
 // Clang 22 accepts #embed in C++ as an extension and warns (-Wc23-extensions);
 // GCC 15/16 implement the C++26 feature.
 #if defined(__clang__)
@@ -75,18 +77,25 @@ TEST(Embed, BytesSuffixLimitOffset) {
 TEST(Embed, ElementsAreIntLiterals) {
     SKIP_WITHOUT_EMBED();
 #ifdef EMBED_TEST_OK
-    auto il = {
-#embed "embed_data/hello.txt"
-    };
-    static_assert(std::is_same_v<decltype(il), std::initializer_list<int>>);
-    EXPECT_EQ(il.size(), 5u);
-    EXPECT_EQ(*il.begin(), 72);  // 'H'
 #if defined(__clang__)
     constexpr char plain[] = {  // 0xFF into signed char: GCC rejects (narrowing), Clang accepts
 #embed "embed_data/ff.bin"
     };
     EXPECT_EQ(sizeof plain, 2u);
     EXPECT_EQ(plain[0], static_cast<char>(0xFF));
+#endif
+#if defined(__clang__) && __clang_major__ < 21
+    // Apple Clang 17 is LLVM 19, so the same check covers it; Apple Clang 21 accepts it.
+    GTEST_SKIP() << "Clang 19/20 count an #embed in a braced list as one element when deducing "
+                    "std::initializer_list (\"excess elements in array initializer\"; "
+                    "llvm/llvm-project#122306, fixed in Clang 21)";
+#else
+    auto il = {
+#embed "embed_data/hello.txt"
+    };
+    static_assert(std::is_same_v<decltype(il), std::initializer_list<int>>);
+    EXPECT_EQ(il.size(), 5u);
+    EXPECT_EQ(*il.begin(), 72);  // 'H'
 #endif
 #endif
 }
@@ -151,7 +160,10 @@ TEST(Embed, CompilerSupport) {
     ADD_FAILURE() << "page says Clang 22 doesn't define __cpp_pp_embed";
 #endif
 #elif defined(__GNUC__)
+    CPPDOCS_REQUIRE(__cpp_pp_embed);  // GCC 15 adds #embed; GCC 13/14 don't define the macro
+#ifdef __cpp_pp_embed
     EXPECT_EQ(__cpp_pp_embed, 202502L);
+#endif
 #endif
 #if defined(__has_embed) && ((defined(__clang__) && __clang_major__ <= 22) || \
                              (!defined(__clang__) && defined(__GNUC__) && __GNUC__ <= 16))

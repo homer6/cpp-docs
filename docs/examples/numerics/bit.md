@@ -92,7 +92,9 @@ void demo() {
 
 libstdc++ ships it in C++26 mode: GCC 15 has the header without the feature
 macro, GCC 16 defines `__cpp_lib_stdbit_h` as `202603L`. libc++ (Clang 22)
-doesn't have it. Like `<bit>`, signed arguments are rejected
+doesn't have it. Without libstdc++'s header, `#include <stdbit.h>` finds the C
+library's, which may be C-only: FreeBSD 15's fails in C++ with "`_Bool` does
+not name a type" (GCC 14.2 there). Like `<bit>`, signed arguments are rejected
 (`stdc_count_ones(-1)` fails a `static_assert`). In C++-only code use `<bit>`.
 
 ## Gotchas
