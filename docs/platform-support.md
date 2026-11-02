@@ -8,7 +8,7 @@ The goal is every documented feature and every example on every supported platfo
 
 ## How to read this
 
-- **Workflows run only by hand.** Every GitHub Actions workflow here is `workflow_dispatch` only, and runs only with the owner's consent, given for each run: before a release (on `dev`), or to back a claim about a platform we can't run locally. The tables below show the **last consented run** of each workflow, not the current tip of any branch; the README badges show the last run on `main`.
+- **Workflows run only by hand.** Every GitHub Actions workflow here is `workflow_dispatch` only, and runs only with the owner's consent, given for each run: before a release (on `dev`), or to back a claim about a platform we can't run locally. The tables below show the **last consented run** of each workflow, not the current tip of any branch; the README badges summarise these results and the local runs (✓ when every toolchain passes).
 - **Last consented run:** 2026-11-02.
 - **Report-only snippets.** Snippet runs are enforced against a reviewed baseline only for GCC 15/16 and Clang/LLVM 22 with libc++ (off Windows). Every other toolchain's snippet results are marked *(report-only)*: listed here, but they don't fail the run until that toolchain's baseline is seeded from a consented run and reviewed (#159).
 - **Local runs are the primary proof.** The owner's machine (GCC 15, Clang 22) and the GCC 16 Docker image are checked for every release; their results are labelled *local*.
@@ -88,7 +88,7 @@ Run on the owner's machine (macOS, Apple silicon) and in the `gcc:16` Docker ima
 | Platform | OS | Arch | Compiler | Preset | Tests passed / failed / skipped | Snippets passed / failed / skipped | Top skip reasons | Run |
 |---|---|---|---|---|---|---|---|---|
 | [linux-arm64-gcc-16](platform-support/local-linux-docker-arm64-gcc-16.md) | Linux (Docker) | arm64 | GCC 16.2.0, libstdc++ | `gcc-16` | 1066 / 0 / 36 | 691 / 0 / 129 | 18× needs reflection<br>8× needs contracts<br>6× needs __cpp_lib_hive (not defined by this toolchain) | local |
-| [macos-arm64-clang-22](platform-support/local-macos-arm64-clang-22-libcxx.md) | macOS (Darwin 23.6.0) | arm64 | Clang 22.1.8, libc++ | `clang-22` | 971 / 0 / 128 | 672 / 19 / 129 | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
+| [macos-arm64-clang-22](platform-support/local-macos-arm64-clang-22-libcxx.md) | macOS (Darwin 23.6.0) | arm64 | Clang 22.1.8, libc++ | `clang-22` | 971 / 0 / 128 | 672 / 19 / 129 (19 in baseline) | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
 | [macos-arm64-gcc-15](platform-support/local-macos-arm64-gcc-15.md) | macOS (Darwin 23.6.0) | arm64 | GCC 15.2.0, libstdc++ | `gcc-15` | 988 / 0 / 111 | 691 / 0 / 129 | 18× needs reflection<br>12× needs __cpp_lib_reflection (not defined by this toolchain)<br>8× needs __cpp_lib_inplace_vector (not defined by this toolcha… | local |
 
 ## Feature support matrix
