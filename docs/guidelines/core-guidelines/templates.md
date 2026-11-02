@@ -10,11 +10,11 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-gp)
 
-- [T.1: Use templates to raise the level of abstraction of code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-raise) · ours: [core-guidelines](../core-guidelines.md)
-- [T.2: Use templates to express algorithms that apply to many argument types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-algo) · ours: [core-guidelines](../core-guidelines.md)
-- [T.3: Use templates to express containers and ranges](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-cont)
-- [T.4: Use templates to express syntax tree manipulation](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-expr)
-- [T.5: Combine generic and OO techniques to amplify their strengths, not their costs](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-generic-oo)
+- [T.1: Use templates to raise the level of abstraction of code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-raise) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t1-use-templates-to-raise-the-level-of-abstraction-of-code) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.2: Use templates to express algorithms that apply to many argument types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-algo) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t2-use-templates-to-express-algorithms-that-apply-to-many-argument-types) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.3: Use templates to express containers and ranges](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-cont) · [example](examples/templates.md#t3-use-templates-to-express-containers-and-ranges) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.4: Use templates to express syntax tree manipulation](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-expr) · [example](examples/templates.md#t4-use-templates-to-express-syntax-tree-manipulation) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.5: Combine generic and OO techniques to amplify their strengths, not their costs](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-generic-oo) · [example](examples/templates.md#t5-combine-generic-and-oo-techniques-to-amplify-their-strengths-not-their-costs) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.concepts: Concept rules
 
@@ -24,89 +24,89 @@ Every entry in this section of the official C++ Core Guidelines, in their order.
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concept-use)
 
-- [T.10: Specify concepts for all template arguments](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-concepts) · ours: [core-guidelines](../core-guidelines.md)
-- [T.11: Whenever possible use standard concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-std-concepts)
-- [T.12: Prefer concept names over `auto` for local variables](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-auto)
-- [T.13: Prefer the shorthand notation for simple, single-type argument concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-shorthand)
+- [T.10: Specify concepts for all template arguments](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-concepts) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t10-specify-concepts-for-all-template-arguments) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.11: Whenever possible use standard concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-std-concepts) · [example](examples/templates.md#t11-whenever-possible-use-standard-concepts) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.12: Prefer concept names over `auto` for local variables](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-auto) · [example](examples/templates.md#t12-prefer-concept-names-over-auto-for-local-variables) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.13: Prefer the shorthand notation for simple, single-type argument concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-shorthand) · [example](examples/templates.md#t13-prefer-the-shorthand-notation-for-simple-single-type-argument-concepts) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.concepts.def: Concept definition rules
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concepts-def)
 
-- [T.20: Avoid "concepts" without meaningful semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-low)
-- [T.21: Require a complete set of operations for a concept](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-complete)
-- [T.22: Specify axioms for concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-axiom)
-- [T.23: Differentiate a refined concept from its more general case by adding new use patterns.](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-refine)
-- [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics.](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tag)
-- [T.25: Avoid complementary constraints](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-not)
-- [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-use)
-- T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference — listed in the [official summary](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concepts-def), no text yet
-- T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives — listed in the [official summary](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concepts-def), no text yet
+- [T.20: Avoid "concepts" without meaningful semantics](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-low) · [example](examples/templates.md#t20-avoid-concepts-without-meaningful-semantics) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.21: Require a complete set of operations for a concept](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-complete) · [example](examples/templates.md#t21-require-a-complete-set-of-operations-for-a-concept) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.22: Specify axioms for concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-axiom) · [example](examples/templates.md#t22-specify-axioms-for-concepts) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.23: Differentiate a refined concept from its more general case by adding new use patterns.](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-refine) · [example](examples/templates.md#t23-differentiate-a-refined-concept-from-its-more-general-case-by-adding-new-use-patterns) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.24: Use tag classes or traits to differentiate concepts that differ only in semantics.](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tag) · [example](examples/templates.md#t24-use-tag-classes-or-traits-to-differentiate-concepts-that-differ-only-in-semantics) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.25: Avoid complementary constraints](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-not) · [example](examples/templates.md#t25-avoid-complementary-constraints) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.26: Prefer to define concepts in terms of use-patterns rather than simple syntax](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-use) · [example](examples/templates.md#t26-prefer-to-define-concepts-in-terms-of-use-patterns-rather-than-simple-syntax) · [test](../../../tests/guidelines/templates_test.cpp)
+- T.30: Use concept negation (`!C<T>`) sparingly to express a minor difference — listed in the [official summary](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concepts-def), no text yet · [example](examples/templates.md#t30-use-concept-negation-ct-sparingly-to-express-a-minor-difference) · [test](../../../tests/guidelines/templates_test.cpp)
+- T.31: Use concept disjunction (`C1<T> || C2<T>`) sparingly to express alternatives — listed in the [official summary](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-concepts-def), no text yet · [example](examples/templates.md#t31-use-concept-disjunction-c1t--c2t-sparingly-to-express-alternatives) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## Template interfaces
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-temp-interface)
 
-- [T.40: Use function objects to pass operations to algorithms](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-fo) · ours: [core-guidelines](../core-guidelines.md)
-- [T.41: Require only essential properties in a template's concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-essential)
-- [T.42: Use template aliases to simplify notation and hide implementation details](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-alias)
-- [T.43: Prefer `using` over `typedef` for defining aliases](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-using)
-- [T.44: Use function templates to deduce class template argument types (where feasible)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-deduce)
-- [T.46: (removed)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-regular) · ours: [core-guidelines](../core-guidelines.md)
-- [T.47: Avoid highly visible unconstrained templates with common names](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-visible)
-- [T.48: If your compiler does not support concepts, fake them with `enable_if`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-concept-def)
-- [T.49: Where possible, avoid type-erasure](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-erasure)
+- [T.40: Use function objects to pass operations to algorithms](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-fo) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t40-use-function-objects-to-pass-operations-to-algorithms) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.41: Require only essential properties in a template's concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-essential) · [example](examples/templates.md#t41-require-only-essential-properties-in-a-templates-concepts) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.42: Use template aliases to simplify notation and hide implementation details](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-alias) · [example](examples/templates.md#t42-use-template-aliases-to-simplify-notation-and-hide-implementation-details) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.43: Prefer `using` over `typedef` for defining aliases](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-using) · [example](examples/templates.md#t43-prefer-using-over-typedef-for-defining-aliases) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.44: Use function templates to deduce class template argument types (where feasible)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-deduce) · [example](examples/templates.md#t44-use-function-templates-to-deduce-class-template-argument-types-where-feasible) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.46: (removed)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-regular) · ours: [core-guidelines](../core-guidelines.md) · no example: the rule was removed upstream; only its number remains.
+- [T.47: Avoid highly visible unconstrained templates with common names](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-visible) · [example](examples/templates.md#t47-avoid-highly-visible-unconstrained-templates-with-common-names) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.48: If your compiler does not support concepts, fake them with `enable_if`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-concept-def) · [example](examples/templates.md#t48-if-your-compiler-does-not-support-concepts-fake-them-with-enable_if) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.49: Where possible, avoid type-erasure](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-erasure) · [example](examples/templates.md#t49-where-possible-avoid-type-erasure) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.def: Template definitions
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-temp-def)
 
-- [T.60: Minimize a template's context dependencies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-depend)
-- [T.61: Do not over-parameterize members (SCARY)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-scary) · ours: [core-guidelines](../core-guidelines.md)
-- [T.62: Place non-dependent class template members in a non-templated base class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-nondependent)
-- [T.64: Use specialization to provide alternative implementations of class templates](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialization)
-- [T.65: Use tag dispatch to provide alternative implementations of a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tag-dispatch)
-- [T.67: Use specialization to provide alternative implementations for irregular types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialization2)
-- [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-cast)
-- [T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-customization)
+- [T.60: Minimize a template's context dependencies](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-depend) · [example](examples/templates.md#t60-minimize-a-templates-context-dependencies) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.61: Do not over-parameterize members (SCARY)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-scary) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t61-do-not-over-parameterize-members-scary) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.62: Place non-dependent class template members in a non-templated base class](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-nondependent) · [example](examples/templates.md#t62-place-non-dependent-class-template-members-in-a-non-templated-base-class) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.64: Use specialization to provide alternative implementations of class templates](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialization) · [example](examples/templates.md#t64-use-specialization-to-provide-alternative-implementations-of-class-templates) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.65: Use tag dispatch to provide alternative implementations of a function](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tag-dispatch) · [example](examples/templates.md#t65-use-tag-dispatch-to-provide-alternative-implementations-of-a-function) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.67: Use specialization to provide alternative implementations for irregular types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialization2) · [example](examples/templates.md#t67-use-specialization-to-provide-alternative-implementations-for-irregular-types) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.68: Use `{}` rather than `()` within templates to avoid ambiguities](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-cast) · [example](examples/templates.md#t68-use--rather-than--within-templates-to-avoid-ambiguities) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.69: Inside a template, don't make an unqualified non-member function call unless you intend it to be a customization point](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-customization) · [example](examples/templates.md#t69-inside-a-template-dont-make-an-unqualified-non-member-function-call-unless-you-intend-it-to-be-a-customization-point) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.temp-hier: Template and hierarchy rules:
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-temp-hier)
 
-- [T.80: Do not naively templatize a class hierarchy](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-hier)
-- [T.81: Do not mix hierarchies and arrays](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-array)
-- [T.82: Linearize a hierarchy when virtual functions are undesirable](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-linear)
-- [T.83: Do not declare a member function template virtual](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-virtual)
-- [T.84: Use a non-template core implementation to provide an ABI-stable interface](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-abi)
+- [T.80: Do not naively templatize a class hierarchy](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-hier) · [example](examples/templates.md#t80-do-not-naively-templatize-a-class-hierarchy) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.81: Do not mix hierarchies and arrays](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-array) · [example](examples/templates.md#t81-do-not-mix-hierarchies-and-arrays) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.82: Linearize a hierarchy when virtual functions are undesirable](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-linear) · [example](examples/templates.md#t82-linearize-a-hierarchy-when-virtual-functions-are-undesirable) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.83: Do not declare a member function template virtual](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-virtual) · [example](examples/templates.md#t83-do-not-declare-a-member-function-template-virtual) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.84: Use a non-template core implementation to provide an ABI-stable interface](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-abi) · [example](examples/templates.md#t84-use-a-non-template-core-implementation-to-provide-an-abi-stable-interface) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.var: Variadic template rules
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-variadic)
 
-- [T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic)
-- [T.101: ??? How to pass arguments to a variadic template ???](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-pass)
-- [T.102: How to process arguments to a variadic template](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-process)
-- [T.103: Don't use variadic templates for homogeneous argument lists](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-not)
+- [T.100: Use variadic templates when you need a function that takes a variable number of arguments of a variety of types](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic) · [example](examples/templates.md#t100-use-variadic-templates-when-you-need-a-function-that-takes-a-variable-number-of-arguments-of-a-variety-of-types) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.101: ??? How to pass arguments to a variadic template ???](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-pass) · [example](examples/templates.md#t101--how-to-pass-arguments-to-a-variadic-template-) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.102: How to process arguments to a variadic template](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-process) · [example](examples/templates.md#t102-how-to-process-arguments-to-a-variadic-template) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.103: Don't use variadic templates for homogeneous argument lists](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-variadic-not) · [example](examples/templates.md#t103-dont-use-variadic-templates-for-homogeneous-argument-lists) · [test](../../../tests/guidelines/templates_test.cpp)
 
 ## T.meta: Template metaprogramming (TMP)
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-meta)
 
-- [T.120: Use template metaprogramming only when you really need to](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-metameta) · ours: [core-guidelines](../core-guidelines.md)
-- [T.121: Use template metaprogramming primarily to emulate concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-emulate)
-- [T.122: Use templates (usually template aliases) to compute types at compile time](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tmp)
-- [T.123: Use `constexpr` functions to compute values at compile time](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-fct)
-- [T.124: Prefer to use standard-library TMP facilities](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-std-tmp)
-- [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-lib)
+- [T.120: Use template metaprogramming only when you really need to](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-metameta) · ours: [core-guidelines](../core-guidelines.md) · [example](examples/templates.md#t120-use-template-metaprogramming-only-when-you-really-need-to) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.121: Use template metaprogramming primarily to emulate concepts](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-emulate) · [example](examples/templates.md#t121-use-template-metaprogramming-primarily-to-emulate-concepts) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.122: Use templates (usually template aliases) to compute types at compile time](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-tmp) · [example](examples/templates.md#t122-use-templates-usually-template-aliases-to-compute-types-at-compile-time) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.123: Use `constexpr` functions to compute values at compile time](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-fct) · [example](examples/templates.md#t123-use-constexpr-functions-to-compute-values-at-compile-time) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.124: Prefer to use standard-library TMP facilities](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-std-tmp) · [example](examples/templates.md#t124-prefer-to-use-standard-library-tmp-facilities) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.125: If you need to go beyond the standard-library TMP facilities, use an existing library](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-lib) · no example: it's advice to use an established third-party library (such as Boost.Mp11) instead of writing one, which our snippets can't include.
 
 ## Other template rules
 
 [Official text](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-temp-other)
 
-- [T.140: If an operation can be reused, give it a name](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-name)
-- [T.141: Use an unnamed lambda if you need a simple function object in one place only](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-lambda)
-- [T.142?: Use template variables to simplify notation](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-var)
-- [T.143: Don't write unintentionally non-generic code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-non-generic)
-- [T.144: Don't specialize function templates](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialize-function)
-- [T.150: Check that a class matches a concept using `static_assert`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-check-class)
+- [T.140: If an operation can be reused, give it a name](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-name) · [example](examples/templates.md#t140-if-an-operation-can-be-reused-give-it-a-name) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.141: Use an unnamed lambda if you need a simple function object in one place only](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-lambda) · [example](examples/templates.md#t141-use-an-unnamed-lambda-if-you-need-a-simple-function-object-in-one-place-only) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.142?: Use template variables to simplify notation](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-var) · [example](examples/templates.md#t142-use-template-variables-to-simplify-notation) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.143: Don't write unintentionally non-generic code](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-non-generic) · [example](examples/templates.md#t143-dont-write-unintentionally-non-generic-code) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.144: Don't specialize function templates](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-specialize-function) · [example](examples/templates.md#t144-dont-specialize-function-templates) · [test](../../../tests/guidelines/templates_test.cpp)
+- [T.150: Check that a class matches a concept using `static_assert`](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#rt-check-class) · [example](examples/templates.md#t150-check-that-a-class-matches-a-concept-using-static_assert) · [test](../../../tests/guidelines/templates_test.cpp)
