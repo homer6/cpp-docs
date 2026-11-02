@@ -18,6 +18,8 @@ verified locally (the snippet compiles, and behaves as described when run).
 
 **[Full platform / compiler / architecture support →](docs/platform-support/README.md)**
 
+**[Platform support notes →](docs/platform-support/notes.md)**
+
 ## Layout
 
 Everything is clickable. The reference lives in

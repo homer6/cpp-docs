@@ -78,6 +78,9 @@ ARCHIVE = ROOT / "docs" / "platform-support" / "runs"
 BUGS = ROOT / "docs" / "platform-support" / "known-bugs.json"
 TOOLCHAINS = ROOT / "docs" / "platform-support"            # one <slug>.md per toolchain
 LOCAL_ARCHIVE = ROOT / "docs" / "platform-support" / "local"
+# Hand-written summary of the results (#226), shown at the top of the folder README.
+NOTES = ROOT / "docs" / "platform-support" / "notes.md"
+NOTES_RUN = re.compile(r"<!--\s*notes-run:\s*(\d+)\s*-->")
 BASELINES = ROOT / "tools" / "snippet_baseline"
 REPO = "homer6/cpp-docs"
 SCHEMA = "cpp-docs/results/1"
@@ -939,6 +942,38 @@ def toolchain_pages(runs: list[dict], local: dict | None) -> dict[str, str]:
     return pages
 
 
+def notes_body(notes: pathlib.Path = NOTES) -> list[str]:
+    """The platform support notes without their title and run marker, headings
+    one level down, for the top of the folder README (#226)."""
+    if not notes.is_file():
+        return []
+    lines = notes.read_text(encoding="utf-8").rstrip("\n").split("\n")
+    out = []
+    for line in lines:
+        if line.startswith("# ") or NOTES_RUN.fullmatch(line.strip()):
+            continue
+        out.append("#" + line if line.startswith("## ") else line)
+    while out and not out[0].strip():
+        out.pop(0)
+    return out
+
+
+def notes_stale(runs: list[dict], notes: pathlib.Path = NOTES) -> str:
+    """Why the notes don't match the report's newest run, or "" (#226)."""
+    newest = max((run_number(r) for r in runs), default=0)
+    if not newest:
+        return ""
+    if not notes.is_file():
+        return f"{notes.name} is missing"
+    m = NOTES_RUN.search(notes.read_text(encoding="utf-8"))
+    if not m:
+        return f"{notes.name} has no <!-- notes-run: <id> --> marker"
+    if int(m.group(1)) != newest:
+        return (f"{notes.name} describes run {m.group(1)}, but the newest run in the report is {newest}: "
+                "re-read the results and update the notes and their marker")
+    return ""
+
+
 def folder_readme(runs: list[dict], local: dict | None) -> str:
     """docs/platform-support/README.md: what the folder holds and an index of the toolchain pages."""
     ensure_pages(runs, local)
@@ -963,8 +998,13 @@ def folder_readme(runs: list[dict], local: dict | None) -> str:
            "The goal is every documented feature and every example on every supported platform, "
            "architecture and compiler, so the results show how far each toolchain supports modern C++. "
            "GitHub Actions runs are manual, each with the owner's consent; the local runs are the "
-           "owner's machine and the `gcc:16` Docker image.", "",
-           "## Toolchains", "",
+           "owner's machine and the `gcc:16` Docker image.", ""]
+    body = notes_body()
+    if body:
+        out += ["## Platform support notes", "",
+                "*From [`notes.md`](notes.md), written by hand from the results and updated with every "
+                "full run.*", ""] + body + [""]
+    out += ["## Toolchains", "",
            f"{len(entries)} pages. **Tests**: GoogleTest cases passed / total; **snippets**: "
            "compile-checked blocks passed / checked (*report-only*: no reviewed baseline yet, so "
            "snippet failures don't fail that run).", "",
@@ -986,6 +1026,9 @@ def folder_readme(runs: list[dict], local: dict | None) -> str:
             "| [`local/`](local/) | The local results used, with `local.json` (date, commit) | you, then the collector |",
             "| [`known-bugs.json`](known-bugs.json) | Compiler and platform bugs: upstream link, repo issue, "
             "affected toolchains | by hand, validated |",
+            "| [`notes.md`](notes.md) | The platform support notes shown above: a summary of the results "
+            "per compiler, platform and architecture, with the run they describe | by hand, checked "
+            "against the newest run |",
             "| `README.md` | This index | generated |",
             "", "## Regenerating", "",
             "After a consented run, follow the [`platform-support`](../../.claude/skills/platform-support/SKILL.md) "
@@ -1008,7 +1051,7 @@ def sync_pages(folder: pathlib.Path, pages: dict[str, str], write: bool) -> list
                 folder.mkdir(parents=True, exist_ok=True)
                 f.write_text(text, encoding="utf-8")
     for f in sorted(folder.glob("*.md")) if folder.is_dir() else []:
-        if f.name not in pages:
+        if f.name not in pages and f.name != NOTES.name:  # notes.md is hand-written
             stale.append(f"{f.name} (no longer produced)")
             if write:
                 f.unlink()
@@ -1157,8 +1200,11 @@ def main() -> int:
             return 2
     pages = toolchain_pages(runs, local) if not args.summary and not args.no_matrix else None
     folder = args.output.parent / "platform-support"
+    why = notes_stale(runs) if pages is not None else ""
     if args.check:
         stale = sync_pages(folder, pages, write=False) if pages is not None else []
+        if why:
+            stale.append(why)
         if args.output.is_file() and args.output.read_text(encoding="utf-8") != page:
             stale.append(str(args.output))
         if readme and readme[0] != readme[1]:
@@ -1172,6 +1218,8 @@ def main() -> int:
     if pages is not None:
         changed = sync_pages(folder, pages, write=True)
         print(f"wrote {len(pages)} toolchain pages in {folder} ({len(changed)} changed or removed)")
+        if why:
+            print(f"warning: {why}", file=sys.stderr)
     if readme:
         if readme[0] != readme[1]:
             args.readme.write_text(readme[1], encoding="utf-8")
@@ -1350,6 +1398,14 @@ def self_test() -> int:
         expect("prune: superseded job file removed, the rest compact (#214)",
                gone == ["10/results-lin.json", "7/"] and not (arch / "7").exists()
                and (old_dir / "results-msvc.json").read_text(encoding="utf-8") == '{"a":1}\n')
+        nf = pathlib.Path(tmp, "notes.md")
+        nf.write_text("# Platform support notes\n\n<!-- notes-run: 11 -->\n\n## In short\nAll good.\n",
+                      encoding="utf-8")
+        expect("notes: body without title or marker, headings down a level (#226)",
+               notes_body(nf) == ["### In short", "All good."])
+        expect("notes: current", notes_stale([new], nf) == "")
+        expect("notes: stale when a newer run is in the report",
+               "newest run in the report is 12" in notes_stale([{"url": "https://x/runs/12"}], nf))
         expect("archive: inputs and digest", rec["inputs"] == [{"areas": "^strings$", "tests": True, "snippets": True}]
                and rec["digest"]["linux-x86_64-ubuntu-24.04-gcc-16"]["tests"]["passed"] == 30)
     failures += feature_support.self_test()

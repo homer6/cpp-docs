@@ -509,7 +509,19 @@ docs/platform-support/
   runs/<run-id>/     the archive of each consented run: results-*.json, run.json
   local/             the archived local results: results-*.json, local.json
   known-bugs.json    compiler and platform bugs found (maintained by hand)
+  notes.md           the platform support notes (maintained by hand)
 ```
+
+**The platform support notes** (`docs/platform-support/notes.md`, #226) are a
+short, hand-written reading of the results: the level of support per
+compiler, platform and architecture, what decides it, what nothing supports
+yet, and the limits of the results. The collector puts them at the top of
+the folder README. Every claim comes from the results (counts, skip reasons,
+`known-bugs.json`), never from memory or vendor pages, and the file's
+`<!-- notes-run: <id> -->` marker names the run they describe. **Update them
+with every report refresh from a new full run**: re-read the results, revise
+each claim, and move the marker; `collect_results.py --check` fails while the
+marker names a different run than the newest one in the report.
 
 A toolchain page has a header (OS or image, compiler and version, standard
 library, architecture and byte order, the run link, date and commit, the
@@ -530,7 +542,9 @@ index alone). The README's badge row has one badge per platform workflow file
 `freebsd.yml`) on `branch=main&event=workflow_dispatch`, linked to
 each workflow's page. Right under the badges, a bold link points to the full
 support per platform, compiler and architecture
-(`docs/platform-support/README.md`, which indexes every toolchain page; #215).
+(`docs/platform-support/README.md`, which indexes every toolchain page; #215),
+and under it a bold link to the platform support notes
+(`docs/platform-support/notes.md`; #226).
 
 - **The badges and the page change only from consented runs.** Never start a
   workflow to refresh them (that needs the owner's consent, asked in the
@@ -717,7 +731,10 @@ A release (the owner names the version) needs all of these, in order:
    per-platform table of the runs: the run links and the passed / failed /
    skipped counts, taken from `tools/collect_results.py <run-id>… --local
    <folder> --summary --stdout`. Commit the regenerated
-   `docs/platform-support.md` with them.
+   `docs/platform-support.md` with them, and **regenerate the platform
+   support notes** (`docs/platform-support/notes.md`) from the release run:
+   every claim re-read against its results, the marker on that run (#226).
+   The release notes link them.
 4. **Switch the default branch back to `main`** (the owner does it, or
    consents to it) before opening the release PR, so the README badges
    (`branch=main`) and the front page point at releases again.
