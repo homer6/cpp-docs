@@ -15,9 +15,17 @@ Sources (positional) are GitHub Actions results; each is either
   * a local folder (searched recursively) of results-*.json files, e.g. an
     unpacked `gh run download`.
 
-The page also has the feature support matrix (tools/feature_support.py):
-every documented feature (GoogleTest case) and example (```cpp block) per
-compiler column, ✅/❌/⏭, with its rows taken from this checkout.
+The page also has the feature support matrix (tools/feature_support.py): one
+row per area, one column per compiler, ✅ / 🟡 n / ❌ n. Each toolchain (platform
+x arch x compiler) gets its own page, docs/platform-support/<slug>.md, with
+every documented feature (GoogleTest case) and example (```cpp block): ✅ / ❌
+/ ⏭ reason / —. Rows come from this checkout. Pages it no longer produces are
+removed; `--check` covers them all.
+
+Local results: `--local DIR` copies DIR's results-*.json into
+docs/platform-support/local/ (with local.json: date and commit) and reads them
+from there; without `--local`, that archive is used (`--no-local` leaves the
+local results out).
 
 Archive: a run's results are kept in the repo under
 docs/platform-support/runs/<run-id>/ (its results-*.json, one per job, and
@@ -64,6 +72,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGE = ROOT / "docs" / "platform-support.md"
 ARCHIVE = ROOT / "docs" / "platform-support" / "runs"
 BUGS = ROOT / "docs" / "platform-support" / "known-bugs.json"
+TOOLCHAINS = ROOT / "docs" / "platform-support"            # one <slug>.md per toolchain
+LOCAL_ARCHIVE = ROOT / "docs" / "platform-support" / "local"
 BASELINES = ROOT / "tools" / "snippet_baseline"
 REPO = "homer6/cpp-docs"
 SCHEMA = "cpp-docs/results/1"
@@ -375,7 +385,8 @@ def matrix(rows: dict[str, dict[str, dict]], link: str) -> list[str]:
     for label in sorted(rows):
         row = rows[label]
         os_, arch, comp, preset = describe(row)
-        out.append(f"| {label} | {os_} | {arch} | {comp} | {preset} | {tests_cell(row.get('tests'), row)} "
+        name = f"[{label}]({row['page']})" if row.get("page") else label
+        out.append(f"| {name} | {os_} | {arch} | {comp} | {preset} | {tests_cell(row.get('tests'), row)} "
                    f"| {snippets_cell(row.get('snippets'))} | {top_skips(row)} | {link} |")
     return out
 
@@ -500,6 +511,8 @@ def gaps(all_rows: list[tuple[str, dict[str, dict]]]) -> list[str]:
 
 
 def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool = True) -> str:
+    if matrix_rows:
+        ensure_pages(runs, local)
     consented = [r for r in runs if r["rows"] or r["jobs"]]
     # Which platform workflows each run covered: the run's own workflow file, or for all.yml
     # the caller jobs named after the files ("linux.yml / <job>"), skipped ones left out.
@@ -543,12 +556,15 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
            "blocks in `docs/` (`tools/check_snippets.py`). Snippet *passed* = checked − failed; "
            "baselined failures are counted as failed and noted. The top skip reasons leave out "
            "`nocompile` snippets, which skip on every toolchain alike.",
-           "- **Per feature:** the [feature support matrix](#feature-support-matrix) below shows every "
-           "documented feature and example per compiler; the [bugs found](#compiler-and-platform-bugs-found) "
-           "close the page.",
-           "- **Archived:** each run's results and metadata are kept in "
-           "[`platform-support/runs/<run-id>/`](platform-support/runs/), so this page can be rebuilt "
-           "after GitHub's artifact retention runs out.", "",
+           "- **Per feature:** the [feature support matrix](#feature-support-matrix) below summarizes "
+           "every area per toolchain; **each toolchain has its own page** in "
+           "[`platform-support/`](platform-support/) (linked from every table row and column) with "
+           "every area, page, feature and example. The [bugs found](#compiler-and-platform-bugs-found) "
+           "close this page.",
+           "- **Archived:** each consented run's results and metadata are kept in "
+           "[`platform-support/runs/<run-id>/`](platform-support/runs/) and the local results in "
+           "[`platform-support/local/`](platform-support/local/), so this page and the toolchain pages "
+           "can be rebuilt after GitHub's artifact retention runs out.", "",
            f"Generated {today}.", ""]
 
     out += ["## GitHub Actions", ""]
@@ -588,7 +604,7 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
     all_rows = [(l, row) for l, row, _ in action_rows] + \
         ([(l, row) for l, row in local["rows"].items()] if local else [])
     if matrix_rows:
-        out += matrix_section(runs, local) + [""]
+        out += feature_support.summary(jobs_of(runs, local), universe()).rstrip("\n").split("\n") + [""]
     out += gaps(all_rows) + [""]
     return "\n".join(out)
 
@@ -697,8 +713,9 @@ def readme_block(runs: list[dict], local: dict | None) -> str:
                f"{max(dates) if dates else 'unknown'}. **Tests**: GoogleTest cases passed / total; "
                "**snippets**: compile-checked blocks passed / checked. *report-only*: that toolchain's "
                "snippet results don't fail its run yet (no reviewed baseline). Skip reasons, known gaps "
-               "and full counts: [`docs/platform-support.md`](docs/platform-support.md); every feature and "
-               "example per compiler: [feature support matrix](docs/platform-support.md#feature-support-matrix).")
+               "and full counts: [`docs/platform-support.md`](docs/platform-support.md), with the "
+               "[feature support matrix](docs/platform-support.md#feature-support-matrix) and one page per "
+               "toolchain (every feature and example) in [`docs/platform-support/`](docs/platform-support/).")
     if scopes and not per_row_scope:
         out[-1] += (f" The GitHub Actions runs here cover {next(iter(scopes))} (the `areas` input)"
                     + ("; the local runs cover the whole suite." if local and local["rows"] else "."))
@@ -720,33 +737,155 @@ def update_readme(text: str, block: str) -> str:
     return pattern.sub(lambda _: f"{README_START}\n{block}\n{README_END}", text)
 
 
-# --- the feature support page (tools/feature_support.py) ----------------------
+# --- the feature matrix and the per-toolchain pages (tools/feature_support.py) ----
 
-def job_of(row: dict[str, dict], where_run: str, local: bool) -> dict:
-    """One CI job or local run, described for feature_support.build_columns()."""
+_UNIVERSE = None
+
+
+def universe() -> "feature_support.Universe":
+    global _UNIVERSE
+    if _UNIVERSE is None:
+        _UNIVERSE = feature_support.Universe(ROOT)
+    return _UNIVERSE
+
+
+def toolchain_slug(row: dict[str, dict], local: bool) -> str:
+    """A stable file name for one platform x arch x compiler: lowercase, no patch versions,
+    the same across runs (linux-ubuntu-24.04-x86_64-clang-22-libcxx, local-macos-arm64-gcc-15)."""
+    main = row.get("tests") or row["snippets"]
+    os_ = os_label(row).lower()
+    if local:
+        system = main["platform"]["system"].lower()
+        os_part = "local-" + {"darwin": "macos"}.get(system, system) + ("-docker" if "docker" in os_ else "")
+    else:
+        os_part = os_.replace("(qemu user-mode)", "qemu")
+        if re.match(r"(ubuntu|debian|fedora|alpine|arch)\b", os_part):
+            os_part = "linux-" + os_part
+    fam = family(main)
+    parts = short_version(version_of(main)).split(".")
+    comp = fam.lower().replace(" ", "-") + "-" + (".".join(parts[:2]) if fam == "MSVC" else parts[0])
+    stdlib = main["compiler"].get("stdlib") or ""
+    if fam == "Clang" and stdlib in ("libc++", "libstdc++"):
+        comp += "-" + stdlib.replace("+", "x")
+    return re.sub(r"[^a-z0-9._]+", "-", f"{os_part}-{arch_of(main).lower()}-{comp}").strip("-")
+
+
+def assign_pages(runs: list[dict], local: dict | None) -> None:
+    """Give every row its toolchain page ("page": platform-support/<slug>.md), unique names."""
+    seen: set[str] = set()
+    for r, is_local in [(r, False) for r in runs] + ([(local, True)] if local else []):
+        for label in sorted(r["rows"]):
+            slug = base = toolchain_slug(r["rows"][label], is_local)
+            n = 2
+            while slug in seen:
+                slug, n = f"{base}-{n}", n + 1
+            seen.add(slug)
+            r["rows"][label]["page"] = f"platform-support/{slug}.md"
+
+
+def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
+    """One CI job or local run, for feature_support (summary columns and its own page)."""
     main = row.get("tests") or row["snippets"]
     fam = family(main)
-    ver = short_version(version_of(main))
-    parts = ver.split(".")
+    parts = short_version(version_of(main)).split(".")
     major = ".".join(parts[:2]) if fam == "MSVC" else parts[0]
     stdlib = main["compiler"].get("stdlib") or ""
     snip = row.get("snippets")
+    run = row.get("run") or {}
+    title = f"{compiler_label(row)} on {os_label(row)}, {arch_of(main)}" + (" (local)" if local else "")
+    if local:
+        run_cell = f"local run, {r['date']}" + (f", commit `{r['sha']}`" if r.get("sha") else "")
+    else:
+        url = (run.get("run") or {}).get("url") or r["url"]
+        what = " · ".join(x for x in (r["workflow"], r["date"]) if x) or "run"
+        run_cell = (f"[{what}]({url})" if url else what) + (f", commit `{r['sha']}`" if r["sha"] else "")
+    areas = (run.get("inputs") or {}).get("areas")
+    facts = [("OS / image", esc_cell(run.get("os_version") or os_of(main))),
+             ("Compiler", esc_cell(f"{fam} {version_of(main)}") + (f" (preset `{row['tests']['preset']}`)"
+                                                                  if "tests" in row else "")),
+             ("Standard library", esc_cell(stdlib or "unknown")),
+             ("Architecture", arch_of(main) + (f", {run['byte_order']}-endian" if run.get("byte_order") else "")),
+             ("Run", run_cell),
+             ("Areas", ("all" if not areas else f"`{areas}`") if run else "all (local run)"),
+             ("Tests", f"{main['counts']['total']} run" if "tests" in row else "not run"),
+             ("Snippets", (f"{snip['counts']['total']} blocks in {', '.join(f'`{x}`' for x in snip.get('paths') or ['docs'])}, "
+                           + ("**report-only**" if snip.get("mode") == "report-only" else "enforced"))
+              if snip else "not run")]
     return {"family": fam, "version": major, "stdlib": "" if stdlib == "unknown" else stdlib,
             "report_only": bool(snip and snip.get("mode") == "report-only"),
-            "compiler": compiler_label(row), "local": local,
-            "where": f"{os_label(row)} · {arch_of(main)} · {where_run}",
+            "compiler": compiler_label(row), "local": local, "title": title, "facts": facts,
+            "file": row["page"], "where": f"{os_label(row)} · {arch_of(main)}",
             "tests": row.get("tests"), "snippets": snip, "run": row.get("run")}
 
 
-def matrix_section(runs: list[dict], local: dict | None) -> list[str]:
-    """The feature support matrix (tools/feature_support.py) for these runs and local results."""
-    jobs = []
-    for r in runs:
-        link = f"[{r['date'] or 'run'}]({r['url']})" if r["url"] else (r["date"] or "run")
-        jobs += [job_of(r["rows"][label], link, False) for label in sorted(r["rows"])]
+def esc_cell(text: str) -> str:
+    return text.replace("|", "\\|")
+
+
+def ensure_pages(runs: list[dict], local: dict | None) -> None:
+    rows = [row for r in runs + ([local] if local else []) for row in r["rows"].values()]
+    if any("page" not in row for row in rows):
+        assign_pages(runs, local)
+
+
+def jobs_of(runs: list[dict], local: dict | None) -> list[dict]:
+    ensure_pages(runs, local)
+    jobs = [job_of(r["rows"][label], r, False) for r in runs for label in sorted(r["rows"])]
     if local and local["rows"]:
-        jobs += [job_of(local["rows"][label], "local", True) for label in sorted(local["rows"])]
-    return feature_support.render(jobs).rstrip("\n").split("\n")
+        jobs += [job_of(local["rows"][label], local, True) for label in sorted(local["rows"])]
+    return jobs
+
+
+def toolchain_pages(runs: list[dict], local: dict | None) -> dict[str, str]:
+    """{file name: Markdown} for docs/platform-support/<slug>.md."""
+    u = universe()
+    return {pathlib.PurePosixPath(j["file"]).name: feature_support.toolchain_page(j, u)
+            for j in jobs_of(runs, local)}
+
+
+def sync_pages(folder: pathlib.Path, pages: dict[str, str], write: bool) -> list[str]:
+    """Write the toolchain pages and remove ones no longer produced; return what was stale."""
+    stale = []
+    for name, text in pages.items():
+        f = folder / name
+        if not f.is_file() or f.read_text(encoding="utf-8") != text:
+            stale.append(name)
+            if write:
+                folder.mkdir(parents=True, exist_ok=True)
+                f.write_text(text, encoding="utf-8")
+    for f in sorted(folder.glob("*.md")) if folder.is_dir() else []:
+        if f.name not in pages:
+            stale.append(f"{f.name} (no longer produced)")
+            if write:
+                f.unlink()
+    return stale
+
+
+def archive_local(src: pathlib.Path, dest: pathlib.Path) -> None:
+    """Replace the archived local results with src's results-*.json, plus local.json."""
+    dest.mkdir(parents=True, exist_ok=True)
+    for f in dest.glob("results-*.json"):
+        f.unlink()
+    stamps = []
+    for f in sorted(src.rglob("results-*.json")):
+        data = json.loads(f.read_text(encoding="utf-8"))
+        stamps += [d.get("generated", "") for d in (data if isinstance(data, list) else [data])]
+        (dest / f.name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    r = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
+    meta = {"schema": SCHEMA, "kind": "archived-local", "date": max(stamps, default="")[:10],
+            "commit": r.stdout.strip() if r.returncode == 0 else "",
+            "note": "Local runs (the owner's machine and the gcc:16 Docker image); commit is the checkout "
+                    "the results were archived from."}
+    (dest / "local.json").write_text(json.dumps(meta, indent=1) + "\n", encoding="utf-8")
+
+
+def load_local(folder: pathlib.Path) -> dict:
+    loc = load_folder(folder, "", "")
+    meta = folder / "local.json"
+    if meta.is_file():
+        m = json.loads(meta.read_text(encoding="utf-8"))
+        loc["date"], loc["sha"] = m.get("date") or loc["date"], m.get("commit", "")
+    return loc
 
 
 def summary(runs: list[dict], local: dict | None) -> str:
@@ -766,7 +905,10 @@ def summary(runs: list[dict], local: dict | None) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("sources", nargs="*", help="GitHub Actions run IDs or folders of results-*.json")
-    ap.add_argument("--local", type=pathlib.Path, help="folder of results-*.json from local runs")
+    ap.add_argument("--local", type=pathlib.Path,
+                    help="folder of results-*.json from local runs; archived in "
+                         f"{LOCAL_ARCHIVE.relative_to(ROOT)} (default: that archive)")
+    ap.add_argument("--no-local", action="store_true", help="leave the local results out")
     ap.add_argument("--run-url", default="", help="run link for a folder source (default: none)")
     ap.add_argument("--date", default="", help="run date for a folder source (default: newest 'generated')")
     ap.add_argument("--workflow", default="", help="workflow file for a folder source, e.g. linux.yml")
@@ -790,6 +932,8 @@ def main() -> int:
     args = ap.parse_args()
     if args.self_test:
         return self_test()
+    if not args.local and not args.no_local and (LOCAL_ARCHIVE / "local.json").is_file():
+        args.local = LOCAL_ARCHIVE
     if not args.sources and not args.local:
         ap.error("give a run ID, a results folder, or --local DIR")
     if args.local and not args.local.is_dir():
@@ -806,7 +950,14 @@ def main() -> int:
                                      save=not (args.no_archive or args.check)))
             else:
                 ap.error(f"{s}: neither a folder nor a run ID")
-        local = load_folder(args.local, "", "") if args.local else None
+        local = None
+        if args.local and not args.no_local:
+            if args.local.resolve() != LOCAL_ARCHIVE.resolve() and not args.check and not args.summary \
+                    and not args.stdout and not args.no_archive:
+                archive_local(args.local, LOCAL_ARCHIVE)
+                print(f"archived local results in {LOCAL_ARCHIVE.relative_to(ROOT)}")
+                args.local = LOCAL_ARCHIVE
+            local = load_local(args.local)
     except SchemaError as e:
         print(f"collect_results.py: schema mismatch: {e}", file=sys.stderr)
         return 1
@@ -814,6 +965,8 @@ def main() -> int:
         print("collect_results.py: no results-*.json found in the sources", file=sys.stderr)
         return 2
 
+    if not args.summary and not args.no_matrix:
+        assign_pages(runs, local)
     try:
         if args.summary:
             page = summary(runs, local)
@@ -834,8 +987,10 @@ def main() -> int:
         except (OSError, SchemaError) as e:
             print(f"collect_results.py: {e}", file=sys.stderr)
             return 2
+    pages = toolchain_pages(runs, local) if not args.summary and not args.no_matrix else None
+    folder = args.output.parent / "platform-support"
     if args.check:
-        stale = []
+        stale = sync_pages(folder, pages, write=False) if pages is not None else []
         if args.output.is_file() and args.output.read_text(encoding="utf-8") != page:
             stale.append(str(args.output))
         if readme and readme[0] != readme[1]:
@@ -846,6 +1001,9 @@ def main() -> int:
     args.output.write_text(page, encoding="utf-8")
     n = sum(len(r["rows"]) for r in runs) + (len(local["rows"]) if local else 0)
     print(f"wrote {args.output}: {n} rows")
+    if pages is not None:
+        changed = sync_pages(folder, pages, write=True)
+        print(f"wrote {len(pages)} toolchain pages in {folder} ({len(changed)} changed or removed)")
     if readme:
         if readme[0] != readme[1]:
             args.readme.write_text(readme[1], encoding="utf-8")
@@ -941,7 +1099,34 @@ def self_test() -> int:
         expect("page tests failure", "failed: no results (tests step exit 2)" in page)
         expect("page scope", "areas `^strings$`" in page)
         expect("readme links the matrix", "(docs/platform-support.md#feature-support-matrix)" in block)
-        jobs = [job_of(row, "x", False) for row in run["rows"].values()]
+        jobs = jobs_of([run], None)
+        slugs = sorted(pathlib.PurePosixPath(r["page"]).name for r in run["rows"].values()) + \
+            sorted(pathlib.PurePosixPath(r["page"]).name for r in local["rows"].values())
+        expect(f"toolchain file names ({slugs})", slugs == [
+            "linux-ubuntu-24.04-x86_64-clang-22-libcxx.md", "linux-ubuntu-24.04-x86_64-gcc-16.md",
+            "windows-server-2025-msys2-ucrt64-x86_64-gcc-16.md", "windows-server-2025-x86_64-msvc-19.51.md",
+            "local-macos-x86_64-clang-22-libcxx.md"])
+        expect("platform table links the toolchain page",
+               "| [linux-x86_64-ubuntu-24.04-gcc-16](platform-support/linux-ubuntu-24.04-x86_64-gcc-16.md) |" in page)
+        expect("no per-feature detail on the entry page", "<details><summary><code>" not in page
+               and "| Feature |" not in page)
+        pages = toolchain_pages([run], local)
+        expect("one page per toolchain", len(pages) == 5)
+        g16 = pages["linux-ubuntu-24.04-x86_64-gcc-16.md"]
+        expect("toolchain page header", g16.startswith("# GCC 16.2.0 on Ubuntu 24.04, x86_64")
+               and "| Areas | `^strings$` |" in g16 and "(../platform-support.md)" in g16)
+        expect("report-only noted", "**report-only**" in pages["windows-server-2025-x86_64-msvc-19.51.md"])
+        folder = pathlib.Path(tmp, "pages")
+        folder.mkdir()
+        (folder / "old-toolchain.md").write_text("x", encoding="utf-8")
+        changed = sync_pages(folder, pages, write=True)
+        expect("stale page removed", not (folder / "old-toolchain.md").exists() and len(changed) == 6)
+        expect("pages up to date", sync_pages(folder, pages, write=False) == [])
+        larch = pathlib.Path(tmp, "local-archive")
+        archive_local(local_dir, larch)
+        back_local = load_local(larch)
+        expect("local archive", sorted(back_local["rows"]) == sorted(local["rows"])
+               and back_local["date"] == "2026-11-01" and (larch / "local.json").is_file())
         msvc = next(j for j in jobs if j["family"] == "MSVC")
         expect("job: MSVC major.minor", msvc["version"] == "19.51" and msvc["report_only"])
         clang = next(j for j in jobs if j["family"] == "Clang")
