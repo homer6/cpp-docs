@@ -72,7 +72,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | ✅ verified |
 | [Security verification](verification.md) | Warnings, static analysis, sanitizers, fuzzing and failure tests: complementary evidence for security properties. | ✅ verified |
 | [Supply chain and release security](supply-chain.md) | Control build inputs, verify provenance, and keep the evidence for every release. | imported |
-| [Deployment and incident readiness](deployment.md) | Least privilege, isolation of risky components, careful logging, and a process for vulnerabilities. | imported |
+| [Deployment and incident readiness](deployment.md) | Least privilege, isolation of risky components, careful logging, and a process for vulnerabilities. | ✅ verified |
 | [Security policy, review and adoption](policy.md) | Enforceable rules, release gates, a review checklist and an adoption order. | imported |
 
 ## See also
