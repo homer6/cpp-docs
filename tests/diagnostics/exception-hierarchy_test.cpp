@@ -100,17 +100,18 @@ TEST(ExceptionHierarchy, BadCastAndBadAlloc) {
     EXPECT_THROW((void)dynamic_cast<D&>(rb), std::bad_cast);
     std::vector<int> v;
     EXPECT_THROW(v.reserve(v.max_size() + 1), std::length_error);  // a logic_error
-#if defined(__SANITIZE_ADDRESS__)
-#  define CPPDOCS_ASAN 1
+#if defined(__SANITIZE_ADDRESS__) || defined(__SANITIZE_THREAD__)
+#  define CPPDOCS_SANITIZER_NEW 1
 #elif defined(__has_feature)
-#  if __has_feature(address_sanitizer)
-#    define CPPDOCS_ASAN 1
+#  if __has_feature(address_sanitizer) || __has_feature(thread_sanitizer)
+#    define CPPDOCS_SANITIZER_NEW 1
 #  endif
 #endif
-#ifdef CPPDOCS_ASAN
-    // AddressSanitizer replaces operator new and reports out-of-memory
-    // instead of throwing bad_alloc for a huge request, whatever its options (#263).
-    GTEST_SKIP() << "bad_alloc from a huge reserve: AddressSanitizer reports out-of-memory instead of throwing";
+#ifdef CPPDOCS_SANITIZER_NEW
+    // AddressSanitizer and ThreadSanitizer replace operator new and report a
+    // huge request (out-of-memory, allocation-size-too-big) instead of
+    // throwing bad_alloc, whatever their options (#263, #284).
+    GTEST_SKIP() << "bad_alloc from a huge reserve: the sanitizer's allocator reports the request instead of throwing";
 #else
     EXPECT_THROW(v.reserve(v.max_size()), std::bad_alloc);
 #endif

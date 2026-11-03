@@ -135,10 +135,10 @@ the environment. The results JSON records the sanitizers
 page (`…-asan`, `…-tsan`) and matrix column.
 
 Where a test can't work under a sanitizer it skips with the reason, never
-vanishes: under ASan a huge `reserve` can't throw `bad_alloc`, because ASan's
-`operator new` reports out-of-memory instead, whatever its options. Under
-TSan, a second `call_once` after the callable threw deadlocks, so that one
-test skips too.
+vanishes: under ASan or TSan a huge `reserve` can't throw `bad_alloc`,
+because the sanitizer's `operator new` reports the request instead, whatever
+its options (#284). Under TSan, a second `call_once` after the callable
+threw deadlocks, so that one test skips too.
 
 ThreadSanitizer runs on Linux against libstdc++ only (the `clang-sanitizers`
 job). Packaged libc++ isn't built with TSan, so its `call_once` and unwinder
