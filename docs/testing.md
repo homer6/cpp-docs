@@ -178,7 +178,12 @@ a hardened job gets its own results and page (`…-hardened`), like a sanitized
 one. In CI, `CPPDOCS_HARDEN=1` in a job's environment does the same (the
 CMake option takes its default from it), and the job leaves snippets to the
 plain job. The hardened jobs are GCC 16 and Clang 22 with libc++ on Linux,
-Homebrew LLVM on macOS, and MSVC on Windows Server 2025. What each flag does,
+Homebrew LLVM on macOS, and MSVC on Windows Server 2025. `tests/security/hardening_test.cpp` has death tests (#306) that
+prove the library checks fire: an out-of-range `operator[]` on `vector`,
+`array`, `span`, `string` and `string_view`, `front()` on an empty vector, and
+`*` on an empty `optional` or an `expected` holding an error each stop the
+program. They run whenever library hardening is active (including libstdc++
+15+'s default in unoptimized builds) and skip with the reason otherwise. What each flag does,
 and how to check a binary, is on [`docs/security/hardening.md`](security/hardening.md).
 
 ### Portable presets (any machine, CI)
