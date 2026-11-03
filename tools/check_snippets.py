@@ -333,6 +333,13 @@ RAN: list[Block] = []
 _LOCK = threading.Lock()
 
 
+# The caller's environment, kept for running run blocks: main() sets LC_ALL=C
+# for the compilers, so their diagnostics use plain quotes on every machine
+# (GCC writes ‘x’ under a UTF-8 locale, which the compile-fail and warns=
+# regexes don't match; #275), but a snippet runs in the caller's locale.
+USER_ENV = dict(os.environ)
+
+
 def run_block(block: Block, tc: Toolchain, src: str) -> tuple[bool, str]:
     """Build and run a run block under the sanitizers; a bad block must be caught."""
     with tempfile.TemporaryDirectory() as d:
@@ -340,7 +347,7 @@ def run_block(block: Block, tc: Toolchain, src: str) -> tuple[bool, str]:
         b = subprocess.run(tc.run_cmd(exe) + [src], capture_output=True, text=True, timeout=300)
         if b.returncode != 0:
             return False, "run block didn't build with the sanitizers:\n" + b.stderr
-        env = dict(os.environ, ASAN_OPTIONS="abort_on_error=0:detect_leaks=" + ("1" if sys.platform.startswith("linux") else "0"),
+        env = dict(USER_ENV, ASAN_OPTIONS="abort_on_error=0:detect_leaks=" + ("1" if sys.platform.startswith("linux") else "0"),
                    UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=1")
         try:
             r = subprocess.run([exe], capture_output=True, text=True, timeout=60, env=env, stdin=subprocess.DEVNULL)
@@ -580,6 +587,7 @@ def check_module_group(group: list[Block], tc: ModuleToolchain) -> list[tuple[Bl
 
 
 def main() -> int:
+    os.environ["LC_ALL"] = "C"
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("paths", nargs="*", default=["docs"])
     ap.add_argument("--toolchain", choices=("auto", *TOOLCHAINS), default="auto",
