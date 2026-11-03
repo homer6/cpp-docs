@@ -1,11 +1,15 @@
 // Checks claims made by docs/security/deployment.md.
 #include <cstddef>
 #include <cstdlib>
+#include <filesystem>
 #include <format>
+#include <fstream>
+#include <iterator>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <utility>
 
 #if !defined(_WIN32) && __has_include(<grp.h>) && __has_include(<unistd.h>)
@@ -43,6 +47,25 @@ std::string log_field(std::string_view untrusted) {
         else out += static_cast<char>(c);
     }
     return out;
+}
+
+bool write_atomically(const std::filesystem::path& target, std::string_view data) {
+    std::filesystem::path tmp = target;
+    tmp += ".tmp";
+    {
+        std::ofstream out{tmp, std::ios::binary | std::ios::trunc};
+        if (!out.write(data.data(), static_cast<std::streamsize>(data.size()))) return false;
+        out.flush();
+        if (!out) return false;
+    }
+    std::error_code ec;
+    std::filesystem::rename(tmp, target, ec);
+    return !ec;
+}
+
+std::string slurp(const std::filesystem::path& p) {
+    std::ifstream in{p, std::ios::binary};
+    return {std::istreambuf_iterator<char>{in}, std::istreambuf_iterator<char>{}};
 }
 
 #if defined(CPPDOCS_POSIX_PRIVILEGES)
@@ -144,4 +167,18 @@ TEST(SecurityDeployment, LinuxNoNewPrivs) {
 #else
     GTEST_SKIP() << "Linux only (PR_SET_NO_NEW_PRIVS)";
 #endif
+}
+
+// "Stop safely, restart cleanly": writing to a temporary file and renaming it
+// replaces the target in one step, and leaves no temporary file behind.
+TEST(SecurityDeployment, AtomicWriteReplacesTarget) {
+    const auto dir = std::filesystem::temp_directory_path() / "cppdocs-deployment-test";
+    std::filesystem::create_directories(dir);
+    const auto target = dir / "state.txt";
+    ASSERT_TRUE(write_atomically(target, "version 1"));
+    EXPECT_EQ(slurp(target), "version 1");
+    ASSERT_TRUE(write_atomically(target, "version 2"));
+    EXPECT_EQ(slurp(target), "version 2");
+    EXPECT_FALSE(std::filesystem::exists(dir / "state.txt.tmp"));
+    std::filesystem::remove_all(dir);
 }

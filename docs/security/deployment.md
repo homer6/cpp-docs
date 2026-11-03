@@ -96,6 +96,64 @@ the broker ([parsing and validation](parsing-and-validation.md)), and bound
 the worker's memory, CPU time and output size
 ([resource limits](resource-limits.md)).
 
+## Stop safely, restart cleanly
+
+The pages tell code to stop on a broken invariant rather than continue
+([error handling](error-handling.md#stop-on-broken-invariants)), and
+hardening and contract checks stop the process the same way. That is only
+safe if something restarts it and nothing is left half-done.
+
+**SHOULD:** Run the program under a supervisor that restarts it: a service
+manager (systemd `Restart=on-failure`, launchd, a Windows service's recovery
+actions) or an orchestrator. Limit the restart rate, so input that crashes the
+worker every time doesn't keep the machine busy restarting it.
+
+**MUST:** Write state so a crash at any moment leaves either the old version
+or the new one. Write to a temporary file, then rename it over the target:
+on POSIX file systems `rename` replaces the target atomically. For
+durability across a power loss, also `fsync` the file and its directory
+(POSIX only; the standard library has no portable call).
+
+```cpp
+#include <filesystem>
+#include <fstream>
+#include <string_view>
+#include <system_error>
+
+// A crash leaves the old file or the new one, never half of each.
+bool write_atomically(const std::filesystem::path& target, std::string_view data) {
+    std::filesystem::path tmp = target;
+    tmp += ".tmp";
+    {
+        std::ofstream out{tmp, std::ios::binary | std::ios::trunc};
+        if (!out.write(data.data(), static_cast<std::streamsize>(data.size()))) return false;
+        out.flush();
+        if (!out) return false;
+    }
+    std::error_code ec;
+    std::filesystem::rename(tmp, target, ec);   // replaces target
+    return !ec;
+}
+```
+
+## Get secrets at run time
+
+**MUST:** Keep secrets out of the binary, the repository and the command line,
+and load them when the program starts. Use a secret store (a cloud secret
+manager or KMS, HashiCorp Vault, systemd's `LoadCredential=`, the OS keychain
+or DPAPI on Windows), or a file only the service account can read. This shapes
+the C++:
+- **Arguments:** never pass a secret in `argv`. On Linux any local user can
+  read a process's arguments (`ps`, `/proc/<pid>/cmdline`).
+- **Environment variables:** prefer files or a credentials API. Every child
+  process inherits the environment, and the same user and root can read it
+  through `/proc/<pid>/environ`.
+- **Storage:** read each secret once, into the one type that holds it
+  ([cryptography and secrets](cryptography-and-secrets.md#keep-secrets-out-of-code-logs-and-long-lived-memory)),
+  and erase buffers you no longer need.
+- **Rotation:** plan for it. The program reloads a rotated secret without a
+  rebuild, which means no secret is a compile-time constant.
+
 ## Keep secrets out of crash dumps
 
 A core dump or minidump holds the process's memory, so it holds every key,
