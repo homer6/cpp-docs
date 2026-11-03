@@ -1,19 +1,21 @@
 # Platform support notes
 
-<!-- notes-run: 41458326778 -->
+<!-- notes-run: 41618636506 -->
 
 A high-level reading of the results: how far each platform, architecture and
 compiler supports what this reference documents. Written by hand from the
 results of run
-[41458326778](https://github.com/homer6/cpp-docs/actions/runs/41458326778)
-(2026-11-02, every platform, every area) and the local runs of the same day,
+[41618636506](https://github.com/homer6/cpp-docs/actions/runs/41618636506)
+(2026-11-03, every platform, every area) and the local runs of the same day,
 and updated with every full run. The per-toolchain detail is in the toolchain
 pages ([`README.md`](README.md)) and in [`../platform-support.md`](../platform-support.md).
 
 ## In one paragraph
 
 Everything documented that a toolchain implements works: **0 test failures
-on all 50 toolchains**. Toolchains differ in how much they implement, which
+in all 55 CI jobs and on the 3 local toolchains**, including the suite under
+AddressSanitizer + UBSan (GCC 16, Clang 22, LLVM 23) and ThreadSanitizer
+(Clang 22 with libstdc++). Toolchains differ in how much they implement, which
 shows up as skipped tests, each with its reason. **The standard library and
 compiler version decide the level of support. The OS and the CPU barely
 matter:** the same toolchain gives the same results on x86_64 and arm64, on
@@ -24,26 +26,26 @@ MSVC lacks a C++26 mode and several C++23/26 language features.
 
 ## By compiler
 
-Tests passed out of 1102 (1099 on macOS); the rest are skipped, never failed.
+Tests passed out of 1464 (1461 on macOS); the rest are skipped, never failed.
 
 | Compiler | Passed | Characterization |
 |---|---|---|
-| GCC 16 (Linux, macOS, MinGW) | 1049–1066 | The most complete. The only one with reflection, contracts, expansion statements, constexpr exceptions and erroneous behaviour, and nearly all of the C++26 library tested (`inplace_vector`, `function_ref`, `indirect`/`polymorphic`, `<debugging>`, `submdspan`). Missing: hive, linalg, senders, simd, RCU and hazard pointers (no one has them), and the private module fragment. |
-| GCC 15 | 988–1005 | Complete C++23 and early C++26 (`#embed`, pack indexing, `= delete("reason")`, placeholder `_`) and named modules; no reflection or contracts, and little of the C++26 library. |
-| GCC 14 | 940–957 | C++23 with gaps: no `flat_map`/`flat_set`, `#embed`, pack indexing or std module. FreeBSD 15.1's pkg GCC 14.2 can't build named modules (compiler crash, [#219](https://github.com/homer6/cpp-docs/issues/219)). |
-| GCC 13 | 897 | The oldest supported. No C++26 mode (built as C++23), no `<print>`, and CMake 3.25 on Debian 12 can't build modules. |
-| Clang with libstdc++ | 934–1013 | Follows libstdc++: Clang 23 with libstdc++ 16 (MSYS2 UCRT64) 1013, Clang 22 with libstdc++ 15 (Ubuntu 26.04) 995–997, with libstdc++ 14 (Ubuntu 24.04) 967–969. Known Clang/libstdc++ mismatches: constexpr `std::complex`, dynamic format widths, `ranges::to` and `bind_front` with libstdc++ 14. |
-| Clang 22–23 with libc++ | 969–976 | Strong C++23, named modules and `#embed`; no reflection or contracts. libc++ 22 lacks `std::generator`, several C++23 views (`cartesian_product`, `concat`, `cache_latest`), `spanstream` and `std::text_encoding`; parallel algorithms and `osyncstream` need `-fexperimental-library`. |
-| Clang 18–21 with libc++ | 902–960 | Each version adds C++23 library pieces. Clang 18–19 lack deducing `this`, libc++ before 22 lacks `views::zip`, and libc++ 19–20 has a `ranges::contains` bug ([#218](https://github.com/homer6/cpp-docs/issues/218)). |
-| Apple Clang 17 / 21 | 914–916 / 947–949 | Apple Clang 17 ships libc++ 19 and scores like Clang 18–19; Apple Clang 21 scores like Clang 20. No named modules: Xcode ships no `clang-scan-deps`, so CMake can't build them. |
-| MSVC 19.51 (VS 2026) | 947 | No C++26 mode (CMake builds it as C++23, `/std:c++latest`). Missing `#embed`, pack indexing, `= delete("reason")`, `[[assume]]`, `auto(x)`, labels at the end of a block, `<stdckdint.h>`. A P2718 range-for bug ([#222](https://github.com/homer6/cpp-docs/issues/222)). Same results on x64 and arm64. |
-| MSVC 19.44 (VS 2022) | 917 | As 19.51, plus no deducing `this`, implicit move or constexpr virtual calls ([#223](https://github.com/homer6/cpp-docs/issues/223)). |
-| clang-cl 22 | 969 | Clang's language support with the MS STL. Named modules work, but a module-linkage mangling bug (llvm/llvm-project#174064) limits one test. |
+| GCC 16 (Linux, macOS, MinGW) | 1411–1428 | The most complete. The only one with reflection, contracts, expansion statements, constexpr exceptions and erroneous behaviour, and nearly all of the C++26 library tested (`inplace_vector`, `function_ref`, `indirect`/`polymorphic`, `<debugging>`, `submdspan`). Missing: hive, linalg, senders, simd, RCU and hazard pointers (no one has them), and the private module fragment. |
+| GCC 15 | 1358–1367 | Complete C++23 and early C++26 (`#embed`, pack indexing, `= delete("reason")`, placeholder `_`) and named modules; no reflection or contracts, and little of the C++26 library. |
+| GCC 14 | 1302–1319 | C++23 with gaps: no `flat_map`/`flat_set`, `#embed`, pack indexing or std module. FreeBSD 15.1's pkg GCC 14.2 can't build named modules (compiler crash, [#219](https://github.com/homer6/cpp-docs/issues/219)). |
+| GCC 13 | 1258 | The oldest supported. No C++26 mode (built as C++23), no `<print>`, and CMake 3.25 on Debian 12 can't build modules. |
+| Clang with libstdc++ | 1295–1375 | Follows libstdc++: Clang 23 with libstdc++ 16 (MSYS2 UCRT64) 1375, Clang 22 with libstdc++ 15 (Ubuntu 26.04) 1357–1359, Clang 18–23 with libstdc++ 14 (Ubuntu 24.04) 1295–1331. Known Clang/libstdc++ mismatches: constexpr `std::complex`, dynamic format widths, `ranges::to` and `bind_front` with libstdc++ 14 (Clang 20–23). |
+| Clang 22–23 with libc++ | 1331–1341 | Strong C++23, named modules and `#embed`; no reflection or contracts. libc++ 22 lacks `std::generator`, several C++23 views (`cartesian_product`, `concat`, `cache_latest`), `spanstream` and `std::text_encoding`; parallel algorithms and `osyncstream` need `-fexperimental-library`. |
+| Clang 18–21 with libc++ | 1261–1322 | Each version adds C++23 library pieces. Clang 18–19 lack deducing `this`, libc++ before 22 lacks `views::zip`, and libc++ 19–20 has a `ranges::contains` bug ([#218](https://github.com/homer6/cpp-docs/issues/218)). |
+| Apple Clang 17 / 21 | 1273–1275 / 1309–1311 | Apple Clang 17 ships libc++ 19 and scores like Clang 18–19 (and has no `std::jthread`); Apple Clang 21 scores like Clang 20. No named modules: Xcode ships no `clang-scan-deps`, so CMake can't build them. |
+| MSVC 19.51 (VS 2026) | 1309 | No C++26 mode (CMake builds it as C++23, `/std:c++latest`). Missing `#embed`, pack indexing, `= delete("reason")`, `[[assume]]`, `auto(x)`, labels at the end of a block, `<stdckdint.h>`. A P2718 range-for bug ([#222](https://github.com/homer6/cpp-docs/issues/222)). Same results on x64 and arm64. |
+| MSVC 19.44 (VS 2022) | 1279 | As 19.51, plus no deducing `this`, implicit move or constexpr virtual calls ([#223](https://github.com/homer6/cpp-docs/issues/223)). |
+| clang-cl 22 | 1330 | Clang's language support with the MS STL. Named modules work, but a module-linkage mangling bug (llvm/llvm-project#174064) limits one test. |
 
 ## By platform
 
 - **Linux** (Debian, Ubuntu; x86_64 and arm64): the reference platform, with
-  the widest range of compilers (GCC 13–16, Clang 18–22 with both libraries).
+  the widest range of compilers (GCC 13–16, Clang 18–23 with both libraries).
   Most implementation-defined values in the pages are recorded for glibc.
 - **macOS** (15 and 26; arm64 and Intel): Homebrew GCC 16 and LLVM match
   Linux. Homebrew GCC has three platform gaps: `call_once` with a throwing
@@ -73,6 +75,8 @@ it; MSVC isn't tested yet).
 
 ## Limits of these results
 
+- The sanitizer jobs run the tests only, not the snippets. ThreadSanitizer runs
+  with libstdc++ only: packaged libc++ isn't TSan-instrumented.
 - Snippets are enforced only for GCC 15–16 and Clang 22 with libc++. On the
   other toolchains their failures are reported, not gated.
 - `import std` is skipped where the runner's CMake is older than 4.3 (most
