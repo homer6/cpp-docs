@@ -102,10 +102,13 @@ Where you need the result and an overflow flag, use a checked operation
 instead of writing the test by hand:
 
 - **`<stdckdint.h>`** (`ckd_add`, `ckd_sub`, `ckd_mul`): C23, and added to the
-  C++26 draft by P3370R1. GCC 15 and 16 and Clang 22 already provide it in C++
-  mode; libstdc++ 16 defines `__cpp_lib_stdckdint_h` (202603L), the others
-  don't yet, so gate on `__has_include(<stdckdint.h>)`. The MS STL doesn't
-  ship it yet.[^ckd]
+  C++26 draft by P3370R1. Gate on the feature-test macro
+  `__cpp_lib_stdckdint_h`, which libstdc++ defines (202603L) from 14.4, 15.3
+  and 16. Don't gate on `__has_include(<stdckdint.h>)`: GCC 14.2's libstdc++
+  has no C++ header, so the include finds GCC's C one, whose `ckd_add` casts
+  to `_Bool` and doesn't compile as C++. Clang 22's own header works in C++,
+  but libc++ doesn't define the macro yet, so the fallback runs there. The MS
+  STL doesn't ship the header yet.[^ckd]
 - **`__builtin_add_overflow`** and friends on GCC and Clang (not MSVC).
 - **Saturation** (`std::saturating_add` and friends, C++26) when clamping is the
   right answer rather than rejection; see [saturation](../examples/numerics/saturation.md)
@@ -113,12 +116,13 @@ instead of writing the test by hand:
 
 ```cpp
 #include <cstddef>
-#if __has_include(<stdckdint.h>)
+#include <version>
+#if defined(__cpp_lib_stdckdint_h)
 #  include <stdckdint.h>
 #endif
 
 bool total_length(std::size_t a, std::size_t b, std::size_t& out) {
-#if __has_include(<stdckdint.h>)
+#if defined(__cpp_lib_stdckdint_h)
     return !ckd_add(&out, a, b);              // ckd_add returns true on overflow
 #else
     if (b > static_cast<std::size_t>(-1) - a) return false;
@@ -174,4 +178,4 @@ makes it safe.
   [`ckd_add`](https://en.cppreference.com/w/cpp/numeric/ckd_add)
 - Tests: [`tests/security/integers_test.cpp`](../../tests/security/integers_test.cpp)
 
-[^ckd]: [P3370R1](https://wg21.link/p3370r1), *Add new library headers from C23*; cppreference [`<stdckdint.h>`](https://en.cppreference.com/w/cpp/header/stdckdint.h); MS STL [issue 5143](https://github.com/microsoft/STL/issues/5143). Checked locally: GCC 15.2 and Clang 22 (libc++) compile `ckd_add` in C++ mode; only libstdc++ 16 defines the feature-test macro.
+[^ckd]: [P3370R1](https://wg21.link/p3370r1), *Add new library headers from C23*; cppreference [`<stdckdint.h>`](https://en.cppreference.com/w/cpp/header/stdckdint.h); MS STL [issue 5143](https://github.com/microsoft/STL/issues/5143). Checked: libstdc++ 14.4.0, 15.3.0 and 16.2.0 define `__cpp_lib_stdckdint_h` (202603L) in `<version>` and ship a C++ `<stdckdint.h>`; Homebrew GCC 15.2.0 ships the header without the macro; Clang 22.1 with libc++ uses Clang's own header, which works in C++, and doesn't define the macro. GCC 14.2.0 on FreeBSD 14.5 and 15.1 (CI, [#369](https://github.com/homer6/cpp-docs/issues/369)) found GCC's C-only header through `__has_include` and failed with `'_Bool' was not declared in this scope`.
