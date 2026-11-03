@@ -30,6 +30,10 @@ on:
         description: "Run the snippet checker"
         type: boolean
         default: true
+      jobs:
+        description: "Jobs to start: a regex searched for in each job name (empty = all). Preview: tools/ci/plan.py --jobs '<regex>'"
+        type: string
+        default: ""
   workflow_call:
     inputs:
       areas:
@@ -41,22 +45,48 @@ on:
       snippets:
         type: boolean
         default: true
+      jobs:
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
+  plan:
+    # Which jobs this run starts (#376): the entries of .github/ci/freebsd.json
+    # whose name matches the `jobs` input (empty: all). A job with no selected
+    # entry doesn't start. Preview a pattern with tools/ci/plan.py.
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      freebsd: ${{ steps.plan.outputs.freebsd }}
+      freebsd_on: ${{ steps.plan.outputs.freebsd_on }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/ci
+            tools/ci
+
+      - name: Select the jobs
+        id: plan
+        env:
+          JOBS: ${{ inputs.jobs }}
+        run: python3 tools/ci/plan.py freebsd.yml --jobs "$JOBS" --github-output
+
   freebsd:
-    name: FreeBSD ${{ matrix.release }} ${{ matrix.arch }} · ${{ matrix.toolchain }}
+    name: ${{ matrix.name }}
+    needs: plan
+    if: ${{ needs.plan.outputs.freebsd_on == 'true' }}
     runs-on: ubuntu-24.04
     continue-on-error: false
     timeout-minutes: 360
     strategy:
       fail-fast: false
-      matrix:
-        release: ["14.5", "15.1"]
-        arch: [x86_64]
-        toolchain: [clang, gcc]
+      matrix: ${{ fromJSON(needs.plan.outputs.freebsd) }}  # .github/ci/freebsd.json
     env:
       CPPDOCS_AREAS: ${{ inputs.areas }}
       CPPDOCS_TESTS: ${{ inputs.tests }}

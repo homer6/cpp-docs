@@ -1,0 +1,31 @@
+{
+  "_comment": "The jobs .github/workflows/freebsd.yml can start, one entry per job with its display name (#376). The plan job selects entries with the run's `jobs` input (tools/ci/plan.py) and each job's matrix is the selected entries. Keep the names unique: they're what a `jobs` pattern matches, and the report keys on them.",
+  "jobs": {
+    "freebsd": [
+      {
+        "name": "FreeBSD 14.5 x86_64 · clang",
+        "release": "14.5",
+        "arch": "x86_64",
+        "toolchain": "clang"
+      },
+      {
+        "name": "FreeBSD 14.5 x86_64 · gcc",
+        "release": "14.5",
+        "arch": "x86_64",
+        "toolchain": "gcc"
+      },
+      {
+        "name": "FreeBSD 15.1 x86_64 · clang",
+        "release": "15.1",
+        "arch": "x86_64",
+        "toolchain": "clang"
+      },
+      {
+        "name": "FreeBSD 15.1 x86_64 · gcc",
+        "release": "15.1",
+        "arch": "x86_64",
+        "toolchain": "gcc"
+      }
+    ]
+  }
+}

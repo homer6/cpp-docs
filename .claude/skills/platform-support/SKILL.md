@@ -35,7 +35,7 @@ consent in the moment**, naming the workflow, the ref and every input.
 |---|---|
 | New plumbing (a new workflow, toolchain or script) | One workflow, one area: `areas=^strings$` |
 | The report, a release, or a claim about a platform | `all.yml` on `dev`, `platforms=all`, `areas=` (empty: every area and snippet), `tests=true`, `snippets=true` |
-| After fixes (step 5) | Only the workflows that failed, every area, as a **new dispatch** on `dev` |
+| After fixes (step 5) | Only the **jobs** that failed (`jobs=<regex>`), every area, as a **new dispatch** on `dev` |
 
 > May I run `all.yml` on `dev` with `platforms=all`, `areas=` (every area),
 > `tests=true`, `snippets=true`?
@@ -142,18 +142,30 @@ For each bug:
 ## 5. Re-run only what failed
 
 After the fix PRs merge (each with the owner's verdict), start **a new
-dispatch** of only the workflows that had failures, on `dev`, every area.
-Don't use `gh run rerun`: a GitHub re-run reuses the original commit and
-wouldn't pick up the fixes.
+dispatch** on `dev`, every area, of **only the jobs that failed**: never
+re-run jobs that passed to reach them (the owner, #376). Don't use
+`gh run rerun`: a GitHub re-run reuses the original commit and wouldn't pick
+up the fixes.
+
+Write a `jobs` pattern (a regex searched for in each job's name) that
+matches exactly the failed jobs, and preview it:
 
 ```bash
-gh workflow run all.yml -R homer6/cpp-docs --ref dev -f platforms=windows-msvc,macos -f areas= -f tests=true -f snippets=true
+tools/ci/plan.py --jobs 'MSVC|MSYS2|clang-cl|FreeBSD .* gcc$'
 ```
 
-Check the `platforms` input's accepted values in `.github/workflows/all.yml`;
-a single workflow file (`windows-msvc.yml`) can be dispatched directly too.
-Process each new run from step 2. Repeat until every job of every workflow is
-green.
+Compare its list with the run's failed jobs (`gh run view <id> --json
+jobs`), anchor names that are prefixes of others (`…image\)$`), then ask for
+the run with that pattern, narrowing `platforms` too:
+
+```bash
+gh workflow run all.yml -R homer6/cpp-docs --ref dev -f platforms=windows-msvc,windows-gnu,freebsd -f areas= -f tests=true -f snippets=true -f jobs='MSVC|MSYS2|clang-cl|FreeBSD .* gcc$'
+```
+
+A single workflow file (`windows-msvc.yml`) can be dispatched directly too,
+with the same `jobs` input. How the selection works is in
+`.github/workflows/README.md` ("Starting only some jobs"). Process each new
+run from step 2. Repeat until every job is green.
 
 ## 6. Archive and regenerate
 
@@ -166,10 +178,11 @@ tools/collect_results.py <the same ids> --check     # nothing stale
 tools/collect_results.py --self-test
 ```
 
-An `all.yml` run covers several workflows, and a fix-up run may re-run only
-the ones that failed, so pass both: `tools/collect_results.py <full-run-id>
-<fix-up-run-id>`. Each job is taken from the newest run that has it, and
-each workflow's result in the table comes from its own jobs (#190).
+An `all.yml` run covers several workflows, and a fix-up run starts only the
+jobs that failed, so pass both: `tools/collect_results.py <full-run-id>
+<fix-up-run-id>`. Each job is taken from the newest run that ran it, the
+older run's other jobs stay, and each workflow's line in the table links
+every run its jobs come from (#190, #376).
 
 Without `--local` it reuses the archived local results in
 `docs/platform-support/local/`; pass `--local <folder>` after refreshing them

@@ -381,3 +381,8 @@ scripts in [`tools/ci/`](../tools/ci/), and upload one
 consented run of each on `dev` first, with every failure fixed (the release
 checklist is in [`CLAUDE.md`](../CLAUDE.md)). The local checks above remain the
 source of truth.
+Each platform workflow and `all.yml` take a `jobs` input, a regex for the job
+names to start (#376), so a fix-up run starts only the jobs that failed;
+[`tools/ci/plan.py`](../tools/ci/plan.py) previews a pattern, and the jobs
+are listed in [`.github/ci/`](../.github/ci/). Details:
+[Starting only some jobs](../.github/workflows/README.md#starting-only-some-jobs).
