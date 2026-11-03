@@ -32,7 +32,7 @@ if(CPPDOCS_TOOLCHAIN AND NOT CMAKE_CXX_COMPILER AND "$ENV{CXX}" STREQUAL "")
   endif()
 endif()
 
-project(cpp_docs_tests VERSION 0.3.0 LANGUAGES CXX)
+project(cpp_docs_tests VERSION 0.4.0 LANGUAGES CXX)
 
 if(CPPDOCS_TOOLCHAIN)
   set(_id "${CMAKE_CXX_COMPILER_ID}")

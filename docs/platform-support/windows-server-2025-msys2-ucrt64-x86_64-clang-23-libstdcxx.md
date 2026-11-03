@@ -10,17 +10,17 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | Clang 23.1.4 (preset `clang`) |
 | Standard library | libstdc++ |
 | Architecture | x86_64, little-endian |
-| Run | [all.yml · 2026-11-02](https://github.com/homer6/cpp-docs/actions/runs/41458326778), commit `a9fbaa7` |
+| Run | [all.yml · 2026-11-03](https://github.com/homer6/cpp-docs/actions/runs/41618636506), commit `ddf1dfa` |
 | Areas | all |
-| Tests | 1102 run |
-| Snippets | 820 blocks in `docs`, **report-only** |
+| Tests | 1464 run |
+| Snippets | 1802 blocks in `docs`, **report-only** |
 
 ## Totals
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1098) | 1008 | 0 | 89 | 1 | 0 |
-| Examples (820) | 682 | 9 | 129 | 0 | 0 |
+| Features (1460) | 1370 | 0 | 89 | 1 | 0 |
+| Examples (1802) | 1639 | 10 | 153 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout). Snippet results are **report-only** here: no reviewed snippet baseline yet (#159).
 
@@ -30,10 +30,10 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 |---|---|---|
 | [algorithms](#algorithms) | ✅ | ✅ |
 | [concepts](#concepts) | ✅ | ✅ |
-| [concurrency](#concurrency) | 🟡 4 | 🟡 7 |
+| [concurrency](#concurrency) | 🟡 4 | 🟡 6 |
 | [containers](#containers) | 🟡 7 | 🟡 14 |
 | [datetime](#datetime) | ✅ | ✅ |
-| [diagnostics](#diagnostics) | 🟡 2 | 🟡 7 |
+| [diagnostics](#diagnostics) | 🟡 2 | 🟡 6 |
 | [execution](#execution) | 🟡 5 | 🟡 5 |
 | [feature-test-macros](#feature-test-macros) | ✅ | ✅ |
 | [io](#io) | 🟡 1 | 🟡 4 |
@@ -48,7 +48,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [strings](#strings) | ✅ | ✅ |
 | [text-processing](#text-processing) | 🟡 21 | ❌ 4 |
 | [utilities](#utilities) | 🟡 1 | 🟡 4 |
-| [Guidelines (snippets only)](#guidelines-snippets-only) |  | 🟡 23 |
+| [Guidelines (snippets only)](#guidelines-snippets-only) | ✅ | ❌ 1 |
 
 ## algorithms
 
@@ -228,7 +228,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## concurrency
 
-<details><summary>6 pages · 48 features · 30 examples: 🟡 11</summary>
+<details><summary>6 pages · 48 features · 30 examples: 🟡 10</summary>
 
 **[examples/concurrency/atomics.md](../examples/concurrency/atomics.md)**
 
@@ -332,7 +332,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | Examples in section | Blocks | Result |
 |---|---:|---|
 | [rcu-p2545](../examples/concurrency/safe-reclamation.md#rcu-p2545) | 1 | ⏭ (nocompile) |
-| [hazard_pointer-p2530](../examples/concurrency/safe-reclamation.md#hazard_pointer-p2530) | 1 | ⏭ (nocompile) |
+| [hazard_pointer-p2530](../examples/concurrency/safe-reclamation.md#hazard_pointer-p2530) | 1 | ✅ |
 | [compiler-support](../examples/concurrency/safe-reclamation.md#compiler-support) | 1 | ✅ |
 | [rcu-a-read-mostly-configuration](../examples/concurrency/safe-reclamation.md#rcu-a-read-mostly-configuration) | 1 | ⏭ (needs rcu) |
 | [rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own](../examples/concurrency/safe-reclamation.md#rcu-block-instead-of-deferring-or-retire-a-type-you-dont-own) | 1 | ⏭ (needs rcu) |
@@ -881,7 +881,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## diagnostics
 
-<details><summary>4 pages · 25 features · 17 examples: 🟡 9</summary>
+<details><summary>4 pages · 25 features · 17 examples: 🟡 8</summary>
 
 **[examples/diagnostics/debugging.md](../examples/diagnostics/debugging.md)**
 
@@ -893,7 +893,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [declaration](../examples/diagnostics/debugging.md#declaration) | 1 | ⏭ (nocompile) |
+| [declaration](../examples/diagnostics/debugging.md#declaration) | 1 | ✅ |
 | [stop-only-when-someone-is-watching](../examples/diagnostics/debugging.md#stop-only-when-someone-is-watching) | 1 | ⏭ (needs debugging) |
 | [a-cant-happen-check-that-traps-under-the-debugger](../examples/diagnostics/debugging.md#a-cant-happen-check-that-traps-under-the-debugger) | 1 | ⏭ (needs debugging) |
 | [replacing-is_debugger_present](../examples/diagnostics/debugging.md#replacing-is_debugger_present) | 1 | ⏭ (needs debugging) |
@@ -1323,9 +1323,9 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | Examples in section | Blocks | Result |
 |---|---:|---|
 | [objects-and-lifetime](../examples/language/basic-concepts/object-model.md#objects-and-lifetime) | 1 | ✅ |
-| [temporary-objects--lifetime-extension](../examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [temporary-objects--lifetime-extension](../examples/language/basic-concepts/object-model.md#temporary-objects--lifetime-extension) | 2 | ✅ |
 | [implicit-lifetime-types](../examples/language/basic-concepts/object-model.md#implicit-lifetime-types) | 1 | ✅ |
-| [strict-aliasing](../examples/language/basic-concepts/object-model.md#strict-aliasing) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [strict-aliasing](../examples/language/basic-concepts/object-model.md#strict-aliasing) | 2 | ✅ |
 | [pointer-provenance](../examples/language/basic-concepts/object-model.md#pointer-provenance) | 1 | ✅ |
 | [main--the-entry-point](../examples/language/basic-concepts/object-model.md#main--the-entry-point) | 2 | ✅ |
 
@@ -2642,7 +2642,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 | Examples in section | Blocks | Result |
 |---|---:|---|
-| [declaration](../examples/numerics/saturation.md#declaration) | 1 | ⏭ (nocompile) |
+| [declaration](../examples/numerics/saturation.md#declaration) | 1 | ✅ |
 | [clamp-instead-of-wrap](../examples/numerics/saturation.md#clamp-instead-of-wrap) | 1 | ⏭ (needs saturating) |
 | [the-pre-rename-names-add_sat-saturate_cast](../examples/numerics/saturation.md#the-pre-rename-names-add_sat-saturate_cast) | 1 | ✅ |
 
@@ -3219,7 +3219,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 
 ## Guidelines (snippets only)
 
-<details><summary>8 pages · 0 features · 76 examples: 🟡 23</summary>
+<details><summary>29 pages · 362 features · 1058 examples: ❌ 1</summary>
 
 **[guidelines/core-guidelines.md](../guidelines/core-guidelines.md)**
 
@@ -3232,6 +3232,1015 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [concurrency-cp](../guidelines/core-guidelines.md#concurrency-cp) | 1 | ✅ |
 | [templates-t](../guidelines/core-guidelines.md#templates-t) | 1 | ✅ |
 | [performance-per](../guidelines/core-guidelines.md#performance-per) | 1 | ✅ |
+
+**[guidelines/core-guidelines/examples/a.md](../guidelines/core-guidelines/examples/a.md)**
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [a1-separate-stable-code-from-less-stable-code](../guidelines/core-guidelines/examples/a.md#a1-separate-stable-code-from-less-stable-code) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/class.md](../guidelines/core-guidelines/examples/class.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| C.2: a class with an invariant rejects values that break it; a struct takes any… | `CoreGuidelinesC.C2_ClassKeepsItsInvariant` | ✅ |
+| C.5: a helper in the class's namespace is found by argument-dependent lookup. | `CoreGuidelinesC.C5_HelperFoundByAdl` | ✅ |
+| C.9: private data can't be reached from outside; only the member functions chan… | `CoreGuidelinesC.C9_PrivateDataIsNotExposed` | ✅ |
+| C.10: a concrete type has no vtable and no indirection; the hierarchy version c… | `CoreGuidelinesC.C10_ConcreteTypeIsSmallerAndNotPolymorphic` | ✅ |
+| C.11: a regular type can be default-constructed, copied and compared, and a cop… | `CoreGuidelinesC.C11_RegularTypeCopiesCompareEqual` | ✅ |
+| C.12: a const or reference member deletes copy assignment, though copy construc… | `CoreGuidelinesC.C12_ConstOrRefMemberDeletesAssignment` | ✅ |
+| C.13: members are initialized in declaration order, so a member may use one dec… | `CoreGuidelinesC.C13_EarlierMemberIsReadyForLaterOne` | ✅ |
+| C.20: with no special members written, a class of self-managing members copies… | `CoreGuidelinesC.C20_RuleOfZero` | ✅ |
+| C.21: declaring a move constructor deletes the copies; declaring a destructor t… | `CoreGuidelinesC.C21_RuleOfFive` | ✅ |
+| C.22: copy construction and copy assignment both make independent deep copies. | `CoreGuidelinesC.C22_CopyOperationsAgree` | ✅ |
+| C.30: a destructor is for an action at destruction; an empty one adds nothing a… | `CoreGuidelinesC.C30_DestructorForAnAction` | ✅ |
+| C.31: a resource held by a member is released when the object dies, and when th… | `CoreGuidelinesC.C31_ResourcesReleasedByDestructor` | ✅ |
+| C.33: a class with an owning pointer member deletes the owned object in its des… | `CoreGuidelinesC.C33_OwningPointerDeletedByDestructor` | ✅ |
+| C.35: a public virtual destructor makes delete through the base run the derived… | `CoreGuidelinesC.C35_BaseDestructorVirtualOrProtected` | ✅ |
+| C.36: a destructor without an exception specification is noexcept, so a throw f… | `CoreGuidelinesC.C36_DestructorsAreNoexceptByDefault` | ✅ |
+| C.37: one noexcept(false) member makes the implicit destructor noexcept(false);… | `CoreGuidelinesC.C37_ExplicitNoexceptDestructor` | ✅ |
+| C.40: a constructor establishes the invariant; an object breaking it is never c… | `CoreGuidelinesC.C40_ConstructorEstablishesInvariant` | ✅ |
+| C.41: an object is usable as soon as its constructor returns, with no init() st… | `CoreGuidelinesC.C41_FullyInitializedObject` | ✅ |
+| C.42: a constructor that can't make a valid object throws, so no invalid object… | `CoreGuidelinesC.C42_ConstructorThrowsOnInvalidInput` | ✅ |
+| C.43: a copyable type with a default constructor is semiregular and works in ar… | `CoreGuidelinesC.C43_CopyableTypeHasDefault` | ✅ |
+| C.44: a simple default constructor is noexcept and allocates nothing; one that… | `CoreGuidelinesC.C44_DefaultConstructorIsCheap` | ✅ |
+| C.45: default member initializers give the compiler-generated default construct… | `CoreGuidelinesC.C45_DefaultMemberInitializers` | ✅ |
+| C.46: an explicit constructor isn't an implicit conversion; a non-explicit one… | `CoreGuidelinesC.C46_ExplicitConstructorBlocksConversion` | ✅ |
+| C.47: members are initialized in declaration order, whatever the initializer li… | `CoreGuidelinesC.C47_DeclarationOrderInitialization` | ✅ |
+| C.48: a default member initializer applies in every constructor that doesn't me… | `CoreGuidelinesC.C48_SharedDefaultInEveryConstructor` | ✅ |
+| C.49: initializing a member builds it once; assigning in the body default-const… | `CoreGuidelinesC.C49_InitializationNotAssignment` | ✅ |
+| C.50: a factory finishes initialization after construction, so the virtual call… | `CoreGuidelinesC.C50_FactoryForVirtualBehaviour` | ✅ |
+| C.51: a delegating constructor runs the target constructor's check too. | `CoreGuidelinesC.C51_DelegatingConstructorSharesTheCheck` | ✅ |
+| C.52: using Base::Base imports every base constructor unchanged. | `CoreGuidelinesC.C52_InheritingConstructors` | ✅ |
+| C.60: copy assignment takes const&amp; and returns a non-const reference to *this,… | `CoreGuidelinesC.C60_CopyAssignmentShape` | ✅ |
+| C.61: after a copy, the two compare equal and are independent. | `CoreGuidelinesC.C61_CopyCopies` | ✅ |
+| C.62: x = x leaves x unchanged. | `CoreGuidelinesC.C62_SelfCopyAssignmentIsSafe` | ✅ |
+| C.63: move assignment takes &amp;&amp; and returns a non-const reference, and doesn't t… | `CoreGuidelinesC.C63_MoveAssignmentShape` | ✅ |
+| C.64: a moved-from object is valid (here empty, the default state) and can be r… | `CoreGuidelinesC.C64_MovedFromIsValid` | ✅ |
+| C.65: x = std::move(x) leaves x with its value. | `CoreGuidelinesC.C65_SelfMoveAssignmentIsSafe` | ✅ |
+| C.66: vector moves noexcept-movable elements when it grows, but copies elements… | `CoreGuidelinesC.C66_NoexceptMoveIsUsedByVector` | ✅ |
+| C.67: a polymorphic class with deleted copy and move can't be sliced by copying. | `CoreGuidelinesC.C67_PolymorphicClassSuppressesCopy` | ✅ |
+| C.80: =default keeps the compiler's semantics, including trivial copyability; h… | `CoreGuidelinesC.C80_DefaultedKeepsTriviality` | ✅ |
+| C.81: =delete removes the copy operations while the moves stay. | `CoreGuidelinesC.C81_DeletedCopy` | ✅ |
+| C.82: a virtual call in a base constructor runs the base's version, not the der… | `CoreGuidelinesC.C82_VirtualCallInConstructorIsNotVirtual` | ✅ |
+| C.83: using std::swap; swap(a, b) finds the type's own noexcept swap. | `CoreGuidelinesC.C83_TypeProvidesSwap` | ✅ |
+| C.84: a swap that exchanges handles copies nothing, so it can't fail: the eleme… | `CoreGuidelinesC.C84_SwapExchangesHandles` | ✅ |
+| C.85: a noexcept swap makes the type nothrow-swappable; an unmarked one doesn't. | `CoreGuidelinesC.C85_SwapIsNoexcept` | ✅ |
+| C.86: a non-member == accepts const operands on both sides and is noexcept. | `CoreGuidelinesC.C86_EqualityIsSymmetricAndNoexcept` | ✅ |
+| C.87: == on a base compares only the base part, so different derived objects co… | `CoreGuidelinesC.C87_BaseEqualityIgnoresDerivedPart` | ✅ |
+| C.89: a noexcept hash is nothrow-invocable and works in an unordered container. | `CoreGuidelinesC.C89_HashIsNoexcept` | ✅ |
+| C.90: a class with a std::string isn't trivially copyable, so memcpy/memset on… | `CoreGuidelinesC.C90_ConstructorsNotMemset` | ✅ |
+| C.100: a container with the STL's names works with range-for, the algorithms an… | `CoreGuidelinesC.C100_StlStyleContainer` | ✅ |
+| C.101: copying a container copies its elements: the copy is equal and independe… | `CoreGuidelinesC.C101_ContainerValueSemantics` | ✅ |
+| C.102: moving a container hands over its buffer instead of copying the elements… | `CoreGuidelinesC.C102_ContainerMoveKeepsBuffer` | ✅ |
+| C.103: an initializer_list constructor accepts a braced list of values. | `CoreGuidelinesC.C103_InitializerListConstructor` | ✅ |
+| C.104: a default-constructed container is empty and creating it can't throw. | `CoreGuidelinesC.C104_DefaultIsEmpty` | ✅ |
+| C.109: a handle with pointer semantics supports * and -&gt;, and copies share the… | `CoreGuidelinesC.C109_HandleHasStarAndArrow` | ✅ |
+| C.121: an interface class is abstract with a virtual destructor, so deleting th… | `CoreGuidelinesC.C121_PureAbstractInterface` | ✅ |
+| C.122: code written against an abstract interface works with any implementation. | `CoreGuidelinesC.C122_InterfaceSeparatesImplementations` | ✅ |
+| C.127: with a virtual destructor, deleting through the base runs the derived de… | `CoreGuidelinesC.C127_VirtualDestructorWithVirtualFunctions` | ✅ |
+| C.128: without override, a drifted signature silently declares a new function;… | `CoreGuidelinesC.C128_OverrideCatchesDrift` | ✅ |
+| C.130: clone copies the most-derived object, while the base can't be copied. | `CoreGuidelinesC.C130_VirtualClone` | ✅ |
+| C.132: a class without virtual functions isn't polymorphic and carries no vtabl… | `CoreGuidelinesC.C132_NoVirtualWithoutReason` | ✅ |
+| C.135: one class can implement several interfaces, each usable on its own. | `CoreGuidelinesC.C135_MultipleInterfaces` | ✅ |
+| C.136: mixin bases combine their state and operations in one class. | `CoreGuidelinesC.C136_MixinsCombineAttributes` | ✅ |
+| C.137: a virtual base is shared: both branches see one subobject. | `CoreGuidelinesC.C137_VirtualBaseIsShared` | ✅ |
+| C.138: a derived function hides every base overload of that name; using Base::n… | `CoreGuidelinesC.C138_UsingRestoresOverloadSet` | ✅ |
+| C.139: final forbids derivation; a class left open can be extended. | `CoreGuidelinesC.C139_FinalCapsTheHierarchy` | ✅ |
+| C.140: default arguments come from the static type, the body from the dynamic t… | `CoreGuidelinesC.C140_DefaultArgumentsFromStaticType` | ✅ |
+| C.145: by value, a polymorphic object is sliced and calls the base; by referenc… | `CoreGuidelinesC.C145_AccessThroughReferences` | ✅ |
+| C.146: dynamic_cast checks the real type at run time and returns null when it d… | `CoreGuidelinesC.C146_DynamicCastIsChecked` | ✅ |
+| C.147: dynamic_cast to a reference throws std::bad_cast when the object isn't o… | `CoreGuidelinesC.C147_ReferenceCastThrows` | ✅ |
+| C.148: dynamic_cast to a pointer returns null on failure, which can be tested. | `CoreGuidelinesC.C148_PointerCastReturnsNull` | ✅ |
+| C.149: a unique_ptr deletes its object on every path, including an exception. | `CoreGuidelinesC.C149_SmartPointerDeletesOnException` | ✅ |
+| C.150: make_unique creates the object owned by a unique_ptr. | `CoreGuidelinesC.C150_MakeUnique` | ✅ |
+| C.151: make_shared creates the object with a single owner to start. | `CoreGuidelinesC.C151_MakeShared` | ✅ |
+| C.152: a derived object is bigger than its base, so a Base* into a Derived arra… | `CoreGuidelinesC.C152_NoBasePointerToDerivedArray` | ✅ |
+| C.153: a virtual call reaches the most-derived override; a cast to an intermedi… | `CoreGuidelinesC.C153_VirtualBeatsCasting` | ✅ |
+| C.160: + doesn't change its operands, and a copy compares equal. | `CoreGuidelinesC.C160_ConventionalOperators` | ✅ |
+| C.161: a non-member operator converts either operand; a member one only the rig… | `CoreGuidelinesC.C161_NonMemberSymmetricOperators` | ✅ |
+| C.162: one overloaded name lets generic code call the right version for each ty… | `CoreGuidelinesC.C162_OverloadEquivalentOperations` | ✅ |
+| C.164: an explicit conversion operator isn't used implicitly, but works in a co… | `CoreGuidelinesC.C164_ExplicitConversion` | ✅ |
+| C.165: using std::swap; swap(a, b) picks the type's own swap; std::swap(a, b) n… | `CoreGuidelinesC.C165_UsingForCustomizationPoints` | ✅ |
+| C.166: once unary &amp; is overloaded, &amp;x isn't the address; only std::addressof st… | `CoreGuidelinesC.C166_OverloadedAddressOfBreaksAmpersand` | ✅ |
+| C.167: operator&lt;&lt; for output composes with any ostream and with other &lt;&lt; calls. | `CoreGuidelinesC.C167_ConventionalOutputOperator` | ✅ |
+| C.168: an operator in its operands' namespace is found by argument-dependent lo… | `CoreGuidelinesC.C168_OperatorInOperandNamespace` | ✅ |
+| C.170: one generic lambda handles several argument types. | `CoreGuidelinesC.C170_GenericLambda` | ✅ |
+| C.180: a union is as big as its largest member, smaller than a struct holding t… | `CoreGuidelinesC.C180_UnionSavesMemory` | ✅ |
+| C.181: std::variant records the active member and rejects reading another. | `CoreGuidelinesC.C181_VariantInsteadOfNakedUnion` | ✅ |
+| C.182: a class wrapping a tag and an anonymous union checks every access agains… | `CoreGuidelinesC.C182_TaggedUnionClass` | ✅ |
+| C.183: std::bit_cast gives an object's bits without union punning: 1.0f is 0x3F… | `CoreGuidelinesC.C183_BitCastNotUnionPunning` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [c1-organize-related-data-into-structures-structs-or-classes](../guidelines/core-guidelines/examples/class.md#c1-organize-related-data-into-structures-structs-or-classes) | 2 | ✅ |
+| [c2-use-class-if-the-class-has-an-invariant-use-struct-if-the-data-members-can-vary-independently](../guidelines/core-guidelines/examples/class.md#c2-use-class-if-the-class-has-an-invariant-use-struct-if-the-data-members-can-vary-independently) | 2 | ✅ |
+| [c3-represent-the-distinction-between-an-interface-and-an-implementation-using-a-class](../guidelines/core-guidelines/examples/class.md#c3-represent-the-distinction-between-an-interface-and-an-implementation-using-a-class) | 2 | ✅ |
+| [c4-make-a-function-a-member-only-if-it-needs-direct-access-to-the-representation-of-a-class](../guidelines/core-guidelines/examples/class.md#c4-make-a-function-a-member-only-if-it-needs-direct-access-to-the-representation-of-a-class) | 2 | ✅ |
+| [c5-place-helper-functions-in-the-same-namespace-as-the-class-they-support](../guidelines/core-guidelines/examples/class.md#c5-place-helper-functions-in-the-same-namespace-as-the-class-they-support) | 2 | ✅ |
+| [c7-dont-define-a-class-or-enum-and-declare-a-variable-of-its-type-in-the-same-statement](../guidelines/core-guidelines/examples/class.md#c7-dont-define-a-class-or-enum-and-declare-a-variable-of-its-type-in-the-same-statement) | 2 | ✅ |
+| [c8-use-class-rather-than-struct-if-any-member-is-non-public](../guidelines/core-guidelines/examples/class.md#c8-use-class-rather-than-struct-if-any-member-is-non-public) | 2 | ✅ |
+| [c9-minimize-exposure-of-members](../guidelines/core-guidelines/examples/class.md#c9-minimize-exposure-of-members) | 2 | ✅ |
+| [c10-prefer-concrete-types-over-class-hierarchies](../guidelines/core-guidelines/examples/class.md#c10-prefer-concrete-types-over-class-hierarchies) | 2 | ✅ |
+| [c11-make-concrete-types-regular](../guidelines/core-guidelines/examples/class.md#c11-make-concrete-types-regular) | 2 | ✅ |
+| [c12-dont-make-data-members-const-or-references-in-a-copyable-or-movable-type](../guidelines/core-guidelines/examples/class.md#c12-dont-make-data-members-const-or-references-in-a-copyable-or-movable-type) | 2 | ✅ |
+| [c13-if-data-member-b-uses-another-data-member-a-declare-a-before-b](../guidelines/core-guidelines/examples/class.md#c13-if-data-member-b-uses-another-data-member-a-declare-a-before-b) | 2 | ✅ |
+| [c20-if-you-can-avoid-defining-default-operations-do](../guidelines/core-guidelines/examples/class.md#c20-if-you-can-avoid-defining-default-operations-do) | 2 | ✅ |
+| [c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all](../guidelines/core-guidelines/examples/class.md#c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all) | 2 | ✅ |
+| [c22-make-default-operations-consistent](../guidelines/core-guidelines/examples/class.md#c22-make-default-operations-consistent) | 2 | ✅ |
+| [c30-define-a-destructor-if-a-class-needs-an-explicit-action-at-object-destruction](../guidelines/core-guidelines/examples/class.md#c30-define-a-destructor-if-a-class-needs-an-explicit-action-at-object-destruction) | 2 | ✅ |
+| [c31-all-resources-acquired-by-a-class-must-be-released-by-the-classs-destructor](../guidelines/core-guidelines/examples/class.md#c31-all-resources-acquired-by-a-class-must-be-released-by-the-classs-destructor) | 2 | ✅ |
+| [c32-if-a-class-has-a-raw-pointer-t-or-reference-t-consider-whether-it-might-be-owning](../guidelines/core-guidelines/examples/class.md#c32-if-a-class-has-a-raw-pointer-t-or-reference-t-consider-whether-it-might-be-owning) | 2 | ✅ |
+| [c33-if-a-class-has-an-owning-pointer-member-define-a-destructor](../guidelines/core-guidelines/examples/class.md#c33-if-a-class-has-an-owning-pointer-member-define-a-destructor) | 2 | ✅ |
+| [c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual](../guidelines/core-guidelines/examples/class.md#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual) | 2 | ✅ |
+| [c36-a-destructor-must-not-fail](../guidelines/core-guidelines/examples/class.md#c36-a-destructor-must-not-fail) | 2 | ✅ |
+| [c37-make-destructors-noexcept](../guidelines/core-guidelines/examples/class.md#c37-make-destructors-noexcept) | 2 | ✅ |
+| [c40-define-a-constructor-if-a-class-has-an-invariant](../guidelines/core-guidelines/examples/class.md#c40-define-a-constructor-if-a-class-has-an-invariant) | 2 | ✅ |
+| [c41-a-constructor-should-create-a-fully-initialized-object](../guidelines/core-guidelines/examples/class.md#c41-a-constructor-should-create-a-fully-initialized-object) | 2 | ✅ |
+| [c42-if-a-constructor-cannot-construct-a-valid-object-throw-an-exception](../guidelines/core-guidelines/examples/class.md#c42-if-a-constructor-cannot-construct-a-valid-object-throw-an-exception) | 2 | ✅ |
+| [c43-ensure-that-a-copyable-class-has-a-default-constructor](../guidelines/core-guidelines/examples/class.md#c43-ensure-that-a-copyable-class-has-a-default-constructor) | 2 | ✅ |
+| [c44-prefer-default-constructors-to-be-simple-and-non-throwing](../guidelines/core-guidelines/examples/class.md#c44-prefer-default-constructors-to-be-simple-and-non-throwing) | 2 | ✅ |
+| [c45-dont-define-a-default-constructor-that-only-initializes-data-members-use-default-member-initializers-instead](../guidelines/core-guidelines/examples/class.md#c45-dont-define-a-default-constructor-that-only-initializes-data-members-use-default-member-initializers-instead) | 2 | ✅ |
+| [c46-by-default-declare-single-argument-constructors-explicit](../guidelines/core-guidelines/examples/class.md#c46-by-default-declare-single-argument-constructors-explicit) | 2 | ✅ |
+| [c47-define-and-initialize-data-members-in-the-order-of-member-declaration](../guidelines/core-guidelines/examples/class.md#c47-define-and-initialize-data-members-in-the-order-of-member-declaration) | 2 | ✅ |
+| [c48-prefer-default-member-initializers-to-member-initializers-in-constructors-for-constant-initializers](../guidelines/core-guidelines/examples/class.md#c48-prefer-default-member-initializers-to-member-initializers-in-constructors-for-constant-initializers) | 2 | ✅ |
+| [c49-prefer-initialization-to-assignment-in-constructors](../guidelines/core-guidelines/examples/class.md#c49-prefer-initialization-to-assignment-in-constructors) | 2 | ✅ |
+| [c50-use-a-factory-function-if-you-need-virtual-behavior-during-initialization](../guidelines/core-guidelines/examples/class.md#c50-use-a-factory-function-if-you-need-virtual-behavior-during-initialization) | 2 | ✅ |
+| [c51-use-delegating-constructors-to-represent-common-actions-for-all-constructors-of-a-class](../guidelines/core-guidelines/examples/class.md#c51-use-delegating-constructors-to-represent-common-actions-for-all-constructors-of-a-class) | 2 | ✅ |
+| [c52-use-inheriting-constructors-to-import-constructors-into-a-derived-class-that-does-not-need-further-explicit-initialization](../guidelines/core-guidelines/examples/class.md#c52-use-inheriting-constructors-to-import-constructors-into-a-derived-class-that-does-not-need-further-explicit-initialization) | 2 | ✅ |
+| [c60-make-copy-assignment-non-virtual-take-the-parameter-by-const-and-return-by-non-const](../guidelines/core-guidelines/examples/class.md#c60-make-copy-assignment-non-virtual-take-the-parameter-by-const-and-return-by-non-const) | 2 | ✅ |
+| [c61-a-copy-operation-should-copy](../guidelines/core-guidelines/examples/class.md#c61-a-copy-operation-should-copy) | 2 | ✅ |
+| [c62-make-copy-assignment-safe-for-self-assignment](../guidelines/core-guidelines/examples/class.md#c62-make-copy-assignment-safe-for-self-assignment) | 2 | ✅ |
+| [c63-make-move-assignment-non-virtual-take-the-parameter-by--and-return-by-non-const](../guidelines/core-guidelines/examples/class.md#c63-make-move-assignment-non-virtual-take-the-parameter-by--and-return-by-non-const) | 2 | ✅ |
+| [c64-a-move-operation-should-move-and-leave-its-source-in-a-valid-state](../guidelines/core-guidelines/examples/class.md#c64-a-move-operation-should-move-and-leave-its-source-in-a-valid-state) | 2 | ✅ |
+| [c65-make-move-assignment-safe-for-self-assignment](../guidelines/core-guidelines/examples/class.md#c65-make-move-assignment-safe-for-self-assignment) | 2 | ✅ |
+| [c66-make-move-operations-noexcept](../guidelines/core-guidelines/examples/class.md#c66-make-move-operations-noexcept) | 2 | ✅ |
+| [c67-a-polymorphic-class-should-suppress-public-copymove](../guidelines/core-guidelines/examples/class.md#c67-a-polymorphic-class-should-suppress-public-copymove) | 2 | ✅ |
+| [c80-use-default-if-you-have-to-be-explicit-about-using-the-default-semantics](../guidelines/core-guidelines/examples/class.md#c80-use-default-if-you-have-to-be-explicit-about-using-the-default-semantics) | 2 | ✅ |
+| [c81-use-delete-when-you-want-to-disable-default-behavior-without-wanting-an-alternative](../guidelines/core-guidelines/examples/class.md#c81-use-delete-when-you-want-to-disable-default-behavior-without-wanting-an-alternative) | 2 | ✅ |
+| [c82-dont-call-virtual-functions-in-constructors-and-destructors](../guidelines/core-guidelines/examples/class.md#c82-dont-call-virtual-functions-in-constructors-and-destructors) | 2 | ✅ |
+| [c83-for-value-like-types-consider-providing-a-noexcept-swap-function](../guidelines/core-guidelines/examples/class.md#c83-for-value-like-types-consider-providing-a-noexcept-swap-function) | 2 | ✅ |
+| [c84-a-swap-function-must-not-fail](../guidelines/core-guidelines/examples/class.md#c84-a-swap-function-must-not-fail) | 2 | ✅ |
+| [c85-make-swap-noexcept](../guidelines/core-guidelines/examples/class.md#c85-make-swap-noexcept) | 2 | ✅ |
+| [c86-make--symmetric-with-respect-to-operand-types-and-noexcept](../guidelines/core-guidelines/examples/class.md#c86-make--symmetric-with-respect-to-operand-types-and-noexcept) | 2 | ✅ |
+| [c87-beware-of--on-base-classes](../guidelines/core-guidelines/examples/class.md#c87-beware-of--on-base-classes) | 2 | ✅ |
+| [c89-make-a-hash-noexcept](../guidelines/core-guidelines/examples/class.md#c89-make-a-hash-noexcept) | 2 | ✅ |
+| [c90-rely-on-constructors-and-assignment-operators-not-memset-and-memcpy](../guidelines/core-guidelines/examples/class.md#c90-rely-on-constructors-and-assignment-operators-not-memset-and-memcpy) | 2 | ✅ |
+| [c100-follow-the-stl-when-defining-a-container](../guidelines/core-guidelines/examples/class.md#c100-follow-the-stl-when-defining-a-container) | 2 | ✅ |
+| [c101-give-a-container-value-semantics](../guidelines/core-guidelines/examples/class.md#c101-give-a-container-value-semantics) | 2 | ✅ |
+| [c102-give-a-container-move-operations](../guidelines/core-guidelines/examples/class.md#c102-give-a-container-move-operations) | 2 | ✅ |
+| [c103-give-a-container-an-initializer-list-constructor](../guidelines/core-guidelines/examples/class.md#c103-give-a-container-an-initializer-list-constructor) | 2 | ✅ |
+| [c104-give-a-container-a-default-constructor-that-sets-it-to-empty](../guidelines/core-guidelines/examples/class.md#c104-give-a-container-a-default-constructor-that-sets-it-to-empty) | 2 | ✅ |
+| [c109-if-a-resource-handle-has-pointer-semantics-provide--and--](../guidelines/core-guidelines/examples/class.md#c109-if-a-resource-handle-has-pointer-semantics-provide--and--) | 2 | ✅ |
+| [c120-use-class-hierarchies-to-represent-concepts-with-inherent-hierarchical-structure-only](../guidelines/core-guidelines/examples/class.md#c120-use-class-hierarchies-to-represent-concepts-with-inherent-hierarchical-structure-only) | 2 | ✅ |
+| [c121-if-a-base-class-is-used-as-an-interface-make-it-a-pure-abstract-class](../guidelines/core-guidelines/examples/class.md#c121-if-a-base-class-is-used-as-an-interface-make-it-a-pure-abstract-class) | 2 | ✅ |
+| [c122-use-abstract-classes-as-interfaces-when-complete-separation-of-interface-and-implementation-is-needed](../guidelines/core-guidelines/examples/class.md#c122-use-abstract-classes-as-interfaces-when-complete-separation-of-interface-and-implementation-is-needed) | 2 | ✅ |
+| [c126-an-abstract-class-typically-doesnt-need-a-user-written-constructor](../guidelines/core-guidelines/examples/class.md#c126-an-abstract-class-typically-doesnt-need-a-user-written-constructor) | 2 | ✅ |
+| [c127-a-class-with-a-virtual-function-should-have-a-virtual-or-protected-destructor](../guidelines/core-guidelines/examples/class.md#c127-a-class-with-a-virtual-function-should-have-a-virtual-or-protected-destructor) | 2 | ✅ |
+| [c128-virtual-functions-should-specify-exactly-one-of-virtual-override-or-final](../guidelines/core-guidelines/examples/class.md#c128-virtual-functions-should-specify-exactly-one-of-virtual-override-or-final) | 2 | ✅ |
+| [c129-when-designing-a-class-hierarchy-distinguish-between-implementation-inheritance-and-interface-inheritance](../guidelines/core-guidelines/examples/class.md#c129-when-designing-a-class-hierarchy-distinguish-between-implementation-inheritance-and-interface-inheritance) | 2 | ✅ |
+| [c130-for-making-deep-copies-of-polymorphic-classes-prefer-a-virtual-clone-function-instead-of-public-copy-constructionassignment](../guidelines/core-guidelines/examples/class.md#c130-for-making-deep-copies-of-polymorphic-classes-prefer-a-virtual-clone-function-instead-of-public-copy-constructionassignment) | 2 | ✅ |
+| [c131-avoid-trivial-getters-and-setters](../guidelines/core-guidelines/examples/class.md#c131-avoid-trivial-getters-and-setters) | 2 | ✅ |
+| [c132-dont-make-a-function-virtual-without-reason](../guidelines/core-guidelines/examples/class.md#c132-dont-make-a-function-virtual-without-reason) | 2 | ✅ |
+| [c133-avoid-protected-data](../guidelines/core-guidelines/examples/class.md#c133-avoid-protected-data) | 2 | ✅ |
+| [c134-ensure-all-non-const-data-members-have-the-same-access-level](../guidelines/core-guidelines/examples/class.md#c134-ensure-all-non-const-data-members-have-the-same-access-level) | 2 | ✅ |
+| [c135-use-multiple-inheritance-to-represent-multiple-distinct-interfaces](../guidelines/core-guidelines/examples/class.md#c135-use-multiple-inheritance-to-represent-multiple-distinct-interfaces) | 2 | ✅ |
+| [c136-use-multiple-inheritance-to-represent-the-union-of-implementation-attributes](../guidelines/core-guidelines/examples/class.md#c136-use-multiple-inheritance-to-represent-the-union-of-implementation-attributes) | 2 | ✅ |
+| [c137-use-virtual-bases-to-avoid-overly-general-base-classes](../guidelines/core-guidelines/examples/class.md#c137-use-virtual-bases-to-avoid-overly-general-base-classes) | 2 | ✅ |
+| [c138-create-an-overload-set-for-a-derived-class-and-its-bases-with-using](../guidelines/core-guidelines/examples/class.md#c138-create-an-overload-set-for-a-derived-class-and-its-bases-with-using) | 2 | ✅ |
+| [c139-use-final-on-classes-sparingly](../guidelines/core-guidelines/examples/class.md#c139-use-final-on-classes-sparingly) | 2 | ✅ |
+| [c140-do-not-provide-different-default-arguments-for-a-virtual-function-and-an-overrider](../guidelines/core-guidelines/examples/class.md#c140-do-not-provide-different-default-arguments-for-a-virtual-function-and-an-overrider) | 2 | ✅ |
+| [c145-access-polymorphic-objects-through-pointers-and-references](../guidelines/core-guidelines/examples/class.md#c145-access-polymorphic-objects-through-pointers-and-references) | 2 | ✅ |
+| [c146-use-dynamic_cast-where-class-hierarchy-navigation-is-unavoidable](../guidelines/core-guidelines/examples/class.md#c146-use-dynamic_cast-where-class-hierarchy-navigation-is-unavoidable) | 2 | ✅ |
+| [c147-use-dynamic_cast-to-a-reference-type-when-failure-to-find-the-required-class-is-considered-an-error](../guidelines/core-guidelines/examples/class.md#c147-use-dynamic_cast-to-a-reference-type-when-failure-to-find-the-required-class-is-considered-an-error) | 2 | ✅ |
+| [c148-use-dynamic_cast-to-a-pointer-type-when-failure-to-find-the-required-class-is-considered-a-valid-alternative](../guidelines/core-guidelines/examples/class.md#c148-use-dynamic_cast-to-a-pointer-type-when-failure-to-find-the-required-class-is-considered-a-valid-alternative) | 2 | ✅ |
+| [c149-use-unique_ptr-or-shared_ptr-to-avoid-forgetting-to-delete-objects-created-using-new](../guidelines/core-guidelines/examples/class.md#c149-use-unique_ptr-or-shared_ptr-to-avoid-forgetting-to-delete-objects-created-using-new) | 2 | ✅ |
+| [c150-use-make_unique-to-construct-objects-owned-by-unique_ptrs](../guidelines/core-guidelines/examples/class.md#c150-use-make_unique-to-construct-objects-owned-by-unique_ptrs) | 2 | ✅ |
+| [c151-use-make_shared-to-construct-objects-owned-by-shared_ptrs](../guidelines/core-guidelines/examples/class.md#c151-use-make_shared-to-construct-objects-owned-by-shared_ptrs) | 2 | ✅ |
+| [c152-never-assign-a-pointer-to-an-array-of-derived-class-objects-to-a-pointer-to-its-base](../guidelines/core-guidelines/examples/class.md#c152-never-assign-a-pointer-to-an-array-of-derived-class-objects-to-a-pointer-to-its-base) | 2 | ✅ |
+| [c153-prefer-virtual-function-to-casting](../guidelines/core-guidelines/examples/class.md#c153-prefer-virtual-function-to-casting) | 2 | ✅ |
+| [c160-define-operators-primarily-to-mimic-conventional-usage](../guidelines/core-guidelines/examples/class.md#c160-define-operators-primarily-to-mimic-conventional-usage) | 2 | ✅ |
+| [c161-use-non-member-functions-for-symmetric-operators](../guidelines/core-guidelines/examples/class.md#c161-use-non-member-functions-for-symmetric-operators) | 2 | ✅ |
+| [c162-overload-operations-that-are-roughly-equivalent](../guidelines/core-guidelines/examples/class.md#c162-overload-operations-that-are-roughly-equivalent) | 2 | ✅ |
+| [c163-overload-only-for-operations-that-are-roughly-equivalent](../guidelines/core-guidelines/examples/class.md#c163-overload-only-for-operations-that-are-roughly-equivalent) | 2 | ✅ |
+| [c164-avoid-implicit-conversion-operators](../guidelines/core-guidelines/examples/class.md#c164-avoid-implicit-conversion-operators) | 2 | ✅ |
+| [c165-use-using-for-customization-points](../guidelines/core-guidelines/examples/class.md#c165-use-using-for-customization-points) | 2 | ✅ |
+| [c166-overload-unary--only-as-part-of-a-system-of-smart-pointers-and-references](../guidelines/core-guidelines/examples/class.md#c166-overload-unary--only-as-part-of-a-system-of-smart-pointers-and-references) | 2 | ✅ |
+| [c167-use-an-operator-for-an-operation-with-its-conventional-meaning](../guidelines/core-guidelines/examples/class.md#c167-use-an-operator-for-an-operation-with-its-conventional-meaning) | 2 | ✅ |
+| [c168-define-overloaded-operators-in-the-namespace-of-their-operands](../guidelines/core-guidelines/examples/class.md#c168-define-overloaded-operators-in-the-namespace-of-their-operands) | 2 | ✅ |
+| [c170-if-you-feel-like-overloading-a-lambda-use-a-generic-lambda](../guidelines/core-guidelines/examples/class.md#c170-if-you-feel-like-overloading-a-lambda-use-a-generic-lambda) | 2 | ✅ |
+| [c180-use-unions-to-save-memory](../guidelines/core-guidelines/examples/class.md#c180-use-unions-to-save-memory) | 2 | ✅ |
+| [c181-avoid-naked-unions](../guidelines/core-guidelines/examples/class.md#c181-avoid-naked-unions) | 2 | ✅ |
+| [c182-use-anonymous-unions-to-implement-tagged-unions](../guidelines/core-guidelines/examples/class.md#c182-use-anonymous-unions-to-implement-tagged-unions) | 2 | ✅ |
+| [c183-dont-use-a-union-for-type-punning](../guidelines/core-guidelines/examples/class.md#c183-dont-use-a-union-for-type-punning) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/concurrency.md](../guidelines/core-guidelines/examples/concurrency.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| CP.1: a thread_local cache is per thread: a new thread starts with its own fres… | `CoreGuidelinesCP.CP1_ThreadLocalStateIsPerThread` | ✅ |
+| CP.2: concurrent fetch_adds on an atomic counter lose no update, and each sees… | `CoreGuidelinesCP.CP2_AtomicCounterLosesNoUpdate` | ✅ |
+| CP.3: tasks that share only const input and return their own results need no lo… | `CoreGuidelinesCP.CP3_ConstInputOwnResults` | ✅ |
+| CP.4: a task returns its value, or its exception, through a future. | `CoreGuidelinesCP.CP4_TaskReturnsValueOrException` | ✅ |
+| CP.8: atomics, not volatile, synchronize: a counter adds up exactly and a flag… | `CoreGuidelinesCP.CP8_AtomicsSynchronize` | ✅ |
+| CP.20: a lock object unlocks on every way out of its scope, including a throw. | `CoreGuidelinesCP.CP20_LockReleasedOnThrowAndReturn` | ✅ |
+| CP.21: scoped_lock takes two mutexes without deadlock even when threads list th… | `CoreGuidelinesCP.CP21_ScopedLockOppositeOrdersNoDeadlock` | ✅ |
+| CP.22: callbacks called after the lock is released may call back into the objec… | `CoreGuidelinesCP.CP22_CallbackRunsWithoutTheLock` | ✅ |
+| CP.23: a jthread joins before the locals declared ahead of it are destroyed, so… | `CoreGuidelinesCP.CP23_JoiningThreadMayUseEnclosingLocals` | ✅ |
+| CP.25: std::jthread joins in its destructor: the work is done when the scope en… | `CoreGuidelinesCP.CP25_JthreadJoinsInDestructor` | ✅ |
+| CP.26: an owned jthread with a stop_token stops and is joined when its owner is… | `CoreGuidelinesCP.CP26_OwnedThreadStopsOnDestruction` | ✅ |
+| CP.31: async copies its arguments when it is called, so later changes to the ca… | `CoreGuidelinesCP.CP31_ArgumentsAreCopied` | ✅ |
+| CP.32: an object shared through shared_ptr copies is destroyed once, after the… | `CoreGuidelinesCP.CP32_SharedPtrDeletesOnceAfterLastOwner` | ✅ |
+| CP.41: a fixed set of workers sharing an atomic index handles every item exactl… | `CoreGuidelinesCP.CP41_FixedWorkersHandleEveryItemOnce` | ✅ |
+| CP.42: a wait with a predicate doesn't miss a notification sent before it start… | `CoreGuidelinesCP.CP42_PredicateWaitSeesEarlierNotify` | ✅ |
+| CP.43: work done before the lock's block runs with the mutex free. | `CoreGuidelinesCP.CP43_PrepWorkRunsOutsideTheLock` | ✅ |
+| CP.44: an unnamed lock_guard unlocks at the end of its statement; a named one h… | `CoreGuidelinesCP.CP44_UnnamedGuardUnlocksImmediately` | ✅ |
+| CP.50: data reachable only through its own mutex stays consistent under concurr… | `CoreGuidelinesCP.CP50_SynchronizedValueGuardsItsData` | ✅ |
+| CP.51: a coroutine lambda that takes its data as parameters keeps it in the fra… | `CoreGuidelinesCP.CP51_CoroutineLambdaParametersOutliveClosure` | ✅ |
+| CP.52: a coroutine that releases its lock before co_await leaves the mutex free… | `CoreGuidelinesCP.CP52_LockReleasedBeforeSuspending` | ✅ |
+| CP.53: a by-value coroutine parameter is a copy in the frame, valid after the c… | `CoreGuidelinesCP.CP53_ByValueParameterSurvivesSuspension` | ✅ |
+| CP.60: future::get returns the task's value or rethrows its exception; promise… | `CoreGuidelinesCP.CP60_FutureCarriesValueAndException` | ✅ |
+| CP.61: std::async with launch::async runs the task on another thread and return… | `CoreGuidelinesCP.CP61_AsyncRunsOnAnotherThread` | ✅ |
+| CP.100: a mutex-protected stack loses nothing under concurrent pushes. | `CoreGuidelinesCP.CP100_MutexStackIsCorrect` | ✅ |
+| CP.101: a release store and an acquire load make the data written before the st… | `CoreGuidelinesCP.CP101_ReleaseAcquirePublishesData` | ✅ |
+| CP.110: a function-local static is constructed exactly once even when many thre… | `CoreGuidelinesCP.CP110_StaticLocalInitializedOnce` | ✅ |
+| CP.111: double-checked locking with an atomic flag and a mutex runs the action… | `CoreGuidelinesCP.CP111_AtomicDoubleCheckRunsOnce` | ✅ |
+| CP.201: a signal handler that only sets a volatile sig_atomic_t flag; normal co… | `CoreGuidelinesCP.CP201_HandlerOnlySetsAFlag` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [cp1-assume-that-your-code-will-run-as-part-of-a-multi-threaded-program](../guidelines/core-guidelines/examples/concurrency.md#cp1-assume-that-your-code-will-run-as-part-of-a-multi-threaded-program) | 2 | ✅ |
+| [cp2-avoid-data-races](../guidelines/core-guidelines/examples/concurrency.md#cp2-avoid-data-races) | 2 | ✅ |
+| [cp3-minimize-explicit-sharing-of-writable-data](../guidelines/core-guidelines/examples/concurrency.md#cp3-minimize-explicit-sharing-of-writable-data) | 2 | ✅ |
+| [cp4-think-in-terms-of-tasks-rather-than-threads](../guidelines/core-guidelines/examples/concurrency.md#cp4-think-in-terms-of-tasks-rather-than-threads) | 2 | ✅ |
+| [cp8-dont-try-to-use-volatile-for-synchronization](../guidelines/core-guidelines/examples/concurrency.md#cp8-dont-try-to-use-volatile-for-synchronization) | 2 | ✅ |
+| [cp20-use-raii-never-plain-lockunlock](../guidelines/core-guidelines/examples/concurrency.md#cp20-use-raii-never-plain-lockunlock) | 2 | ✅ |
+| [cp21-use-stdlock-or-stdscoped_lock-to-acquire-multiple-mutexes](../guidelines/core-guidelines/examples/concurrency.md#cp21-use-stdlock-or-stdscoped_lock-to-acquire-multiple-mutexes) | 2 | ✅ |
+| [cp22-never-call-unknown-code-while-holding-a-lock-eg-a-callback](../guidelines/core-guidelines/examples/concurrency.md#cp22-never-call-unknown-code-while-holding-a-lock-eg-a-callback) | 2 | ✅ |
+| [cp23-think-of-a-joining-thread-as-a-scoped-container](../guidelines/core-guidelines/examples/concurrency.md#cp23-think-of-a-joining-thread-as-a-scoped-container) | 2 | ✅ |
+| [cp24-think-of-a-thread-as-a-global-container](../guidelines/core-guidelines/examples/concurrency.md#cp24-think-of-a-thread-as-a-global-container) | 2 | ✅ |
+| [cp25-prefer-gsljoining_thread-over-stdthread](../guidelines/core-guidelines/examples/concurrency.md#cp25-prefer-gsljoining_thread-over-stdthread) | 2 | ✅ |
+| [cp26-dont-detach-a-thread](../guidelines/core-guidelines/examples/concurrency.md#cp26-dont-detach-a-thread) | 2 | ✅ |
+| [cp31-pass-small-amounts-of-data-between-threads-by-value-rather-than-by-reference-or-pointer](../guidelines/core-guidelines/examples/concurrency.md#cp31-pass-small-amounts-of-data-between-threads-by-value-rather-than-by-reference-or-pointer) | 2 | ✅ |
+| [cp32-to-share-ownership-between-unrelated-threads-use-shared_ptr](../guidelines/core-guidelines/examples/concurrency.md#cp32-to-share-ownership-between-unrelated-threads-use-shared_ptr) | 2 | ✅ |
+| [cp40-minimize-context-switching](../guidelines/core-guidelines/examples/concurrency.md#cp40-minimize-context-switching) | 2 | ✅ |
+| [cp41-minimize-thread-creation-and-destruction](../guidelines/core-guidelines/examples/concurrency.md#cp41-minimize-thread-creation-and-destruction) | 2 | ✅ |
+| [cp42-dont-wait-without-a-condition](../guidelines/core-guidelines/examples/concurrency.md#cp42-dont-wait-without-a-condition) | 2 | ✅ |
+| [cp43-minimize-time-spent-in-a-critical-section](../guidelines/core-guidelines/examples/concurrency.md#cp43-minimize-time-spent-in-a-critical-section) | 2 | ✅ |
+| [cp44-remember-to-name-your-lock_guards-and-unique_locks](../guidelines/core-guidelines/examples/concurrency.md#cp44-remember-to-name-your-lock_guards-and-unique_locks) | 3 | ✅ |
+| [cp50-define-a-mutex-together-with-the-data-it-guards-use-synchronized_valuet-where-possible](../guidelines/core-guidelines/examples/concurrency.md#cp50-define-a-mutex-together-with-the-data-it-guards-use-synchronized_valuet-where-possible) | 2 | ✅ |
+| [cp51-do-not-use-capturing-lambdas-that-are-coroutines](../guidelines/core-guidelines/examples/concurrency.md#cp51-do-not-use-capturing-lambdas-that-are-coroutines) | 2 | ✅ |
+| [cp52-do-not-hold-locks-or-other-synchronization-primitives-across-suspension-points](../guidelines/core-guidelines/examples/concurrency.md#cp52-do-not-hold-locks-or-other-synchronization-primitives-across-suspension-points) | 2 | ✅ |
+| [cp53-parameters-to-coroutines-should-not-be-passed-by-reference](../guidelines/core-guidelines/examples/concurrency.md#cp53-parameters-to-coroutines-should-not-be-passed-by-reference) | 2 | ✅ |
+| [cp60-use-a-future-to-return-a-value-from-a-concurrent-task](../guidelines/core-guidelines/examples/concurrency.md#cp60-use-a-future-to-return-a-value-from-a-concurrent-task) | 2 | ✅ |
+| [cp61-use-async-to-spawn-concurrent-tasks](../guidelines/core-guidelines/examples/concurrency.md#cp61-use-async-to-spawn-concurrent-tasks) | 2 | ✅ |
+| [cp100-dont-use-lock-free-programming-unless-you-absolutely-have-to](../guidelines/core-guidelines/examples/concurrency.md#cp100-dont-use-lock-free-programming-unless-you-absolutely-have-to) | 2 | ✅ |
+| [cp101-distrust-your-hardwarecompiler-combination](../guidelines/core-guidelines/examples/concurrency.md#cp101-distrust-your-hardwarecompiler-combination) | 2 | ✅ |
+| [cp110-do-not-write-your-own-double-checked-locking-for-initialization](../guidelines/core-guidelines/examples/concurrency.md#cp110-do-not-write-your-own-double-checked-locking-for-initialization) | 2 | ✅ |
+| [cp111-use-a-conventional-pattern-if-you-really-need-double-checked-locking](../guidelines/core-guidelines/examples/concurrency.md#cp111-use-a-conventional-pattern-if-you-really-need-double-checked-locking) | 2 | ✅ |
+| [cp200-use-volatile-only-to-talk-to-non-c-memory](../guidelines/core-guidelines/examples/concurrency.md#cp200-use-volatile-only-to-talk-to-non-c-memory) | 2 | ✅ |
+| [cp201--signals](../guidelines/core-guidelines/examples/concurrency.md#cp201--signals) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/const.md](../guidelines/core-guidelines/examples/const.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| Con.1: a const object can't be assigned to, so an accidental write is a compile… | `CoreGuidelinesCon.Con1_ConstObjectsRejectWrites` | ✅ |
+| Con.2: a const member function can be called on a const object; a non-const one… | `CoreGuidelinesCon.Con2_ConstMemberFunctionsWorkOnConstObjects` | ✅ |
+| Con.3: a const&amp; parameter accepts temporaries and const objects; a plain &amp; does… | `CoreGuidelinesCon.Con3_ConstRefAcceptsTemporaries` | ✅ |
+| Con.4: a const object initialized at run time keeps its value for its lifetime. | `CoreGuidelinesCon.Con4_RunTimeValueFixedAfterConstruction` | ✅ |
+| Con.5: a constexpr value is a constant expression: usable in static_assert and… | `CoreGuidelinesCon.Con5_ConstexprIsComputedAtCompileTime` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [con1-by-default-make-objects-immutable](../guidelines/core-guidelines/examples/const.md#con1-by-default-make-objects-immutable) | 2 | ✅ |
+| [con2-by-default-make-member-functions-const](../guidelines/core-guidelines/examples/const.md#con2-by-default-make-member-functions-const) | 2 | ✅ |
+| [con3-by-default-pass-pointers-and-references-to-consts](../guidelines/core-guidelines/examples/const.md#con3-by-default-pass-pointers-and-references-to-consts) | 2 | ✅ |
+| [con4-use-const-to-define-objects-with-values-that-do-not-change-after-construction](../guidelines/core-guidelines/examples/const.md#con4-use-const-to-define-objects-with-values-that-do-not-change-after-construction) | 2 | ✅ |
+| [con5-use-constexpr-for-values-that-can-be-computed-at-compile-time](../guidelines/core-guidelines/examples/const.md#con5-use-constexpr-for-values-that-can-be-computed-at-compile-time) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/cpl.md](../guidelines/core-guidelines/examples/cpl.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| CPL.1: C++ doesn't convert void* to another object pointer implicitly, as C doe… | `CoreGuidelinesCPL.CPL1_NoImplicitConversionFromVoidPointer` | ✅ |
+| CPL.2: compiled as C++, code can't silently drop const from a pointer, which C… | `CoreGuidelinesCPL.CPL2_CppRejectsDroppingConst` | ✅ |
+| CPL.3: a C handle wrapped in a C++ owner is released on every path, including e… | `CoreGuidelinesCPL.CPL3_WrapCHandlesInCppOwners` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [cpl1-prefer-c-to-c](../guidelines/core-guidelines/examples/cpl.md#cpl1-prefer-c-to-c) | 2 | ✅ |
+| [cpl2-if-you-must-use-c-use-the-common-subset-of-c-and-c-and-compile-the-c-code-as-c](../guidelines/core-guidelines/examples/cpl.md#cpl2-if-you-must-use-c-use-the-common-subset-of-c-and-c-and-compile-the-c-code-as-c) | 2 | ✅ |
+| [cpl3-if-you-must-use-c-for-interfaces-use-c-in-the-calling-code-using-such-interfaces](../guidelines/core-guidelines/examples/cpl.md#cpl3-if-you-must-use-c-for-interfaces-use-c-in-the-calling-code-using-such-interfaces) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/enum.md](../guidelines/core-guidelines/examples/enum.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| Enum.1: enumerators of two enum classes with the same name don't clash and keep… | `CoreGuidelinesEnum.Enum1_EnumsInsteadOfMacros` | ✅ |
+| Enum.2: an enumeration parameter accepts only its enumerators, not arbitrary in… | `CoreGuidelinesEnum.Enum2_RelatedConstantsAreOneType` | ✅ |
+| Enum.3: a plain enum converts to int implicitly; an enum class doesn't (only by… | `CoreGuidelinesEnum.Enum3_EnumClassDoesNotConvert` | ✅ |
+| Enum.4: an operator++ defined once on the enumeration steps through the days an… | `CoreGuidelinesEnum.Enum4_OperationsOnEnumerations` | ✅ |
+| Enum.5: lower-case enumerators compile next to ALL_CAPS macros and keep their o… | `CoreGuidelinesEnum.Enum5_NoAllCapsEnumerators` | ✅ |
+| Enum.6: an unnamed enum's constant has an anonymous enumeration type; constexpr… | `CoreGuidelinesEnum.Enum6_ConstexprInsteadOfUnnamedEnums` | ✅ |
+| Enum.7: an enum class is int underneath by default; a named type sets its size… | `CoreGuidelinesEnum.Enum7_UnderlyingTypeOnlyWhenNeeded` | ✅ |
+| Enum.8: enumerators without values count 0, 1, 2…; explicit values give convent… | `CoreGuidelinesEnum.Enum8_ValuesOnlyWhenNeeded` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [enum1-prefer-enumerations-over-macros](../guidelines/core-guidelines/examples/enum.md#enum1-prefer-enumerations-over-macros) | 2 | ✅ |
+| [enum2-use-enumerations-to-represent-sets-of-related-named-constants](../guidelines/core-guidelines/examples/enum.md#enum2-use-enumerations-to-represent-sets-of-related-named-constants) | 2 | ✅ |
+| [enum3-prefer-class-enums-over-plain-enums](../guidelines/core-guidelines/examples/enum.md#enum3-prefer-class-enums-over-plain-enums) | 3 | ✅ |
+| [enum4-define-operations-on-enumerations-for-safe-and-simple-use](../guidelines/core-guidelines/examples/enum.md#enum4-define-operations-on-enumerations-for-safe-and-simple-use) | 2 | ✅ |
+| [enum5-dont-use-all_caps-for-enumerators](../guidelines/core-guidelines/examples/enum.md#enum5-dont-use-all_caps-for-enumerators) | 2 | ✅ |
+| [enum6-avoid-unnamed-enumerations](../guidelines/core-guidelines/examples/enum.md#enum6-avoid-unnamed-enumerations) | 2 | ✅ |
+| [enum7-specify-the-underlying-type-of-an-enumeration-only-when-necessary](../guidelines/core-guidelines/examples/enum.md#enum7-specify-the-underlying-type-of-an-enumeration-only-when-necessary) | 2 | ✅ |
+| [enum8-specify-enumerator-values-only-when-necessary](../guidelines/core-guidelines/examples/enum.md#enum8-specify-enumerator-values-only-when-necessary) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/errors.md](../guidelines/core-guidelines/examples/errors.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| E.2: a function that can't do its job throws, and the caller can't miss it. | `CoreGuidelinesE.E2_FailureIsThrown` | ✅ |
+| E.3: "not found" is an ordinary result, returned rather than thrown. | `CoreGuidelinesE.E3_NotFoundIsAValueNotAnException` | ✅ |
+| E.5: a constructor that can't establish the invariant throws, so no invalid obj… | `CoreGuidelinesE.E5_ConstructorThrowsOnBadInput` | ✅ |
+| E.6: a destructor runs when the scope is left by an exception, so the resource… | `CoreGuidelinesE.E6_RaiiCleansUpDuringUnwinding` | ✅ |
+| E.12: vector moves elements on reallocation only when the move constructor is n… | `CoreGuidelinesE.E12_NoexceptMoveIsUsedByVector` | ✅ |
+| E.13: an owning handle frees the object when a throw leaves the function. | `CoreGuidelinesE.E13_OwnerReleasesOnThrow` | ✅ |
+| E.14: a purpose-made exception type carries its details and can be caught as st… | `CoreGuidelinesE.E14_UserDefinedExceptionCarriesInformation` | ✅ |
+| E.15: catching by reference keeps the dynamic type, and `throw;` rethrows the o… | `CoreGuidelinesE.E15_CatchByReferenceKeepsDynamicType` | ✅ |
+| E.16: destructors are noexcept by default, as are std::swap on such types and e… | `CoreGuidelinesE.E16_DestructorsAndSwapDoNotThrow` | ✅ |
+| E.17: an exception passes through functions with no try/catch, and RAII cleans… | `CoreGuidelinesE.E17_ExceptionPropagatesWithoutLocalCatch` | ✅ |
+| E.18: an owning object replaces a try/catch written only to free a resource. | `CoreGuidelinesE.E18_OwnerReplacesTryCatch` | ✅ |
+| E.19: a final_action runs its cleanup on a normal return and on a throw. | `CoreGuidelinesE.E19_FinalActionRunsOnEveryPath` | ✅ |
+| E.25: without exceptions, the valid() check reports the failure and the destruc… | `CoreGuidelinesE.E25_SimulatedRaiiStillReleases` | ✅ |
+| E.27: std::expected returns the value or the error in one object. | `CoreGuidelinesE.E27_ExpectedCarriesValueOrError` | ✅ |
+| E.28: std::from_chars returns its error instead of setting a global like errno. | `CoreGuidelinesE.E28_ErrorIsReturnedNotGlobal` | ✅ |
+| E.30: noexcept is the specification that remains; a function without it may thr… | `CoreGuidelinesE.E30_NoexceptIsTheOnlySpecification` | ✅ |
+| E.31: handlers are tried in order: the most derived first, catch (...) last. | `CoreGuidelinesE.E31_FirstMatchingHandlerWins` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [e2-throw-an-exception-to-signal-that-a-function-cant-perform-its-assigned-task](../guidelines/core-guidelines/examples/errors.md#e2-throw-an-exception-to-signal-that-a-function-cant-perform-its-assigned-task) | 2 | ✅ |
+| [e3-use-exceptions-for-error-handling-only](../guidelines/core-guidelines/examples/errors.md#e3-use-exceptions-for-error-handling-only) | 2 | ✅ |
+| [e4-design-your-error-handling-strategy-around-invariants](../guidelines/core-guidelines/examples/errors.md#e4-design-your-error-handling-strategy-around-invariants) | 2 | ✅ |
+| [e5-let-a-constructor-establish-an-invariant-and-throw-if-it-cannot](../guidelines/core-guidelines/examples/errors.md#e5-let-a-constructor-establish-an-invariant-and-throw-if-it-cannot) | 2 | ✅ |
+| [e6-use-raii-to-prevent-leaks](../guidelines/core-guidelines/examples/errors.md#e6-use-raii-to-prevent-leaks) | 2 | ✅ |
+| [e7-state-your-preconditions](../guidelines/core-guidelines/examples/errors.md#e7-state-your-preconditions) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+| [e8-state-your-postconditions](../guidelines/core-guidelines/examples/errors.md#e8-state-your-postconditions) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+| [e12-use-noexcept-when-exiting-a-function-because-of-a-throw-is-impossible-or-unacceptable](../guidelines/core-guidelines/examples/errors.md#e12-use-noexcept-when-exiting-a-function-because-of-a-throw-is-impossible-or-unacceptable) | 2 | ✅ |
+| [e13-never-throw-while-being-the-direct-owner-of-an-object](../guidelines/core-guidelines/examples/errors.md#e13-never-throw-while-being-the-direct-owner-of-an-object) | 2 | ✅ |
+| [e14-use-purpose-designed-user-defined-types-as-exceptions-not-built-in-types](../guidelines/core-guidelines/examples/errors.md#e14-use-purpose-designed-user-defined-types-as-exceptions-not-built-in-types) | 2 | ✅ |
+| [e15-throw-by-value-catch-exceptions-from-a-hierarchy-by-reference](../guidelines/core-guidelines/examples/errors.md#e15-throw-by-value-catch-exceptions-from-a-hierarchy-by-reference) | 2 | ✅ |
+| [e16-destructors-deallocation-swap-and-exception-type-copymove-construction-must-never-fail](../guidelines/core-guidelines/examples/errors.md#e16-destructors-deallocation-swap-and-exception-type-copymove-construction-must-never-fail) | 2 | ✅ |
+| [e17-dont-try-to-catch-every-exception-in-every-function](../guidelines/core-guidelines/examples/errors.md#e17-dont-try-to-catch-every-exception-in-every-function) | 2 | ✅ |
+| [e18-minimize-the-use-of-explicit-trycatch](../guidelines/core-guidelines/examples/errors.md#e18-minimize-the-use-of-explicit-trycatch) | 2 | ✅ |
+| [e19-use-a-final_action-object-to-express-cleanup-if-no-suitable-resource-handle-is-available](../guidelines/core-guidelines/examples/errors.md#e19-use-a-final_action-object-to-express-cleanup-if-no-suitable-resource-handle-is-available) | 2 | ✅ |
+| [e25-if-you-cant-throw-exceptions-simulate-raii-for-resource-management](../guidelines/core-guidelines/examples/errors.md#e25-if-you-cant-throw-exceptions-simulate-raii-for-resource-management) | 2 | ✅ |
+| [e26-if-you-cant-throw-exceptions-consider-failing-fast](../guidelines/core-guidelines/examples/errors.md#e26-if-you-cant-throw-exceptions-consider-failing-fast) | 2 | ✅ |
+| [e27-if-you-cant-throw-exceptions-use-error-codes-systematically](../guidelines/core-guidelines/examples/errors.md#e27-if-you-cant-throw-exceptions-use-error-codes-systematically) | 2 | ✅ |
+| [e28-avoid-error-handling-based-on-global-state-eg-errno](../guidelines/core-guidelines/examples/errors.md#e28-avoid-error-handling-based-on-global-state-eg-errno) | 2 | ✅ |
+| [e30-dont-use-exception-specifications](../guidelines/core-guidelines/examples/errors.md#e30-dont-use-exception-specifications) | 2 | ✅ |
+| [e31-properly-order-your-catch-clauses](../guidelines/core-guidelines/examples/errors.md#e31-properly-order-your-catch-clauses) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/expr.md](../guidelines/core-guidelines/examples/expr.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| ES.10: in `int* p, q;` the * applies to p only, so q is a plain int. | `CoreGuidelinesES.ES10_StarBindsToOneDeclarator` | ✅ |
+| ES.11: auto deduces const_iterator from a const map, which doesn't convert to i… | `CoreGuidelinesES.ES11_AutoDeducesTheRightIterator` | ✅ |
+| ES.20: an initialized object has a known value; {} and = {} zero-initialize. | `CoreGuidelinesES.ES20_InitializedObjectsHaveKnownValues` | ✅ |
+| ES.23: {} rejects narrowing; vector{3} has one element, vector(3) three; auto x… | `CoreGuidelinesES.ES23_BracesRejectNarrowing` | ✅ |
+| ES.24: unique_ptr frees its object on an early return and when an exception lea… | `CoreGuidelinesES.ES24_UniquePtrFreesOnEveryPath` | ✅ |
+| ES.27: a built-in array decays to a pointer; std::array doesn't and keeps its s… | `CoreGuidelinesES.ES27_StdArrayDoesNotDecay` | ✅ |
+| ES.28: an immediately invoked lambda can compute a value that is then const. | `CoreGuidelinesES.ES28_LambdaInitializesConst` | ✅ |
+| ES.31: a function-like macro pastes text, so SQUARE(1 + 2) is 5; a constexpr fu… | `CoreGuidelinesES.ES31_MacroArgumentsArePastedText` | ✅ |
+| ES.34: a variadic template checks and uses each argument's real type, std::stri… | `CoreGuidelinesES.ES34_VariadicTemplateIsTypeSafe` | ✅ |
+| ES.41: != binds tighter than &amp;, so flags &amp; mask != 0 means flags &amp; (mask != 0). | `CoreGuidelinesES.ES41_ComparisonBindsTighterThanBitAnd` | ✅ |
+| ES.42: a span carries its size, so a function can visit exactly the elements it… | `CoreGuidelinesES.ES42_SpanCarriesItsSize` | ✅ |
+| ES.44: a braced initializer list and (since C++17) a &lt;&lt; chain are evaluated lef… | `CoreGuidelinesES.ES44_BracedListAndShiftChainsAreOrdered` | ✅ |
+| ES.46: braces reject int to char; an explicit conversion truncates; a checked o… | `CoreGuidelinesES.ES46_LossyConversionsAreRejectedOrChecked` | ✅ |
+| ES.47: 0 picks the int overload; nullptr picks the pointer overload and never c… | `CoreGuidelinesES.ES47_NullptrPicksThePointerOverload` | ✅ |
+| ES.48: std::bit_cast reads a double's bits without a pointer cast; std::ignore… | `CoreGuidelinesES.ES48_BitCastInsteadOfPointerCast` | ✅ |
+| ES.49: static_cast refuses unrelated class pointers, which a C-style cast would… | `CoreGuidelinesES.ES49_NamedCastsRejectTheWrongKind` | ✅ |
+| ES.50: a mutable cache can be updated from a const member function without cons… | `CoreGuidelinesES.ES50_MutableInsteadOfConstCast` | ✅ |
+| ES.56: std::move on a const object yields const&amp;&amp;, so it copies; moving a uniqu… | `CoreGuidelinesES.ES56_MoveOnConstCopies` | ✅ |
+| ES.62: std::less gives a consistent order even for pointers into different arra… | `CoreGuidelinesES.ES62_StdLessOrdersAnyPointers` | ✅ |
+| ES.63: passing a derived object by value slices it, losing the override; a non-… | `CoreGuidelinesES.ES63_CopyingSlicesTheDerivedPart` | ✅ |
+| ES.64: T{e} rejects narrowing, while T(e) silently truncates. | `CoreGuidelinesES.ES64_BraceConstructionRejectsNarrowing` | ✅ |
+| ES.84: T{args}; makes a temporary destroyed at the end of the statement; a name… | `CoreGuidelinesES.ES84_UnnamedTemporaryDiesImmediately` | ✅ |
+| ES.100: int op unsigned is done in unsigned, so -3 - 7u wraps; std::cmp_less co… | `CoreGuidelinesES.ES100_MixedArithmeticIsUnsigned` | ✅ |
+| ES.101: unsigned shifts bring in zeros; signed right shift copies the sign bit;… | `CoreGuidelinesES.ES101_UnsignedForBitManipulation` | ✅ |
+| ES.102: unsigned 5 - 7 wraps to a large value; signed 5 - 7 is -2. | `CoreGuidelinesES.ES102_UnsignedSubtractionWraps` | ✅ |
+| ES.103: a wider type or a check before the operation avoids signed overflow; un… | `CoreGuidelinesES.ES103_CheckOrWidenBeforeOverflow` | ✅ |
+| ES.104: a countdown that stops at 0 never reads index -1; unsigned 0 - 1 wraps… | `CoreGuidelinesES.ES104_CountdownStopsAtZero` | ✅ |
+| ES.105: checking the divisor first handles zero; floating-point division by zer… | `CoreGuidelinesES.ES105_CheckTheDivisor` | ✅ |
+| ES.106: unsigned doesn't prevent negatives: -2 converts to 2^32 - 2 and the are… | `CoreGuidelinesES.ES106_UnsignedDoesNotPreventNegatives` | ✅ |
+| ES.107: size() - 1 on an empty vector wraps; a signed index from std::ssize cou… | `CoreGuidelinesES.ES107_SignedIndexCountsDownSafely` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [es1-prefer-the-standard-library-to-other-libraries-and-to-handcrafted-code](../guidelines/core-guidelines/examples/expr.md#es1-prefer-the-standard-library-to-other-libraries-and-to-handcrafted-code) | 2 | ✅ |
+| [es2-prefer-suitable-abstractions-to-direct-use-of-language-features](../guidelines/core-guidelines/examples/expr.md#es2-prefer-suitable-abstractions-to-direct-use-of-language-features) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es3-dont-repeat-yourself-avoid-redundant-code](../guidelines/core-guidelines/examples/expr.md#es3-dont-repeat-yourself-avoid-redundant-code) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es5-keep-scopes-small](../guidelines/core-guidelines/examples/expr.md#es5-keep-scopes-small) | 2 | ✅ |
+| [es6-declare-names-in-for-statement-initializers-and-conditions-to-limit-scope](../guidelines/core-guidelines/examples/expr.md#es6-declare-names-in-for-statement-initializers-and-conditions-to-limit-scope) | 2 | ✅ |
+| [es7-keep-common-and-local-names-short-and-keep-uncommon-and-non-local-names-longer](../guidelines/core-guidelines/examples/expr.md#es7-keep-common-and-local-names-short-and-keep-uncommon-and-non-local-names-longer) | 2 | ✅ |
+| [es8-avoid-similar-looking-names](../guidelines/core-guidelines/examples/expr.md#es8-avoid-similar-looking-names) | 2 | ✅ |
+| [es9-avoid-all_caps-names](../guidelines/core-guidelines/examples/expr.md#es9-avoid-all_caps-names) | 2 | ✅ |
+| [es10-declare-one-name-only-per-declaration](../guidelines/core-guidelines/examples/expr.md#es10-declare-one-name-only-per-declaration) | 2 | ✅ |
+| [es11-use-auto-to-avoid-redundant-repetition-of-type-names](../guidelines/core-guidelines/examples/expr.md#es11-use-auto-to-avoid-redundant-repetition-of-type-names) | 2 | ✅ |
+| [es12-do-not-reuse-names-in-nested-scopes](../guidelines/core-guidelines/examples/expr.md#es12-do-not-reuse-names-in-nested-scopes) | 2 | ✅ |
+| [es20-always-initialize-an-object](../guidelines/core-guidelines/examples/expr.md#es20-always-initialize-an-object) | 2 | ✅ |
+| [es21-dont-introduce-a-variable-or-constant-before-you-need-to-use-it](../guidelines/core-guidelines/examples/expr.md#es21-dont-introduce-a-variable-or-constant-before-you-need-to-use-it) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es22-dont-declare-a-variable-until-you-have-a-value-to-initialize-it-with](../guidelines/core-guidelines/examples/expr.md#es22-dont-declare-a-variable-until-you-have-a-value-to-initialize-it-with) | 2 | ✅ |
+| [es23-prefer-the--initializer-syntax](../guidelines/core-guidelines/examples/expr.md#es23-prefer-the--initializer-syntax) | 2 | ✅ |
+| [es24-use-a-unique_ptrt-to-hold-pointers](../guidelines/core-guidelines/examples/expr.md#es24-use-a-unique_ptrt-to-hold-pointers) | 2 | ✅ |
+| [es25-declare-an-object-const-or-constexpr-unless-you-want-to-modify-its-value-later-on](../guidelines/core-guidelines/examples/expr.md#es25-declare-an-object-const-or-constexpr-unless-you-want-to-modify-its-value-later-on) | 2 | ✅ |
+| [es26-dont-use-a-variable-for-two-unrelated-purposes](../guidelines/core-guidelines/examples/expr.md#es26-dont-use-a-variable-for-two-unrelated-purposes) | 2 | ✅ |
+| [es27-use-stdarray-or-stack_array-for-arrays-on-the-stack](../guidelines/core-guidelines/examples/expr.md#es27-use-stdarray-or-stack_array-for-arrays-on-the-stack) | 2 | ✅ |
+| [es28-use-lambdas-for-complex-initialization-especially-of-const-variables](../guidelines/core-guidelines/examples/expr.md#es28-use-lambdas-for-complex-initialization-especially-of-const-variables) | 2 | ✅ |
+| [es30-dont-use-macros-for-program-text-manipulation](../guidelines/core-guidelines/examples/expr.md#es30-dont-use-macros-for-program-text-manipulation) | 2 | ✅ |
+| [es31-dont-use-macros-for-constants-or-functions](../guidelines/core-guidelines/examples/expr.md#es31-dont-use-macros-for-constants-or-functions) | 2 | ✅ |
+| [es32-use-all_caps-for-all-macro-names](../guidelines/core-guidelines/examples/expr.md#es32-use-all_caps-for-all-macro-names) | 2 | ✅ |
+| [es33-if-you-must-use-macros-give-them-unique-names](../guidelines/core-guidelines/examples/expr.md#es33-if-you-must-use-macros-give-them-unique-names) | 2 | ✅ |
+| [es34-dont-define-a-c-style-variadic-function](../guidelines/core-guidelines/examples/expr.md#es34-dont-define-a-c-style-variadic-function) | 2 | ✅ |
+| [es40-avoid-complicated-expressions](../guidelines/core-guidelines/examples/expr.md#es40-avoid-complicated-expressions) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es41-if-in-doubt-about-operator-precedence-parenthesize](../guidelines/core-guidelines/examples/expr.md#es41-if-in-doubt-about-operator-precedence-parenthesize) | 2 | ✅ |
+| [es42-keep-use-of-pointers-simple-and-straightforward](../guidelines/core-guidelines/examples/expr.md#es42-keep-use-of-pointers-simple-and-straightforward) | 2 | ✅ |
+| [es43-avoid-expressions-with-undefined-order-of-evaluation](../guidelines/core-guidelines/examples/expr.md#es43-avoid-expressions-with-undefined-order-of-evaluation) | 2 | ✅ |
+| [es44-dont-depend-on-order-of-evaluation-of-function-arguments](../guidelines/core-guidelines/examples/expr.md#es44-dont-depend-on-order-of-evaluation-of-function-arguments) | 2 | ✅ |
+| [es45-avoid-magic-constants-use-symbolic-constants](../guidelines/core-guidelines/examples/expr.md#es45-avoid-magic-constants-use-symbolic-constants) | 2 | ✅ |
+| [es46-avoid-lossy-narrowing-truncating-arithmetic-conversions](../guidelines/core-guidelines/examples/expr.md#es46-avoid-lossy-narrowing-truncating-arithmetic-conversions) | 2 | ✅ |
+| [es47-use-nullptr-rather-than-0-or-null](../guidelines/core-guidelines/examples/expr.md#es47-use-nullptr-rather-than-0-or-null) | 2 | ✅ |
+| [es48-avoid-casts](../guidelines/core-guidelines/examples/expr.md#es48-avoid-casts) | 2 | ✅ |
+| [es49-if-you-must-use-a-cast-use-a-named-cast](../guidelines/core-guidelines/examples/expr.md#es49-if-you-must-use-a-cast-use-a-named-cast) | 2 | ✅ |
+| [es50-dont-cast-away-const](../guidelines/core-guidelines/examples/expr.md#es50-dont-cast-away-const) | 2 | ✅ |
+| [es55-avoid-the-need-for-range-checking](../guidelines/core-guidelines/examples/expr.md#es55-avoid-the-need-for-range-checking) | 2 | ✅ |
+| [es56-write-stdmove-only-when-you-need-to-explicitly-move-an-object-to-another-scope](../guidelines/core-guidelines/examples/expr.md#es56-write-stdmove-only-when-you-need-to-explicitly-move-an-object-to-another-scope) | 2 | ✅ |
+| [es60-avoid-new-and-delete-outside-resource-management-functions](../guidelines/core-guidelines/examples/expr.md#es60-avoid-new-and-delete-outside-resource-management-functions) | 2 | ✅ |
+| [es61-delete-arrays-using-delete-and-non-arrays-using-delete](../guidelines/core-guidelines/examples/expr.md#es61-delete-arrays-using-delete-and-non-arrays-using-delete) | 2 | ✅ |
+| [es62-dont-compare-pointers-into-different-arrays](../guidelines/core-guidelines/examples/expr.md#es62-dont-compare-pointers-into-different-arrays) | 2 | ✅ |
+| [es63-dont-slice](../guidelines/core-guidelines/examples/expr.md#es63-dont-slice) | 2 | ✅ |
+| [es64-use-the-tenotation-for-construction](../guidelines/core-guidelines/examples/expr.md#es64-use-the-tenotation-for-construction) | 3 | ✅ |
+| [es65-dont-dereference-an-invalid-pointer](../guidelines/core-guidelines/examples/expr.md#es65-dont-dereference-an-invalid-pointer) | 2 | ✅ |
+| [es70-prefer-a-switch-statement-to-an-if-statement-when-there-is-a-choice](../guidelines/core-guidelines/examples/expr.md#es70-prefer-a-switch-statement-to-an-if-statement-when-there-is-a-choice) | 2 | ✅ |
+| [es71-prefer-a-range-for-statement-to-a-for-statement-when-there-is-a-choice](../guidelines/core-guidelines/examples/expr.md#es71-prefer-a-range-for-statement-to-a-for-statement-when-there-is-a-choice) | 2 | ✅ |
+| [es72-prefer-a-for-statement-to-a-while-statement-when-there-is-an-obvious-loop-variable](../guidelines/core-guidelines/examples/expr.md#es72-prefer-a-for-statement-to-a-while-statement-when-there-is-an-obvious-loop-variable) | 2 | ✅ |
+| [es73-prefer-a-while-statement-to-a-for-statement-when-there-is-no-obvious-loop-variable](../guidelines/core-guidelines/examples/expr.md#es73-prefer-a-while-statement-to-a-for-statement-when-there-is-no-obvious-loop-variable) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es74-prefer-to-declare-a-loop-variable-in-the-initializer-part-of-a-for-statement](../guidelines/core-guidelines/examples/expr.md#es74-prefer-to-declare-a-loop-variable-in-the-initializer-part-of-a-for-statement) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es75-avoid-do-statements](../guidelines/core-guidelines/examples/expr.md#es75-avoid-do-statements) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es76-avoid-goto](../guidelines/core-guidelines/examples/expr.md#es76-avoid-goto) | 2 | ✅ |
+| [es77-minimize-the-use-of-break-and-continue-in-loops](../guidelines/core-guidelines/examples/expr.md#es77-minimize-the-use-of-break-and-continue-in-loops) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es78-dont-rely-on-implicit-fallthrough-in-switch-statements](../guidelines/core-guidelines/examples/expr.md#es78-dont-rely-on-implicit-fallthrough-in-switch-statements) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es79-use-default-to-handle-common-cases-only](../guidelines/core-guidelines/examples/expr.md#es79-use-default-to-handle-common-cases-only) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es84-dont-try-to-declare-a-local-variable-with-no-name](../guidelines/core-guidelines/examples/expr.md#es84-dont-try-to-declare-a-local-variable-with-no-name) | 2 | ✅ |
+| [es85-make-empty-statements-visible](../guidelines/core-guidelines/examples/expr.md#es85-make-empty-statements-visible) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es86-avoid-modifying-loop-control-variables-inside-the-body-of-raw-for-loops](../guidelines/core-guidelines/examples/expr.md#es86-avoid-modifying-loop-control-variables-inside-the-body-of-raw-for-loops) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es87-dont-add-redundant--or--to-conditions](../guidelines/core-guidelines/examples/expr.md#es87-dont-add-redundant--or--to-conditions) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es100-dont-mix-signed-and-unsigned-arithmetic](../guidelines/core-guidelines/examples/expr.md#es100-dont-mix-signed-and-unsigned-arithmetic) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [es101-use-unsigned-types-for-bit-manipulation](../guidelines/core-guidelines/examples/expr.md#es101-use-unsigned-types-for-bit-manipulation) | 2 | ✅ |
+| [es102-use-signed-types-for-arithmetic](../guidelines/core-guidelines/examples/expr.md#es102-use-signed-types-for-arithmetic) | 2 | ✅ |
+| [es103-dont-overflow](../guidelines/core-guidelines/examples/expr.md#es103-dont-overflow) | 2 | ✅ |
+| [es104-dont-underflow](../guidelines/core-guidelines/examples/expr.md#es104-dont-underflow) | 2 | ✅ |
+| [es105-dont-divide-by-integer-zero](../guidelines/core-guidelines/examples/expr.md#es105-dont-divide-by-integer-zero) | 2 | ✅ |
+| [es106-dont-try-to-avoid-negative-values-by-using-unsigned](../guidelines/core-guidelines/examples/expr.md#es106-dont-try-to-avoid-negative-values-by-using-unsigned) | 2 | ✅ |
+| [es107-dont-use-unsigned-for-subscripts-prefer-gslindex](../guidelines/core-guidelines/examples/expr.md#es107-dont-use-unsigned-for-subscripts-prefer-gslindex) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+
+**[guidelines/core-guidelines/examples/faq.md](../guidelines/core-guidelines/examples/faq.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| FAQ.55: a string_view only reads its characters; a span&lt;char&gt; can write them. | `CoreGuidelinesFAQ.FAQ55_StringViewReadsSpanWrites` | ✅ |
+| FAQ.56: an owner&lt;T*&gt; alias is only a label; the type is still T*. | `CoreGuidelinesFAQ.FAQ56_OwnerIsAnAlias` | ✅ |
+| FAQ.57: a std::array holds its elements inside itself, wherever the array objec… | `CoreGuidelinesFAQ.FAQ57_ArrayElementsLiveInsideTheObject` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [faq55-if-youre-using-the-standard-types-where-available-why-is-the-gsl-spanchar-different-from-the-string_view-in-the-library-fundamentals-1-technical-specification-and-c17-working-paper-why-not-just-use-the-committee-approved-string_view](../guidelines/core-guidelines/examples/faq.md#faq55-if-youre-using-the-standard-types-where-available-why-is-the-gsl-spanchar-different-from-the-string_view-in-the-library-fundamentals-1-technical-specification-and-c17-working-paper-why-not-just-use-the-committee-approved-string_view) | 2 | ✅ |
+| [faq56-is-owner-the-same-as-the-proposed-observer_ptr](../guidelines/core-guidelines/examples/faq.md#faq56-is-owner-the-same-as-the-proposed-observer_ptr) | 2 | ✅ |
+| [faq57-is-stack_array-the-same-as-the-standard-array](../guidelines/core-guidelines/examples/faq.md#faq57-is-stack_array-the-same-as-the-standard-array) | 1 | ✅ |
+| [faq58-is-dyn_array-the-same-as-vector-or-the-proposed-dynarray](../guidelines/core-guidelines/examples/faq.md#faq58-is-dyn_array-the-same-as-vector-or-the-proposed-dynarray) | 2 | ✅ |
+| [faq59-is-expects-the-same-as-assert](../guidelines/core-guidelines/examples/faq.md#faq59-is-expects-the-same-as-assert) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+| [faq60-is-ensures-the-same-as-assert](../guidelines/core-guidelines/examples/faq.md#faq60-is-ensures-the-same-as-assert) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+
+**[guidelines/core-guidelines/examples/functions.md](../guidelines/core-guidelines/examples/functions.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| F.4: a constexpr function runs at compile time in a constant expression and at… | `CoreGuidelinesF.F4_ConstexprRunsAtCompileAndRunTime` | ✅ |
+| F.6: vector moves its elements when it grows only if the move constructor is no… | `CoreGuidelinesF.F6_NoexceptMoveLetsVectorMove` | ✅ |
+| F.7: a T&amp; parameter accepts any T (stack, unique_ptr, shared_ptr); a shared_ptr… | `CoreGuidelinesF.F7_ReferenceAcceptsAnyOwnership` | ✅ |
+| F.8: a pure function depends only on its arguments, so it can run at compile ti… | `CoreGuidelinesF.F8_PureFunctionIsRepeatable` | ✅ |
+| F.16: passing by const&amp; doesn't copy; passing by value copies an lvalue argumen… | `CoreGuidelinesF.F16_ConstRefAvoidsCopies` | ✅ |
+| F.17: a T&amp; parameter changes the caller's object; a by-value parameter changes… | `CoreGuidelinesF.F17_InOutByReference` | ✅ |
+| F.18: an X&amp;&amp; parameter won't bind an lvalue without std::move, and moves withou… | `CoreGuidelinesF.F18_RvalueRefParameterMoves` | ✅ |
+| F.19: std::forward moves an rvalue argument and copies an lvalue; without it, r… | `CoreGuidelinesF.F19_ForwardPreservesRvalues` | ✅ |
+| F.20: returning a local by value never copies it: it's elided or moved. | `CoreGuidelinesF.F20_ReturnValueDoesNotCopy` | ✅ |
+| F.21: a returned struct carries several named results, unpacked with structured… | `CoreGuidelinesF.F21_StructReturnsSeveralValues` | ✅ |
+| F.60: a pointer parameter accepts nullptr for "no argument"; a reference parame… | `CoreGuidelinesF.F60_PointerAllowsNoArgument` | ✅ |
+| F.23: a not_null that deletes its nullptr constructor rejects a literal nullptr… | `CoreGuidelinesF.F23_NotNullRejectsNullptr` | ✅ |
+| F.24: a span carries its size: built from an array or a vector, it covers exact… | `CoreGuidelinesF.F24_SpanCarriesItsSize` | ✅ |
+| F.25: a string_view knows its length, so it needs no zero terminator; a C strin… | `CoreGuidelinesF.F25_StringViewNeedsNoTerminator` | ✅ |
+| F.26: a unique_ptr can't be copied; moving it transfers ownership, and the obje… | `CoreGuidelinesF.F26_UniquePtrTransfersOwnership` | ✅ |
+| F.27: with shared_ptr the object lives until its last owner lets go, then is de… | `CoreGuidelinesF.F27_LastSharedOwnerDeletes` | ✅ |
+| F.42: a returned T* points at an existing object in the caller's structure, or… | `CoreGuidelinesF.F42_PointerReturnsAPosition` | ✅ |
+| F.44: returning T&amp; gives the caller the object itself, so changes through it st… | `CoreGuidelinesF.F44_ReferenceReturnAliasesTheObject` | ✅ |
+| F.45: an auto return type gives a value, not a reference, so the result outlive… | `CoreGuidelinesF.F45_AutoReturnIsAValue` | ✅ |
+| F.47: an assignment operator returning T&amp; chains like the built-in one. | `CoreGuidelinesF.F47_AssignmentReturnsReference` | ✅ |
+| F.48: `return local` moves at most once (often zero); `return std::move(local)`… | `CoreGuidelinesF.F48_ReturnStdMoveForcesAMove` | ✅ |
+| F.49: assigning from a function that returns const T copies; from one that retu… | `CoreGuidelinesF.F49_ConstReturnBlocksMove` | ✅ |
+| F.50: a lambda can be defined locally and capture local variables, which a func… | `CoreGuidelinesF.F50_LambdaCapturesLocals` | ✅ |
+| F.51: a default argument gives the short call and the full call one implementat… | `CoreGuidelinesF.F51_DefaultArgumentOneBody` | ✅ |
+| F.52: a lambda that captures by reference copies nothing and updates the caller… | `CoreGuidelinesF.F52_LocalLambdaCapturesByReference` | ✅ |
+| F.53: a lambda that captures by value stays valid after the scope that made it… | `CoreGuidelinesF.F53_ValueCaptureOutlivesScope` | ✅ |
+| F.54: [this] reads members live through the pointer; [*this] captures a copy of… | `CoreGuidelinesF.F54_ThisCaptureIsByReference` | ✅ |
+| F.55: a variadic template sees each argument's real type, so mixing int and dou… | `CoreGuidelinesF.F55_VariadicTemplateIsTyped` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [f1-package-meaningful-operations-as-carefully-named-functions](../guidelines/core-guidelines/examples/functions.md#f1-package-meaningful-operations-as-carefully-named-functions) | 2 | ✅ |
+| [f2-a-function-should-perform-a-single-logical-operation](../guidelines/core-guidelines/examples/functions.md#f2-a-function-should-perform-a-single-logical-operation) | 2 | ✅ |
+| [f3-keep-functions-short-and-simple](../guidelines/core-guidelines/examples/functions.md#f3-keep-functions-short-and-simple) | 2 | ✅ |
+| [f4-if-a-function-might-have-to-be-evaluated-at-compile-time-declare-it-constexpr](../guidelines/core-guidelines/examples/functions.md#f4-if-a-function-might-have-to-be-evaluated-at-compile-time-declare-it-constexpr) | 2 | ✅ |
+| [f5-if-a-function-is-very-small-and-time-critical-declare-it-inline](../guidelines/core-guidelines/examples/functions.md#f5-if-a-function-is-very-small-and-time-critical-declare-it-inline) | 2 | ✅ |
+| [f6-if-your-function-must-not-throw-declare-it-noexcept](../guidelines/core-guidelines/examples/functions.md#f6-if-your-function-must-not-throw-declare-it-noexcept) | 2 | ✅ |
+| [f7-for-general-use-take-t-or-t-arguments-rather-than-smart-pointers](../guidelines/core-guidelines/examples/functions.md#f7-for-general-use-take-t-or-t-arguments-rather-than-smart-pointers) | 2 | ✅ |
+| [f8-prefer-pure-functions](../guidelines/core-guidelines/examples/functions.md#f8-prefer-pure-functions) | 2 | ✅ |
+| [f9-unused-parameters-should-be-unnamed](../guidelines/core-guidelines/examples/functions.md#f9-unused-parameters-should-be-unnamed) | 2 | ✅ |
+| [f10-if-an-operation-can-be-reused-give-it-a-name](../guidelines/core-guidelines/examples/functions.md#f10-if-an-operation-can-be-reused-give-it-a-name) | 2 | ✅ |
+| [f11-use-an-unnamed-lambda-if-you-need-a-simple-function-object-in-one-place-only](../guidelines/core-guidelines/examples/functions.md#f11-use-an-unnamed-lambda-if-you-need-a-simple-function-object-in-one-place-only) | 2 | ✅ |
+| [f15-prefer-simple-and-conventional-ways-of-passing-information](../guidelines/core-guidelines/examples/functions.md#f15-prefer-simple-and-conventional-ways-of-passing-information) | 2 | ✅ |
+| [f16-for-in-parameters-pass-cheaply-copied-types-by-value-and-others-by-reference-to-const](../guidelines/core-guidelines/examples/functions.md#f16-for-in-parameters-pass-cheaply-copied-types-by-value-and-others-by-reference-to-const) | 2 | ✅ |
+| [f17-for-in-out-parameters-pass-by-reference-to-non-const](../guidelines/core-guidelines/examples/functions.md#f17-for-in-out-parameters-pass-by-reference-to-non-const) | 2 | ✅ |
+| [f18-for-will-move-from-parameters-pass-by-x-and-stdmove-the-parameter](../guidelines/core-guidelines/examples/functions.md#f18-for-will-move-from-parameters-pass-by-x-and-stdmove-the-parameter) | 2 | ✅ |
+| [f19-for-forward-parameters-pass-by-tp-and-only-stdforward-the-parameter](../guidelines/core-guidelines/examples/functions.md#f19-for-forward-parameters-pass-by-tp-and-only-stdforward-the-parameter) | 2 | ✅ |
+| [f20-for-out-output-values-prefer-return-values-to-output-parameters](../guidelines/core-guidelines/examples/functions.md#f20-for-out-output-values-prefer-return-values-to-output-parameters) | 2 | ✅ |
+| [f21-to-return-multiple-out-values-prefer-returning-a-struct](../guidelines/core-guidelines/examples/functions.md#f21-to-return-multiple-out-values-prefer-returning-a-struct) | 2 | ✅ |
+| [f60-prefer-t-over-t-when-no-argument-is-a-valid-option](../guidelines/core-guidelines/examples/functions.md#f60-prefer-t-over-t-when-no-argument-is-a-valid-option) | 2 | ✅ |
+| [f22-use-t-or-ownert-to-designate-a-single-object](../guidelines/core-guidelines/examples/functions.md#f22-use-t-or-ownert-to-designate-a-single-object) | 2 | ✅ |
+| [f23-use-a-not_nullt-to-indicate-that-null-is-not-a-valid-value](../guidelines/core-guidelines/examples/functions.md#f23-use-a-not_nullt-to-indicate-that-null-is-not-a-valid-value) | 2 | ✅ |
+| [f24-use-a-spant-or-a-span_pt-to-designate-a-half-open-sequence](../guidelines/core-guidelines/examples/functions.md#f24-use-a-spant-or-a-span_pt-to-designate-a-half-open-sequence) | 2 | ✅ |
+| [f25-use-a-zstring-or-a-not_nullzstring-to-designate-a-c-style-string](../guidelines/core-guidelines/examples/functions.md#f25-use-a-zstring-or-a-not_nullzstring-to-designate-a-c-style-string) | 2 | ✅ |
+| [f26-use-a-unique_ptrt-to-transfer-ownership-where-a-pointer-is-needed](../guidelines/core-guidelines/examples/functions.md#f26-use-a-unique_ptrt-to-transfer-ownership-where-a-pointer-is-needed) | 2 | ✅ |
+| [f27-use-a-shared_ptrt-to-share-ownership](../guidelines/core-guidelines/examples/functions.md#f27-use-a-shared_ptrt-to-share-ownership) | 2 | ✅ |
+| [f42-return-a-t-to-indicate-a-position-only](../guidelines/core-guidelines/examples/functions.md#f42-return-a-t-to-indicate-a-position-only) | 2 | ✅ |
+| [f43-never-directly-or-indirectly-return-a-pointer-or-a-reference-to-a-local-object](../guidelines/core-guidelines/examples/functions.md#f43-never-directly-or-indirectly-return-a-pointer-or-a-reference-to-a-local-object) | 2 | ✅ |
+| [f44-return-a-t-when-copy-is-undesirable-and-returning-no-object-isnt-needed](../guidelines/core-guidelines/examples/functions.md#f44-return-a-t-when-copy-is-undesirable-and-returning-no-object-isnt-needed) | 2 | ✅ |
+| [f45-dont-return-a-t](../guidelines/core-guidelines/examples/functions.md#f45-dont-return-a-t) | 2 | ✅ |
+| [f46-int-is-the-return-type-for-main](../guidelines/core-guidelines/examples/functions.md#f46-int-is-the-return-type-for-main) | 2 | ✅ |
+| [f47-return-t-from-assignment-operators](../guidelines/core-guidelines/examples/functions.md#f47-return-t-from-assignment-operators) | 2 | ✅ |
+| [f48-dont-return-stdmovelocal](../guidelines/core-guidelines/examples/functions.md#f48-dont-return-stdmovelocal) | 2 | ✅ |
+| [f49-dont-return-const-t](../guidelines/core-guidelines/examples/functions.md#f49-dont-return-const-t) | 2 | ✅ |
+| [f50-use-a-lambda-when-a-function-wont-do-to-capture-local-variables-or-to-write-a-local-function](../guidelines/core-guidelines/examples/functions.md#f50-use-a-lambda-when-a-function-wont-do-to-capture-local-variables-or-to-write-a-local-function) | 2 | ✅ |
+| [f51-where-there-is-a-choice-prefer-default-arguments-over-overloading](../guidelines/core-guidelines/examples/functions.md#f51-where-there-is-a-choice-prefer-default-arguments-over-overloading) | 2 | ✅ |
+| [f52-prefer-capturing-by-reference-in-lambdas-that-will-be-used-locally-including-passed-to-algorithms](../guidelines/core-guidelines/examples/functions.md#f52-prefer-capturing-by-reference-in-lambdas-that-will-be-used-locally-including-passed-to-algorithms) | 2 | ✅ |
+| [f53-avoid-capturing-by-reference-in-lambdas-that-will-be-used-non-locally-including-returned-stored-on-the-heap-or-passed-to-another-thread](../guidelines/core-guidelines/examples/functions.md#f53-avoid-capturing-by-reference-in-lambdas-that-will-be-used-non-locally-including-returned-stored-on-the-heap-or-passed-to-another-thread) | 2 | ✅ |
+| [f54-when-writing-a-lambda-that-captures-this-or-any-class-data-member-dont-use--default-capture](../guidelines/core-guidelines/examples/functions.md#f54-when-writing-a-lambda-that-captures-this-or-any-class-data-member-dont-use--default-capture) | 2 | ✅ |
+| [f55-dont-use-va_arg-arguments](../guidelines/core-guidelines/examples/functions.md#f55-dont-use-va_arg-arguments) | 2 | ✅ |
+| [f56-avoid-unnecessary-condition-nesting](../guidelines/core-guidelines/examples/functions.md#f56-avoid-unnecessary-condition-nesting) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/gsl.md](../guidelines/core-guidelines/examples/gsl.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| GSL.ptr: unique_ptr is a unique pointer (movable, not copyable); shared_ptr is… | `CoreGuidelinesGSL.GSLptr_StandardSmartPointersMatchTheConcepts` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [gslptr-smart-pointer-concepts](../guidelines/core-guidelines/examples/gsl.md#gslptr-smart-pointer-concepts) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/interfaces.md](../guidelines/core-guidelines/examples/interfaces.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| I.1: a hidden global mode changes the result of the same call; an explicit para… | `CoreGuidelinesI.I1_ExplicitInterfaces` | ✅ |
+| I.3: a function-local static is initialized once, on the first call. | `CoreGuidelinesI.I3_FunctionLocalStaticOnFirstUse` | ✅ |
+| I.4: a duration parameter converts other units exactly and rejects a bare int o… | `CoreGuidelinesI.I4_StronglyTypedParameters` | ✅ |
+| I.7: with RAII the postcondition "the mutex is unlocked on exit" holds on every… | `CoreGuidelinesI.I7_PostconditionEnforcedByRaii` | ✅ |
+| I.9: a concept-constrained template rejects a bad argument at the interface; an… | `CoreGuidelinesI.I9_ConceptsDocumentRequirements` | ✅ |
+| I.10: a failure to do the required task throws, so it can't be ignored. | `CoreGuidelinesI.I10_ExceptionsSignalFailure` | ✅ |
+| I.11: ownership returned as a value or a unique_ptr is released without the cal… | `CoreGuidelinesI.I11_NoOwnershipByRawPointer` | ✅ |
+| I.12: a reference or string_view parameter can't be given nullptr (string_view(… | `CoreGuidelinesI.I12_ParametersThatCantBeNull` | ✅ |
+| I.13: a derived array decays to a base pointer, but a span of the base can't be… | `CoreGuidelinesI.I13_SpanNotSinglePointer` | ✅ |
+| I.22: a constinit global is constant-initialized; a function-local static is bu… | `CoreGuidelinesI.I22_SimpleGlobalInitialization` | ✅ |
+| I.24: with a const source, swapping the source and destination arguments doesn'… | `CoreGuidelinesI.I24_SwappedArgumentsAreRejected` | ✅ |
+| I.25: an interface with only pure virtual functions is abstract with a virtual… | `CoreGuidelinesI.I25_PureInterfaces` | ✅ |
+| I.26: a C-style interface struct is standard-layout and trivially copyable. | `CoreGuidelinesI.I26_CStyleAbiTypes` | ✅ |
+| I.27: a Pimpl class's layout is just the pointer, and it moves but doesn't copy. | `CoreGuidelinesI.I27_Pimpl` | ✅ |
+| I.30: one class hides "sometimes owned, sometimes borrowed": it reads both ways… | `CoreGuidelinesI.I30_EncapsulateRuleViolations` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [i1-make-interfaces-explicit](../guidelines/core-guidelines/examples/interfaces.md#i1-make-interfaces-explicit) | 2 | ✅ |
+| [i2-avoid-non-const-global-variables](../guidelines/core-guidelines/examples/interfaces.md#i2-avoid-non-const-global-variables) | 2 | ✅ |
+| [i3-avoid-singletons](../guidelines/core-guidelines/examples/interfaces.md#i3-avoid-singletons) | 2 | ✅ |
+| [i4-make-interfaces-precisely-and-strongly-typed](../guidelines/core-guidelines/examples/interfaces.md#i4-make-interfaces-precisely-and-strongly-typed) | 3 | ✅ |
+| [i5-state-preconditions-if-any](../guidelines/core-guidelines/examples/interfaces.md#i5-state-preconditions-if-any) | 2 | ✅ |
+| [i6-prefer-expects-for-expressing-preconditions](../guidelines/core-guidelines/examples/interfaces.md#i6-prefer-expects-for-expressing-preconditions) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+| [i7-state-postconditions](../guidelines/core-guidelines/examples/interfaces.md#i7-state-postconditions) | 2 | ✅ |
+| [i8-prefer-ensures-for-expressing-postconditions](../guidelines/core-guidelines/examples/interfaces.md#i8-prefer-ensures-for-expressing-postconditions) | 2 | ✅ 1 · ⏭ 1 (needs contracts) |
+| [i9-if-an-interface-is-a-template-document-its-parameters-using-concepts](../guidelines/core-guidelines/examples/interfaces.md#i9-if-an-interface-is-a-template-document-its-parameters-using-concepts) | 2 | ✅ |
+| [i10-use-exceptions-to-signal-a-failure-to-perform-a-required-task](../guidelines/core-guidelines/examples/interfaces.md#i10-use-exceptions-to-signal-a-failure-to-perform-a-required-task) | 2 | ✅ |
+| [i11-never-transfer-ownership-by-a-raw-pointer-t-or-reference-t](../guidelines/core-guidelines/examples/interfaces.md#i11-never-transfer-ownership-by-a-raw-pointer-t-or-reference-t) | 2 | ✅ |
+| [i12-declare-a-pointer-that-must-not-be-null-as-not_null](../guidelines/core-guidelines/examples/interfaces.md#i12-declare-a-pointer-that-must-not-be-null-as-not_null) | 3 | ✅ |
+| [i13-do-not-pass-an-array-as-a-single-pointer](../guidelines/core-guidelines/examples/interfaces.md#i13-do-not-pass-an-array-as-a-single-pointer) | 2 | ✅ |
+| [i22-avoid-complex-initialization-of-global-objects](../guidelines/core-guidelines/examples/interfaces.md#i22-avoid-complex-initialization-of-global-objects) | 3 | ✅ |
+| [i23-keep-the-number-of-function-arguments-low](../guidelines/core-guidelines/examples/interfaces.md#i23-keep-the-number-of-function-arguments-low) | 2 | ✅ |
+| [i24-avoid-adjacent-parameters-that-can-be-invoked-by-the-same-arguments-in-either-order-with-different-meaning](../guidelines/core-guidelines/examples/interfaces.md#i24-avoid-adjacent-parameters-that-can-be-invoked-by-the-same-arguments-in-either-order-with-different-meaning) | 3 | ✅ |
+| [i25-prefer-empty-abstract-classes-as-interfaces-to-class-hierarchies](../guidelines/core-guidelines/examples/interfaces.md#i25-prefer-empty-abstract-classes-as-interfaces-to-class-hierarchies) | 2 | ✅ |
+| [i26-if-you-want-a-cross-compiler-abi-use-a-c-style-subset](../guidelines/core-guidelines/examples/interfaces.md#i26-if-you-want-a-cross-compiler-abi-use-a-c-style-subset) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [i27-for-stable-library-abi-consider-the-pimpl-idiom](../guidelines/core-guidelines/examples/interfaces.md#i27-for-stable-library-abi-consider-the-pimpl-idiom) | 2 | ✅ |
+| [i30-encapsulate-rule-violations](../guidelines/core-guidelines/examples/interfaces.md#i30-encapsulate-rule-violations) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/naming.md](../guidelines/core-guidelines/examples/naming.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| NL.11: digit separators don't change the value, and literal suffixes pick the t… | `CoreGuidelinesNL.NL11_ReadableLiterals` | ✅ |
+| NL.21: in "int* p, q;" only p is a pointer; q is a plain int. | `CoreGuidelinesNL.NL21_OneNamePerDeclaration` | ✅ |
+| NL.25: in C++, f(void) and f() declare the same function type. | `CoreGuidelinesNL.NL25_VoidParameterListIsNoise` | ✅ |
+| NL.26: "int const" and "const int" are the same type; only the convention diffe… | `CoreGuidelinesNL.NL26_ConstPlacementIsTheSameType` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [nl1-dont-say-in-comments-what-can-be-clearly-stated-in-code](../guidelines/core-guidelines/examples/naming.md#nl1-dont-say-in-comments-what-can-be-clearly-stated-in-code) | 2 | ✅ |
+| [nl2-state-intent-in-comments](../guidelines/core-guidelines/examples/naming.md#nl2-state-intent-in-comments) | 2 | ✅ |
+| [nl3-keep-comments-crisp](../guidelines/core-guidelines/examples/naming.md#nl3-keep-comments-crisp) | 2 | ✅ |
+| [nl4-maintain-a-consistent-indentation-style](../guidelines/core-guidelines/examples/naming.md#nl4-maintain-a-consistent-indentation-style) | 2 | ✅ |
+| [nl5-avoid-encoding-type-information-in-names](../guidelines/core-guidelines/examples/naming.md#nl5-avoid-encoding-type-information-in-names) | 2 | ✅ |
+| [nl7-make-the-length-of-a-name-roughly-proportional-to-the-length-of-its-scope](../guidelines/core-guidelines/examples/naming.md#nl7-make-the-length-of-a-name-roughly-proportional-to-the-length-of-its-scope) | 2 | ✅ |
+| [nl8-use-a-consistent-naming-style](../guidelines/core-guidelines/examples/naming.md#nl8-use-a-consistent-naming-style) | 2 | ✅ |
+| [nl9-use-all_caps-for-macro-names-only](../guidelines/core-guidelines/examples/naming.md#nl9-use-all_caps-for-macro-names-only) | 2 | ✅ |
+| [nl10-prefer-underscore_style-names](../guidelines/core-guidelines/examples/naming.md#nl10-prefer-underscore_style-names) | 2 | ✅ |
+| [nl11-make-literals-readable](../guidelines/core-guidelines/examples/naming.md#nl11-make-literals-readable) | 2 | ✅ |
+| [nl15-use-spaces-sparingly](../guidelines/core-guidelines/examples/naming.md#nl15-use-spaces-sparingly) | 2 | ✅ |
+| [nl16-use-a-conventional-class-member-declaration-order](../guidelines/core-guidelines/examples/naming.md#nl16-use-a-conventional-class-member-declaration-order) | 2 | ✅ |
+| [nl17-use-kr-derived-layout](../guidelines/core-guidelines/examples/naming.md#nl17-use-kr-derived-layout) | 2 | ✅ |
+| [nl18-use-c-style-declarator-layout](../guidelines/core-guidelines/examples/naming.md#nl18-use-c-style-declarator-layout) | 2 | ✅ |
+| [nl19-avoid-names-that-are-easily-misread](../guidelines/core-guidelines/examples/naming.md#nl19-avoid-names-that-are-easily-misread) | 2 | ✅ |
+| [nl20-dont-place-two-statements-on-the-same-line](../guidelines/core-guidelines/examples/naming.md#nl20-dont-place-two-statements-on-the-same-line) | 2 | ✅ |
+| [nl21-declare-one-name-only-per-declaration](../guidelines/core-guidelines/examples/naming.md#nl21-declare-one-name-only-per-declaration) | 2 | ✅ |
+| [nl25-dont-use-void-as-an-argument-type](../guidelines/core-guidelines/examples/naming.md#nl25-dont-use-void-as-an-argument-type) | 2 | ✅ |
+| [nl26-use-conventional-const-notation](../guidelines/core-guidelines/examples/naming.md#nl26-use-conventional-const-notation) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/not.md](../guidelines/core-guidelines/examples/not.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| NR.2: early returns give the same answers as a single-exit version, with less c… | `CoreGuidelinesNR.NR2_EarlyReturns` | ✅ |
+| NR.3: an exception reports the error and can't be silently ignored like a retur… | `CoreGuidelinesNR.NR3_ExceptionsCannotBeIgnored` | ✅ |
+| NR.5: a constructor that establishes the invariant leaves no half-built state;… | `CoreGuidelinesNR.NR5_OnePhaseInitialization` | ✅ |
+| NR.6: destructors clean up on every exit path, with no goto. | `CoreGuidelinesNR.NR6_RaiiInsteadOfGotoExit` | ✅ |
+| NR.7: with private data, a derived class goes through functions that keep the i… | `CoreGuidelinesNR.NR7_PrivateDataKeepsTheInvariant` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [nr1-dont-insist-that-all-declarations-should-be-at-the-top-of-a-function](../guidelines/core-guidelines/examples/not.md#nr1-dont-insist-that-all-declarations-should-be-at-the-top-of-a-function) | 2 | ✅ |
+| [nr2-dont-insist-on-having-only-a-single-return-statement-in-a-function](../guidelines/core-guidelines/examples/not.md#nr2-dont-insist-on-having-only-a-single-return-statement-in-a-function) | 2 | ✅ |
+| [nr3-dont-avoid-exceptions](../guidelines/core-guidelines/examples/not.md#nr3-dont-avoid-exceptions) | 2 | ✅ |
+| [nr5-dont-use-two-phase-initialization](../guidelines/core-guidelines/examples/not.md#nr5-dont-use-two-phase-initialization) | 2 | ✅ |
+| [nr6-dont-place-all-cleanup-actions-at-the-end-of-a-function-and-goto-exit](../guidelines/core-guidelines/examples/not.md#nr6-dont-place-all-cleanup-actions-at-the-end-of-a-function-and-goto-exit) | 2 | ✅ |
+| [nr7-dont-make-data-members-protected](../guidelines/core-guidelines/examples/not.md#nr7-dont-make-data-members-protected) | 3 | ✅ |
+
+**[guidelines/core-guidelines/examples/performance.md](../guidelines/core-guidelines/examples/performance.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| Per.10: a typed sort knows the element type: it sorts doubles correctly and rej… | `CoreGuidelinesPer.Per10_TypedSortIsChecked` | ✅ |
+| Per.11: a constexpr table is computed by the compiler: usable in static_assert… | `CoreGuidelinesPer.Per11_ConstexprTableIsCompileTime` | ✅ |
+| Per.12: a reference parameter may alias another argument and change the result;… | `CoreGuidelinesPer.Per12_AliasingChangesTheResult` | ✅ |
+| Per.13: values stored directly in a vector sit next to each other; no pointer t… | `CoreGuidelinesPer.Per13_ValuesAreContiguous` | ✅ |
+| Per.14: after reserve(n), n push_backs don't reallocate: the storage stays put. | `CoreGuidelinesPer.Per14_ReserveAvoidsReallocation` | ✅ |
+| Per.15: clear() keeps a vector's capacity, so a buffer allocated up front is re… | `CoreGuidelinesPer.Per15_PreallocatedBufferIsReused` | ✅ |
+| Per.16: a vector's elements are contiguous; a list's aren't even random-access. | `CoreGuidelinesPer.Per16_VectorIsCompact` | ✅ |
+| Per.17: the first member is at offset 0; a member declared after a 128-byte arr… | `CoreGuidelinesPer.Per17_FirstMemberAtOffsetZero` | ✅ |
+| Per.18: declaring members largest first wastes less padding: the same members t… | `CoreGuidelinesPer.Per18_MemberOrderChangesSize` | ✅ |
+| Per.19: in row-major storage, row neighbours are adjacent and column neighbours… | `CoreGuidelinesPer.Per19_RowMajorLayout` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [per4-dont-assume-that-complicated-code-is-necessarily-faster-than-simple-code](../guidelines/core-guidelines/examples/performance.md#per4-dont-assume-that-complicated-code-is-necessarily-faster-than-simple-code) | 2 | ✅ |
+| [per5-dont-assume-that-low-level-code-is-necessarily-faster-than-high-level-code](../guidelines/core-guidelines/examples/performance.md#per5-dont-assume-that-low-level-code-is-necessarily-faster-than-high-level-code) | 2 | ✅ |
+| [per7-design-to-enable-optimization](../guidelines/core-guidelines/examples/performance.md#per7-design-to-enable-optimization) | 2 | ✅ |
+| [per10-rely-on-the-static-type-system](../guidelines/core-guidelines/examples/performance.md#per10-rely-on-the-static-type-system) | 2 | ✅ |
+| [per11-move-computation-from-run-time-to-compile-time](../guidelines/core-guidelines/examples/performance.md#per11-move-computation-from-run-time-to-compile-time) | 2 | ✅ |
+| [per12-eliminate-redundant-aliases](../guidelines/core-guidelines/examples/performance.md#per12-eliminate-redundant-aliases) | 2 | ✅ |
+| [per13-eliminate-redundant-indirections](../guidelines/core-guidelines/examples/performance.md#per13-eliminate-redundant-indirections) | 2 | ✅ |
+| [per14-minimize-the-number-of-allocations-and-deallocations](../guidelines/core-guidelines/examples/performance.md#per14-minimize-the-number-of-allocations-and-deallocations) | 2 | ✅ |
+| [per15-do-not-allocate-on-a-critical-branch](../guidelines/core-guidelines/examples/performance.md#per15-do-not-allocate-on-a-critical-branch) | 2 | ✅ |
+| [per16-use-compact-data-structures](../guidelines/core-guidelines/examples/performance.md#per16-use-compact-data-structures) | 2 | ✅ |
+| [per17-declare-the-most-used-member-of-a-time-critical-struct-first](../guidelines/core-guidelines/examples/performance.md#per17-declare-the-most-used-member-of-a-time-critical-struct-first) | 2 | ✅ |
+| [per18-space-is-time](../guidelines/core-guidelines/examples/performance.md#per18-space-is-time) | 2 | ✅ |
+| [per19-access-memory-predictably](../guidelines/core-guidelines/examples/performance.md#per19-access-memory-predictably) | 2 | ✅ |
+| [per30-avoid-context-switches-on-the-critical-path](../guidelines/core-guidelines/examples/performance.md#per30-avoid-context-switches-on-the-critical-path) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/philosophy.md](../guidelines/core-guidelines/examples/philosophy.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| P.1: std::ranges::find says "search" and finds what the hand-written loop finds. | `CoreGuidelinesP.P1_AlgorithmExpressesTheSearch` | ✅ |
+| P.4: a std::variant knows which type it holds, so the wrong type can't be read… | `CoreGuidelinesP.P4_VariantIsTypeSafe` | ✅ |
+| P.5: an assumption about types is checked by the compiler: long long has at lea… | `CoreGuidelinesP.P5_CompileTimeChecks` | ✅ |
+| P.6: a span carries its size, so a callee can check before it writes. | `CoreGuidelinesP.P6_SpanCarriesItsSize` | ✅ |
+| P.7: a value checked once when it enters the program (here, in a constructor) i… | `CoreGuidelinesP.P7_CheckAtTheBoundary` | ✅ |
+| P.8: an owning object releases its resource on early return and when an excepti… | `CoreGuidelinesP.P8_RaiiDoesNotLeak` | ✅ |
+| P.10: a const object can't be assigned, so it can't change unexpectedly. | `CoreGuidelinesP.P10_ImmutableData` | ✅ |
+| P.13: the library sort does the job of a hand-written one. | `CoreGuidelinesP.P13_UseTheLibrary` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [p1-express-ideas-directly-in-code](../guidelines/core-guidelines/examples/philosophy.md#p1-express-ideas-directly-in-code) | 2 | ✅ |
+| [p2-write-in-iso-standard-c](../guidelines/core-guidelines/examples/philosophy.md#p2-write-in-iso-standard-c) | 2 | ✅ |
+| [p3-express-intent](../guidelines/core-guidelines/examples/philosophy.md#p3-express-intent) | 2 | ✅ |
+| [p4-ideally-a-program-should-be-statically-type-safe](../guidelines/core-guidelines/examples/philosophy.md#p4-ideally-a-program-should-be-statically-type-safe) | 2 | ✅ |
+| [p5-prefer-compile-time-checking-to-run-time-checking](../guidelines/core-guidelines/examples/philosophy.md#p5-prefer-compile-time-checking-to-run-time-checking) | 2 | ✅ |
+| [p6-what-cannot-be-checked-at-compile-time-should-be-checkable-at-run-time](../guidelines/core-guidelines/examples/philosophy.md#p6-what-cannot-be-checked-at-compile-time-should-be-checkable-at-run-time) | 2 | ✅ |
+| [p7-catch-run-time-errors-early](../guidelines/core-guidelines/examples/philosophy.md#p7-catch-run-time-errors-early) | 2 | ✅ |
+| [p8-dont-leak-any-resources](../guidelines/core-guidelines/examples/philosophy.md#p8-dont-leak-any-resources) | 2 | ✅ |
+| [p9-dont-waste-time-or-space](../guidelines/core-guidelines/examples/philosophy.md#p9-dont-waste-time-or-space) | 2 | ✅ |
+| [p10-prefer-immutable-data-to-mutable-data](../guidelines/core-guidelines/examples/philosophy.md#p10-prefer-immutable-data-to-mutable-data) | 2 | ✅ |
+| [p11-encapsulate-messy-constructs-rather-than-spreading-through-the-code](../guidelines/core-guidelines/examples/philosophy.md#p11-encapsulate-messy-constructs-rather-than-spreading-through-the-code) | 2 | ✅ |
+| [p13-use-support-libraries-as-appropriate](../guidelines/core-guidelines/examples/philosophy.md#p13-use-support-libraries-as-appropriate) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/profile.md](../guidelines/core-guidelines/examples/profile.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| Type.1: std::bit_cast copies an object's bits into another type, defined where… | `CoreGuidelinesPro.Type1_BitCastInsteadOfReinterpretCast` | ✅ |
+| Type.1: a narrowing value is caught by std::in_range or brace-init instead of a… | `CoreGuidelinesPro.Type1_CheckArithmeticConversions` | ✅ |
+| Type.1: an upcast or identity pointer conversion is implicit, so no cast is nee… | `CoreGuidelinesPro.Type1_ImplicitPointerConversionsNeedNoCast` | ✅ |
+| Type.2: static_cast compiles for any base-to-derived downcast; dynamic_cast che… | `CoreGuidelinesPro.Type2_DynamicCastChecksDowncasts` | ✅ |
+| Type.3: a mutable member lets a const function update a cache without const_cas… | `CoreGuidelinesPro.Type3_MutableInsteadOfConstCast` | ✅ |
+| Type.4: a named cast refuses to drop const where a C-style cast would; const_ca… | `CoreGuidelinesPro.Type4_NamedCastsRefuseToDropConst` | ✅ |
+| Type.5: a variable initialized at its declaration has a value on every path; {}… | `CoreGuidelinesPro.Type5_InitializeAtDeclaration` | ✅ |
+| Type.6: a default member initializer gives the member a value even under defaul… | `CoreGuidelinesPro.Type6_DefaultMemberInitializers` | ✅ |
+| Type.7: std::variant records the live alternative and refuses to hand out anoth… | `CoreGuidelinesPro.Type7_VariantInsteadOfUnion` | ✅ |
+| Type.8: a constrained variadic template keeps every argument's type and rejects… | `CoreGuidelinesPro.Type8_VariadicTemplateInsteadOfVarargs` | ✅ |
+| Bounds.1: std::span carries its size, so subspan slices without losing track of… | `CoreGuidelinesPro.Bounds1_SpanInsteadOfPointerArithmetic` | ✅ |
+| Bounds.2: std::get&lt;N&gt; checks a constant index at compile time; at() checks a ru… | `CoreGuidelinesPro.Bounds2_CheckedIndexing` | ✅ |
+| Bounds.3: an array decays to a bare pointer, but a span built from it keeps the… | `CoreGuidelinesPro.Bounds3_SpanKeepsArrayLength` | ✅ |
+| Bounds.4: std::string grows to fit and vector::at checks its index, where strcp… | `CoreGuidelinesPro.Bounds4_BoundsCheckedLibraryFacilities` | ✅ |
+| Lifetime.1: an index stays valid when a vector reallocates, unlike a pointer to… | `CoreGuidelinesPro.Lifetime1_IndexSurvivesReallocation` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [dont-use-reinterpret_cast](../guidelines/core-guidelines/examples/profile.md#dont-use-reinterpret_cast) | 2 | ✅ |
+| [dont-use-static_cast-for-arithmetic-types](../guidelines/core-guidelines/examples/profile.md#dont-use-static_cast-for-arithmetic-types) | 2 | ✅ |
+| [dont-cast-between-pointer-types-where-the-source-type-and-the-target-type-are-the-same](../guidelines/core-guidelines/examples/profile.md#dont-cast-between-pointer-types-where-the-source-type-and-the-target-type-are-the-same) | 2 | ✅ |
+| [dont-cast-between-pointer-types-when-the-conversion-could-be-implicit](../guidelines/core-guidelines/examples/profile.md#dont-cast-between-pointer-types-when-the-conversion-could-be-implicit) | 2 | ✅ |
+| [type2-dont-use-static_cast-to-downcast](../guidelines/core-guidelines/examples/profile.md#type2-dont-use-static_cast-to-downcast) | 2 | ✅ |
+| [type3-dont-use-const_cast-to-cast-away-const-ie-at-all](../guidelines/core-guidelines/examples/profile.md#type3-dont-use-const_cast-to-cast-away-const-ie-at-all) | 2 | ✅ |
+| [type4-dont-use-c-style-texpression-or-functional-texpression-casts](../guidelines/core-guidelines/examples/profile.md#type4-dont-use-c-style-texpression-or-functional-texpression-casts) | 3 | ✅ |
+| [type5-dont-use-a-variable-before-it-has-been-initialized](../guidelines/core-guidelines/examples/profile.md#type5-dont-use-a-variable-before-it-has-been-initialized) | 2 | ✅ |
+| [type6-always-initialize-a-data-member](../guidelines/core-guidelines/examples/profile.md#type6-always-initialize-a-data-member) | 2 | ✅ |
+| [type7-avoid-naked-union](../guidelines/core-guidelines/examples/profile.md#type7-avoid-naked-union) | 2 | ✅ |
+| [type8-avoid-varargs](../guidelines/core-guidelines/examples/profile.md#type8-avoid-varargs) | 2 | ✅ |
+| [bounds1-dont-use-pointer-arithmetic-use-span-instead](../guidelines/core-guidelines/examples/profile.md#bounds1-dont-use-pointer-arithmetic-use-span-instead) | 2 | ✅ |
+| [bounds2-only-index-into-arrays-using-constant-expressions](../guidelines/core-guidelines/examples/profile.md#bounds2-only-index-into-arrays-using-constant-expressions) | 3 | ✅ |
+| [bounds3-no-array-to-pointer-decay](../guidelines/core-guidelines/examples/profile.md#bounds3-no-array-to-pointer-decay) | 2 | ✅ |
+| [bounds4-dont-use-standard-library-functions-and-types-that-are-not-bounds-checked](../guidelines/core-guidelines/examples/profile.md#bounds4-dont-use-standard-library-functions-and-types-that-are-not-bounds-checked) | 2 | ✅ |
+| [lifetime1-dont-dereference-a-possibly-invalid-pointer](../guidelines/core-guidelines/examples/profile.md#lifetime1-dont-dereference-a-possibly-invalid-pointer) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/resource.md](../guidelines/core-guidelines/examples/resource.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| R.1: an RAII handle releases its resource on normal exit, early return and exce… | `CoreGuidelinesR.R1_RaiiReleasesOnEveryPath` | ✅ |
+| R.2: a span carries its size, so a function sees exactly the caller's elements. | `CoreGuidelinesR.R2_SpanCarriesTheSize` | ✅ |
+| R.3: passing a raw pointer doesn't transfer ownership; a unique_ptr owner frees… | `CoreGuidelinesR.R3_RawPointerDoesNotOwn` | ✅ |
+| R.4: a reference borrows: binding and passing it neither copies nor destroys th… | `CoreGuidelinesR.R4_ReferenceDoesNotOwn` | ✅ |
+| R.5: a scoped object is destroyed when its scope ends, even when an exception l… | `CoreGuidelinesR.R5_ScopedObjectsAreDestroyed` | ✅ |
+| R.10: malloc/free run no constructor or destructor; make_unique runs both. | `CoreGuidelinesR.R10_MallocDoesNotConstruct` | ✅ |
+| R.11: an object owned by make_unique is freed even when the code using it throw… | `CoreGuidelinesR.R11_NoNakedNewOrDelete` | ✅ |
+| R.12: a resource handed to its owner at once is released when the next step thr… | `CoreGuidelinesR.R12_OwnTheResourceImmediately` | ✅ |
+| R.13: two raw news in one expression leak the first when the second throws; mak… | `CoreGuidelinesR.R13_OneAllocationPerStatement` | ✅ |
+| R.14: an array parameter is adjusted to a pointer (its size is lost); a span ke… | `CoreGuidelinesR.R14_ArrayParameterIsAPointer` | ✅ |
+| R.15: new and delete on a class use its matched pair of allocation functions. | `CoreGuidelinesR.R15_MatchedAllocationPairs` | ✅ |
+| R.20: unique_ptr and shared_ptr destroy their object when the last owner goes a… | `CoreGuidelinesR.R20_SmartPointersOwn` | ✅ |
+| R.21: unique_ptr can't be copied, only moved, and needs no reference count. | `CoreGuidelinesR.R21_UniquePtrIsMoveOnly` | ✅ |
+| R.22: make_shared makes one owner and constructs the object with ::new, not the… | `CoreGuidelinesR.R22_MakeShared` | ✅ |
+| R.23: make_unique forwards its arguments to the constructor and returns the own… | `CoreGuidelinesR.R23_MakeUnique` | ✅ |
+| R.24: a shared_ptr cycle is never destroyed; a weak_ptr back link lets both obj… | `CoreGuidelinesR.R24_WeakPtrBreaksCycles` | ✅ |
+| R.30: a T&amp; parameter accepts objects owned any way; a smart-pointer parameter r… | `CoreGuidelinesR.R30_TakeReferencesNotSmartPointers` | ✅ |
+| R.31: a custom owning handle shaped like unique_ptr is move-only and frees its… | `CoreGuidelinesR.R31_CustomSmartPointerFollowsStd` | ✅ |
+| R.32: a by-value unique_ptr parameter takes ownership; it can't be called with… | `CoreGuidelinesR.R32_UniquePtrSink` | ✅ |
+| R.33: a unique_ptr&amp; parameter can reseat the caller's pointer; the old object i… | `CoreGuidelinesR.R33_UniquePtrRefReseats` | ✅ |
+| R.34: a by-value shared_ptr parameter makes the receiver one more owner; the ob… | `CoreGuidelinesR.R34_SharedPtrByValueShares` | ✅ |
+| R.35: reseating a shared_ptr parameter taken by value changes only the copy; by… | `CoreGuidelinesR.R35_SharedPtrRefReseats` | ✅ |
+| R.36: a const shared_ptr&amp; parameter adds no count unless the function keeps a c… | `CoreGuidelinesR.R36_ConstSharedPtrRefMightRetain` | ✅ |
+| R.37: a local copy of an aliased shared_ptr keeps the object alive while the ca… | `CoreGuidelinesR.R37_PinAliasedSmartPointers` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [r1-manage-resources-automatically-using-resource-handles-and-raii-resource-acquisition-is-initialization](../guidelines/core-guidelines/examples/resource.md#r1-manage-resources-automatically-using-resource-handles-and-raii-resource-acquisition-is-initialization) | 2 | ✅ |
+| [r2-in-interfaces-use-raw-pointers-to-denote-individual-objects-only](../guidelines/core-guidelines/examples/resource.md#r2-in-interfaces-use-raw-pointers-to-denote-individual-objects-only) | 2 | ✅ |
+| [r3-a-raw-pointer-a-t-is-non-owning](../guidelines/core-guidelines/examples/resource.md#r3-a-raw-pointer-a-t-is-non-owning) | 2 | ✅ |
+| [r4-a-raw-reference-a-t-is-non-owning](../guidelines/core-guidelines/examples/resource.md#r4-a-raw-reference-a-t-is-non-owning) | 2 | ✅ |
+| [r5-prefer-scoped-objects-dont-heap-allocate-unnecessarily](../guidelines/core-guidelines/examples/resource.md#r5-prefer-scoped-objects-dont-heap-allocate-unnecessarily) | 2 | ✅ |
+| [r6-avoid-non-const-global-variables](../guidelines/core-guidelines/examples/resource.md#r6-avoid-non-const-global-variables) | 2 | ✅ |
+| [r10-avoid-malloc-and-free](../guidelines/core-guidelines/examples/resource.md#r10-avoid-malloc-and-free) | 2 | ✅ |
+| [r11-avoid-calling-new-and-delete-explicitly](../guidelines/core-guidelines/examples/resource.md#r11-avoid-calling-new-and-delete-explicitly) | 2 | ✅ |
+| [r12-immediately-give-the-result-of-an-explicit-resource-allocation-to-a-manager-object](../guidelines/core-guidelines/examples/resource.md#r12-immediately-give-the-result-of-an-explicit-resource-allocation-to-a-manager-object) | 2 | ✅ |
+| [r13-perform-at-most-one-explicit-resource-allocation-in-a-single-expression-statement](../guidelines/core-guidelines/examples/resource.md#r13-perform-at-most-one-explicit-resource-allocation-in-a-single-expression-statement) | 2 | ✅ |
+| [r14-avoid--parameters-prefer-span](../guidelines/core-guidelines/examples/resource.md#r14-avoid--parameters-prefer-span) | 2 | ✅ |
+| [r15-always-overload-matched-allocationdeallocation-pairs](../guidelines/core-guidelines/examples/resource.md#r15-always-overload-matched-allocationdeallocation-pairs) | 2 | ✅ |
+| [r20-use-unique_ptr-or-shared_ptr-to-represent-ownership](../guidelines/core-guidelines/examples/resource.md#r20-use-unique_ptr-or-shared_ptr-to-represent-ownership) | 2 | ✅ |
+| [r21-prefer-unique_ptr-over-shared_ptr-unless-you-need-to-share-ownership](../guidelines/core-guidelines/examples/resource.md#r21-prefer-unique_ptr-over-shared_ptr-unless-you-need-to-share-ownership) | 3 | ✅ |
+| [r22-use-make_shared-to-make-shared_ptrs](../guidelines/core-guidelines/examples/resource.md#r22-use-make_shared-to-make-shared_ptrs) | 2 | ✅ |
+| [r23-use-make_unique-to-make-unique_ptrs](../guidelines/core-guidelines/examples/resource.md#r23-use-make_unique-to-make-unique_ptrs) | 2 | ✅ |
+| [r24-use-stdweak_ptr-to-break-cycles-of-shared_ptrs](../guidelines/core-guidelines/examples/resource.md#r24-use-stdweak_ptr-to-break-cycles-of-shared_ptrs) | 2 | ✅ |
+| [r30-take-smart-pointers-as-parameters-only-to-explicitly-express-lifetime-semantics](../guidelines/core-guidelines/examples/resource.md#r30-take-smart-pointers-as-parameters-only-to-explicitly-express-lifetime-semantics) | 2 | ✅ |
+| [r31-if-you-have-non-std-smart-pointers-follow-the-basic-pattern-from-std](../guidelines/core-guidelines/examples/resource.md#r31-if-you-have-non-std-smart-pointers-follow-the-basic-pattern-from-std) | 2 | ✅ |
+| [r32-take-a-unique_ptrwidget-parameter-to-express-that-a-function-assumes-ownership-of-a-widget](../guidelines/core-guidelines/examples/resource.md#r32-take-a-unique_ptrwidget-parameter-to-express-that-a-function-assumes-ownership-of-a-widget) | 3 | ✅ |
+| [r33-take-a-unique_ptrwidget-parameter-to-express-that-a-function-reseats-the-widget](../guidelines/core-guidelines/examples/resource.md#r33-take-a-unique_ptrwidget-parameter-to-express-that-a-function-reseats-the-widget) | 2 | ✅ |
+| [r34-take-a-shared_ptrwidget-parameter-to-express-shared-ownership](../guidelines/core-guidelines/examples/resource.md#r34-take-a-shared_ptrwidget-parameter-to-express-shared-ownership) | 2 | ✅ |
+| [r35-take-a-shared_ptrwidget-parameter-to-express-that-a-function-might-reseat-the-shared-pointer](../guidelines/core-guidelines/examples/resource.md#r35-take-a-shared_ptrwidget-parameter-to-express-that-a-function-might-reseat-the-shared-pointer) | 2 | ✅ |
+| [r36-take-a-const-shared_ptrwidget-parameter-to-express-that-it-might-retain-a-reference-count-to-the-object-](../guidelines/core-guidelines/examples/resource.md#r36-take-a-const-shared_ptrwidget-parameter-to-express-that-it-might-retain-a-reference-count-to-the-object-) | 2 | ✅ |
+| [r37-do-not-pass-a-pointer-or-reference-obtained-from-an-aliased-smart-pointer](../guidelines/core-guidelines/examples/resource.md#r37-do-not-pass-a-pointer-or-reference-obtained-from-an-aliased-smart-pointer) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/source.md](../guidelines/core-guidelines/examples/source.md)**
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [sf2-a-header-file-must-not-contain-object-definitions-or-non-inline-function-definitions](../guidelines/core-guidelines/examples/source.md#sf2-a-header-file-must-not-contain-object-definitions-or-non-inline-function-definitions) | 2 | ✅ |
+| [sf3-use-header-files-for-all-declarations-used-in-multiple-source-files](../guidelines/core-guidelines/examples/source.md#sf3-use-header-files-for-all-declarations-used-in-multiple-source-files) | 2 | ✅ |
+| [sf4-include-header-files-before-other-declarations-in-a-file](../guidelines/core-guidelines/examples/source.md#sf4-include-header-files-before-other-declarations-in-a-file) | 2 | ✅ |
+| [sf5-a-cpp-file-must-include-the-header-files-that-defines-its-interface](../guidelines/core-guidelines/examples/source.md#sf5-a-cpp-file-must-include-the-header-files-that-defines-its-interface) | 3 | ✅ |
+| [sf6-use-using-namespace-directives-for-transition-for-foundation-libraries-such-as-std-or-within-a-local-scope-only](../guidelines/core-guidelines/examples/source.md#sf6-use-using-namespace-directives-for-transition-for-foundation-libraries-such-as-std-or-within-a-local-scope-only) | 2 | ✅ |
+| [sf7-dont-write-using-namespace-at-global-scope-in-a-header-file](../guidelines/core-guidelines/examples/source.md#sf7-dont-write-using-namespace-at-global-scope-in-a-header-file) | 2 | ✅ |
+| [sf8-use-include-guards-for-all-header-files](../guidelines/core-guidelines/examples/source.md#sf8-use-include-guards-for-all-header-files) | 2 | ✅ |
+| [sf9-avoid-cyclic-dependencies-among-source-files](../guidelines/core-guidelines/examples/source.md#sf9-avoid-cyclic-dependencies-among-source-files) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [sf10-avoid-dependencies-on-implicitly-included-names](../guidelines/core-guidelines/examples/source.md#sf10-avoid-dependencies-on-implicitly-included-names) | 2 | ✅ |
+| [sf11-header-files-should-be-self-contained](../guidelines/core-guidelines/examples/source.md#sf11-header-files-should-be-self-contained) | 2 | ✅ |
+| [sf12-prefer-the-quoted-form-of-include-for-files-relative-to-the-including-file-and-the-angle-bracket-form-everywhere-else](../guidelines/core-guidelines/examples/source.md#sf12-prefer-the-quoted-form-of-include-for-files-relative-to-the-including-file-and-the-angle-bracket-form-everywhere-else) | 2 | ⏭ 2 (nocompile) |
+| [sf13-use-portable-header-identifiers-in-include-statements](../guidelines/core-guidelines/examples/source.md#sf13-use-portable-header-identifiers-in-include-statements) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [sf20-use-namespaces-to-express-logical-structure](../guidelines/core-guidelines/examples/source.md#sf20-use-namespaces-to-express-logical-structure) | 2 | ✅ |
+| [sf21-dont-use-an-unnamed-anonymous-namespace-in-a-header](../guidelines/core-guidelines/examples/source.md#sf21-dont-use-an-unnamed-anonymous-namespace-in-a-header) | 2 | ✅ |
+| [sf22-use-an-unnamed-anonymous-namespace-for-all-internalnon-exported-entities](../guidelines/core-guidelines/examples/source.md#sf22-use-an-unnamed-anonymous-namespace-for-all-internalnon-exported-entities) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/stdlib.md](../guidelines/core-guidelines/examples/stdlib.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| SL.3: specializing std::hash for our own type is allowed, and makes it usable i… | `CoreGuidelinesSL.SL3_HashSpecializationForOwnType` | ✅ |
+| SL.4: std::format takes each argument's type from the argument, not from the fo… | `CoreGuidelinesSL.SL4_FormatIsTypeSafe` | ✅ |
+| SL.con.1: std::array keeps its size when passed; a C array parameter is only a… | `CoreGuidelinesSL.SL_con1_ArrayKnowsItsSize` | ✅ |
+| SL.con.2: vector is contiguous and random access; (n) makes n elements, {n} one… | `CoreGuidelinesSL.SL_con2_VectorDefaults` | ✅ |
+| SL.con.3: at() checks the index and throws std::out_of_range. | `CoreGuidelinesSL.SL_con3_AtIsBoundsChecked` | ✅ |
+| SL.con.4: types with a string member or a vtable aren't trivially copyable; ass… | `CoreGuidelinesSL.SL_con4_NotTriviallyCopyable` | ✅ |
+| SL.str.1: std::string owns and grows its characters; no sizes or frees to get w… | `CoreGuidelinesSL.SL_str1_StringOwnsCharacters` | ✅ |
+| SL.str.2: string_view accepts literals and strings without copying; it refers t… | `CoreGuidelinesSL.SL_str2_StringViewDoesNotOwn` | ✅ |
+| SL.str.5: std::byte has no arithmetic and converts to a number explicitly. | `CoreGuidelinesSL.SL_str5_ByteIsNotACharacter` | ✅ |
+| SL.str.10: a std::locale compares std::strings, but not string_views. | `CoreGuidelinesSL.SL_str10_LocaleWorksOnStrings` | ✅ |
+| SL.str.11: string_view is read-only; span&lt;char&gt; can change the characters in pl… | `CoreGuidelinesSL.SL_str11_SpanMutatesStringViewDoesNot` | ✅ |
+| SL.str.12: a literal deduces as const char*; the s suffix makes a std::string. | `CoreGuidelinesSL.SL_str12_SSuffixMakesString` | ✅ |
+| SL.io.1: &gt;&gt; into a string reads a whole word, skipping whitespace, of any lengt… | `CoreGuidelinesSL.SL_io1_ReadWholeWords` | ✅ |
+| SL.io.2: a failed read into a number leaves the stream failed and the value 0;… | `CoreGuidelinesSL.SL_io2_IllFormedInputIsDetected` | ✅ |
+| SL.io.3: an operator&lt;&lt; extends streams to a user type. | `CoreGuidelinesSL.SL_io3_StreamsExtendToUserTypes` | ✅ |
+| SL.io.50: endl writes the same single '\n' as '\n' (plus a flush), on every pla… | `CoreGuidelinesSL.SL_io50_EndlIsNewlinePlusFlush` | ✅ |
+| SL.C.1: an exception, unlike longjmp, runs the destructors of the frames it lea… | `CoreGuidelinesSL.SL_C1_ExceptionsRunDestructors` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [sl1--use-libraries-wherever-possible](../guidelines/core-guidelines/examples/stdlib.md#sl1--use-libraries-wherever-possible) | 2 | ✅ |
+| [sl2-prefer-the-standard-library-to-other-libraries](../guidelines/core-guidelines/examples/stdlib.md#sl2-prefer-the-standard-library-to-other-libraries) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [sl3-do-not-add-non-standard-entities-to-namespace-std](../guidelines/core-guidelines/examples/stdlib.md#sl3-do-not-add-non-standard-entities-to-namespace-std) | 2 | ✅ |
+| [sl4-use-the-standard-library-in-a-type-safe-manner](../guidelines/core-guidelines/examples/stdlib.md#sl4-use-the-standard-library-in-a-type-safe-manner) | 2 | ✅ |
+| [slcon1-prefer-using-stl-array-or-vector-instead-of-a-c-array](../guidelines/core-guidelines/examples/stdlib.md#slcon1-prefer-using-stl-array-or-vector-instead-of-a-c-array) | 2 | ✅ |
+| [slcon2-prefer-using-stl-vector-by-default-unless-you-have-a-reason-to-use-a-different-container](../guidelines/core-guidelines/examples/stdlib.md#slcon2-prefer-using-stl-vector-by-default-unless-you-have-a-reason-to-use-a-different-container) | 2 | ✅ |
+| [slcon3-avoid-bounds-errors](../guidelines/core-guidelines/examples/stdlib.md#slcon3-avoid-bounds-errors) | 2 | ✅ |
+| [slcon4-dont-use-memset-or-memcpy-for-arguments-that-are-not-trivially-copyable](../guidelines/core-guidelines/examples/stdlib.md#slcon4-dont-use-memset-or-memcpy-for-arguments-that-are-not-trivially-copyable) | 2 | ✅ |
+| [slstr1-use-stdstring-to-own-character-sequences](../guidelines/core-guidelines/examples/stdlib.md#slstr1-use-stdstring-to-own-character-sequences) | 2 | ✅ |
+| [slstr2-use-stdstring_view-or-gslspanchar-to-refer-to-character-sequences](../guidelines/core-guidelines/examples/stdlib.md#slstr2-use-stdstring_view-or-gslspanchar-to-refer-to-character-sequences) | 2 | ✅ |
+| [slstr3-use-zstring-or-czstring-to-refer-to-a-c-style-zero-terminated-sequence-of-characters](../guidelines/core-guidelines/examples/stdlib.md#slstr3-use-zstring-or-czstring-to-refer-to-a-c-style-zero-terminated-sequence-of-characters) | 2 | ✅ |
+| [slstr4-use-char-to-refer-to-a-single-character](../guidelines/core-guidelines/examples/stdlib.md#slstr4-use-char-to-refer-to-a-single-character) | 2 | ✅ |
+| [slstr5-use-stdbyte-to-refer-to-byte-values-that-do-not-necessarily-represent-characters](../guidelines/core-guidelines/examples/stdlib.md#slstr5-use-stdbyte-to-refer-to-byte-values-that-do-not-necessarily-represent-characters) | 2 | ✅ |
+| [slstr10-use-stdstring-when-you-need-to-perform-locale-sensitive-string-operations](../guidelines/core-guidelines/examples/stdlib.md#slstr10-use-stdstring-when-you-need-to-perform-locale-sensitive-string-operations) | 2 | ✅ |
+| [slstr11-use-gslspanchar-rather-than-stdstring_view-when-you-need-to-mutate-a-string](../guidelines/core-guidelines/examples/stdlib.md#slstr11-use-gslspanchar-rather-than-stdstring_view-when-you-need-to-mutate-a-string) | 2 | ✅ |
+| [slstr12-use-the-s-suffix-for-string-literals-meant-to-be-standard-library-strings](../guidelines/core-guidelines/examples/stdlib.md#slstr12-use-the-s-suffix-for-string-literals-meant-to-be-standard-library-strings) | 2 | ✅ |
+| [slio1-use-character-level-input-only-when-you-have-to](../guidelines/core-guidelines/examples/stdlib.md#slio1-use-character-level-input-only-when-you-have-to) | 2 | ✅ |
+| [slio2-when-reading-always-consider-ill-formed-input](../guidelines/core-guidelines/examples/stdlib.md#slio2-when-reading-always-consider-ill-formed-input) | 2 | ✅ |
+| [slio3-prefer-iostreams-for-io](../guidelines/core-guidelines/examples/stdlib.md#slio3-prefer-iostreams-for-io) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [slio10-unless-you-use-printf-family-functions-call-ios_basesync_with_stdiofalse](../guidelines/core-guidelines/examples/stdlib.md#slio10-unless-you-use-printf-family-functions-call-ios_basesync_with_stdiofalse) | 2 | ✅ |
+| [slio50-avoid-endl](../guidelines/core-guidelines/examples/stdlib.md#slio50-avoid-endl) | 2 | ✅ |
+| [slc1-dont-use-setjmplongjmp](../guidelines/core-guidelines/examples/stdlib.md#slc1-dont-use-setjmplongjmp) | 2 | ✅ |
+
+**[guidelines/core-guidelines/examples/templates.md](../guidelines/core-guidelines/examples/templates.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| T.1: one template sums any range of numbers; it refuses a range of strings. | `CoreGuidelinesT.T1_OneTemplateForEveryNumberRange` | ✅ |
+| T.2: one find algorithm works for a list, a vector and an array of strings. | `CoreGuidelinesT.T2_OneAlgorithmManyContainers` | ✅ |
+| T.3: a container template keeps the element type: element access is typed, no c… | `CoreGuidelinesT.T3_ContainerKnowsItsElementType` | ✅ |
+| T.4: a + b + c builds an expression tree (no temporary Vec) and evaluates in on… | `CoreGuidelinesT.T4_ExpressionTemplateBuildsTree` | ✅ |
+| T.5: a template generates the implementations of a virtual interface for any ty… | `CoreGuidelinesT.T5_TemplateImplementsVirtualInterface` | ✅ |
+| T.10: a concept on the parameter rejects a wrong argument at the call (it's not… | `CoreGuidelinesT.T10_ConceptsConstrainArguments` | ✅ |
+| T.11: std::sortable needs random access; the homemade concept wrongly accepts s… | `CoreGuidelinesT.T11_StandardConceptsAreComplete` | ✅ |
+| T.12: a constrained auto deduces the same type as auto, and the constraint is c… | `CoreGuidelinesT.T12_ConstrainedAutoDeducesAndChecks` | ✅ |
+| T.13: the shorthand and the requires-clause forms mean the same: integral only. | `CoreGuidelinesT.T13_ShorthandIsEquivalent` | ✅ |
+| T.20: the one-operator Addable accepts std::string (it concatenates); Number do… | `CoreGuidelinesT.T20_SingleOperationConceptAcceptsTooMuch` | ✅ |
+| T.21: a complete set of operations works; a type with only + lacks += and -. | `CoreGuidelinesT.T21_CompleteOperationSet` | ✅ |
+| T.22: the stated laws hold for int; std::string satisfies the syntax, but its +… | `CoreGuidelinesT.T22_AxiomsCheckedOnSamples` | ✅ |
+| T.23: a concept that adds a requirement refines the other; the more refined ove… | `CoreGuidelinesT.T23_RefinedConceptIsPreferred` | ✅ |
+| T.24: an opt-in trait separates "sorted" from a plain range; the sorted overloa… | `CoreGuidelinesT.T24_TraitSeparatesSemantics` | ✅ |
+| T.25: a general template plus constrained special cases picks the right overloa… | `CoreGuidelinesT.T25_GeneralPlusSpecialCases` | ✅ |
+| T.26: a use-pattern concept accepts == returning a type convertible to bool; th… | `CoreGuidelinesT.T26_UsePatternsAllowConversions` | ✅ |
+| T.30: a concept that is a negation matches unrelated types; a positive one with… | `CoreGuidelinesT.T30_NegationOnlyForMinorDifference` | ✅ |
+| T.31: a closed list of alternatives misses char arrays and std::pmr::string; th… | `CoreGuidelinesT.T31_DisjunctionOnlyForAlternatives` | ✅ |
+| T.40: a lambda carries state and each has its own type; function pointers share… | `CoreGuidelinesT.T40_FunctionObjectsCarryState` | ✅ |
+| T.41: requiring only an order lets a type that can't be printed use the algorit… | `CoreGuidelinesT.T41_OnlyEssentialRequirements` | ✅ |
+| T.42: an alias template names the dependent element type once. | `CoreGuidelinesT.T42_AliasNamesTheType` | ✅ |
+| T.43: a using alias can be a template and names the same types a typedef would. | `CoreGuidelinesT.T43_UsingAliasCanBeTemplate` | ✅ |
+| T.44: class template argument deduction and make_tuple deduce the argument type… | `CoreGuidelinesT.T44_DeduceTemplateArguments` | ✅ |
+| T.47: an unconstrained template found by ADL beats a function needing derived-t… | `CoreGuidelinesT.T47_UnconstrainedTemplateHijacksCall` | ✅ |
+| T.48: enable_if removes gcd from overload resolution for non-integral types. | `CoreGuidelinesT.T48_EnableIfFakesConcept` | ✅ |
+| T.49: std::function erases the callable's type; a template parameter keeps it.… | `CoreGuidelinesT.T49_TemplateKeepsCallableType` | ✅ |
+| T.60: a template that names std::clamp means the same thing wherever it's used. | `CoreGuidelinesT.T60_QualifiedNamesInTemplates` | ✅ |
+| T.61: a node type that depends on T only is shared by lists with different allo… | `CoreGuidelinesT.T61_ScaryMemberIsShared` | ✅ |
+| T.62: an enum in a non-template base is one type for every Parser&lt;T&gt;; a nested… | `CoreGuidelinesT.T62_NonDependentMembersInBase` | ✅ |
+| T.64: the specialization for std::string round-trips the text; the primary temp… | `CoreGuidelinesT.T64_SpecializationAlternativeImplementation` | ✅ |
+| T.65: tag dispatch jumps a vector iterator in one step and walks a list iterato… | `CoreGuidelinesT.T65_TagDispatchSelectsImplementation` | ✅ |
+| T.67: == on const char* compares addresses; the specialization compares the tex… | `CoreGuidelinesT.T67_SpecializeForIrregularTypes` | ✅ |
+| T.68: T{} value-initializes; T{u} rejects narrowing and pointer-to-integer, whi… | `CoreGuidelinesT.T68_BracesAvoidAmbiguityAndCasts` | ✅ |
+| T.69: a qualified helper call ignores a same-named function in the argument's n… | `CoreGuidelinesT.T69_QualifyHelpersKeepCustomizationPoints` | ✅ |
+| T.80: without virtuals, Container&lt;Point&gt; instantiates although Point has no &lt;;… | `CoreGuidelinesT.T80_NoVirtualsInTemplatedClass` | ✅ |
+| T.81: Derived* converts to Base* (the hole), but span&lt;Derived&gt; doesn't convert… | `CoreGuidelinesT.T81_SpanBlocksArrayToBaseDecay` | ✅ |
+| T.82: a linearized hierarchy has no vtable and every layer runs in order. | `CoreGuidelinesT.T82_LinearHierarchyWithoutVirtuals` | ✅ |
+| T.83: a non-virtual member template forwards every type to one virtual function. | `CoreGuidelinesT.T83_TemplateFrontVirtualCore` | ✅ |
+| T.84: every List&lt;T&gt; shares the non-template core: one size() for all of them. | `CoreGuidelinesT.T84_NonTemplateCoreShared` | ✅ |
+| T.100: a variadic template handles arguments of mixed types, each by its own ty… | `CoreGuidelinesT.T100_VariadicKeepsTypes` | ✅ |
+| T.101: forwarding references move a move-only argument and keep lvalues as lval… | `CoreGuidelinesT.T101_PerfectForwarding` | ✅ |
+| T.102: a fold expression handles every element, and the empty pack, without rec… | `CoreGuidelinesT.T102_FoldExpressions` | ✅ |
+| T.103: an initializer_list&lt;int&gt; takes a list of ints and rejects a narrowing do… | `CoreGuidelinesT.T103_InitializerListForHomogeneousLists` | ✅ |
+| T.120: a fold-expression concept gives the same answers as the recursive metapr… | `CoreGuidelinesT.T120_SimplerThanMetaprogram` | ✅ |
+| T.121: concept overloads pick the refined random-access version for a vector an… | `CoreGuidelinesT.T121_ConceptsReplaceEnableIf` | ✅ |
+| T.122: an alias template computes "by value for small trivially copyable types,… | `CoreGuidelinesT.T122_AliasComputesType` | ✅ |
+| T.123: a constexpr function computes the same value as the recursive template,… | `CoreGuidelinesT.T123_ConstexprFunctionComputesValues` | ✅ |
+| T.124: std::remove_cvref_t handles every reference kind; the homemade trait mis… | `CoreGuidelinesT.T124_StandardTraitsCoverAllCases` | ✅ |
+| T.140: one named operation serves several algorithms consistently. | `CoreGuidelinesT.T140_NamedOperationReused` | ✅ |
+| T.141: an unnamed lambda at the call site does the one-off job. | `CoreGuidelinesT.T141_UnnamedLambdaInPlace` | ✅ |
+| T.142?: a variable template gives a value of the requested type. | `CoreGuidelinesT.T142_VariableTemplateNamesValuePerType` | ✅ |
+| T.143: comparing iterators with != works for list and forward_list; &lt; needs ran… | `CoreGuidelinesT.T143_GenericIteratorComparison` | ✅ |
+| T.144: an explicit specialization is ignored when another primary template is a… | `CoreGuidelinesT.T144_OverloadDontSpecialize` | ✅ |
+| T.150: static_assert confirms a class models the concepts it was meant to; the… | `CoreGuidelinesT.T150_StaticAssertClassMatchesConcept` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [t1-use-templates-to-raise-the-level-of-abstraction-of-code](../guidelines/core-guidelines/examples/templates.md#t1-use-templates-to-raise-the-level-of-abstraction-of-code) | 2 | ✅ |
+| [t2-use-templates-to-express-algorithms-that-apply-to-many-argument-types](../guidelines/core-guidelines/examples/templates.md#t2-use-templates-to-express-algorithms-that-apply-to-many-argument-types) | 2 | ✅ |
+| [t3-use-templates-to-express-containers-and-ranges](../guidelines/core-guidelines/examples/templates.md#t3-use-templates-to-express-containers-and-ranges) | 2 | ✅ |
+| [t4-use-templates-to-express-syntax-tree-manipulation](../guidelines/core-guidelines/examples/templates.md#t4-use-templates-to-express-syntax-tree-manipulation) | 2 | ✅ |
+| [t5-combine-generic-and-oo-techniques-to-amplify-their-strengths-not-their-costs](../guidelines/core-guidelines/examples/templates.md#t5-combine-generic-and-oo-techniques-to-amplify-their-strengths-not-their-costs) | 2 | ✅ 1 · ⏭ 1 (nocompile) |
+| [t10-specify-concepts-for-all-template-arguments](../guidelines/core-guidelines/examples/templates.md#t10-specify-concepts-for-all-template-arguments) | 2 | ✅ |
+| [t11-whenever-possible-use-standard-concepts](../guidelines/core-guidelines/examples/templates.md#t11-whenever-possible-use-standard-concepts) | 2 | ✅ |
+| [t12-prefer-concept-names-over-auto-for-local-variables](../guidelines/core-guidelines/examples/templates.md#t12-prefer-concept-names-over-auto-for-local-variables) | 2 | ✅ |
+| [t13-prefer-the-shorthand-notation-for-simple-single-type-argument-concepts](../guidelines/core-guidelines/examples/templates.md#t13-prefer-the-shorthand-notation-for-simple-single-type-argument-concepts) | 2 | ✅ |
+| [t20-avoid-concepts-without-meaningful-semantics](../guidelines/core-guidelines/examples/templates.md#t20-avoid-concepts-without-meaningful-semantics) | 2 | ✅ |
+| [t21-require-a-complete-set-of-operations-for-a-concept](../guidelines/core-guidelines/examples/templates.md#t21-require-a-complete-set-of-operations-for-a-concept) | 2 | ✅ |
+| [t22-specify-axioms-for-concepts](../guidelines/core-guidelines/examples/templates.md#t22-specify-axioms-for-concepts) | 2 | ✅ |
+| [t23-differentiate-a-refined-concept-from-its-more-general-case-by-adding-new-use-patterns](../guidelines/core-guidelines/examples/templates.md#t23-differentiate-a-refined-concept-from-its-more-general-case-by-adding-new-use-patterns) | 2 | ✅ |
+| [t24-use-tag-classes-or-traits-to-differentiate-concepts-that-differ-only-in-semantics](../guidelines/core-guidelines/examples/templates.md#t24-use-tag-classes-or-traits-to-differentiate-concepts-that-differ-only-in-semantics) | 2 | ✅ |
+| [t25-avoid-complementary-constraints](../guidelines/core-guidelines/examples/templates.md#t25-avoid-complementary-constraints) | 2 | ✅ |
+| [t26-prefer-to-define-concepts-in-terms-of-use-patterns-rather-than-simple-syntax](../guidelines/core-guidelines/examples/templates.md#t26-prefer-to-define-concepts-in-terms-of-use-patterns-rather-than-simple-syntax) | 2 | ✅ |
+| [t30-use-concept-negation-ct-sparingly-to-express-a-minor-difference](../guidelines/core-guidelines/examples/templates.md#t30-use-concept-negation-ct-sparingly-to-express-a-minor-difference) | 2 | ✅ |
+| [t31-use-concept-disjunction-c1t--c2t-sparingly-to-express-alternatives](../guidelines/core-guidelines/examples/templates.md#t31-use-concept-disjunction-c1t--c2t-sparingly-to-express-alternatives) | 2 | ✅ |
+| [t40-use-function-objects-to-pass-operations-to-algorithms](../guidelines/core-guidelines/examples/templates.md#t40-use-function-objects-to-pass-operations-to-algorithms) | 2 | ✅ |
+| [t41-require-only-essential-properties-in-a-templates-concepts](../guidelines/core-guidelines/examples/templates.md#t41-require-only-essential-properties-in-a-templates-concepts) | 2 | ✅ |
+| [t42-use-template-aliases-to-simplify-notation-and-hide-implementation-details](../guidelines/core-guidelines/examples/templates.md#t42-use-template-aliases-to-simplify-notation-and-hide-implementation-details) | 2 | ✅ |
+| [t43-prefer-using-over-typedef-for-defining-aliases](../guidelines/core-guidelines/examples/templates.md#t43-prefer-using-over-typedef-for-defining-aliases) | 2 | ✅ |
+| [t44-use-function-templates-to-deduce-class-template-argument-types-where-feasible](../guidelines/core-guidelines/examples/templates.md#t44-use-function-templates-to-deduce-class-template-argument-types-where-feasible) | 2 | ✅ |
+| [t47-avoid-highly-visible-unconstrained-templates-with-common-names](../guidelines/core-guidelines/examples/templates.md#t47-avoid-highly-visible-unconstrained-templates-with-common-names) | 2 | ✅ |
+| [t48-if-your-compiler-does-not-support-concepts-fake-them-with-enable_if](../guidelines/core-guidelines/examples/templates.md#t48-if-your-compiler-does-not-support-concepts-fake-them-with-enable_if) | 2 | ✅ |
+| [t49-where-possible-avoid-type-erasure](../guidelines/core-guidelines/examples/templates.md#t49-where-possible-avoid-type-erasure) | 2 | ✅ |
+| [t60-minimize-a-templates-context-dependencies](../guidelines/core-guidelines/examples/templates.md#t60-minimize-a-templates-context-dependencies) | 2 | ✅ |
+| [t61-do-not-over-parameterize-members-scary](../guidelines/core-guidelines/examples/templates.md#t61-do-not-over-parameterize-members-scary) | 2 | ✅ |
+| [t62-place-non-dependent-class-template-members-in-a-non-templated-base-class](../guidelines/core-guidelines/examples/templates.md#t62-place-non-dependent-class-template-members-in-a-non-templated-base-class) | 2 | ✅ |
+| [t64-use-specialization-to-provide-alternative-implementations-of-class-templates](../guidelines/core-guidelines/examples/templates.md#t64-use-specialization-to-provide-alternative-implementations-of-class-templates) | 2 | ✅ |
+| [t65-use-tag-dispatch-to-provide-alternative-implementations-of-a-function](../guidelines/core-guidelines/examples/templates.md#t65-use-tag-dispatch-to-provide-alternative-implementations-of-a-function) | 2 | ✅ |
+| [t67-use-specialization-to-provide-alternative-implementations-for-irregular-types](../guidelines/core-guidelines/examples/templates.md#t67-use-specialization-to-provide-alternative-implementations-for-irregular-types) | 2 | ✅ |
+| [t68-use--rather-than--within-templates-to-avoid-ambiguities](../guidelines/core-guidelines/examples/templates.md#t68-use--rather-than--within-templates-to-avoid-ambiguities) | 2 | ✅ |
+| [t69-inside-a-template-dont-make-an-unqualified-non-member-function-call-unless-you-intend-it-to-be-a-customization-point](../guidelines/core-guidelines/examples/templates.md#t69-inside-a-template-dont-make-an-unqualified-non-member-function-call-unless-you-intend-it-to-be-a-customization-point) | 2 | ✅ |
+| [t80-do-not-naively-templatize-a-class-hierarchy](../guidelines/core-guidelines/examples/templates.md#t80-do-not-naively-templatize-a-class-hierarchy) | 2 | ✅ |
+| [t81-do-not-mix-hierarchies-and-arrays](../guidelines/core-guidelines/examples/templates.md#t81-do-not-mix-hierarchies-and-arrays) | 2 | ✅ |
+| [t82-linearize-a-hierarchy-when-virtual-functions-are-undesirable](../guidelines/core-guidelines/examples/templates.md#t82-linearize-a-hierarchy-when-virtual-functions-are-undesirable) | 2 | ✅ |
+| [t83-do-not-declare-a-member-function-template-virtual](../guidelines/core-guidelines/examples/templates.md#t83-do-not-declare-a-member-function-template-virtual) | 2 | ✅ |
+| [t84-use-a-non-template-core-implementation-to-provide-an-abi-stable-interface](../guidelines/core-guidelines/examples/templates.md#t84-use-a-non-template-core-implementation-to-provide-an-abi-stable-interface) | 2 | ✅ |
+| [t100-use-variadic-templates-when-you-need-a-function-that-takes-a-variable-number-of-arguments-of-a-variety-of-types](../guidelines/core-guidelines/examples/templates.md#t100-use-variadic-templates-when-you-need-a-function-that-takes-a-variable-number-of-arguments-of-a-variety-of-types) | 2 | ✅ |
+| [t101--how-to-pass-arguments-to-a-variadic-template-](../guidelines/core-guidelines/examples/templates.md#t101--how-to-pass-arguments-to-a-variadic-template-) | 2 | ❌ 1 of 2 |
+| [t102-how-to-process-arguments-to-a-variadic-template](../guidelines/core-guidelines/examples/templates.md#t102-how-to-process-arguments-to-a-variadic-template) | 2 | ✅ |
+| [t103-dont-use-variadic-templates-for-homogeneous-argument-lists](../guidelines/core-guidelines/examples/templates.md#t103-dont-use-variadic-templates-for-homogeneous-argument-lists) | 2 | ✅ |
+| [t120-use-template-metaprogramming-only-when-you-really-need-to](../guidelines/core-guidelines/examples/templates.md#t120-use-template-metaprogramming-only-when-you-really-need-to) | 2 | ✅ |
+| [t121-use-template-metaprogramming-primarily-to-emulate-concepts](../guidelines/core-guidelines/examples/templates.md#t121-use-template-metaprogramming-primarily-to-emulate-concepts) | 2 | ✅ |
+| [t122-use-templates-usually-template-aliases-to-compute-types-at-compile-time](../guidelines/core-guidelines/examples/templates.md#t122-use-templates-usually-template-aliases-to-compute-types-at-compile-time) | 2 | ✅ |
+| [t123-use-constexpr-functions-to-compute-values-at-compile-time](../guidelines/core-guidelines/examples/templates.md#t123-use-constexpr-functions-to-compute-values-at-compile-time) | 2 | ✅ |
+| [t124-prefer-to-use-standard-library-tmp-facilities](../guidelines/core-guidelines/examples/templates.md#t124-prefer-to-use-standard-library-tmp-facilities) | 2 | ✅ |
+| [t140-if-an-operation-can-be-reused-give-it-a-name](../guidelines/core-guidelines/examples/templates.md#t140-if-an-operation-can-be-reused-give-it-a-name) | 2 | ✅ |
+| [t141-use-an-unnamed-lambda-if-you-need-a-simple-function-object-in-one-place-only](../guidelines/core-guidelines/examples/templates.md#t141-use-an-unnamed-lambda-if-you-need-a-simple-function-object-in-one-place-only) | 2 | ✅ |
+| [t142-use-template-variables-to-simplify-notation](../guidelines/core-guidelines/examples/templates.md#t142-use-template-variables-to-simplify-notation) | 2 | ✅ |
+| [t143-dont-write-unintentionally-non-generic-code](../guidelines/core-guidelines/examples/templates.md#t143-dont-write-unintentionally-non-generic-code) | 2 | ✅ |
+| [t144-dont-specialize-function-templates](../guidelines/core-guidelines/examples/templates.md#t144-dont-specialize-function-templates) | 2 | ✅ |
+| [t150-check-that-a-class-matches-a-concept-using-static_assert](../guidelines/core-guidelines/examples/templates.md#t150-check-that-a-class-matches-a-concept-using-static_assert) | 2 | ✅ |
 
 **[guidelines/debugging.md](../guidelines/debugging.md)**
 

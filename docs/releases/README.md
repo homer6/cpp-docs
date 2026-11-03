@@ -13,6 +13,7 @@ links and counts, from `tools/collect_results.py --summary`).
 
 | Version | Date | Notes |
 |---|---|---|
+| v0.4.0 | 2026-11-03 | [Core Guidelines release](v0.4.0.md): every Core Guidelines rule with our own example (482) and 360 with a unit test; BAD examples compiled and UB proven under the sanitizers; the suite under ASan, UBSan and TSan; Clang 23 in CI |
 | v0.3.0 | 2026-11-02 | [Platform support release](v0.3.0.md): every example and feature tested on Linux, macOS, Windows and FreeBSD across GCC, Clang, Apple Clang, MSVC and clang-cl, x86_64 and arm64; the generated support report |
 | v0.2.1 | 2026-11-01 | [Skills release](v0.2.1.md): `make install`/`update`, both skills usable from any project, `/modern-cpp` as the entry point |
 | v0.2.0 | 2026-11-01 | [Coverage release](v0.2.0.md): 7 new pages, C++23/26 gaps across 13 areas, constexpr and reflection, the `add-to-topic` and `modern-cpp` skills |
