@@ -215,13 +215,21 @@ private:
 
 template <>
 struct std::formatter<Secret> : std::formatter<std::string_view> {
-    auto format(const Secret&, std::format_context& ctx) const {
+    template <class FormatContext>   // not just std::format_context: libc++ 18 rejects that
+    auto format(const Secret&, FormatContext& ctx) const {
         return std::formatter<std::string_view>::format("[redacted]", ctx);
     }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Secret&) { return os << "[redacted]"; }
 ```
+
+The formatter's `format` is a template on the context. libc++ 18 checks
+whether a type is formattable with its own internal context type, so a
+`format` that takes only `std::format_context&` makes `std::format` reject
+`Secret` at compile time ("the supplied type is not formattable"). libc++ 19
+and later, libstdc++ and the MS STL accept either form (Clang 18–23 with
+libc++, GCC 15 and MSVC in CI, [#384](https://github.com/homer6/cpp-docs/issues/384)).
 
 **MUST:** Neutralize untrusted text before it goes into a log line. A user
 name containing a newline can forge a whole log entry, and terminal escape

@@ -81,7 +81,8 @@ void drop_privileges(uid_t uid, gid_t gid) {
 
 template <>
 struct std::formatter<Secret> : std::formatter<std::string_view> {
-    auto format(const Secret&, std::format_context& ctx) const {
+    template <class FormatContext>   // not just std::format_context: libc++ 18 rejects that
+    auto format(const Secret&, FormatContext& ctx) const {
         return std::formatter<std::string_view>::format("[redacted]", ctx);
     }
 };
