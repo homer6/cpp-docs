@@ -77,6 +77,10 @@ each practice belongs to and what evidence shows it's in place.
 
 ## See also
 
+- The [`cpp-security`](../../.claude/skills/cpp-security/SKILL.md) skill
+  (`/cpp-security` in Claude Code) applies these pages: security reviews,
+  hardening a build, planning security tests
+
 - [Memory & safety](../guidelines/safety.md): the profiles, ownership,
   dangling, C++26 hardening and erroneous behaviour
 - [C++ Core Guidelines index](../guidelines/core-guidelines/README.md)
