@@ -40,7 +40,7 @@ applies them.
 | Authorization is checked, and denies by default ([threat modeling](threat-modeling.md)) | negative tests: the unauthorized call is denied and changes nothing | `threat-modeling_test.cpp` |
 | Every request has limits ([resource limits](resource-limits.md)) | tests at, below and above each limit | `resource-limits_test.cpp` |
 | Release builds are hardened ([hardening](hardening.md)) | a hardened CI build, the binary inspected (`readelf`, `dumpbin`), death tests that the checks fire | `*-hardened` presets and CI jobs |
-| Inputs are pinned by content ([supply chain](supply-chain.md)) | a check that fails on a tag or unpinned action | `tools/check_workflows.py`, `supply-chain_test.cpp` |
+| Inputs are pinned by content ([supply chain](supply-chain.md)) | a check that fails on a tag or unpinned action | `tools/check_workflows.py` (actions) |
 | No secrets in the repository | secret scanning on push (GitHub push protection, gitleaks) | GitHub secret scanning |
 
 **MUST:** Make a finding block the change: warnings as errors for the chosen
