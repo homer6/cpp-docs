@@ -140,9 +140,12 @@ TEST(SecurityDeployment, CoreLimitCanBeLowered) {
 // dumpable and exclude pages from dumps.
 TEST(SecurityDeployment, LinuxNotDumpableAndDontDump) {
 #if defined(__linux__)
+    // prctl is a variadic C system call; there is no typed alternative.
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
     ASSERT_EQ(prctl(PR_SET_DUMPABLE, 0, 0, 0, 0), 0);
     EXPECT_EQ(prctl(PR_GET_DUMPABLE, 0, 0, 0, 0), 0);
     EXPECT_EQ(prctl(PR_SET_DUMPABLE, 1, 0, 0, 0), 0);   // restore: sanitizers' leak checks attach at exit
+    // NOLINTEND(cppcoreguidelines-pro-type-vararg)
     const long page = sysconf(_SC_PAGESIZE);
     void* p = mmap(nullptr, static_cast<std::size_t>(page), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     ASSERT_NE(p, MAP_FAILED);
@@ -159,9 +162,12 @@ TEST(SecurityDeployment, LinuxNoNewPrivs) {
 #if defined(__linux__)
     // Run in a child so the test process keeps its ability to gain privileges.
     EXPECT_EXIT({
+        // prctl is a variadic C system call; there is no typed alternative.
+        // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
         if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) != 0) std::_Exit(1);
         if (prctl(PR_GET_NO_NEW_PRIVS, 0, 0, 0, 0) != 1) std::_Exit(2);
         if (prctl(PR_SET_NO_NEW_PRIVS, 0, 0, 0, 0) == 0) std::_Exit(3);   // one-way
+        // NOLINTEND(cppcoreguidelines-pro-type-vararg)
         std::_Exit(0);
     }, testing::ExitedWithCode(0), "");
 #else

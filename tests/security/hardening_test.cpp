@@ -31,6 +31,10 @@ volatile std::size_t ten = 10;
 // Library hardening is active when the library's own switch is on, whether
 // CPPDOCS_HARDEN set it or the library's default did (libstdc++ 15+ enables
 // its assertions in unoptimized builds; see language-versions.md).
+// Macros, not constants: CPPDOCS_LIBRARY_HARDENED is tested by #if, and
+// CPPDOCS_REQUIRE_HARDENED must expand to GTEST_SKIP(), which returns from the
+// test body itself. Which branch compiles depends on the library (#378).
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #if defined(_GLIBCXX_ASSERTIONS)
 #  define CPPDOCS_LIBRARY_HARDENED 1
 #elif defined(_LIBCPP_HARDENING_MODE) && defined(_LIBCPP_HARDENING_MODE_NONE)
@@ -46,12 +50,11 @@ volatile std::size_t ten = 10;
 #if defined(CPPDOCS_LIBRARY_HARDENED)
 #  define CPPDOCS_REQUIRE_HARDENED() (void)0
 #else
-// A macro because GTEST_SKIP() must return from the test body itself.
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #  define CPPDOCS_REQUIRE_HARDENED() \
       GTEST_SKIP() << "library hardening is off in this build (no _GLIBCXX_ASSERTIONS, " \
                       "_LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn it on)"
 #endif
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 // "Standard-library hardening": vector::operator[] past the end stops the program.
 TEST(SecurityHardeningDeathTest, VectorIndexOutOfRange) {
