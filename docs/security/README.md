@@ -65,7 +65,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Object state and representation](object-representation.md) | Initialize before use, serialize explicitly across boundaries, and confine representation tricks. | ✅ verified |
 | [Parsing and validation](parsing-and-validation.md) | Parse untrusted input into constrained values, define ambiguous cases, and bound the parser's work. | ✅ verified |
 | [Concurrency and asynchronous code](concurrency.md) | One synchronization rule per shared object, and a lifetime argument for every queued or suspended operation. | ✅ verified |
-| [Error handling and fail-closed behaviour](error-handling.md) | Deny when a security decision can't be established, and leave every failure in a defined state. | imported |
+| [Error handling and fail-closed behaviour](error-handling.md) | Deny when a security decision can't be established, and leave every failure in a defined state. | ✅ verified |
 | [Cryptography and secrets](cryptography-and-secrets.md) | Use maintained cryptographic libraries, a real cryptographic random source, and careful secret handling. | imported |
 | [Filesystem, process and FFI boundaries](filesystem-and-processes.md) | Avoid check-then-use, constrain process launch and loading, and treat foreign interfaces as trust boundaries. | imported |
 | [Resource limits and availability](resource-limits.md) | Make resource consumption part of validation, so valid-looking requests can't exhaust the service. | imported |
