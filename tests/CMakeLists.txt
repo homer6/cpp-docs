@@ -150,8 +150,9 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        v1.18.0   # 063de7e9578f82b369302001269680b4b1553359
-  GIT_SHALLOW    TRUE
+  # Pinned by commit, not tag: a tag can be moved, a commit hash can't (#302,
+  # docs/security/supply-chain.md). GIT_SHALLOW needs a branch or tag, so it's off.
+  GIT_TAG        063de7e9578f82b369302001269680b4b1553359   # v1.18.0
   EXCLUDE_FROM_ALL
 )
 set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)

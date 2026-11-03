@@ -348,7 +348,8 @@ run folders not named on the command line (git history keeps them), so it
 stays at about one full run. The collector removes
 toolchain pages it no longer produces, and `--check` covers them all.
 
-GoogleTest v1.18.0 is fetched at configure time with `FetchContent`. Tests
+GoogleTest v1.18.0 is fetched at configure time with `FetchContent`, pinned
+to its commit hash ([supply chain](security/supply-chain.md)). Tests
 mirror the pages: `docs/examples/<area>/.../<page>.md` is checked by
 `tests/<area>/.../<page>_test.cpp`, and each area folder builds into one
 executable (`examples_containers_tests`, `examples_text_processing_tests`, …;

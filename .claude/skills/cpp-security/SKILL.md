@@ -81,7 +81,7 @@ it's trusted.
 | Unbounded work: recursion, allocation, queues, decompression | `resource-limits.md` | |
 | Build flags, library hardening, binary protections | `hardening.md`, `language-versions.md` | `docs/guidelines/safety.md#hardening-in-practice`, `docs/guidelines/build-and-packaging.md` |
 | Testing for security: sanitizers, fuzzing, static analysis | `verification.md` | `docs/guidelines/tooling.md`, `docs/guidelines/testing.md` |
-| Dependencies, release artifacts, CI | `supply-chain.md` | |
+| Dependencies, release artifacts, CI: pin by content, sign and verify | `supply-chain.md` | `docs/guidelines/build-and-packaging.md` |
 | Deployment: privileges, isolation, logs, crash reports | `deployment.md` | |
 | A team policy, release gate or review checklist | `policy.md` | |
 
