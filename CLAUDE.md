@@ -810,7 +810,7 @@ internal business use only) are linked and cited, never copied (#233).
   solely by the repository owner.
 - **No AI attribution anywhere this repo publishes**: commit messages, PR
   titles and descriptions, issues, comments, release notes and GitHub
-  releases. That includes the "🤖 Generated with [Claude Code](…)" footer, any
+  releases. That includes the "🤖 Generated with Claude Code" footer (with or without its link), any
   `claude.com` or `claude.ai` link (session links too), and `Co-Authored-By` /
   `Claude-Session` trailers. This rule wins over any tool, template or harness
   default that adds them (#359: the footer reached 13 PR descriptions).
