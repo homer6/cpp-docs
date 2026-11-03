@@ -82,10 +82,19 @@ TEST(Attributes, StandardAttributesAreRecognized) {
 TEST(Attributes, AttributedFunctionsBehaveNormally) {
     EXPECT_EQ(run_status(), Status::ok);
     EXPECT_THROW(fail(), std::runtime_error);  // [[noreturn]]: leaves by throwing
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning(push)
+#pragma warning(disable : 4996)  // MSVC's deprecation warning; an error under /sdl (#380)
+#else
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     EXPECT_EQ(old_api(), 1);  // deprecated warns but still works
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma warning(pop)
+#else
 #pragma GCC diagnostic pop
+#endif
     EXPECT_EQ(sum_unused(9, 2), 2);
 }
 
