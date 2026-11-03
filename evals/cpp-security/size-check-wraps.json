@@ -1,0 +1,13 @@
+{
+  "id": "size-check-wraps",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "offset and length (network packet header)"},
+  "expect": {
+    "must_find": ["offset + length can wrap around, so a huge offset passes the check and subspan reads out of bounds"],
+    "must_cite_any": ["docs/security/integers.md#check-before-the-arithmetic", "docs/security/bounds.md#check-before-the-access"],
+    "cert_any": ["INT30-C", "CTR50-CPP"],
+    "guidelines_any": ["ES.106"],
+    "fix": {"properties": ["checks offset <= size first, then length <= size - offset (no addition of two untrusted values)"]}
+  },
+  "notes": "Unsigned wraparound is defined, so no sanitizer's default group reports it; the check itself is the bug (integers.md)."
+}

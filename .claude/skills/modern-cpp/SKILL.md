@@ -13,6 +13,7 @@ guidelines.
 |---|---|
 | Write, modernize or review C++; choose a facility; "is X supported on Y?" | this skill |
 | Audit code against the Core Guidelines with rule IDs; "what does R.11 say?"; a focused ownership or lifetime fix; the evals | `cpp-guidelines` directly |
+| An attacker controls part of the input; a security review; hardening a build; security tests | `cpp-security` (it calls this skill for the writing) |
 
 **Why trust the repo over memory.** Every snippet in `docs/` is compiled by
 `tools/check_snippets.py`, and a GoogleTest suite in `tests/` checks what each
@@ -135,6 +136,32 @@ findings cite Core Guidelines rule IDs, and every rule has a BAD/GOOD example
 in `docs/guidelines/core-guidelines/examples/`. Prefer what the reference
 pages recommend over habits from older standards, unless the project's
 constraints say otherwise.
+
+### When the code faces untrusted input
+
+If any input crosses a trust boundary (network, files from users, IPC,
+plugins, command lines of a privileged program), use the `cpp-security` skill
+(`$CPP_DOCS/.claude/skills/cpp-security/SKILL.md`) for the review. It
+works from `docs/security/`. Even for a quick change, check these before
+writing:
+
+- **Sizes and indexes from input:** check before the arithmetic
+  (`offset > size || length > size - offset`, never `offset + length > size`),
+  and before the access (`docs/security/integers.md`, `bounds.md`).
+- **Parsing:** parse into a constrained type at the boundary, reject what's
+  ambiguous, and bound the work (`parsing-and-validation.md`, `resource-limits.md`).
+- **Lifetimes across callbacks and coroutines:** nothing queued captures
+  `this` or a reference unless something keeps it alive (`concurrency.md`).
+- **Failure:** a security decision that can't be made denies (`error-handling.md`).
+- **Secrets and randomness:** OS randomness, constant-time comparison, no
+  secrets in logs (`cryptography-and-secrets.md`).
+- **Processes and files:** an argument vector, never a shell; no check-then-use
+  on paths (`filesystem-and-processes.md`).
+- **The build:** library hardening and the protections in `hardening.md`,
+  for the library actually linked.
+
+Cite the page and anchor (`docs/security/integers.md#check-before-the-arithmetic`),
+the CERT ID where the page names one (INT30-C), and Core Guidelines IDs.
 
 ## 6. Write and validate
 

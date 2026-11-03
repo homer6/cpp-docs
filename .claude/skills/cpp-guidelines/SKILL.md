@@ -78,6 +78,7 @@ the assumption you're making.
 | API shape, variants, strong types, error handling, loops | `docs/guidelines/design-principles.md` |
 | Naming, headers, tests, feature matrix | `docs/guidelines/project-conventions.md` |
 | A policy question (exceptions, `auto`, ranges) or an Abseil tip | `docs/guidelines/industry-practice.md` |
+| Code that handles untrusted input: sizes, parsing, lifetimes across callbacks, fail-closed errors, secrets, processes | `docs/security/` (start at `README.md`); for a full security review use the `cpp-security` skill |
 | The exact text, exceptions, or enforcement notes of a rule | search `modules/CppCoreGuidelines/CppCoreGuidelines.md` for the rule ID (`grep -n '^### .*R\.11:'`; profile rules are bullets: `grep -n 'Type\.1:'`), or open its official link |
 
 Read a rule's **Exception** and **Note** paragraphs before calling something a
@@ -133,6 +134,12 @@ Don't over-apply rules:
   Con.4 is for values that don't change after construction.
 - **Code that already follows a rule is a result too**: say it's compliant
   rather than inventing a finding.
+- **Where an attacker controls the input, rank by what they can do with it.**
+  A guideline finding that's also exploitable (a wrapping size check, a
+  use-after-free in a queued callback, an exception that grants access)
+  comes first. Cite the security page's anchor and its CERT ID with the rule
+  ID:
+  `**parse.cpp:12 · ES.106 / INT30-C.** offset + length can wrap … (docs/security/integers.md#check-before-the-arithmetic)`.
 
 ## 4. Validate every change
 
@@ -156,4 +163,6 @@ without this skill: ownership and lifetime (21 cases) plus classes,
 expressions, concurrency, errors, constants and functions (10 cases), with
 compliant traps as well as violations. `python3 evals/check.py` validates
 them (it picks a working compiler unless `CXX` is set). See
-`evals/README.md` for how to run and score them.
+`evals/README.md` for how to run and score them. `evals/cpp-security/`
+holds the security cases (#309): exploitable bugs, a compliant control, and a
+case that needs the trust boundary before it can be judged.
