@@ -825,16 +825,17 @@ unless they directly modify the work queue"*.
   `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
   `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
   out: GitHub's default branch is `main`, so a PR without it targets `main`.
-- **A release branch for a large release** (v0.5.0: `dev-0.5`). When the owner
-  asks for one, it's forked from `dev`, and each of the release's issues is
+- **Issues worked serially may stack** (v0.5.0's security PRs): each issue is
   worked on its own feature branch in its own worktree
-  (`~/dev/homer6/cpp-docs-worktrees/issue-<n>`, branch `<area>/<n>-<slug>`)
-  with a PR into the release branch. Issues worked serially may stack: each PR's
-  base is the previous issue's branch, and GitHub retargets the next PR when
-  one merges with `--delete-branch`. Keep the release branch current by
-  rebasing it onto `dev` whenever `dev` moves (then rebase the stack), never by
-  merging `dev` into it. When the release is ready, the release branch goes
-  into `dev` by a PR, and the normal release checklist follows.
+  (`~/dev/homer6/cpp-docs-worktrees/issue-<n>`, branch `<area>/<n>-<slug>`),
+  and each PR's base is the previous issue's branch; the first PR's base is
+  `dev`. GitHub retargets the next PR when one merges with `--delete-branch`.
+  When `dev` moves, rebase the whole stack onto it in one pass
+  (`git rebase --update-refs origin/dev` from the top branch, then
+  `git push --force-with-lease` for each branch), never by merging `dev` in.
+- **A separate release branch** (like `dev-0.5`) only when the owner asks for
+  one. v0.5.0 started on `dev-0.5`; the owner dropped it and retargeted the
+  stack to `dev` before review.
 - **The only PR into `main` is the release PR** (`dev` → `main`), opened when
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`. Follow the
