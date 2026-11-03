@@ -23,7 +23,13 @@ It's the preferred entry point and calls `cpp-guidelines` itself. Use
 IDs, a question about one rule, a focused ownership or lifetime fix, or the
 evals (`evals/cases/`, 31 cases; `python3 evals/check.py` validates them and
 picks a working compiler unless `CXX` is set, #252).
-`make install` links it (and `cpp-guidelines`) into `~/.claude/skills`, upgrading
+For security (a review where an attacker controls input, hardening a build,
+planning security tests), use the `cpp-security` skill
+(`.claude/skills/cpp-security/`), built on `docs/security/` (#312); it calls
+`modern-cpp` and `cpp-guidelines` for the writing and rule detail. When a
+security page is verified or changes what it recommends, update the skill's
+page table and checklist in the same PR.
+`make install` links it (and `cpp-guidelines` and `cpp-security`) into `~/.claude/skills`, upgrading
 an older link or copied install; `make update` pulls and re-links; `make
 uninstall` removes the links.
 To run, read and report the platform runs (consent, every log processed,
