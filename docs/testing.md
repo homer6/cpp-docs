@@ -186,6 +186,14 @@ program. They run whenever library hardening is active (including libstdc++
 15+'s default in unoptimized builds) and skip with the reason otherwise. What each flag does,
 and how to check a binary, is on [`docs/security/hardening.md`](security/hardening.md).
 
+### Fuzzing (#307)
+
+`fuzz/` has libFuzzer targets for the security pages' parsers, built with
+`CPPDOCS_FUZZ=ON` and Clang, and run time-boxed by `tools/ci/fuzz.sh` (and
+the `fuzz` job in `linux.yml`). Their saved corpus is replayed as ordinary
+tests (`tests/security/fuzz_corpus_test.cpp`) on every toolchain. See
+[`fuzz/README.md`](../fuzz/README.md).
+
 ### Portable presets (any machine, CI)
 
 The presets above are the owner's Mac. These take no paths: the compiler comes
