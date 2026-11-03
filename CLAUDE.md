@@ -980,6 +980,13 @@ A release (the owner names the version) needs all of these, in order:
   to make a change means open the PR (and close its issue), not merge it.
   Approval for one batch doesn't carry over to PRs opened later. Review goes
   one PR at a time (`/review-prs`).
+- **Never merge a PR labelled `rejected`** (the owner, #361). A PR the owner
+  sent back stays unmergeable, even after a fix is pushed and a later
+  "merge". Stop, say the PR is rejected, and ask how to handle it. Don't remove
+  the label yourself, don't open a replacement PR, and don't close the
+  rejected PR unless the owner says so. Check the labels right before every
+  merge (#334 was merged while still labelled `rejected`, and `dev` had to be
+  reset).
 - **Merge PRs with a merge commit only** — never squash or rebase-merge — and
   **delete the feature branch** when merging:
   `gh pr merge <n> --merge --delete-branch`. Never `--delete-branch` on the
