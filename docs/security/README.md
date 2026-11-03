@@ -69,7 +69,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Cryptography and secrets](cryptography-and-secrets.md) | Use maintained cryptographic libraries, a real cryptographic random source, and careful secret handling. | ✅ verified |
 | [Filesystem, process and FFI boundaries](filesystem-and-processes.md) | Avoid check-then-use, constrain process launch and loading, and treat foreign interfaces as trust boundaries. | ✅ verified |
 | [Resource limits and availability](resource-limits.md) | Make resource consumption part of validation, so valid-looking requests can't exhaust the service. | ✅ verified |
-| [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | imported |
+| [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | ✅ verified |
 | [Security verification](verification.md) | Warnings, static analysis, sanitizers, fuzzing and failure tests: complementary evidence for security properties. | imported |
 | [Supply chain and release security](supply-chain.md) | Control build inputs, verify provenance, and keep the evidence for every release. | imported |
 | [Deployment and incident readiness](deployment.md) | Least privilege, isolation of risky components, careful logging, and a process for vulnerabilities. | imported |
