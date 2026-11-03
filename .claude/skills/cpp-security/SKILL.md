@@ -82,7 +82,7 @@ it's trusted.
 | Build flags, library hardening, binary protections | `hardening.md`, `language-versions.md` | `docs/guidelines/safety.md#hardening-in-practice`, `docs/guidelines/build-and-packaging.md` |
 | Testing for security: sanitizers, fuzzing, static analysis | `verification.md` | `docs/guidelines/tooling.md`, `docs/guidelines/testing.md` |
 | Dependencies, release artifacts, CI | `supply-chain.md` | |
-| Deployment: privileges, isolation, logs, crash reports | `deployment.md` | |
+| Deployment: dropping privileges, sandboxing parsers, crash dumps and logs without secrets, vulnerability intake | `deployment.md` | `filesystem-and-processes.md`, `cryptography-and-secrets.md` |
 | A team policy, release gate or review checklist | `policy.md` | |
 
 Find a Core Guidelines rule's text and our BAD/GOOD example through
