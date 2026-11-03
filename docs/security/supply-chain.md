@@ -124,15 +124,19 @@ Whether that code is safe is the job of the rest of this section
 
 ## How this repo does it
 
-The repo ships documentation, not binaries, so it has nothing to sign. Its
-build inputs are still pinned and checked:
+The repo ships documentation, not binaries, so it has nothing to sign, and its
+pins are chosen for a docs project's risk and cost:
 
 - **Actions** are pinned to full commit SHAs, workflows run only when
   dispatched by hand, and every workflow is read-only (`permissions:
   contents: read`, `persist-credentials: false`). `tools/check_workflows.py`
   enforces all three.
 - **Container images** (`gcc:N`) are pinned by digest.
-- **GoogleTest** is pinned to its commit hash.
+- **GoogleTest** is fetched by release tag (`v1.18.0`) with a shallow clone.
+  That's a deliberate trade-off: a commit pin can't be shallow, so every
+  configure would clone GoogleTest's whole history, a cost this repo's risk
+  doesn't justify. A project that ships binaries should pin by content. A
+  release archive with `URL_HASH SHA256=…` gives that without the full clone.
 - **The apt.llvm.org key** is checked against its fingerprint (`6084 F3CF 814B
   57C1 CF12 EFD5 15CF 4D18 AF4F 7421`) before CI trusts it.
 - **Release evidence:** every release has notes with the local test counts and
@@ -140,7 +144,7 @@ build inputs are still pinned and checked:
   and metadata are archived in `docs/platform-support/runs/`, so a release's
   claims can be checked after GitHub deletes the logs.
 
-`tests/security/supply-chain_test.cpp` checks the pins.
+`tests/security/supply-chain_test.cpp` checks the CI pins.
 
 ## See also
 

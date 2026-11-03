@@ -1,5 +1,5 @@
 // Checks claims made by docs/security/supply-chain.md, about this repo's own
-// build inputs: each is pinned to an immutable identifier.
+// CI inputs: each action and image is pinned to an immutable identifier.
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -19,18 +19,6 @@ std::string read(const std::filesystem::path& p) {
 }
 
 }  // namespace
-
-// "Pin every input by content": GoogleTest is fetched by commit hash, not by a
-// tag that could be moved.
-TEST(SecuritySupplyChain, GoogleTestPinnedByCommit) {
-    const std::string cmake = read(repo() / "tests" / "CMakeLists.txt");
-    const std::regex tag{R"(GIT_TAG\s+(\S+))"};
-    std::smatch m;
-    ASSERT_TRUE(std::regex_search(cmake, m, tag));
-    EXPECT_TRUE(std::regex_match(m[1].str(), std::regex{"[0-9a-f]{40}"})) << m[1].str();
-    // A shallow clone needs a branch or tag, so the option must not be set.
-    EXPECT_FALSE(std::regex_search(cmake, std::regex{R"(\n\s*GIT_SHALLOW\s)"}));
-}
 
 // "This repo's practice": every action a workflow uses is pinned to a full commit
 // SHA, and every container image to a digest.
