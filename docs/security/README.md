@@ -67,7 +67,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Concurrency and asynchronous code](concurrency.md) | One synchronization rule per shared object, and a lifetime argument for every queued or suspended operation. | ✅ verified |
 | [Error handling and fail-closed behaviour](error-handling.md) | Deny when a security decision can't be established, and leave every failure in a defined state. | ✅ verified |
 | [Cryptography and secrets](cryptography-and-secrets.md) | Use maintained cryptographic libraries, a real cryptographic random source, and careful secret handling. | ✅ verified |
-| [Filesystem, process and FFI boundaries](filesystem-and-processes.md) | Avoid check-then-use, constrain process launch and loading, and treat foreign interfaces as trust boundaries. | imported |
+| [Filesystem, process and FFI boundaries](filesystem-and-processes.md) | Avoid check-then-use, constrain process launch and loading, and treat foreign interfaces as trust boundaries. | ✅ verified |
 | [Resource limits and availability](resource-limits.md) | Make resource consumption part of validation, so valid-looking requests can't exhaust the service. | imported |
 | [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | imported |
 | [Security verification](verification.md) | Warnings, static analysis, sanitizers, fuzzing and failure tests: complementary evidence for security properties. | imported |
