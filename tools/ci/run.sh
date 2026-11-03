@@ -19,6 +19,8 @@
 #   CPPDOCS_TESTS       true/false (default true)
 #   CPPDOCS_SNIPPETS    true/false (default true)
 #   CPPDOCS_CMAKE_ARGS  extra configure arguments (word-split), e.g. -DCMAKE_CXX_STDLIB_MODULES_JSON=...
+#   CPPDOCS_HARDEN      non-empty, not 0: a hardened build (#305): -DCPPDOCS_HARDEN=ON,
+#                       RelWithDebInfo, a -hardened suffix on the compiler label, no snippets
 #   CPPDOCS_SANITIZE    sanitizers for the suite (#263), e.g. address,undefined or thread: adds
 #                       -DCPPDOCS_SANITIZE, the sanitizer options, an -asan/-tsan suffix on the
 #                       compiler label (its own results file and page), and skips snippets
@@ -56,6 +58,14 @@ if [[ -n "${CPPDOCS_SANITIZE:-}" ]]; then
     export TSAN_OPTIONS="${TSAN_OPTIONS:-halt_on_error=1:second_deadlock_stack=1}"
     run_snippets=false
     # The upload step names the artifact from CPPDOCS_COMPILER.
+    [[ -n "${GITHUB_ENV:-}" ]] && echo "CPPDOCS_COMPILER=$CPPDOCS_COMPILER" >> "$GITHUB_ENV"
+fi
+if [[ -n "${CPPDOCS_HARDEN:-}" && "$CPPDOCS_HARDEN" != 0 ]]; then
+    # Hardened build (#305): its own results and toolchain page (-hardened), built
+    # RelWithDebInfo like a shipped release. Snippets are the plain job's.
+    [[ "$CPPDOCS_COMPILER" == *-hardened ]] || CPPDOCS_COMPILER="$CPPDOCS_COMPILER-hardened"
+    CPPDOCS_CMAKE_ARGS="${CPPDOCS_CMAKE_ARGS:-} -DCPPDOCS_HARDEN=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+    run_snippets=false
     [[ -n "${GITHUB_ENV:-}" ]] && echo "CPPDOCS_COMPILER=$CPPDOCS_COMPILER" >> "$GITHUB_ENV"
 fi
 out="${CPPDOCS_OUT:-ci-out}"

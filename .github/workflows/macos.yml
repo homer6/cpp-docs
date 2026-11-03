@@ -119,3 +119,38 @@ jobs:
             results-*.json
             ci-out/
           if-no-files-found: warn
+
+  homebrew-llvm-hardened:
+    # Homebrew LLVM hardened (#305): libc++ fast hardening, stack protection,
+    # PIE, RelWithDebInfo. A job of its own, like the ASan job above.
+    name: macos-26 · homebrew-llvm (hardened)
+    runs-on: macos-26
+    continue-on-error: false
+    timeout-minutes: 240
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_HARDEN: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (homebrew-llvm)
+        run: tools/ci/macos-toolchain.sh homebrew-llvm
+
+      - name: Configure, build, test (hardened)
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ env.CPPDOCS_PLATFORM || 'macos-26' }}-${{ env.CPPDOCS_COMPILER || 'homebrew-llvm-hardened' }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn

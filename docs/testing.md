@@ -149,6 +149,38 @@ out. There's no local TSan preset for that reason.
 GCC from Homebrew on macOS has no sanitizer runtimes, so the local GCC
 sanitizer run uses the `gcc:16` image.
 
+### Hardened builds (#305)
+
+The whole suite also runs the way a hardened release ships:
+
+```bash
+tools/run_tests.sh gcc-15-hardened     # libstdc++ assertions, stack protection, PIE
+tools/run_tests.sh clang-22-hardened   # libc++ fast hardening mode, stack protection, PIE
+tools/run_tests.sh gcc-16-hardened     # in the gcc:16 image: also _FORTIFY_SOURCE=3 and full RELRO
+```
+
+`CPPDOCS_HARDEN=ON` (the `*-hardened` presets, which also build
+`RelWithDebInfo`) turns on, in `tests/CMakeLists.txt`:
+
+| What | GCC / Clang | MSVC / clang-cl |
+|---|---|---|
+| Library hardening, by the library in use | `-D_GLIBCXX_ASSERTIONS` (libstdc++), `-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST` (libc++) | `/D_MSVC_STL_HARDENING=1` |
+| Stack and initialization | `-fstack-protector-strong`, `-ftrivial-auto-var-init=zero`, `-fstack-clash-protection` (Linux) | `/sdl` (cl) |
+| Control flow | `-fcf-protection=full` (x86), `-mbranch-protection=standard` (arm64) | `/guard:cf`, `/CETCOMPAT` (x64) |
+| Fortification | `-D_FORTIFY_SOURCE=3` (glibc, optimized builds only) | — |
+| Linking | PIE, `-Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack` (ELF) | — |
+
+Each flag is probed with `check_cxx_compiler_flag` / `check_linker_flag`
+first, so a toolchain that lacks one builds without it. The flags actually
+used are cached as `CPPDOCS_HARDEN_FLAGS`, written to the results JSON
+(`compiler.harden`, `compiler.harden_flags`) and shown on the toolchain page;
+a hardened job gets its own results and page (`…-hardened`), like a sanitized
+one. In CI, `CPPDOCS_HARDEN=1` in a job's environment does the same (the
+CMake option takes its default from it), and the job leaves snippets to the
+plain job. The hardened jobs are GCC 16 and Clang 22 with libc++ on Linux,
+Homebrew LLVM on macOS, and MSVC on Windows Server 2025. What each flag does,
+and how to check a binary, is on [`docs/security/hardening.md`](security/hardening.md).
+
 ### Portable presets (any machine, CI)
 
 The presets above are the owner's Mac. These take no paths: the compiler comes

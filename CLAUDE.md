@@ -312,6 +312,16 @@ tools/run_tests.sh clang-22-asan  # the suite under ASan + UBSan (Clang 22 + lib
 tools/run_tests.sh gcc-16-asan    # the same with GCC 16, in the gcc:16 image
 ```
 
+**Hardened builds** (#305): `CPPDOCS_HARDEN=ON` (the `gcc-15-hardened`,
+`clang-22-hardened` and `gcc-16-hardened` presets, `RelWithDebInfo`) builds the
+suite with library hardening for the library in use, stack protection,
+`-ftrivial-auto-var-init=zero`, control-flow protection, `_FORTIFY_SOURCE=3`
+on glibc, PIE and full RELRO (`/sdl /guard:cf` on cl), each flag probed first;
+the flags used go into the results JSON (`compiler.harden_flags`). In CI,
+`CPPDOCS_HARDEN=1` in a job's environment does the same and adds `-hardened`
+to the compiler label (its own results and toolchain page, no snippets).
+Details in `docs/testing.md`.
+
 **Sanitizers** (#263): `CPPDOCS_SANITIZE` (`address,undefined`, `thread`, or
 `address` on MSVC/clang-cl) builds the whole suite with the sanitizer; the
 `*-asan` presets set it, and in CI `CPPDOCS_SANITIZE` in a job's environment

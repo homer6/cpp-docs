@@ -111,6 +111,9 @@ def toolchain_info(build: pathlib.Path) -> dict:
                 system.get("CMAKE_SYSTEM_NAME", ""), flags),
             # Sanitizers the suite was built with (#263), e.g. "address,undefined"; "" for none.
             "sanitize": cache.get("CPPDOCS_SANITIZE", ""),
+            # Hardened build (#305): CPPDOCS_HARDEN, and the flags tests/CMakeLists.txt used.
+            "harden": cache.get("CPPDOCS_HARDEN", "").upper() in ("ON", "1", "TRUE", "YES"),
+            "harden_flags": cache.get("CPPDOCS_HARDEN_FLAGS", ""),
         },
         "cmake": files[-1].parent.name if files else "",
     }
