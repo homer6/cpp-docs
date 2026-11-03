@@ -48,11 +48,12 @@ each practice belongs to and what evidence shows it's in place.
 - **Examples are ours and compile-checked** like every snippet in the repo;
   claims that can be checked at run time have tests in `tests/security/`, one
   file per page.
-- **Status:** every page is *verified*: each claim was checked against primary
-  sources and our compilers, the imported research report's claims that
-  didn't hold were fixed or removed, and the page's checkable claims have
-  tests (epic [#286](https://github.com/homer6/cpp-docs/issues/286)). A page
-  marked *imported* would still be unchecked text.
+- **Status:** a *verified* page has been checked against primary sources and
+  our compilers: the imported research report's claims that didn't hold were
+  fixed or removed, and its checkable claims have tests (epic
+  [#286](https://github.com/homer6/cpp-docs/issues/286)). Every page is
+  verified except [supply chain](supply-chain.md), which is still *imported*:
+  the research report's text, whose claims are leads until it's verified.
 - **Checked by the repo's own tooling:** the security tests run on every
   platform in CI, the parsers are fuzzed (`fuzz/`), and `tests/security/` and
   `fuzz/` pass the clang-tidy profile in `.clang-tidy`
