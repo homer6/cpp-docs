@@ -122,7 +122,7 @@ object's memory as another's:
 
 struct Message { virtual ~Message() = default; };
 struct Login : Message { std::string user = "alice"; };
-struct Ping  : Message { int seq = 0; };
+struct Ping  : Message {};       // smaller than Login: no string where Login has one
 
 std::size_t user_length(Message& m) {
     return static_cast<Login&>(m).user.size();   // BAD: m may be a Ping
