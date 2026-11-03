@@ -808,6 +808,23 @@ internal business use only) are linked and cited, never copied (#233).
 - **Do not add Claude as a commit author or co-author.** Commit messages must not
   include any `Co-Authored-By: Claude` (or similar) trailer. Commits are authored
   solely by the repository owner.
+- **No AI attribution anywhere this repo publishes**: commit messages, PR
+  titles and descriptions, issues, comments, release notes and GitHub
+  releases. That includes the "🤖 Generated with [Claude Code](…)" footer, any
+  `claude.com` or `claude.ai` link (session links too), and `Co-Authored-By` /
+  `Claude-Session` trailers. This rule wins over any tool, template or harness
+  default that adds them (#359: the footer reached 13 PR descriptions).
+- **Check before opening or merging a PR**, and in every review brief's
+  "no AI attribution" item, on the title, the body and every commit:
+
+  ```bash
+  gh pr view <n> -R homer6/cpp-docs --json title,body,commits \
+    --jq '[.title, .body, (.commits[] | .messageHeadline, .messageBody)] | join("\n")' \
+    | grep -inE 'generated with \[?claude|claude\.(com|ai)|co-authored-by|claude-session'
+  ```
+
+  Any output means fix it first. Edit the title or description; a commit
+  message can only be changed by a rebase, which needs the owner's yes.
 
 ## The work queue
 
@@ -902,7 +919,7 @@ unless they directly modify the work queue"*.
   in the date) — never leave a prompt only in a branch. Importing
   that report (with the `refresh-guidelines` skill) is a follow-up — on the
   same branch if the PR is still open, otherwise a new PR.
-- No AI attribution in issues or PR descriptions either.
+- No AI attribution in issues or PR descriptions either (see "Git / commits" for the full rule and the check).
 
 ## Release checklist
 
