@@ -36,7 +36,7 @@ The universal "read some text" parameter type. It accepts `std::string`, string
 literals, `char*` buffers, and other views — without forcing a copy or an
 allocation, and without templating the function on the string type.
 
-```cpp
+```cpp run
 // One signature, zero copies, works for everything:
 std::size_t count_spaces(std::string_view s) {
     return std::ranges::count(s, ' ');
@@ -52,7 +52,7 @@ int main() {
 
 ### Cheap slicing
 
-```cpp
+```cpp run
 #include <string_view>
 
 int main() {

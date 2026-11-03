@@ -1,0 +1,12 @@
+{
+  "id": "f20-out-parameter",
+  "outcome": "violation",
+  "rules": ["F.20"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["F.20", "F.21"],
+    "fix": {"properties": ["returns std::vector<std::string> by value", "behaviour unchanged (same pieces, including empty ones)"]}
+  },
+  "notes": "An output parameter where returning a value is clearer and, with copy elision and move, no slower. A good answer may mention the exception (reusing a caller buffer in a hot loop) without insisting on it.",
+  "source": "held-out"
+}

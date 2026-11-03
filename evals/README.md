@@ -1,4 +1,4 @@
-# Guideline evals — ownership & lifetime pilot
+# Guideline evals
 
 A small, vendor-neutral suite for measuring whether a coding agent applies the
 C++ Core Guidelines **correctly**: it finds real violations, cites the right
@@ -9,11 +9,17 @@ It's designed to compare the **same agent with and without** the
 [`cpp-guidelines`](../.claude/skills/cpp-guidelines/SKILL.md) skill. Related
 upstream proposal: https://github.com/isocpp/CppCoreGuidelines/issues/2342
 
-## Scope of this pilot
+## Scope
 
-21 cases on resource management, ownership, and lifetime:
-R.1, R.3, R.5, R.11, R.20, R.21, I.11, C.13, Lifetime.1 / ES.65, F.43,
-F.15–F.18, ES.20, E.25.
+31 cases:
+
+- **Ownership and lifetime (the pilot, 21):** R.1, R.3, R.5, R.11, R.20,
+  R.21, I.11, C.13, Lifetime.1 / ES.65, F.43, F.15–F.18, ES.20, E.25.
+- **Other sections (#252, 10):** C.21 and C.35 (violations), C.128
+  (compliant), ES.46 (violation), ES.48/ES.49 (compliant named cast), CP.20 and
+  CP.44 (violations), E.15 (violation), Con.4 (compliant: a local that is
+  meant to change), F.20 (violation). Four of the ten are traps where the
+  right answer is to change nothing.
 
 Rule IDs refer to the edition pinned in `modules/CppCoreGuidelines`.
 
@@ -145,21 +151,92 @@ They're plans, not measured improvements:
 - Add arms for the comparison: minimal guidance, and irrelevant guidance of
   the same length, to check whether extra context alone explains any gain.
 
+## The modern-cpp suite
+
+`evals/modern-cpp/` measures the [`modern-cpp`](../.claude/skills/modern-cpp/SKILL.md)
+skill (#251). It doesn't test guideline review, but whether an agent picks a
+facility that **every compiler the project must build with** supports, and
+says why. Each case is a pair:
+
+- `<id>.json`: the `task`, the project `context` (`std`, `compilers`,
+  `exceptions`), and `expect`: `must_not_use` (what would break on one of the
+  compilers), `must_use_any` (acceptable answers), `must_cite_any` (pages or
+  results in this repo that settle it) and `must_say` (the limitation a good
+  answer names);
+- `<id>.cpp`: a reference answer that compiles at the case's standard.
+
+Every expectation comes from this repo's measured results
+(`docs/platform-support/notes.md`, `known-bugs.json`) or a page, so the suite
+checks that the skill leads an agent there. `cxx23-print-ok` is the control:
+nothing is missing, and a good answer doesn't invent a gap.
+
+Run it like the guidelines suite: give each arm the task and context only (no
+`expect`), with the same model, and score each answer on `must_not_use` (a
+hard fail), `must_say`, `must_use_any` and whether it cites the repo.
+
+### First results (2026-11-02, #251)
+
+One run per arm, the same model (Claude Opus 5.5 through Claude Code), the
+task and context only. Old skill: `modern-cpp` at `33319a5`; new skill: the
+#251 rewrite. Scored by hand against each case's `expect`.
+
+| Arm | Avoided what breaks (`must_not_use`, 8) | Named the limitation (`must_say`, 8) | Cited this repo | Tokens | Wall time |
+|---|---|---|---|---|---|
+| No skill (memory only) | 8 | 7: chose safe code for `libcxx20-contains-join` but couldn't name the libc++ 19/20 bug | no | 47k | 77 s |
+| Old skill | 8 | 8 | toolchain pages, `known-bugs.json`, pages | 132k | 292 s |
+| New skill | 8 | 8 | `notes.md` (7 answers), toolchain pages, `known-bugs.json`, pages | 111k | 213 s |
+
+What it shows, and doesn't: on these cases the model already knows most
+compiler gaps from memory, so both skills mainly add **evidence** (each claim
+traced to a measured result) and the one fact memory lacked (our libc++ bug).
+The rewrite matches the old skill's accuracy with about 16% fewer tokens and
+27% less time, because the support notes answer most questions in one read.
+One run of 8 cases is not significant; harder cases (a newer gap the model
+can't know, a wrong vendor status page) would separate the arms better.
+
+## Results: the 10 new cases (2026-11-02, #252)
+
+One run per arm, the same model (Claude Opus 5.5 through Claude Code), with
+the standard review prompt and the case's code and context only. Old skill:
+`cpp-guidelines` at `653ae46`; new skill: the #252 rewrite (first draft, then
+the final version with a fixed finding format). Scored by hand against each
+`.json`.
+
+| Arm | Violations caught with an accepted rule (6) | Compliant traps left alone (4) | Findings linking our example | Tokens | Wall time |
+|---|---|---|---|---|---|
+| No skill | 6 | 4 | 0 | 43k | 41 s |
+| Old skill | 6 | 4 | 0 | 52k | 64 s |
+| New skill, first draft | 6 | 4 | 0 | 73k | 69 s |
+| New skill, final | 6 | 4 | 7 (all resolve) | 71k | 63 s |
+
+What it shows: the model already knows these rules well, so accuracy didn't
+separate the arms; every arm found every violation and left every trap alone
+(optional notes such as C.67 on the `override` case were allowed). The first
+draft read more and cost more without using what it read; making the example
+link part of the finding format fixed that, so each finding now points the
+reader at a compiled BAD/GOOD pair. It costs about 35% more tokens than the
+old skill. Harder cases (attribution traps, rules the model misremembers,
+project constraints) are what would show a difference in accuracy.
+
 ## Checking the suite itself
 
 ```bash
 git submodule update --init modules/CppCoreGuidelines
-python3 evals/check.py                 # uses $CXX, default c++
+python3 evals/check.py                 # uses $CXX, else the first working compiler
 CXX=g++-15 python3 evals/check.py
 ```
 
 This validates the metadata, checks every rule ID exists in the pinned
-Guidelines, and compiles each case with `-fsyntax-only`. It does **not** run an
+Guidelines, and compiles each case with `-fsyntax-only`. For the modern-cpp
+cases it checks the fields, that every cited page exists, and that each
+reference answer compiles at its standard. It does **not** run an
 agent.
 
-Tested: all 21 cases pass with GCC 15. Apple Clang 15's libc++ has no
-`std::jthread`, so the two C.13 cases need a newer libc++ (see
-`context.requires`).
+Tested: all 31 cases pass with GCC 15. Without `CXX`, the checker picks the
+first of `g++-16`, `g++-15`, Homebrew `clang++ -stdlib=libc++`, `g++`,
+`clang++` and `c++` that compiles a `std::jthread` probe: Apple Clang's
+default libc++ has no `std::jthread`, which used to fail the two C.13 cases
+for the wrong reason (see `context.requires`).
 
 ## Adding cases
 

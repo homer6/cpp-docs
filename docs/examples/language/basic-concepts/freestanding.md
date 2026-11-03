@@ -87,7 +87,7 @@ leaves it out.
 
 ### Detect the implementation kind
 
-```cpp
+```cpp run
 #include <cstdio>
 
 int main() {

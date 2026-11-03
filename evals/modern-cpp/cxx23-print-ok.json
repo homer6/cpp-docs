@@ -1,0 +1,12 @@
+{
+  "id": "cxx23-print-ok",
+  "task": "Should we switch our logging from printf to std::print?",
+  "context": {"std": "c++23", "compilers": ["GCC 15", "Clang 22 with libc++", "MSVC 19.51"], "exceptions": true},
+  "expect": {
+    "must_not_use": [],
+    "must_use_any": ["std::print", "std::println"],
+    "must_cite_any": ["docs/examples/text-processing/formatting.md"],
+    "must_say": ["all three compilers ship <print>"]
+  },
+  "notes": "A compliant case: every target has <print>, so the modern answer is yes (type-safe, compile-time checked format strings). A good answer doesn't invent a gap."
+}

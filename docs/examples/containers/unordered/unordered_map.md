@@ -67,7 +67,7 @@ Two separate rules — this trips people up:
 
 ### Basics — same insertion API as map
 
-```cpp
+```cpp run
 #include <unordered_map>
 
 int main() {

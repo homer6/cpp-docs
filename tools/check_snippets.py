@@ -7,7 +7,19 @@ Widget and use()). The fence's info string controls how a block is checked:
 
     ```cpp                  compile at namespace scope (the default)
     ```cpp body             wrap in a function body (for statement snippets)
-    ```cpp nocompile        skip: deliberately wrong (BAD examples) or pseudo-code
+    ```cpp nocompile        skip: can't compile here (undeclared context,
+                            third-party headers, another platform's syntax)
+    ```cpp bad              a BAD example that compiles but is wrong (UB, a
+                            leak, a race, a missing const): it MUST compile,
+                            and is counted separately
+    ```cpp bad warns="dangling"
+                            ... and with -Wall -Wextra the compiler must warn,
+                            matching this regex (GCC/Clang; not checked on msvc)
+    ```cpp run              also build it with -fsanitize=address,undefined and
+                            run it: it must exit 0 with no sanitizer report
+                            (the block needs a main)
+    ```cpp bad run          build and run it the same way: a sanitizer MUST
+                            catch it (proves "this is UB / a memory error")
     ```cpp needs=reflection skip unless --enable reflection is given
                             (also: needs=contracts, needs=embed, ...)
     ```cpp compile-fail     must NOT compile (a BAD example that is a type error)
@@ -77,6 +89,11 @@ Usage:
                             [--std-module-json FILE]
                             [--json FILE] [--report-only] [-j N]
 
+Run blocks need a toolchain with the sanitizer runtimes (probed once; GCC
+from Homebrew on macOS has none). Without them, or on msvc/clang-cl, or with
+--no-run, run blocks are still compile-checked and the run is reported as
+skipped with the reason.
+
 Paths default to docs/. Exit status is 1 if any checked block fails (or, with
 --baseline, on new failures and stale entries), unless --report-only is given.
 """
@@ -136,6 +153,18 @@ class Block:
                 return f"{self.path}:{self.line}"  # a group of its own
             if t.startswith("module="):
                 return f"{self.path}#{t.split('=', 1)[1]}"
+        return None
+
+    def is_bad(self) -> bool:
+        return "bad" in self.info
+
+    def runs(self) -> bool:
+        return "run" in self.info
+
+    def warns(self) -> str | None:
+        for t in self.info:
+            if t.startswith("warns="):
+                return t.split("=", 1)[1]
         return None
 
     def compile_fail(self) -> str | None:
@@ -240,6 +269,32 @@ class Toolchain:
         on msvc any error satisfies it (clang-cl prints Clang's diagnostics)."""
         return self.name != "msvc"
 
+    SANITIZE = ["-g", "-fsanitize=address,undefined", "-fno-sanitize-recover=all", "-fno-omit-frame-pointer"]
+
+    def run_cmd(self, out: str) -> list[str]:
+        """Build (and link) a run block with ASan + UBSan."""
+        return [self.cxx, f"-std={self.std}", *self.SANITIZE, *self.flags, "-o", out]
+
+    def run_skip(self) -> str | None:
+        """Why run blocks can't be run with this toolchain (None: they can). Probed once."""
+        if hasattr(self, "_run_skip"):
+            return self._run_skip
+        reason = None
+        if self.cl_style:
+            reason = f"run blocks aren't run with {self.name}"
+        else:
+            with tempfile.TemporaryDirectory() as d:
+                src, exe = os.path.join(d, "p.cpp"), os.path.join(d, "p")
+                pathlib.Path(src).write_text("int main() { return 0; }\n")
+                try:
+                    r = subprocess.run(self.run_cmd(exe) + [src], capture_output=True, text=True, timeout=120)
+                    if r.returncode != 0 or subprocess.run([exe], capture_output=True, timeout=60).returncode != 0:
+                        reason = f"{pathlib.Path(self.cxx).name}: no ASan/UBSan runtime to link"
+                except (OSError, subprocess.SubprocessError):
+                    reason = f"{pathlib.Path(self.cxx).name}: sanitizer build failed"
+        self._run_skip = reason
+        return reason
+
     def module_skip(self) -> str | None:
         """Why module blocks aren't checked with this toolchain (None: they are)."""
         if self.cl_style:
@@ -272,16 +327,67 @@ def detect_toolchain(cxx: str) -> str:
     return "clang" if "clang" in out.lower() else "gcc"
 
 
-def check(block: Block, tc: Toolchain) -> tuple[Block, bool, str]:
+SANITIZER_REPORT = re.compile(r"runtime error:|ERROR: (Address|Leak|Undefined|Thread)Sanitizer|SUMMARY: \w+Sanitizer")
+RUN_SKIPS: list[tuple[Block, str]] = []   # run blocks that were compile-checked but not run, with why
+RAN: list[Block] = []
+_LOCK = threading.Lock()
+
+
+# The caller's environment, kept for running run blocks: main() sets LC_ALL=C
+# for the compilers, so their diagnostics use plain quotes on every machine
+# (GCC writes ‘x’ under a UTF-8 locale, which the compile-fail and warns=
+# regexes don't match; #275), but a snippet runs in the caller's locale.
+USER_ENV = dict(os.environ)
+
+
+def run_block(block: Block, tc: Toolchain, src: str) -> tuple[bool, str]:
+    """Build and run a run block under the sanitizers; a bad block must be caught."""
+    with tempfile.TemporaryDirectory() as d:
+        exe = os.path.join(d, "snippet")
+        b = subprocess.run(tc.run_cmd(exe) + [src], capture_output=True, text=True, timeout=300)
+        if b.returncode != 0:
+            return False, "run block didn't build with the sanitizers:\n" + b.stderr
+        env = dict(USER_ENV, ASAN_OPTIONS="abort_on_error=0:detect_leaks=" + ("1" if sys.platform.startswith("linux") else "0"),
+                   UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=1")
+        try:
+            r = subprocess.run([exe], capture_output=True, text=True, timeout=60, env=env, stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            return False, "run block timed out after 60 s"
+        caught = r.returncode != 0 and bool(SANITIZER_REPORT.search(r.stderr))
+        with _LOCK:
+            RAN.append(block)
+        if block.is_bad():
+            return (True, "") if caught else (False, f"bad run block wasn't caught by a sanitizer (exit {r.returncode}):\n{r.stderr}")
+        if r.returncode != 0:
+            return False, f"run block exited {r.returncode}:\n{r.stderr}"
+        return True, ""
+
+
+def check(block: Block, tc: Toolchain, run: bool = True) -> tuple[Block, bool, str]:
     with tempfile.NamedTemporaryFile("w", suffix=".cpp", delete=False, encoding="utf-8") as f:
         f.write(tc.source_for(block))
         name = f.name
     try:
-        r = subprocess.run(tc.syntax_cmd() + [name], capture_output=True, text=True, timeout=120)
+        warns = block.warns()
+        cmd = tc.syntax_cmd() + (["-Wall", "-Wextra"] if warns is not None and not tc.cl_style else [])
+        r = subprocess.run(cmd + [name], capture_output=True, text=True, timeout=120)
         err = tc.diagnostics(r)
         expect = block.compile_fail()
         if expect is None:
-            return block, r.returncode == 0, err
+            if r.returncode != 0:
+                return block, False, ("bad block must compile (it shows code that compiles but is wrong):\n" + err
+                                      if block.is_bad() else err)
+            if warns and not tc.cl_style and not re.search(warns, err):
+                return block, False, f"expected a warning matching /{warns}/ with -Wall -Wextra, got:\n{err or '(no warnings)'}"
+            if block.runs():
+                why = "--no-run" if not run else tc.run_skip()
+                if why:
+                    with _LOCK:
+                        RUN_SKIPS.append((block, why))
+                    return block, True, ""
+                ok, msg = run_block(block, tc, name)
+                return block, ok, msg
+            return block, True, err
         if r.returncode == 0:
             return block, False, "compile-fail block compiled without errors"
         if expect and tc.checks_regex() and not re.search(expect, err):
@@ -481,6 +587,7 @@ def check_module_group(group: list[Block], tc: ModuleToolchain) -> list[tuple[Bl
 
 
 def main() -> int:
+    os.environ["LC_ALL"] = "C"
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("paths", nargs="*", default=["docs"])
     ap.add_argument("--toolchain", choices=("auto", *TOOLCHAINS), default="auto",
@@ -497,6 +604,7 @@ def main() -> int:
     ap.add_argument("-q", "--quiet", action="store_true", help="don't print compiler output")
     ap.add_argument("--std-module-json", help="Clang: libc++.modules.json to find std.cppm (default: ask the compiler)")
     ap.add_argument("--json", type=pathlib.Path, help="also write the results as JSON to this file")
+    ap.add_argument("--no-run", action="store_true", help="compile-check run blocks without building and running them")
     args = ap.parse_args()
 
     cxx = args.cxx or DEFAULT_CXX.get(args.toolchain) or os.environ.get("CXX") or "c++"
@@ -532,7 +640,7 @@ def main() -> int:
     tc = ModuleToolchain(cxx, args.std, args.flag, args.std_module_json) if groups else None
     try:
         with cf.ThreadPoolExecutor(max_workers=args.j) as pool:
-            for block, ok, err in pool.map(lambda b: check(b, tc_plain), plain):
+            for block, ok, err in pool.map(lambda b: check(b, tc_plain, not args.no_run), plain):
                 if not ok:
                     failures.append((block, err))
             for results in pool.map(lambda g: check_module_group(g, tc), groups.values()):
@@ -583,6 +691,16 @@ def main() -> int:
     print(f"\n{len(todo)} checked ({n_mod} module units in {len(groups)} groups), {len(failures)} failed, "
           f"{n_skip} skipped "
           f"({len(nocompile)} nocompile, {len(gated)} need {', '.join(missing) or '-'}{extra})")
+    n_bad = sum(b.is_bad() for b in todo)
+    n_warns = sum(b.warns() is not None for b in todo)
+    n_run = sum(b.runs() for b in todo)
+    if n_bad or n_run:
+        line = f"{n_bad} bad (compile but wrong; {n_warns} must warn)"
+        if n_run:
+            line += f"; {n_run} run blocks: {len(RAN)} run under ASan+UBSan"
+            if RUN_SKIPS:
+                line += f", {len(RUN_SKIPS)} not run ({RUN_SKIPS[0][1]})"
+        print(line)
     if args.baseline:
         print(f"baseline: {len(failures) - len(new)} known failures still failing, "
               f"{len(new)} new, {len(fixed)} fixed, {len(stale)} stale")
@@ -648,6 +766,9 @@ def write_json(path: pathlib.Path, r: dict) -> None:
             "nocompile": len(r["nocompile"]),
             "gated": len(r["gated"]),
             "unsupported": len(r["unsupported"]),
+            "bad": sum(b.is_bad() for b in r["todo"]),
+            "run": len(RAN),
+            "run_skipped": len(RUN_SKIPS),
         },
         "failures": [{"id": b.id, "where": b.where, "known": r["baseline"] is not None and b.id not in new_ids,
                       "message": "\n".join(e.strip().splitlines()[:40])} for b, e in r["failures"]],

@@ -54,7 +54,7 @@ type      : 0 ;                           // unnamed, zero width: start a new al
 
 ### Flags with default member initializers (C++20)
 
-```cpp
+```cpp run
 #include <iostream>
 
 struct Flags {
@@ -77,7 +77,7 @@ to set it in every constructor.
 
 ### Wraparound on overflow
 
-```cpp
+```cpp run
 #include <iostream>
 
 struct Small {

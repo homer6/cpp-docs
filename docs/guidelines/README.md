@@ -11,7 +11,8 @@ The guiding question throughout: **can the compiler reject the mistake?**
 
 | Page | What's in it | Main source |
 |---|---|---|
-| [Core Guidelines digest](core-guidelines.md) | The rules that matter most, by section (P, R, F, C, ES, E, Con, CP, T, Per) | C++ Core Guidelines |
+| [C++ Core Guidelines](core-guidelines/README.md) | Every official rule, by section, with its ID and title and a link to the official text (generated) | C++ Core Guidelines |
+| [Core Guidelines examples](core-guidelines.md) | Worked examples for some of the rules (P, R, F, C, ES, E, Con, CP, T, Per, SL); more welcome | C++ Core Guidelines |
 | [Memory & safety](safety.md) | Safety profiles, ownership, dangling, C++26 hardening and erroneous behaviour | C++ Core Guidelines + C++26 |
 | [Modern idioms](modern-idioms.md) | C++17 → C++26 features and when to reach for each | cppreference |
 | [Design principles](design-principles.md) | Types model the domain, no raw loops, monoids, errors in the type system | Ben Deane's talks |
@@ -41,7 +42,8 @@ The guiding question throughout: **can the compiler reject the mistake?**
   and library (signatures, since-versions) still defer to cppreference, and
   each guideline links to the matching reference page in `docs/examples/`.
 - **Rules carry their source ID** (e.g. **R.11**, **ES.23**) so you can look
-  them up in the full Core Guidelines.
+  them up in the [index of every rule](core-guidelines/README.md) or the full
+  Core Guidelines.
 - **Every page is dated in [sources.md](sources.md).** To refresh a page or
   import a new source, use the `refresh-guidelines` skill in
   `.claude/skills/refresh-guidelines/`.

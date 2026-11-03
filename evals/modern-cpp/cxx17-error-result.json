@@ -1,0 +1,12 @@
+{
+  "id": "cxx17-error-result",
+  "task": "Write parse_port(std::string_view) that returns the port number or a reason it failed. Use the modern way to return a value or an error.",
+  "context": {"std": "c++17", "compilers": ["GCC 13", "MSVC 19.44"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["std::expected"],
+    "must_use_any": ["std::variant", "std::optional", "a result struct", "tl::expected"],
+    "must_cite_any": ["docs/examples/utilities/expected.md"],
+    "must_say": ["std::expected is C++23, so the C++17 project can't use it"]
+  },
+  "notes": "std::expected needs C++23 (__cpp_lib_expected 202202L). The project is C++17, so the answer is a fallback; a good answer says why and may mention moving to std::expected later."
+}

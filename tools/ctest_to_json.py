@@ -109,6 +109,8 @@ def toolchain_info(build: pathlib.Path) -> dict:
                 cxx.get("CMAKE_CXX_COMPILER_ID", ""),
                 cxx.get("CMAKE_CXX_COMPILER_FRONTEND_VARIANT", ""),
                 system.get("CMAKE_SYSTEM_NAME", ""), flags),
+            # Sanitizers the suite was built with (#263), e.g. "address,undefined"; "" for none.
+            "sanitize": cache.get("CPPDOCS_SANITIZE", ""),
         },
         "cmake": files[-1].parent.name if files else "",
     }

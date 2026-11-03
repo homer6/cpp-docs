@@ -56,7 +56,17 @@ python3 tools/check_snippets.py docs --cxx /opt/homebrew/opt/llvm/bin/clang++ \
 All three must pass cleanly. The GCC list of known failures
 (`tools/snippet_baseline/gcc.txt`) is empty and stays that way; the Clang one
 (`tools/snippet_baseline/clang.txt`) lists only libc++ gaps and only shrinks. Fence tags (`body`,
-`nocompile`, `compile-fail`, `needs=…`) are explained in [`CLAUDE.md`](../CLAUDE.md).
+`bad`, `nocompile`, `compile-fail`, `needs=…`, `run`) are explained in [`CLAUDE.md`](../CLAUDE.md).
+
+**Code that compiles but is wrong, and run blocks** (#262). A BAD example that
+compiles is tagged `bad`, so the checker compiles it and it has to keep
+compiling. `bad warns="regex"` also requires a matching `-Wall -Wextra`
+warning. A block with a `main` can be tagged `run`: the checker builds it with
+`-fsanitize=address,undefined` and runs it, and it must exit clean, or, for
+`bad run`, a sanitizer must catch it. The summary has a line such as
+`364 bad (compile but wrong; 0 must warn); 84 run blocks: 84 run under ASan+UBSan`.
+Runs need the sanitizer runtimes (Clang 22 locally, GCC on Linux); elsewhere
+they're reported as skipped with the reason, and `--no-run` skips them.
 
 Other toolchains: `--toolchain msvc` drives `cl /Zs` (syntax only, the prelude
 via `/FI`) and `--toolchain clang-cl` drives `clang-cl /Zs`, both from a VS
@@ -104,6 +114,40 @@ workflow directly: `cmake --workflow --preset gcc-15`.
   The script re-runs itself in Docker only for `gcc-16`, and not when it's
   already in a container (`/.dockerenv`, `/run/.containerenv`) or
   `CPPDOCS_NO_DOCKER=1` is set (a host whose `g++` is GCC 16).
+
+### Sanitizers (#263)
+
+The whole suite also runs under AddressSanitizer and UBSan:
+
+```bash
+tools/run_tests.sh clang-22-asan     # Homebrew Clang 22 + libc++, -fsanitize=address,undefined
+tools/run_tests.sh gcc-16-asan       # GCC 16 in the gcc:16 image (LeakSanitizer on too)
+```
+
+The presets set the CMake cache variable `CPPDOCS_SANITIZE` (`address,undefined`,
+`thread`, or `address` for MSVC/clang-cl's `/fsanitize=address`), which
+`tests/CMakeLists.txt` applies to every target, gtest and the module
+libraries included. UB stops the test that hit it
+(`-fno-sanitize-recover=all`). The test presets set `ASAN_OPTIONS` and
+`UBSAN_OPTIONS`; `tools/ci/run.sh` sets the same when `CPPDOCS_SANITIZE` is in
+the environment. The results JSON records the sanitizers
+(`compiler.sanitize`), and the report gives a sanitized job its own toolchain
+page (`…-asan`, `…-tsan`) and matrix column.
+
+Where a test can't work under a sanitizer it skips with the reason, never
+vanishes: under ASan or TSan a huge `reserve` can't throw `bad_alloc`,
+because the sanitizer's `operator new` reports the request instead, whatever
+its options (#284). Under TSan, a second `call_once` after the callable
+threw deadlocks, so that one test skips too.
+
+ThreadSanitizer runs on Linux against libstdc++ only (the `clang-sanitizers`
+job). Packaged libc++ isn't built with TSan, so its `call_once` and unwinder
+look like races and crash TSan: with Homebrew LLVM on macOS, every test that
+throws died in `libunwind`, and `call_once` reported a race the standard rules
+out. There's no local TSan preset for that reason.
+
+GCC from Homebrew on macOS has no sanitizer runtimes, so the local GCC
+sanitizer run uses the `gcc:16` image.
 
 ### Portable presets (any machine, CI)
 

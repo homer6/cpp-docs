@@ -20,6 +20,33 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   set(cppdocs_warnings -Wall -Wextra)
 endif()
 
+# Sanitizers (#263): CPPDOCS_SANITIZE=address,undefined (or thread, or
+# address) builds everything, gtest and the module libraries included, with
+# the sanitizer, so a BMI and its importers match. UB stops the test that hit
+# it (-fno-sanitize-recover=all). MSVC and clang-cl take only "address"
+# (/fsanitize=address). The test presets set ASAN_OPTIONS and UBSAN_OPTIONS.
+set(CPPDOCS_SANITIZE "" CACHE STRING "Sanitizers for the suite, e.g. address,undefined or thread (empty: none)")
+if(CPPDOCS_SANITIZE)
+  if(MSVC)
+    if(NOT CPPDOCS_SANITIZE STREQUAL "address")
+      message(FATAL_ERROR "CPPDOCS_SANITIZE: MSVC and clang-cl support only 'address', not '${CPPDOCS_SANITIZE}'")
+    endif()
+    add_compile_options(/fsanitize=address /Zi)
+    add_compile_definitions(_DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set(_san -fsanitize=${CPPDOCS_SANITIZE} -fno-omit-frame-pointer -g)
+    if(CPPDOCS_SANITIZE MATCHES "undefined")
+      list(APPEND _san -fno-sanitize-recover=all)
+    endif()
+    add_compile_options(${_san})
+    add_link_options(-fsanitize=${CPPDOCS_SANITIZE})
+  else()
+    message(FATAL_ERROR "CPPDOCS_SANITIZE: no sanitizer support for ${CMAKE_CXX_COMPILER_ID}")
+  endif()
+  add_compile_definitions(CPPDOCS_SANITIZE="${CPPDOCS_SANITIZE}")
+  message(STATUS "tests: sanitizers on: ${CPPDOCS_SANITIZE}")
+endif()
+
 # The standard the suite is built as (26, or 23 where CMake knows no C++26 flag:
 # MSVC, GCC 13), so tests about __cplusplus can tell what was requested (#209).
 add_compile_definitions(CPPDOCS_CXX_STANDARD=${CMAKE_CXX_STANDARD})

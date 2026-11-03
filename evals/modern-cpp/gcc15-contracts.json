@@ -1,0 +1,12 @@
+{
+  "id": "gcc15-contracts",
+  "task": "Add a precondition to double safe_sqrt(double x): x must not be negative. Use C++26 contracts if possible.",
+  "context": {"std": "c++26", "compilers": ["GCC 15", "Clang 22"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["pre(...) without a fallback"],
+    "must_use_any": ["assert", "an explicit check that throws or returns an error", "a macro that becomes pre() where __cpp_contracts is defined"],
+    "must_cite_any": ["docs/examples/language/basic-concepts/contracts.md", "docs/platform-support/notes.md"],
+    "must_say": ["only GCC 16 implements contracts; GCC 15 and Clang 22 don't"]
+  },
+  "notes": "The notes: GCC 16 is the only compiler with contracts. With GCC 15 and Clang 22 the pre() syntax doesn't compile."
+}

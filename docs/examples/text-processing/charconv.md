@@ -47,7 +47,7 @@ from_chars_result from_chars(const char* first, const char* last, T& value);
 
 ### Number → text
 
-```cpp
+```cpp run
 #include <string_view>
 #include <charconv>
 
@@ -65,7 +65,7 @@ int main() {
 
 ### Text → number (and tokenizing)
 
-```cpp
+```cpp run
 #include <charconv>
 #include <string_view>
 

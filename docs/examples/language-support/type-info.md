@@ -66,7 +66,7 @@ compile-time (use `<type_traits>`, concepts, or `std::is_same_v`).
 
 ### Static vs dynamic type
 
-```cpp
+```cpp run
 #include <print>
 #include <typeinfo>
 
@@ -88,7 +88,7 @@ int main() {
 
 ### A map keyed by type
 
-```cpp
+```cpp run
 #include <print>
 #include <string>
 #include <typeindex>
@@ -104,7 +104,7 @@ int main() {
 
 ### `name()` is mangled on GCC and Clang
 
-```cpp
+```cpp run
 #include <cstdlib>
 #include <cxxabi.h>        // GCC/Clang (Itanium ABI) only
 #include <memory>
@@ -132,7 +132,7 @@ name directly (not verified locally).
 
 ### `typeid` on a null pointer throws
 
-```cpp
+```cpp run
 #include <print>
 #include <typeinfo>
 

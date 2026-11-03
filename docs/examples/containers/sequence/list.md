@@ -56,7 +56,7 @@ pointing at the same node, now in the other list.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <list>
 
 int main() {
@@ -72,7 +72,7 @@ int main() {
 
 ### Member operations that algorithms can't do as well
 
-```cpp
+```cpp run
 #include <list>
 
 int main() {
@@ -91,7 +91,7 @@ int main() {
 
 ### C++20 uniform erase
 
-```cpp
+```cpp run
 #include <list>
 
 int main() {

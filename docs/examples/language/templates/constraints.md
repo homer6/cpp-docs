@@ -92,7 +92,7 @@ static_assert(!Container<int>);
 A requires-expression can also be used directly where a `bool` is expected,
 which is handy for a one-off check in a template:
 
-```cpp
+```cpp run
 #include <iostream>
 
 template<class T>
@@ -171,7 +171,7 @@ When two overloads are otherwise equally good, the **more constrained** one
 wins. "More constrained" is decided by *subsumption*, a purely logical check on
 the normalized constraints — the compiler does not evaluate anything to decide it.
 
-```cpp
+```cpp run
 #include <iostream>
 #include <iterator>
 #include <list>

@@ -1,0 +1,12 @@
+{
+  "id": "es46-lossy-conversion",
+  "outcome": "violation",
+  "rules": ["ES.46"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["ES.46", "ES.23"],
+    "fix": {"properties": ["the double-to-int conversion is explicit (static_cast, std::lround) or the function returns double", "an empty vector no longer divides by zero, or the precondition is stated"]}
+  },
+  "notes": "int avg = sum / xs.size() silently truncates a double. A good answer may also flag the empty-vector division.",
+  "source": "held-out"
+}

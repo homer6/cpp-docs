@@ -52,7 +52,7 @@ invalidating them.
 
 ### The `_after` interface and `before_begin`
 
-```cpp
+```cpp run
 #include <forward_list>
 
 int main() {
@@ -71,7 +71,7 @@ int main() {
 
 ### No size(): count manually
 
-```cpp
+```cpp run
 #include <forward_list>
 #include <iterator>
 
@@ -84,7 +84,7 @@ int main() {
 
 ### Member operations (like list)
 
-```cpp
+```cpp run
 #include <forward_list>
 
 int main() {
@@ -104,7 +104,7 @@ int main() {
 
 ### C++20 uniform erase
 
-```cpp
+```cpp run
 #include <forward_list>
 
 int main() {

@@ -57,7 +57,7 @@ No iteration; only the top is reachable.
 
 ### Default max-heap
 
-```cpp
+```cpp run
 #include <queue>
 
 int main() {
@@ -74,7 +74,7 @@ int main() {
 
 ### Min-heap with std::greater
 
-```cpp
+```cpp run
 #include <queue>
 #include <vector>
 
@@ -87,7 +87,7 @@ int main() {
 
 ### Custom priority (e.g. by a field)
 
-```cpp
+```cpp run
 #include <queue>
 #include <string>
 #include <vector>
@@ -105,7 +105,7 @@ int main() {
 
 ### Build from existing data in O(n)
 
-```cpp
+```cpp run
 #include <queue>
 #include <vector>
 

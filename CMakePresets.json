@@ -108,6 +108,22 @@
       "cacheVariables": {
         "CPPDOCS_TOOLCHAIN": "mingw"
       }
+    },
+    {
+      "name": "clang-22-asan",
+      "displayName": "Clang 22 + libc++ with ASan and UBSan",
+      "inherits": "clang-22",
+      "cacheVariables": {
+        "CPPDOCS_SANITIZE": "address,undefined"
+      }
+    },
+    {
+      "name": "gcc-16-asan",
+      "displayName": "GCC 16 (gcc:16 Docker image) with ASan and UBSan",
+      "inherits": "gcc-16",
+      "cacheVariables": {
+        "CPPDOCS_SANITIZE": "address,undefined"
+      }
     }
   ],
   "buildPresets": [
@@ -156,6 +172,14 @@
     {
       "name": "mingw",
       "configurePreset": "mingw"
+    },
+    {
+      "name": "clang-22-asan",
+      "configurePreset": "clang-22-asan"
+    },
+    {
+      "name": "gcc-16-asan",
+      "configurePreset": "gcc-16-asan"
     }
   ],
   "testPresets": [
@@ -224,6 +248,26 @@
       "name": "mingw",
       "inherits": "base",
       "configurePreset": "mingw"
+    },
+    {
+      "name": "clang-22-asan",
+      "configurePreset": "clang-22-asan",
+      "inherits": "base",
+      "environment": {
+        "ASAN_OPTIONS": "halt_on_error=1:abort_on_error=0:allocator_may_return_null=1:detect_stack_use_after_return=1:strict_string_checks=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
+        "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1"
+      }
+    },
+    {
+      "name": "gcc-16-asan",
+      "configurePreset": "gcc-16-asan",
+      "inherits": "base",
+      "environment": {
+        "ASAN_OPTIONS": "halt_on_error=1:abort_on_error=0:allocator_may_return_null=1:detect_stack_use_after_return=1:strict_string_checks=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
+        "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1"
+      }
     }
   ],
   "workflowPresets": [
@@ -377,6 +421,40 @@
         {
           "type": "test",
           "name": "mingw"
+        }
+      ]
+    },
+    {
+      "name": "clang-22-asan",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-22-asan"
+        },
+        {
+          "type": "build",
+          "name": "clang-22-asan"
+        },
+        {
+          "type": "test",
+          "name": "clang-22-asan"
+        }
+      ]
+    },
+    {
+      "name": "gcc-16-asan",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-16-asan"
+        },
+        {
+          "type": "build",
+          "name": "gcc-16-asan"
+        },
+        {
+          "type": "test",
+          "name": "gcc-16-asan"
         }
       ]
     }

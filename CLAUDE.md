@@ -15,11 +15,14 @@ skill (`.claude/skills/add-to-topic/`): coverage check, Perplexity and Firecrawl
 verification on all three toolchains, placement, snippet and test.
 To write C++ with this reference (here or in another project), use the
 `modern-cpp` skill (`.claude/skills/modern-cpp/`): project constraints, the
-right pages, toolchain support, the guidelines, validation.
+right pages, toolchain support from the measured platform results (the
+support notes, toolchain pages, known bugs), the guidelines, validation. Its
+eval cases are in `evals/modern-cpp/` (#251); `evals/check.py` validates them.
 It's the preferred entry point and calls `cpp-guidelines` itself. Use
 `cpp-guidelines` directly only for a Core Guidelines review or audit with rule
 IDs, a question about one rule, a focused ownership or lifetime fix, or the
-evals.
+evals (`evals/cases/`, 31 cases; `python3 evals/check.py` validates them and
+picks a working compiler unless `CXX` is set, #252).
 `make install` links it (and `cpp-guidelines`) into `~/.claude/skills`, upgrading
 an older link or copied install; `make update` pulls and re-links; `make
 uninstall` removes the links.
@@ -66,8 +69,9 @@ directory that's deleted after the merge.
 
 ## Guidelines section
 
-`docs/guidelines/` is about *how to write* C++ well (Core Guidelines digest,
-safety, modern idioms, design principles, project conventions). To refresh it
+`docs/guidelines/` is about *how to write* C++ well (every Core Guidelines
+rule, worked examples, safety, modern idioms, design principles, project
+conventions). To refresh it
 against upstream or import a new reference, use the `refresh-guidelines` skill
 (`.claude/skills/refresh-guidelines/`). Keep `docs/guidelines/sources.md`
 updated whenever a guidelines page changes.
@@ -76,6 +80,36 @@ The full C++ Core Guidelines are a git submodule at `modules/CppCoreGuidelines`
 (pinned to the edition the pages track). Run
 `git submodule update --init` after cloning. Third-party sources go under
 `modules/`; don't edit them.
+
+**Every Core Guidelines rule is in our docs** (#233), never a selection:
+`docs/guidelines/core-guidelines/` is generated from the submodule by
+`python3 tools/gen_core_guidelines.py`, one page per official section listing
+every rule (the ### headings, the profiles' Type/Bounds/Lifetime rules and
+their sub-points, and rules the summaries list with no text yet) with its
+official ID, title and link, and the pages of ours that cite it. Never edit it
+by hand. It links instead of copying the rule text, because the Guidelines'
+licence permits copies for personal or internal business use only. `--check`
+fails if a rule is missing or a page is stale (run it whenever the submodule
+or a guidelines page changes, since the "ours" links come from our pages);
+`--upstream` fails if the pin is behind upstream `master`; `--self-test` runs
+its samples. Don't describe `core-guidelines.md` (the worked examples) as the
+important rules: it covers the rules someone has written an example for.
+
+**Every rule gets an example of our own and, where its claim can be checked,
+a unit test** (#235). Examples go in
+`docs/guidelines/core-guidelines/examples/<page>.md` (one page per section,
+named like its index page; the conventions and template are in that folder's
+`README.md`): a `## <ID>: <official title>` heading per rule in official
+order, our own BAD/GOOD code (`compile-fail="regex"` when the compiler
+rejects the mistake, `bad` when it compiles but is wrong), or
+`*No example: <reason>.*` for a rule that isn't about code. Never copy the
+Guidelines' text or examples. Tests go in `tests/guidelines/<page>_test.cpp`
+(the `guidelines` area), with a `// <ID>: <claim>` comment above each `TEST`
+(`tests/guidelines/README.md`). The generator reads both: each rule in the
+index links its example and test, the index README counts what's left, and
+`--check` fails on an ID the Guidelines don't have. Regenerate the index in
+every PR that adds examples or tests; after a rebase, regenerate it rather than
+merging its conflicts.
 
 `modules/perf-report` is the owner's Linux performance-analysis guide
 (https://github.com/homer6/perf-report, also perf-report.com: perf, bpftrace,
@@ -154,7 +188,7 @@ Run the checks locally; GitHub Actions workflows are manual only and never
 replace them (see "GitHub Actions (manual only)"). `tools/check_snippets.py`
 compiles every ```cpp block with `-std=c++26 -fsyntax-only -pedantic-errors`. **Both `docs/guidelines/` and
 `docs/examples/` must pass cleanly** — every block compiles, or carries an
-honest `nocompile` / `compile-fail` / `needs=` tag. Each block is
+honest `bad` / `nocompile` / `compile-fail` / `needs=` tag. Each block is
 compiled after `tools/snippet_prelude.hpp` (common headers and placeholders
 like `Widget`, `use()`, `process()`). Tag the fence's info string:
 
@@ -162,7 +196,11 @@ like `Widget`, `use()`, `process()`). Tag the fence's info string:
 |---|---|
 | ` ```cpp ` | Must compile at namespace scope |
 | ` ```cpp body ` | Statements; checked inside a function body |
-| ` ```cpp nocompile ` | Depends on undeclared context, third-party headers, or is wrong but still compiles (UB, dangling) |
+| ` ```cpp nocompile ` | Can't compile here: depends on undeclared context, third-party headers or another platform's syntax |
+| ` ```cpp bad ` | A BAD example that compiles but is wrong (UB, dangling, a leak, a race, a missing `const`). It **must** compile, and is counted separately (#262) |
+| ` ```cpp bad warns="regex" ` | … and with `-Wall -Wextra` the compiler must warn, matching the regex (GCC/Clang; not checked on MSVC) |
+| ` ```cpp run ` | Has a `main`: also built with `-fsanitize=address,undefined` and run; it must exit 0 with no sanitizer report |
+| ` ```cpp bad run ` | Built and run the same way, and a sanitizer **must** catch it: proves "this is UB / a memory error" |
 | ` ```cpp compile-fail="regex" ` | A BAD example that must **not** compile; the diagnostics must match the regex (plain `compile-fail` accepts any error) |
 | ` ```cpp needs=reflection ` | Needs a feature not every compiler has (`contracts`, `reflection`, `execution`, …) |
 | ` ```cpp module ` | A C++20 module unit, or a file that imports modules (`import std;`, `import <vector>;`). Compiled **without** the prelude, with `-c` and modules enabled for the compiler |
@@ -180,8 +218,13 @@ builds `std`/`std.compat` once for `import std;`, and builds header units for
 Clang too: `--cxx /opt/homebrew/opt/llvm/bin/clang++ --flag=-stdlib=libc++
 --enable private-module-fragment`.
 
-Prefer making a snippet self-contained over tagging it `nocompile`, and
-`compile-fail` over `nocompile` for type errors. For an issue, check only the
+Prefer making a snippet self-contained over tagging it `nocompile`,
+`compile-fail` over `nocompile` for type errors, and `bad` over `nocompile`
+for code that compiles but is wrong. Run blocks need the sanitizer runtimes:
+Clang 22 has them locally, GCC on Linux has them, Homebrew GCC on macOS
+doesn't, and MSVC/clang-cl skip runs; where they're missing the block is still
+compile-checked and the run is reported as skipped with the reason
+(`--no-run` skips runs on purpose). For an issue, check only the
 pages you changed (`python3 tools/check_snippets.py <pages> --cxx …` with
 both compilers). The full runs below are for a release (see "Running the
 tests"):
@@ -224,7 +267,8 @@ entries if one is ever added.
 errors in templates that are instantiated, and failed constant evaluation —
 the same as `-c`. It misses templates that are never instantiated, link errors
 (a declared but undefined function), and anything at run time. The summary
-counts skipped blocks by reason; keep the `nocompile` count falling.
+counts skipped blocks by reason, then the `bad` blocks and the runs; keep the
+`nocompile` count falling.
 
 ## Running the tests
 
@@ -239,8 +283,8 @@ these local runs.
 
 | When | What to run |
 |---|---|
-| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
-| Cutting a release | Everything: `tools/run_tests.sh` on all three presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
+| Working an issue / opening its PR | The test areas the change touched (build the area target, `ctest -L '^<area>$'`) on `gcc-15` and `clang-22`, plus `gcc-16` when the change needs a GCC 16 feature. The snippet checker on the changed pages only, with both compilers. `check_links.py` on the changed files and `gen_index.py --check`. `gen_core_guidelines.py --check` when the change touches `docs/guidelines/` or the submodule. `check_workflows.py` when the PR touches `.github/`. If you edit a baseline file, run that compiler's `--baseline` run so the file stays consistent. |
+| Cutting a release | Everything: `tools/run_tests.sh` on all three presets and the two `*-asan` presets, the full `--baseline` snippet runs for `docs/examples` and `docs/guidelines` with both compilers, the link and index checks, and `check_workflows.py`. The counts go in the release notes, next to the consented Actions runs of every platform workflow (see "Release checklist"). |
 | A claim about a platform we can't run locally (MSVC, FreeBSD, MinGW…) | The local runs above, then ask the owner for a consented run of that platform's workflow, scoped to the page's area (see "GitHub Actions"). Until it's green, the page cites the vendor's status page and says so. |
 
 One area, without building the rest of the suite:
@@ -258,7 +302,19 @@ tools/run_tests.sh              # gcc-15 (default)
 tools/run_tests.sh clang-22     # Homebrew Clang 22 + libc++
 tools/run_tests.sh gcc-16       # GCC 16 via the gcc:16 Docker image
 tools/run_tests.sh gcc-15 -L containers   # one area; args after the preset go to ctest
+tools/run_tests.sh clang-22-asan  # the suite under ASan + UBSan (Clang 22 + libc++)
+tools/run_tests.sh gcc-16-asan    # the same with GCC 16, in the gcc:16 image
 ```
+
+**Sanitizers** (#263): `CPPDOCS_SANITIZE` (`address,undefined`, `thread`, or
+`address` on MSVC/clang-cl) builds the whole suite with the sanitizer; the
+`*-asan` presets set it, and in CI `CPPDOCS_SANITIZE` in a job's environment
+makes `tools/ci/run.sh` pass it, set the sanitizer options, add `-asan`/`-tsan`
+to the compiler label (its own results and toolchain page) and skip snippets.
+A test that can't work under a sanitizer skips with the reason (e.g. ASan's
+`operator new` can't throw `bad_alloc`). ThreadSanitizer runs on Linux with
+libstdc++ only: packaged libc++ isn't TSan-instrumented, so it reports false
+races and crashes in its unwinder. Details in `docs/testing.md`.
 
 The script runs `cmake --workflow --preset <preset>` (configure, build and
 test into `build/<preset>/`) and then prints every skipped test with its
@@ -408,12 +464,13 @@ run automatically... manual invocation only"*.
   third-party packages and exits 0 when there are no workflows.
 - **The default-branch rule.** GitHub dispatches a workflow only if its file
   exists on the repo's default branch; then it can run on any ref that has
-  the file. The owner has **temporarily made `dev` the default branch**
-  (#140), because no workflow file is on `main` yet and the release is on
-  hold until every platform is green. Runs happen on `dev` meanwhile. The
-  default switches back to `main` before the release PR is opened (see
-  "Release checklist"); after that release, the files are on `main` and
-  any ref can be dispatched again.
+  the file. `main` is the default branch and has every workflow file
+  (since v0.3.0), so runs on `dev` start normally. Make `dev` the default
+  only when a new workflow file is on `dev` but not yet on `main` and must
+  be started directly (`all.yml` calls the others, so they don't need it),
+  and switch back to `main` before the release PR (#140, #282). **Never
+  change the default branch, in either direction, without the owner's
+  explicit permission for that change in the moment.**
 - Running and reading (details in
   [`.github/workflows/README.md`](.github/workflows/README.md)):
   `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
@@ -629,7 +686,7 @@ The owner's rule (#175): the README is a front page, not a manual. It holds
 only, in this order: the intro, the generated platform badges, the links to
 the platform support notes and the full support, the generated clickable index, Guidelines, "Use it while you write
 C++ (Claude Code)", a short "How to use these notes", short pointers ("How
-it's tested"), Conventions/Progress, and **last** the generated "Tested
+it's tested"), Conventions/Progress, License, and **last** the generated "Tested
 platforms" table (the owner: it "needs to be the last section in the
 readme, not up high").
 
@@ -647,11 +704,37 @@ readme, not up high").
   the feature support matrix and the toolchain pages; the matrix and the
   per-feature detail stay in `docs/`, never in the README.
 
+## License
+
+The repo is MIT-licensed, `Copyright (c) 2026 Steve Sperandeo` (`LICENSE`,
+#236); new files and contributions fall under it. Third-party text isn't
+copied in beyond what its own licence allows: the submodules under `modules/`
+keep their licences, and the C++ Core Guidelines (copies for personal or
+internal business use only) are linked and cited, never copied (#233).
+
 ## Git / commits
 
 - **Do not add Claude as a commit author or co-author.** Commit messages must not
   include any `Co-Authored-By: Claude` (or similar) trailer. Commits are authored
   solely by the repository owner.
+
+## The work queue
+
+The owner's rule (#238): *"always complete the existing work queue before
+working on the new messages.... new messages go to the end of the work queue
+unless they directly modify the work queue"*.
+
+- **Finish the queue in order.** The work in hand and the work already asked
+  for come first; don't drop or interleave them for a newer message.
+- **A new message goes to the end of the queue.** Acknowledge it with where it
+  went ("added after #228 and the release"), then carry on with the current
+  item.
+- **The exception: a message that changes the queue itself** takes effect at
+  once: it reorders, cancels or adds to queued work, or changes how the
+  queue is worked (like this rule). A question about the work in hand is
+  answered right away, without starting new work.
+- **Report the queue** when a session ends or the owner asks: what's done,
+  what's in progress, what's next.
 
 ## Issues and pull requests
 
@@ -664,8 +747,7 @@ readme, not up high").
   Work each issue on its own feature branch from `origin/dev` (e.g.
   `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
   `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
-  out: GitHub's default branch is normally `main` (temporarily `dev`, see
-  "GitHub Actions"), and a PR without it would target `main` once it's back.
+  out: GitHub's default branch is `main`, so a PR without it targets `main`.
 - **The only PR into `main` is the release PR** (`dev` → `main`), opened when
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`. Follow the
@@ -741,9 +823,10 @@ A release (the owner names the version) needs all of these, in order:
    support notes** (`docs/platform-support/notes.md`) from the release run:
    every claim re-read against its results, the marker on that run (#226).
    The release notes link them.
-4. **Switch the default branch back to `main`** (the owner does it, or
-   consents to it) before opening the release PR, so the front page points
-   at releases again.
+4. **The default branch is `main`** before opening the release PR, so the
+   front page points at releases. If it was moved to `dev` for a new
+   workflow, ask the owner's explicit permission to switch it back (see
+   "GitHub Actions").
 5. **The owner's explicit approval** of the release. Then open the release
    PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
    merge commit `vX.Y.Z` and publish the GitHub release.

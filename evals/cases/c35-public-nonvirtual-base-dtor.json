@@ -1,0 +1,12 @@
+{
+  "id": "c35-public-nonvirtual-base-dtor",
+  "outcome": "violation",
+  "rules": ["C.35"],
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "must_cite_any": ["C.35", "C.127"],
+    "fix": {"properties": ["Shape has a public virtual destructor (or a protected non-virtual one, with no deletion through Shape*)"]}
+  },
+  "notes": "unique_ptr<Shape> deletes a Circle through a Shape* whose destructor is public and non-virtual: undefined behaviour.",
+  "source": "held-out"
+}

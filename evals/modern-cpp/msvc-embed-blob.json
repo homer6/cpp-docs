@@ -1,0 +1,12 @@
+{
+  "id": "msvc-embed-blob",
+  "task": "Embed the bytes of assets/logo.png in the program at compile time, using the modern C++ way.",
+  "context": {"std": "c++23", "compilers": ["GCC 15", "Clang 22", "MSVC 19.51"], "exceptions": true},
+  "expect": {
+    "must_not_use": ["#embed without a fallback"],
+    "must_use_any": ["a generated array (build step)", "#embed guarded by __has_embed with a fallback", "a resource file on Windows"],
+    "must_cite_any": ["docs/platform-support/notes.md", "docs/examples/language/preprocessor/embed.md"],
+    "must_say": ["MSVC 19.51 doesn't support #embed"]
+  },
+  "notes": "GCC 15 and Clang 22 support #embed; MSVC 19.51 doesn't (platform support notes). Since MSVC must build it, #embed alone is wrong."
+}

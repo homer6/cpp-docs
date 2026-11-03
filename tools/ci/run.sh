@@ -19,6 +19,10 @@
 #   CPPDOCS_TESTS       true/false (default true)
 #   CPPDOCS_SNIPPETS    true/false (default true)
 #   CPPDOCS_CMAKE_ARGS  extra configure arguments (word-split), e.g. -DCMAKE_CXX_STDLIB_MODULES_JSON=...
+#   CPPDOCS_SANITIZE    sanitizers for the suite (#263), e.g. address,undefined or thread: adds
+#                       -DCPPDOCS_SANITIZE, the sanitizer options, an -asan/-tsan suffix on the
+#                       compiler label (its own results file and page), and skips snippets
+#                       (the plain job of the same compiler checks them)
 #   CPPDOCS_SNIPPET_TOOLCHAIN  --toolchain for check_snippets.py (default auto)
 #   CPPDOCS_SNIPPET_ARGS       extra check_snippets.py arguments (word-split),
 #                              e.g. --flag=-stdlib=libc++ --flag=-fexperimental-library
@@ -42,6 +46,18 @@ preset="$CPPDOCS_PRESET"
 areas="${CPPDOCS_AREAS:-}"
 run_tests="${CPPDOCS_TESTS:-true}"
 run_snippets="${CPPDOCS_SNIPPETS:-true}"
+if [[ -n "${CPPDOCS_SANITIZE:-}" ]]; then
+    suffix=asan
+    [[ "$CPPDOCS_SANITIZE" == *thread* ]] && suffix=tsan
+    [[ "$CPPDOCS_COMPILER" == *-"$suffix" ]] || CPPDOCS_COMPILER="$CPPDOCS_COMPILER-$suffix"
+    CPPDOCS_CMAKE_ARGS="${CPPDOCS_CMAKE_ARGS:-} -DCPPDOCS_SANITIZE=$CPPDOCS_SANITIZE"
+    export ASAN_OPTIONS="${ASAN_OPTIONS:-halt_on_error=1:abort_on_error=0:allocator_may_return_null=1:detect_stack_use_after_return=1:strict_string_checks=1}"
+    export UBSAN_OPTIONS="${UBSAN_OPTIONS:-print_stacktrace=1:halt_on_error=1}"
+    export TSAN_OPTIONS="${TSAN_OPTIONS:-halt_on_error=1:second_deadlock_stack=1}"
+    run_snippets=false
+    # The upload step names the artifact from CPPDOCS_COMPILER.
+    [[ -n "${GITHUB_ENV:-}" ]] && echo "CPPDOCS_COMPILER=$CPPDOCS_COMPILER" >> "$GITHUB_ENV"
+fi
 out="${CPPDOCS_OUT:-ci-out}"
 py="$(command -v python3 || command -v python)"
 results="results-${CPPDOCS_PLATFORM}-${CPPDOCS_COMPILER}.json"

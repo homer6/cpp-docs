@@ -49,7 +49,7 @@ There are **no iterators** — you can't traverse a `stack`. That's the point.
 
 ## Examples
 
-```cpp
+```cpp run
 #include <stack>
 
 int main() {
@@ -71,7 +71,7 @@ int main() {
 
 ### Choosing a different backing container
 
-```cpp
+```cpp run
 #include <stack>
 #include <vector>
 

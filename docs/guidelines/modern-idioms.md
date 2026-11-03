@@ -403,7 +403,7 @@ constexpr unsigned char icon[] = {
 | `std::function_ref` | a non-owning callable parameter (cheaper than `std::function`) |
 | `std::indirect<T>` / `std::polymorphic<T>` | value-semantic heap objects (copyable, unlike `unique_ptr`) |
 | `std::views::concat` | join several ranges lazily |
-| `std::add_sat`, `std::sub_sat`, … | arithmetic that saturates instead of overflowing |
+| `std::saturating_add`, `std::saturating_sub`, … ([saturation](../examples/numerics/saturation.md); first shipped as `add_sat`, …) | arithmetic that saturates instead of overflowing |
 | Hardened library | checked `operator[]` and friends — see [safety](safety.md#c26-hardened-standard-library) |
 
 Reference: [inplace_vector](../examples/containers/sequence/inplace_vector.md)

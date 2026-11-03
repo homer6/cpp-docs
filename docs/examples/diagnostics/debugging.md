@@ -20,7 +20,7 @@ production run that nobody is debugging.
 
 ## Declaration
 
-```cpp nocompile
+```cpp bad
 namespace std {
   void breakpoint() noexcept;
   void breakpoint_if_debugging() noexcept;

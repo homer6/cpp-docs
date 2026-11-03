@@ -54,7 +54,7 @@ element.** References to a *value* stay valid until that element is erased.
 
 ### The many ways to insert (and why they differ)
 
-```cpp
+```cpp run
 #include <map>
 
 int main() {

@@ -2,6 +2,12 @@
 # LLVM, on Apple silicon (macos-15, macos-26) and Intel (macos-15-intel,
 # macos-26-intel). Issue #145.
 #
+# Homebrew LLVM: Apple silicon gets the current release (23 since 2026-10),
+# Intel stays on 22. Homebrew builds no LLVM 23 bottle for Intel macOS (only
+# arm64 macOS and Linux; checked 2026-11-02, #253), and LLVM's own 23.1.x
+# releases have no Intel macOS build, so 23 there would mean compiling LLVM
+# from source on every run.
+#
 # Manual only: started by hand (or by all.yml through workflow_call), with the
 # owner's consent for each run. See .github/workflows/README.md.
 name: macOS
@@ -73,6 +79,42 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: results-${{ env.CPPDOCS_PLATFORM || matrix.runner }}-${{ env.CPPDOCS_COMPILER || matrix.toolchain }}
+          path: |
+            results-*.json
+            ci-out/
+          if-no-files-found: warn
+
+  homebrew-llvm-asan:
+    # Homebrew LLVM with ASan + UBSan on Apple silicon (#263). A job of its own
+    # (an include would change the plain homebrew-llvm job). LeakSanitizer
+    # isn't supported on macOS, so leaks are checked by the Linux jobs.
+    name: macos-26 · homebrew-llvm (ASan + UBSan)
+    runs-on: macos-26
+    continue-on-error: false
+    timeout-minutes: 240
+    env:
+      CPPDOCS_AREAS: ${{ inputs.areas }}
+      CPPDOCS_TESTS: ${{ inputs.tests }}
+      CPPDOCS_SNIPPETS: ${{ inputs.snippets }}
+      CPPDOCS_SANITIZE: address,undefined
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (homebrew-llvm)
+        run: tools/ci/macos-toolchain.sh homebrew-llvm
+
+      - name: Configure, build, test (sanitized)
+        run: tools/ci/run.sh
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: results-${{ env.CPPDOCS_PLATFORM || 'macos-26' }}-${{ env.CPPDOCS_COMPILER || 'homebrew-llvm-asan' }}
           path: |
             results-*.json
             ci-out/
