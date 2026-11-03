@@ -61,7 +61,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Threat models and trust boundaries](threat-modeling.md) | What an attacker controls, what must stay protected, and how to keep the trusted core small. | ✅ verified |
 | [Ownership and lifetime](ownership-and-lifetime.md) | Explicit ownership and reviewed borrowed lifetimes, so no resource is used after release or released twice. | ✅ verified |
 | [Bounds and containers](bounds.md) | Carry extents with the data, check attacker-influenced indices before access, and respect invalidation. | ✅ verified |
-| [Integer and size calculations](integers.md) | Define numeric domains and check before arithmetic, so untrusted sizes can't wrap, narrow or exhaust. | imported |
+| [Integer and size calculations](integers.md) | Define numeric domains and check before arithmetic, so untrusted sizes can't wrap, narrow or exhaust. | ✅ verified |
 | [Object state and representation](object-representation.md) | Initialize before use, serialize explicitly across boundaries, and confine representation tricks. | imported |
 | [Parsing and validation](parsing-and-validation.md) | Parse untrusted input into constrained values, define ambiguous cases, and bound the parser's work. | imported |
 | [Concurrency and asynchronous code](concurrency.md) | One synchronization rule per shared object, and a lifetime argument for every queued or suspended operation. | imported |
