@@ -26,7 +26,8 @@ picks a working compiler unless `CXX` is set, #252).
 For security (a review where an attacker controls input, hardening a build,
 planning security tests), use the `cpp-security` skill
 (`.claude/skills/cpp-security/`), built on `docs/security/` (#312); it calls
-`modern-cpp` and `cpp-guidelines` for the writing and rule detail. When a
+`modern-cpp` and `cpp-guidelines` for the writing and rule detail. Its eval cases are in `evals/cpp-security/` (#309), validated by
+`evals/check.py` (cited page anchors, CERT and Core Guidelines IDs). When a
 security page is verified or changes what it recommends, update the skill's
 page table and checklist in the same PR.
 `make install` links it (and `cpp-guidelines` and `cpp-security`) into `~/.claude/skills`, upgrading

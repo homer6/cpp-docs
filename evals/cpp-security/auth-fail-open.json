@@ -1,0 +1,13 @@
+{
+  "id": "auth-fail-open",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "user and action (from the request); an attacker can also induce policy-service failures"},
+  "expect": {
+    "must_find": ["fails open: any exception (an outage, or one the attacker provokes) grants access"],
+    "must_cite_any": ["docs/security/error-handling.md#deny-when-the-decision-cant-be-made"],
+    "cert_any": [],
+    "guidelines_any": ["E.12"],
+    "fix": {"properties": ["denies when the decision can't be made, and reports or logs the failure"]}
+  },
+  "notes": "If availability matters more for a specific action, that's an explicit, reviewed exception, not a catch-all."
+}

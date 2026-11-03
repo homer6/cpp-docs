@@ -1,0 +1,13 @@
+{
+  "id": "async-this-capture",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "body (client request); the client can also disconnect at any time, destroying the Session"},
+  "expect": {
+    "must_find": ["the queued lambda captures this; if the Session is destroyed (client disconnects) before it runs, it writes to freed memory"],
+    "must_cite_any": ["docs/security/concurrency.md#lifetimes-across-threads-tasks-and-suspensions", "docs/security/ownership-and-lifetime.md"],
+    "cert_any": ["EXP54-CPP"],
+    "guidelines_any": ["F.53", "CP.31"],
+    "fix": {"properties": ["keeps the Session alive (shared_from_this) or checks it's alive (weak_ptr) when the task runs, or cancels queued work in the destructor"]}
+  },
+  "notes": "Use after free across an asynchronous boundary; the code compiles and looks fine locally."
+}

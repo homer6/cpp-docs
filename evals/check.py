@@ -10,6 +10,12 @@ For every case in evals/modern-cpp/ (the modern-cpp suite):
   - the .json has the required fields, and every page it cites exists
   - the reference answer (.cpp) compiles with -fsyntax-only at the case's std
 
+For every case in evals/cpp-security/ (the cpp-security suite, #309):
+  - the .json has the required fields and a known outcome
+  - every page it cites exists, and so does the #anchor (a heading on that page)
+  - CERT IDs look like INT30-C / EXP54-CPP; Core Guidelines IDs exist
+  - the code under review (.cpp) compiles with -fsyntax-only
+
 Usage: python3 evals/check.py            # from the repo root
        CXX=g++-15 python3 evals/check.py
 
@@ -35,6 +41,15 @@ REQUIRED = {"id", "outcome", "rules", "context", "expect", "notes"}
 MODERN = ROOT / "evals" / "modern-cpp"
 MODERN_REQUIRED = {"id", "task", "context", "expect", "notes"}
 MODERN_EXPECT = {"must_not_use", "must_use_any", "must_cite_any", "must_say"}
+SECURITY = ROOT / "evals" / "cpp-security"
+SECURITY_REQUIRED = {"id", "outcome", "context", "expect", "notes"}
+SECURITY_OUTCOMES = {"violation", "compliant", "needs-context"}
+SECURITY_EXPECT = {
+    "violation": {"must_find", "must_cite_any", "cert_any", "guidelines_any", "fix"},
+    "compliant": {"must_not_flag", "must_not_change", "must_cite_any", "cert_any", "guidelines_any"},
+    "needs-context": {"expected_behaviour", "must_cite_any", "cert_any", "guidelines_any"},
+}
+CERT_RE = re.compile(r"^[A-Z]{3}[0-9]{2}-(C|CPP)$")
 
 
 def known_rule_ids() -> set[str]:
@@ -76,6 +91,55 @@ def check_modern(cxx: str) -> tuple[int, int]:
         if err := compile_ok(cxx, meta_path.with_suffix(".cpp"), meta.get("context", {})):
             problems.append("reference answer does not compile:\n" + err)
         print(f"{'ok  ' if not problems else 'FAIL'} modern-cpp/{meta_path.stem}")
+        for p in problems:
+            print(f"     {p}")
+        failures += bool(problems)
+    return len(cases), failures
+
+def anchors(page: Path) -> set[str]:
+    """GitHub's heading slugs for a Markdown page."""
+    slugs = set()
+    for line in page.read_text(encoding="utf-8").splitlines():
+        if m := re.match(r"^#{1,6}\s+(.*?)\s*$", line):
+            text = re.sub(r"[`*_]", "", m.group(1)).lower()
+            text = re.sub(r"[^\w\- ]", "", text)
+            slugs.add(text.replace(" ", "-"))
+    return slugs
+
+
+def check_security(cxx: str, ids: set[str]) -> tuple[int, int]:
+    cases = sorted(SECURITY.glob("*.json")) if SECURITY.exists() else []
+    failures = 0
+    for meta_path in cases:
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        problems = []
+        if SECURITY_REQUIRED - meta.keys():
+            problems.append(f"missing fields {sorted(SECURITY_REQUIRED - meta.keys())}")
+        if meta.get("id") != meta_path.stem:
+            problems.append("id does not match file name")
+        outcome = meta.get("outcome")
+        expect = meta.get("expect", {})
+        if outcome not in SECURITY_OUTCOMES:
+            problems.append(f"unknown outcome {outcome!r}")
+        elif SECURITY_EXPECT[outcome] - expect.keys():
+            problems.append(f"expect is missing {sorted(SECURITY_EXPECT[outcome] - expect.keys())}")
+        if not expect.get("must_cite_any"):
+            problems.append("must_cite_any is empty")
+        for ref in expect.get("must_cite_any", []):
+            page, _, anchor = ref.partition("#")
+            if not (ROOT / page).exists():
+                problems.append(f"cited page doesn't exist: {page}")
+            elif anchor and anchor not in anchors(ROOT / page):
+                problems.append(f"no heading for #{anchor} in {page}")
+        bad_cert = [c for c in expect.get("cert_any", []) if not CERT_RE.match(c)]
+        if bad_cert:
+            problems.append(f"not CERT rule IDs: {bad_cert}")
+        unknown = [r for r in expect.get("guidelines_any", []) if r not in ids]
+        if unknown:
+            problems.append(f"rule IDs not in the Guidelines: {unknown}")
+        if err := compile_ok(cxx, meta_path.with_suffix(".cpp"), meta.get("context", {})):
+            problems.append("code under review does not compile:\n" + err)
+        print(f"{'ok  ' if not problems else 'FAIL'} cpp-security/{meta_path.stem}")
         for p in problems:
             print(f"     {p}")
         failures += bool(problems)
@@ -141,7 +205,9 @@ def main() -> int:
     print(f"\n{len(cases) - failures}/{len(cases)} cases passed ({cxx})")
     n, bad = check_modern(cxx)
     print(f"{n - bad}/{n} modern-cpp cases passed ({cxx})")
-    return 1 if failures or bad else 0
+    sn, sbad = check_security(cxx, ids)
+    print(f"{sn - sbad}/{sn} cpp-security cases passed ({cxx})")
+    return 1 if failures or bad or sbad else 0
 
 
 if __name__ == "__main__":

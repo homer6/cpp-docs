@@ -199,3 +199,21 @@ Name the pages and evidence you relied on (`docs/security/integers.md#…`,
 CERT INT30-C, `docs/platform-support/notes.md`). If a security page was
 missing, wrong or still imported where you needed it verified, say so and
 offer an issue in homer6/cpp-docs (the security epic is #286).
+
+## Measuring this skill
+
+`evals/cpp-security/` holds security review cases (#309). Seven are exploitable
+bugs that compile cleanly:
+- a wrapping size check;
+- an access/open race;
+- an early-exit secret comparison;
+- `rand()` tokens;
+- a queued lambda that captures `this`;
+- an authorization check that fails open, and a shell command built from
+  input.
+
+There's also a compliant control that must be left alone, and a case that can't
+be judged without the trust boundary. Each case names the page anchors, CERT
+IDs and Core Guidelines IDs a good answer cites. `python3 evals/check.py`
+validates them, including that every anchor is a real heading. See
+`evals/README.md`.

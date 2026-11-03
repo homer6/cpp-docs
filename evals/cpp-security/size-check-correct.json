@@ -1,0 +1,13 @@
+{
+  "id": "size-check-correct",
+  "outcome": "compliant",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "offset and length (network packet header)"},
+  "expect": {
+    "must_not_flag": ["integer overflow in the bounds check", "out-of-bounds subspan"],
+    "must_not_change": ["the two-step check (offset, then length against the remainder)"],
+    "must_cite_any": ["docs/security/integers.md#check-before-the-arithmetic"],
+    "cert_any": [],
+    "guidelines_any": []
+  },
+  "notes": "The control for size-check-wraps: each comparison is between values that can't overflow. A good answer leaves it alone."
+}
