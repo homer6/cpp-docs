@@ -24,6 +24,9 @@ std::string third() {
 }
 
 double quiet_reciprocal(double x) {
+#if defined(__clang__)
+#pragma STDC FENV_ACCESS ON  // as on the page: without it an optimized Clang build moves 1.0 / x past fetestexcept (#379)
+#endif
     std::fenv_t env;
     std::feholdexcept(&env);
     volatile double r = 1.0 / x;
