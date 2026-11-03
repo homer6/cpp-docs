@@ -294,6 +294,13 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_G
                               PROPERTIES COMPILE_OPTIONS -freflection)
 endif()
 
+# Code that changes the rounding mode needs -frounding-math on GCC; without it an
+# optimized x86-64 build expands std::rint as if rounding to nearest (#371).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set_source_files_properties(numerics/cfenv_test.cpp
+                              PROPERTIES COMPILE_OPTIONS -frounding-math)
+endif()
+
 add_custom_target(examples_tests)
 add_dependencies(examples_tests cppdocs_support_tests)
 

@@ -195,7 +195,11 @@ after `std::log(0.0)` is therefore not portable.
   `fetestexcept`: in the `quiet_reciprocal` example above, with a plain
   `double r`, GCC 15 at `-O2` performed the division after the test and the
   caller saw `FE_DIVBYZERO`. Use `volatile` operands and results (as these
-  examples do) when the code must work on GCC.
+  examples do) when the code must work on GCC. Even that isn't enough for
+  `std::rint` on x86-64: at `-O2` GCC 16 expands it inline as the rounded
+  magnitude with the sign copied back, so a volatile `-2.5` under `FE_UPWARD`
+  gave `-3.0`, not `-2.0`. With `-frounding-math` it gave `-2.0`. Code that
+  changes the rounding mode SHOULD be built with `-frounding-math` on GCC.
 
   ```cpp run
   #include <cfenv>
