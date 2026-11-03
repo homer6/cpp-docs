@@ -88,6 +88,15 @@ if(CPPDOCS_HARDEN)
   if(MSVC)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
       cppdocs_try_compile_flag(/sdl)
+      # /sdl makes C4996 an error, and C4996 deprecates standard C functions
+      # (fopen, gmtime, strncpy, sscanf...) in favour of Annex K's _s versions,
+      # which no other library here ships. The tests check the standard
+      # functions, so silence that one warning; /sdl's runtime checks and its
+      # other warnings-as-errors stay (#380).
+      if(CPPDOCS_HAS_FLAG__sdl)
+        add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+        list(APPEND cppdocs_harden_flags -D_CRT_SECURE_NO_WARNINGS)
+      endif()
     endif()
     cppdocs_try_compile_flag(/guard:cf)
     cppdocs_try_link_flag(/guard:cf)
