@@ -186,6 +186,43 @@ jobs:
             ci-out/
           if-no-files-found: warn
 
+  fuzz:
+    # libFuzzer targets for the security pages' parsers (#307): each runs for a
+    # time box on a copy of its saved corpus (tools/ci/fuzz.sh). A crash fails
+    # the job and its input is uploaded, to be minimized and saved in
+    # fuzz/corpus/ as a regression input; the replay test runs that corpus on
+    # every platform. Runs when the tests do.
+    name: Fuzz (Clang 22 libFuzzer + ASan + UBSan) · ubuntu-24.04
+    if: ${{ inputs.tests }}
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    timeout-minutes: 30
+    env:
+      CPPDOCS_FUZZ: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (clang-22 from apt.llvm.org)
+        run: tools/ci/linux-toolchain.sh clang-apt-llvm 22 libstdcxx
+
+      - name: Build the fuzz targets
+        run: |
+          cmake -S . -B build/fuzz -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCPPDOCS_FUZZ=ON
+          cmake --build build/fuzz --target fuzz_targets
+
+      - name: Fuzz each target (120 s each)
+        run: tools/ci/fuzz.sh 120
+
+      - name: Upload failing inputs and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: fuzz-clang-22-ubuntu-24.04
+          path: fuzz-out/
+          if-no-files-found: ignore
+
   ubuntu-26-04:
     name: ${{ matrix.runner }} · ${{ matrix.tc.label }} (Ubuntu archive)
     runs-on: ${{ matrix.runner }}

@@ -39,6 +39,7 @@ whitespace skipping, and it reports both:
 #include <system_error>
 
 std::optional<std::uint16_t> parse_port(std::string_view text) {
+    if (text.size() > 1 && text.front() == '0') return std::nullopt;   // "080" and "80" mustn't both mean 80
     unsigned value = 0;
     auto [end, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
     if (ec != std::errc{}) return std::nullopt;               // not a number, or too big for unsigned
@@ -50,7 +51,11 @@ std::optional<std::uint16_t> parse_port(std::string_view text) {
 
 `from_chars` rejects a leading `+`, leading whitespace and (for unsigned
 types) a `-`, so `" 80"`, `"+80"` and `"-1"` all fail; `std::stoi` and
-`atoi` would accept or misreport some of them. See
+`atoi` would accept or misreport some of them. It does accept leading zeros,
+so the first line rejects them: otherwise `"080"` and `"80"` are two spellings
+of one value, exactly the kind of ambiguity the next section warns about. This
+repo's fuzz target for `parse_port` found that in its first 30 seconds (see
+[verification](verification.md#fuzz-the-security-boundaries)). See
 [charconv](../examples/text-processing/charconv.md).
 
 ## Define the ambiguous cases

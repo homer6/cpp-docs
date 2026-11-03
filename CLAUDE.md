@@ -322,6 +322,12 @@ the flags used go into the results JSON (`compiler.harden_flags`). In CI,
 to the compiler label (its own results and toolchain page, no snippets).
 Details in `docs/testing.md`.
 
+**Fuzzing** (#307): `fuzz/` holds libFuzzer targets for the security pages'
+parsers (`CPPDOCS_FUZZ=ON`, Clang; `tools/ci/fuzz.sh`; the `fuzz` job in
+`linux.yml`). A crash found by fuzzing is fixed, and its minimized input is
+saved in `fuzz/corpus/<target>/`, which `tests/security/fuzz_corpus_test.cpp`
+replays on every toolchain. See `fuzz/README.md`.
+
 **Sanitizers** (#263): `CPPDOCS_SANITIZE` (`address,undefined`, `thread`, or
 `address` on MSVC/clang-cl) builds the whole suite with the sanitizer; the
 `*-asan` presets set it, and in CI `CPPDOCS_SANITIZE` in a job's environment

@@ -105,6 +105,7 @@ area has its own README.
 
 - **[`docs/guidelines/`](docs/guidelines/README.md)** — how to use it well (see [Guidelines](#guidelines))
 - **[`docs/security/`](docs/security/README.md)** — how to write C++ that holds up against an attacker: trust boundaries, untrusted input, secrets, hardening, verification, supply chain (being verified for v0.5.0, [#286](https://github.com/homer6/cpp-docs/issues/286))
+- **[`fuzz/`](fuzz/README.md)** — libFuzzer targets for the security pages' parsers, with a saved corpus replayed as tests
 - **[`tests/`](tests/CMakeLists.txt)** — GoogleTest suite that checks the pages' claims (see [Testing and CI](docs/testing.md#running-the-tests))
 - **[`tools/check_snippets.py`](tools/check_snippets.py)** — compile-checks every ```` ```cpp ```` block ([`snippet_prelude.hpp`](tools/snippet_prelude.hpp), [`snippet_baseline/`](tools/snippet_baseline/gcc.txt)); [`tools/run_tests.sh`](tools/run_tests.sh) (or [`run_tests.ps1`](tools/run_tests.ps1) on Windows) runs the tests, [`tools/ctest_to_json.py`](tools/ctest_to_json.py) writes their results as JSON
 - **[`docs/testing.md`](docs/testing.md)** — how the snippets and tests are checked, the toolchain presets and the manual CI workflows

@@ -315,6 +315,11 @@ foreach(area IN LISTS area_dirs)
   target_link_libraries(${target} PRIVATE cppdocs_support)
   target_compile_options(${target} PRIVATE ${cppdocs_warnings})
   add_dependencies(examples_tests ${target})
+  if(area STREQUAL "security")
+    # The fuzz targets' parsers and saved corpus, replayed as tests (#307).
+    target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/fuzz)
+    target_compile_definitions(${target} PRIVATE CPPDOCS_FUZZ_DIR="${PROJECT_SOURCE_DIR}/fuzz")
+  endif()
   # Test names come out as <Suite>.<Test>; the area is added as a label so
   # `ctest -L containers` runs one area.
   gtest_discover_tests(${target}

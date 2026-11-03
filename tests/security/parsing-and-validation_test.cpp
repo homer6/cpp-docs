@@ -16,6 +16,7 @@
 namespace {
 
 std::optional<std::uint16_t> parse_port(std::string_view text) {
+    if (text.size() > 1 && text.front() == '0') return std::nullopt;   // "080" and "80" mustn't both mean 80
     unsigned value = 0;
     auto [end, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
     if (ec != std::errc{}) return std::nullopt;
@@ -62,6 +63,8 @@ TEST(SecurityParsing, ParsePortRejectsEverythingButAPort) {
     EXPECT_FALSE(parse_port("+80"));       // from_chars takes no '+'
     EXPECT_FALSE(parse_port("-1"));        // or '-' for unsigned
     EXPECT_FALSE(parse_port("0"));         // outside the domain
+    EXPECT_FALSE(parse_port("080"));       // leading zero: a second spelling of 80 (found by fuzzing)
+    EXPECT_FALSE(parse_port("05"));
     EXPECT_FALSE(parse_port("65536"));
     EXPECT_FALSE(parse_port("99999999999999999999"));   // too big even for unsigned
     EXPECT_FALSE(parse_port(std::string_view("80\0" "1", 4)));   // embedded NUL is trailing data
