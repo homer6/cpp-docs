@@ -74,6 +74,13 @@ On MSVC: `/GS` (on by default), `/sdl` (extra security checks; security
 warnings become errors), `/guard:cf` passed to both compiler and linker
 (Control Flow Guard), `/CETCOMPAT` on x64 (shadow-stack compatibility), and
 the linker's `/DYNAMICBASE` (ASLR, on by default) and `/NXCOMPAT` (DEP).[^ms]
+One of the warnings `/sdl` makes an error is C4996, which deprecates standard
+C functions such as `fopen`, `gmtime`, `strncpy` and `sscanf` in favour of
+Microsoft's `_s` versions (C11's optional Annex K, which glibc doesn't
+provide: glibc 2.41 doesn't define `__STDC_LIB_EXT1__`). Portable code that calls the standard functions defines
+`_CRT_SECURE_NO_WARNINGS` next to `/sdl`, which silences only that warning;
+this repo's hardened MSVC build does
+([#380](https://github.com/homer6/cpp-docs/issues/380)).
 
 **Check each flag on your toolchain.** Measured in this repo: with Homebrew
 GCC 15 on Apple silicon, `-mbranch-protection=pac-ret` (part of `standard`)
