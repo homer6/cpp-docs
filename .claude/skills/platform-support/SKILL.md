@@ -191,7 +191,14 @@ The same run writes the README's platform badges (`docs/platform-support/badges/
 and the `<!-- badges:start -->` block, #230): commit them with the report.
 
 Then **update the platform support notes** (`docs/platform-support/notes.md`,
-#226), which the collector shows at the top of the folder README. Re-read the
+#226), which the collector shows at the top of the folder README. **Re-derive them claim by claim; never
+patch only the numbers you know changed** (#350). For each sentence with a
+count, range, version or claim about a toolchain, find the result that backs
+it (per-test status and skip reasons in the run's and the local results JSON,
+`known-bugs.json`) and keep, fix or remove it. Ranges include the local
+results; a skip the runner's CMake causes isn't a compiler gap. Put a "Notes
+claims" table (claim · evidence · kept/fixed/removed) in the PR.
+`collect_results.py --check` only checks the marker, never the text. Re-read the
 new results (per-toolchain counts, the skip reasons grouped by feature-test
 macro, x86_64 vs arm64 pairs, `known-bugs.json`), revise every claim that
 changed, and set the `<!-- notes-run: <id> -->` marker to the newest run.
