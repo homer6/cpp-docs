@@ -123,6 +123,65 @@ merging its conflicts.
 flame graphs, CPU/memory/disk/network analysis). Link to it for profiling
 commands instead of duplicating them.
 
+## Security section
+
+`docs/security/` is about writing C++ that holds up against an attacker
+(#286, v0.5.0): threat models and trust boundaries, untrusted input, integer
+and size checks, lifetimes across callbacks, fail-closed errors, secrets,
+process and file boundaries, resource limits, hardening, verification, supply
+chain, deployment and policy. `docs/security/README.md` lists the pages and
+each page's status.
+
+- **Security isn't safety.** `docs/guidelines/safety.md` and the Core
+  Guidelines cover correctness (no UB, no dangling, no leaks). The security
+  pages ask what an attacker can make the code do: which input crosses a trust
+  boundary, what it can exhaust, what a failure grants. Link the safety pages
+  for the foundations instead of repeating them.
+- **Positive framing.** The pages say what makes C++ code secure: C++ written
+  to the guidelines, with library hardening, verification and a small trusted
+  core. Never adopt the premise that C++ isn't memory-safe (the owner: C++ is
+  more memory-safe, when the guidelines are followed, than languages that
+  claim memory safety).
+- **Scope: C++ first, but not C++ only.** The pages teach how to write secure
+  C++, so code-level guidance comes first. Guidance beyond the language
+  (operations, deployment, the build and supply chain, process) belongs too
+  when it improves security, and especially when it changes how the C++ is
+  written: a sandbox shapes how a parser is split into processes; a
+  crash-reporting policy decides which memory may hold secrets. Don't drop
+  useful guidance for not being C++. Keep it short, and link out for
+  procedures that don't touch the code.
+- **Don't harden this repo unnecessarily.** Hardening isn't bad, but the repo
+  is here to cover C++: the section teaches what readers should do in their
+  code. Change the repo's own build or CI for security only when it's needed,
+  and never in a way that makes the build, clone or CI noticeably more
+  expensive (#334: pinning GoogleTest by commit forced a full clone, and was
+  rejected).
+- **Page shape:** the one-line summary quote, `## Mental model`, then sections
+  of rules labelled **MUST**, **SHOULD** or **MAY**, each with the reason, our
+  own compile-checked example where code helps, and its sources; then
+  `## See also` and a `Tests:` link. A section on how this repo does it is
+  welcome where the repo is a worked example (presets, fuzz targets,
+  clang-tidy, pinned inputs).
+- **Citations:** Core Guidelines IDs link to our index
+  (`../guidelines/core-guidelines/<section>.md`). SEI CERT rules are cited by
+  ID and linked to CERT's site, **never copied** (CERT's licence). Vendor docs,
+  man pages and papers back the facts; an AI summary is never a source.
+- **Verify like the rest of the repo:** every claim about a compiler, library
+  or OS is checked locally (GCC 15, Clang 22, GCC 16 or Linux in the `gcc:16`
+  image) and states the version it was checked on. An imported claim that
+  can't be verified is fixed or removed, and the PR says which.
+- **Tests:** one file per page, `tests/security/<page>_test.cpp` (the
+  `security` area), starting `// Checks claims made by docs/security/<page>.md.`,
+  with the usual `// "Section": claim` comments. Platform-specific claims
+  (POSIX, Linux) are gated with `#if` and skip with a reason elsewhere; a test
+  that would change the test process's privileges skips when it runs as root.
+  The security area also gets `CPPDOCS_FUZZ_DIR` (the `fuzz/` folder) and its
+  include path. `tests/security/` and `fuzz/` must pass
+  `tools/run_clang_tidy.sh`.
+- **When a page is verified or changes what it recommends,** mark it in
+  `docs/security/README.md` and update the `cpp-security` skill's page table
+  and checklist in the same PR.
+
 ## Layout
 
 Each cppreference area is a subfolder under `docs/examples/`:
@@ -780,6 +839,17 @@ unless they directly modify the work queue"*.
   `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
   `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
   out: GitHub's default branch is `main`, so a PR without it targets `main`.
+- **Issues worked serially may stack** (v0.5.0's security PRs): each issue is
+  worked on its own feature branch in its own worktree
+  (`~/dev/homer6/cpp-docs-worktrees/issue-<n>`, branch `<area>/<n>-<slug>`),
+  and each PR's base is the previous issue's branch; the first PR's base is
+  `dev`. GitHub retargets the next PR when one merges with `--delete-branch`.
+  When `dev` moves, rebase the whole stack onto it in one pass
+  (`git rebase --update-refs origin/dev` from the top branch, then
+  `git push --force-with-lease` for each branch), never by merging `dev` in.
+- **A separate release branch** (like `dev-0.5`) only when the owner asks for
+  one. v0.5.0 started on `dev-0.5`; the owner dropped it and retargeted the
+  stack to `dev` before review.
 - **The only PR into `main` is the release PR** (`dev` → `main`), opened when
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`. Follow the

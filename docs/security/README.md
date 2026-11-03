@@ -48,10 +48,16 @@ each practice belongs to and what evidence shows it's in place.
 - **Examples are ours and compile-checked** like every snippet in the repo;
   claims that can be checked at run time have tests in `tests/security/`, one
   file per page.
-- **Status:** a page marked *imported* is still the text of the research report
-  this section started from, and its claims are leads until its verification
-  issue (epic [#286](https://github.com/homer6/cpp-docs/issues/286)) lands.
-  A *verified* page has been checked against primary sources and our compilers.
+- **Status:** a *verified* page has been checked against primary sources and
+  our compilers: the imported research report's claims that didn't hold were
+  fixed or removed, and its checkable claims have tests (epic
+  [#286](https://github.com/homer6/cpp-docs/issues/286)). Every page is
+  verified except [supply chain](supply-chain.md), which is still *imported*:
+  the research report's text, whose claims are leads until it's verified.
+- **Checked by the repo's own tooling:** the security tests run on every
+  platform in CI, the parsers are fuzzed (`fuzz/`), and `tests/security/` and
+  `fuzz/` pass the clang-tidy profile in `.clang-tidy`
+  ([verification](verification.md#how-this-repo-verifies-itself)).
 
 ## Pages
 
@@ -70,10 +76,10 @@ each practice belongs to and what evidence shows it's in place.
 | [Filesystem, process and FFI boundaries](filesystem-and-processes.md) | Avoid check-then-use, constrain process launch and loading, and treat foreign interfaces as trust boundaries. | ✅ verified |
 | [Resource limits and availability](resource-limits.md) | Make resource consumption part of validation, so valid-looking requests can't exhaust the service. | ✅ verified |
 | [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | ✅ verified |
-| [Security verification](verification.md) | Warnings, static analysis, sanitizers, fuzzing and failure tests: complementary evidence for security properties. | ✅ verified |
+| [Security verification](verification.md) | Choose the method that can see each property, measure what fuzzing reached, and keep every finding as a test. | ✅ verified |
 | [Supply chain and release security](supply-chain.md) | Control build inputs, verify provenance, and keep the evidence for every release. | imported |
-| [Deployment and incident readiness](deployment.md) | Least privilege, isolation of risky components, careful logging, and a process for vulnerabilities. | ✅ verified |
-| [Security policy, review and adoption](policy.md) | Enforceable rules, release gates, a review checklist and an adoption order. | ✅ verified |
+| [Deployment and incident readiness](deployment.md) | Drop privileges correctly, sandbox parsers, keep secrets out of crash dumps and logs, be ready to ship fixes. | ✅ verified |
+| [Security policy, review and adoption](policy.md) | Each rule mapped to the check that enforces it, release gates, a review checklist and an adoption order. | ✅ verified |
 
 ## See also
 
