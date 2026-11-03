@@ -10,17 +10,17 @@ Every feature and example of this reference on one toolchain. Back to [platform 
 | Compiler | Clang 23.1.4 (preset `clang`) |
 | Standard library | libc++ |
 | Architecture | x86_64, little-endian |
-| Run | [all.yml · 2026-11-03](https://github.com/homer6/cpp-docs/actions/runs/41618636506), commit `ddf1dfa` |
+| Run | [all.yml · 2026-11-03](https://github.com/homer6/cpp-docs/actions/runs/41689101415), commit `3835b98` |
 | Areas | all |
-| Tests | 1464 run |
-| Snippets | 1802 blocks in `docs`, **report-only** |
+| Tests | 1544 run |
+| Snippets | 1852 blocks in `docs`, **report-only** |
 
 ## Totals
 
 | | Passed | Failed | Skipped | Not run | Unknown |
 |---|---:|---:|---:|---:|---:|
-| Features (1460) | 1328 | 0 | 131 | 1 | 0 |
-| Examples (1802) | 1635 | 14 | 153 | 0 | 0 |
+| Features (1540) | 1389 | 0 | 150 | 1 | 0 |
+| Examples (1852) | 1683 | 15 | 154 | 0 | 0 |
 
 Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · ❔ unknown (the results couldn't be matched to this checkout). Snippet results are **report-only** here: no reviewed snippet baseline yet (#159).
 
@@ -45,6 +45,7 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [named-requirements](#named-requirements) | ✅ | ✅ |
 | [numerics](#numerics) | 🟡 12 | ❌ 2 |
 | [ranges](#ranges) | 🟡 5 | ❌ 3 |
+| [security](#security) | 🟡 19 | ❌ 1 |
 | [strings](#strings) | ✅ | ✅ |
 | [text-processing](#text-processing) | 🟡 12 | 🟡 3 |
 | [utilities](#utilities) | 🟡 5 | ❌ 1 |
@@ -2758,6 +2759,251 @@ Cells: ✅ passed · ❌ failed · ⏭ skipped (reason given) · — not run · 
 | [cache_latest--compute-each-element-once](../examples/ranges/views.md#cache_latest--compute-each-element-once) | 1 | ❌ 1 of 1 |
 | [as_input--downgrade-to-an-input-range](../examples/ranges/views.md#as_input--downgrade-to-an-input-range) | 1 | ⏭ (needs as_input) |
 | [examples](../examples/ranges/views.md#examples) | 1 | ✅ |
+
+</details>
+
+## security
+
+<details><summary>17 pages · 80 features · 50 examples: ❌ 1</summary>
+
+**[security/bounds.md](../security/bounds.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Carry the extent](../security/bounds.md#carry-the-extent): a length from the header is checked against what was received,… | `SecurityBounds.PayloadLengthCheckedAgainstPacket` | ✅ |
+| [Check before the access](../security/bounds.md#check-before-the-access): an explicit check makes a bad index an ordinary outcome. | `SecurityBounds.ExplicitCheckRejectsBadIndex` | ✅ |
+| [Check before the access](../security/bounds.md#check-before-the-access): at() checks too, but reports a bad index by throwing. | `SecurityBounds.AtThrowsOutOfRange` | ✅ |
+| [Respect invalidation](../security/bounds.md#respect-invalidation): push_back past capacity reallocates, so pointers and refere… | `SecurityBounds.PushBackPastCapacityReallocates` | ✅ |
+| [Respect invalidation](../security/bounds.md#respect-invalidation): reserve allocates capacity but creates no elements. | `SecurityBounds.ReserveDoesNotCreateElements` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [carry-the-extent](../security/bounds.md#carry-the-extent) | 1 | ✅ |
+| [check-before-the-access](../security/bounds.md#check-before-the-access) | 2 | ✅ |
+| [respect-invalidation](../security/bounds.md#respect-invalidation) | 1 | ✅ |
+
+**[security/concurrency.md](../security/concurrency.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [One synchronization rule per shared object](../security/concurrency.md#one-synchronization-rule-per-shared-object): with the check and the debit in one c… | `SecurityConcurrency.CheckAndActInOneCriticalSection` | ✅ |
+| [One synchronization rule per shared object](../security/concurrency.md#one-synchronization-rule-per-shared-object): scoped_lock takes two mutexes togethe… | `SecurityConcurrency.ScopedLockTakesBothMutexes` | ✅ |
+| [shared_ptr is ownership, not synchronization](../security/concurrency.md#shared_ptr-is-ownership-not-synchronization): copies of one shared_ptr in many th… | `SecurityConcurrency.SharedPtrCountIsAtomic` | ✅ |
+| [shared_ptr is ownership, not synchronization](../security/concurrency.md#shared_ptr-is-ownership-not-synchronization): atomic&lt;shared_ptr&gt; (C++20) swaps a… | `SecurityConcurrency.AtomicSharedPtr` | ⏭ needs __cpp_lib_atomic_shared_ptr (not defined by this toolchain) |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [one-synchronization-rule-per-shared-object](../security/concurrency.md#one-synchronization-rule-per-shared-object) | 2 | ✅ |
+| [lifetimes-across-threads-tasks-and-suspensions](../security/concurrency.md#lifetimes-across-threads-tasks-and-suspensions) | 1 | ⏭ (nocompile) |
+
+**[security/cryptography-and-secrets.md](../security/cryptography-and-secrets.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Get randomness from the operating system](../security/cryptography-and-secrets.md#get-randomness-from-the-operating-system): a &lt;random&gt; engine seeded the same way p… | `SecurityCrypto.SeededEngineRepeats` | ✅ |
+| **Keep secrets out of ... long-lived memory**: the platform erase zeroes the buffer. | `SecurityCrypto.SecureZeroErases` | ✅ |
+| [Compare secrets in constant time](../security/cryptography-and-secrets.md#compare-secrets-in-constant-time): the comparison is correct for equal, different… | `SecurityCrypto.EqualSecretIsCorrect` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [get-randomness-from-the-operating-system](../security/cryptography-and-secrets.md#get-randomness-from-the-operating-system) | 1 | ✅ |
+| [keep-secrets-out-of-code-logs-and-long-lived-memory](../security/cryptography-and-secrets.md#keep-secrets-out-of-code-logs-and-long-lived-memory) | 1 | ✅ |
+| [compare-secrets-in-constant-time](../security/cryptography-and-secrets.md#compare-secrets-in-constant-time) | 1 | ✅ |
+
+**[security/deployment.md](../security/deployment.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| **Keep logs safe to keep**: a Secret prints as [redacted] through std::format and str… | `SecurityDeployment.SecretNeverPrints` | ✅ |
+| **Neutralize untrusted text**: a newline can't start a forged log entry, and terminal… | `SecurityDeployment.LogFieldIsOneLine` | ✅ |
+| [Run with least privilege](../security/deployment.md#run-with-least-privilege): an unprivileged process can't drop to another identity,… | `SecurityDeployment.FailedDropThrows` | ⏭ POSIX privileges only (no &lt;grp.h&gt;/&lt;unistd.h&gt;) |
+| [Keep secrets out of crash dumps](../security/deployment.md#keep-secrets-out-of-crash-dumps): the core-file limit can be lowered to 0 by an un… | `SecurityDeployment.CoreLimitCanBeLowered` | ⏭ POSIX resource limits only |
+| [Keep secrets out of crash dumps](../security/deployment.md#keep-secrets-out-of-crash-dumps): on Linux a process can mark itself not dumpable… | `SecurityDeployment.LinuxNotDumpableAndDontDump` | ⏭ Linux only (prctl, MADV_DONTDUMP) |
+| [Isolate the code that parses untrusted input](../security/deployment.md#isolate-the-code-that-parses-untrusted-input): setting no_new_privs works unprivil… | `SecurityDeployment.LinuxNoNewPrivs` | ⏭ Linux only (PR_SET_NO_NEW_PRIVS) |
+| [Stop safely, restart cleanly](../security/deployment.md#stop-safely-restart-cleanly): writing to a temporary file and renaming it replace… | `SecurityDeployment.AtomicWriteReplacesTarget` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [run-with-least-privilege](../security/deployment.md#run-with-least-privilege) | 1 | ❌ 1 of 1 |
+| [isolate-the-code-that-parses-untrusted-input](../security/deployment.md#isolate-the-code-that-parses-untrusted-input) | 1 | ✅ |
+| [stop-safely-restart-cleanly](../security/deployment.md#stop-safely-restart-cleanly) | 1 | ✅ |
+| [keep-secrets-out-of-crash-dumps](../security/deployment.md#keep-secrets-out-of-crash-dumps) | 1 | ✅ |
+| [keep-logs-safe-to-keep-and-safe-to-read](../security/deployment.md#keep-logs-safe-to-keep-and-safe-to-read) | 2 | ✅ |
+
+**[security/error-handling.md](../security/error-handling.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Deny when the decision can't be made](../security/error-handling.md#deny-when-the-decision-cant-be-made): a throwing policy (an outage) denies. | `SecurityErrorHandling.ThrowingPolicyDenies` | ✅ |
+| [Leave a defined state](../security/error-handling.md#leave-a-defined-state): rotate() changes both fields or neither. | `SecurityErrorHandling.RotateCommitsBothFields` | ✅ |
+| [Leave a defined state](../security/error-handling.md#leave-a-defined-state): when building the new state throws, the old state is untou… | `SecurityErrorHandling.FailureBeforeCommitLeavesOldState` | ✅ |
+| [Put exception boundaries where control leaves your code](../security/error-handling.md#put-exception-boundaries-where-control-leaves-your-code): swap is noexcept for sta… | `SecurityErrorHandling.CommitStepCantThrow` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [deny-when-the-decision-cant-be-made](../security/error-handling.md#deny-when-the-decision-cant-be-made) | 3 | ✅ |
+| [leave-a-defined-state](../security/error-handling.md#leave-a-defined-state) | 1 | ✅ |
+
+**[security/filesystem-and-processes.md](../security/filesystem-and-processes.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Keep user-named files inside their directory](../security/filesystem-and-processes.md#keep-user-named-files-inside-their-directory): relative names without ".." pass. | `SecurityFilesystem.RelativeNamesPass` | ✅ |
+| [Keep user-named files inside their directory](../security/filesystem-and-processes.md#keep-user-named-files-inside-their-directory): absolute paths, root names and any… | `SecurityFilesystem.EscapesRejected` | ✅ |
+| [Keep user-named files inside their directory](../security/filesystem-and-processes.md#keep-user-named-files-inside-their-directory): joining a rejected absolute path to… | `SecurityFilesystem.AbsolutePathReplacesBaseWhenJoined` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [keep-user-named-files-inside-their-directory](../security/filesystem-and-processes.md#keep-user-named-files-inside-their-directory) | 1 | ✅ |
+| [launch-programs-with-an-argument-vector-not-a-shell](../security/filesystem-and-processes.md#launch-programs-with-an-argument-vector-not-a-shell) | 2 | ✅ |
+
+**[security/hardening.md](../security/hardening.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| **Standard-library hardening**: vector::operator[] past the end stops the program. | `SecurityHardeningDeathTest.VectorIndexOutOfRange` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: vector::front() on an empty vector stops the program. | `SecurityHardeningDeathTest.VectorFrontOnEmpty` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: std::array::operator[] past the end stops the program. | `SecurityHardeningDeathTest.ArrayIndexOutOfRange` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: std::span::operator[] past the end stops the program. | `SecurityHardeningDeathTest.SpanIndexOutOfRange` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: string::operator[] past size() stops the program (ind… | `SecurityHardeningDeathTest.StringIndexOutOfRange` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: string_view::operator[] past the end stops the progra… | `SecurityHardeningDeathTest.StringViewIndexOutOfRange` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: dereferencing an empty optional stops the program. | `SecurityHardeningDeathTest.EmptyOptionalDereference` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: operator* on an expected holding an error stops the p… | `SecurityHardeningDeathTest.ExpectedWithErrorDereference` | ⏭ library hardening is off in this build (no _GLIBCXX_ASSERTIONS, _LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn… |
+| **Standard-library hardening**: the checked accesses in range still work normally. | `SecurityHardening.InRangeAccessUnaffected` | ✅ |
+
+**[security/integers.md](../security/integers.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Check before the arithmetic](../security/integers.md#check-before-the-arithmetic): the slice check never computes offset + length, so a… | `SecurityIntegers.ValidSliceRejectsWrappingLength` | ✅ |
+| [Check before the arithmetic](../security/integers.md#check-before-the-arithmetic): the allocation size is checked against a budget, and… | `SecurityIntegers.AllocationSizeCheckedAgainstBudget` | ✅ |
+| [Check before the arithmetic](../security/integers.md#check-before-the-arithmetic): a checked add (ckd_add where available) reports over… | `SecurityIntegers.CheckedAddReportsOverflow` | ✅ |
+| [Check before the arithmetic](../security/integers.md#check-before-the-arithmetic): where __cpp_lib_stdckdint_h is defined (libstdc++ 14… | `SecurityIntegers.StdckdintAvailability` | ⏭ __cpp_lib_stdckdint_h not defined by this standard library (P3370R1, C++26) |
+| [Define the numeric domain](../security/integers.md#define-the-numeric-domain): in_range and cmp_* compare values, while a cast keeps… | `SecurityIntegers.InRangeAndCmpCompareValues` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [define-the-numeric-domain](../security/integers.md#define-the-numeric-domain) | 1 | ✅ |
+| [check-before-the-arithmetic](../security/integers.md#check-before-the-arithmetic) | 3 | ✅ |
+| [signed-overflow-is-undefined-so-the-check-must-come-first](../security/integers.md#signed-overflow-is-undefined-so-the-check-must-come-first) | 1 | ✅ |
+
+**[security/language-versions.md](../security/language-versions.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Language version versus toolchain](../security/language-versions.md#language-version-versus-toolchain): libstdc++ 15+ defines _GLIBCXX_ASSERTIONS by d… | `SecurityLanguageVersions.LibstdcxxAssertionsDefaultOnlyWhenUnoptimized` | ⏭ libstdc++ only (this build uses another standard library) |
+| [What each standard adds](../security/language-versions.md#what-each-standard-adds): before C++20 a signed/unsigned comparison converts the n… | `SecurityLanguageVersions.IntegerComparisonCatchesNegativeLength` | ✅ |
+| [What each standard adds](../security/language-versions.md#what-each-standard-adds): the C++17 facilities and the values the table gives. | `SecurityLanguageVersions.Cxx17FacilitiesAndMacros` | ⏭ needs __cpp_lib_to_chars &gt;= 201611L (not defined by this toolchain) |
+| [What each standard adds](../security/language-versions.md#what-each-standard-adds): the C++20 facilities and the values the table gives. | `SecurityLanguageVersions.Cxx20FacilitiesAndMacros` | ✅ |
+| [What each standard adds](../security/language-versions.md#what-each-standard-adds): the C++23 facilities and the values the table gives. | `SecurityLanguageVersions.Cxx23FacilitiesAndMacros` | ✅ |
+| [C++26: contracts and library hardening](../security/language-versions.md#c26-contracts-and-library-hardening): the hardened-library macros (P3471) aren'… | `SecurityLanguageVersions.Cxx26HardenedLibraryMacros` | ⏭ needs __cpp_lib_hardened_array &gt;= 202502L (not defined by this toolchain) |
+| [C++26: contracts and library hardening](../security/language-versions.md#c26-contracts-and-library-hardening): contract assertions (P2900), __cpp_contra… | `SecurityLanguageVersions.Cxx26ContractsMacro` | ⏭ needs __cpp_contracts &gt;= 202502L (not defined by this toolchain) |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [what-each-standard-adds](../security/language-versions.md#what-each-standard-adds) | 1 | ✅ |
+| [gate-newer-facilities-and-test-the-fallback](../security/language-versions.md#gate-newer-facilities-and-test-the-fallback) | 1 | ✅ |
+
+**[security/object-representation.md](../security/object-representation.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Initialize before use](../security/object-representation.md#initialize-before-use): default member initializers make a default-constructed ses… | `SecurityObjectRepresentation.DefaultMemberInitializersDeny` | ✅ |
+| **Serialize field by field**: a struct with a uint8_t then a uint32_t has padding, an… | `SecurityObjectRepresentation.PaddingDetectedByTrait` | ✅ |
+| **Serialize field by field**: the wire format is exactly the fields, little-endian, r… | `SecurityObjectRepresentation.FieldByFieldEncodingIsExact` | ✅ |
+| [Confine casts that skip type checks](../security/object-representation.md#confine-casts-that-skip-type-checks): dynamic_cast checks the dynamic type, so a m… | `SecurityObjectRepresentation.DynamicCastRejectsWrongType` | ✅ |
+| **Confine casts**: bit_cast reinterprets a value's bits through a copy, with matching… | `SecurityObjectRepresentation.BitCastCopiesBits` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [initialize-before-use](../security/object-representation.md#initialize-before-use) | 2 | ✅ |
+| [serialize-field-by-field-across-a-trust-boundary](../security/object-representation.md#serialize-field-by-field-across-a-trust-boundary) | 2 | ✅ |
+| [confine-casts-that-skip-type-checks](../security/object-representation.md#confine-casts-that-skip-type-checks) | 2 | ✅ |
+
+**[security/ownership-and-lifetime.md](../security/ownership-and-lifetime.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Make ownership explicit](../security/ownership-and-lifetime.md#make-ownership-explicit): an RAII handle releases exactly once, on every path, inc… | `SecurityOwnership.RaiiHandleReleasesOnceOnEveryPath` | ✅ |
+| [Make ownership explicit](../security/ownership-and-lifetime.md#make-ownership-explicit): an exclusive owner can't be copied into a second owner. | `SecurityOwnership.UniquePtrCantBeCopied` | ✅ |
+| [Give every borrow a lifetime argument](../security/ownership-and-lifetime.md#give-every-borrow-a-lifetime-argument): a queued callback holding a weak_ptr does… | `SecurityOwnership.WeakPtrCallbackSkipsEndedSession` | ✅ |
+| [Give every borrow a lifetime argument](../security/ownership-and-lifetime.md#give-every-borrow-a-lifetime-argument): capturing a shared_ptr keeps the object al… | `SecurityOwnership.SharedPtrCaptureExtendsLifetime` | ✅ |
+| [Make ownership explicit](../security/ownership-and-lifetime.md#make-ownership-explicit): enable_shared_from_this gives an object a shared_ptr to… | `SecurityOwnership.SharedFromThisSharesOwnership` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [make-ownership-explicit](../security/ownership-and-lifetime.md#make-ownership-explicit) | 2 | ✅ |
+| [give-every-borrow-a-lifetime-argument](../security/ownership-and-lifetime.md#give-every-borrow-a-lifetime-argument) | 2 | ✅ |
+
+**[security/parsing-and-validation.md](../security/parsing-and-validation.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Parse into constrained values](../security/parsing-and-validation.md#parse-into-constrained-values): from_chars plus a full-consumption check and a dom… | `SecurityParsing.ParsePortRejectsEverythingButAPort` | ✅ |
+| [Define the ambiguous cases](../security/parsing-and-validation.md#define-the-ambiguous-cases): a duplicate field is rejected instead of first- or la… | `SecurityParsing.DuplicateFieldsRejected` | ✅ |
+| [Never let input become code](../security/parsing-and-validation.md#never-let-input-become-code): input passed as an argument is printed as data, brac… | `SecurityParsing.InputAsFormatArgumentIsData` | ✅ |
+| [Never let input become code](../security/parsing-and-validation.md#never-let-input-become-code): a runtime format string with a bad specification thr… | `SecurityParsing.RuntimeFormatRejectsBadSpec` | ✅ |
+| [Bound the parser's work](../security/parsing-and-validation.md#bound-the-parsers-work): nesting is limited, and malformed input is rejected. | `SecurityParsing.NestingDepthIsBounded` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [parse-into-constrained-values](../security/parsing-and-validation.md#parse-into-constrained-values) | 1 | ✅ |
+| [define-the-ambiguous-cases](../security/parsing-and-validation.md#define-the-ambiguous-cases) | 1 | ✅ |
+| [never-let-input-become-code](../security/parsing-and-validation.md#never-let-input-become-code) | 2 | ✅ |
+| [bound-the-parsers-work](../security/parsing-and-validation.md#bound-the-parsers-work) | 1 | ✅ |
+
+**[security/policy.md](../security/policy.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Rules and the checks that enforce them](../security/policy.md#rules-and-the-checks-that-enforce-them): the profile enables the three families, t… | `SecurityPolicy.ProfileEnablesFamiliesAsErrors` | ✅ |
+| [Rules and the checks that enforce them](../security/policy.md#rules-and-the-checks-that-enforce-them): no check the page relies on is disabled i… | `SecurityPolicy.TableChecksAreEnabled` | ✅ |
+
+**[security/resource-limits.md](../security/resource-limits.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Give each request a budget](../security/resource-limits.md#give-each-request-a-budget): many small allocations draw from one budget, so the t… | `SecurityResourceLimits.BudgetLimitsTheTotal` | ✅ |
+| [Bound queues and concurrency](../security/resource-limits.md#bound-queues-and-concurrency): a full queue rejects instead of growing. | `SecurityResourceLimits.BoundedQueueRejectsWhenFull` | ✅ |
+| [Handle allocation failure deliberately](../security/resource-limits.md#handle-allocation-failure-deliberately): asking a container for more than max_size… | `SecurityResourceLimits.OverMaxSizeThrowsLengthError` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [give-each-request-a-budget](../security/resource-limits.md#give-each-request-a-budget) | 1 | ✅ |
+| [bound-queues-and-concurrency](../security/resource-limits.md#bound-queues-and-concurrency) | 1 | ✅ |
+
+**[security/supply-chain.md](../security/supply-chain.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| **This repo's practice**: every action a workflow uses is pinned to a full commit SHA… | `SecuritySupplyChain.WorkflowInputsPinned` | ✅ |
+
+**[security/threat-modeling.md](../security/threat-modeling.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Keep the trusted core small](../security/threat-modeling.md#keep-the-trusted-core-small): a validated value is a type the parser alone can mak… | `SecurityThreatModeling.ValidatedTypeCantBeMadeFromRawInput` | ✅ |
+| [Keep the trusted core small](../security/threat-modeling.md#keep-the-trusted-core-small): the parser accepts the expected shape and rejects th… | `SecurityThreatModeling.ParserRejectsMalformedIds` | ✅ |
+| [Authorize every request, separately from parsing](../security/threat-modeling.md#authorize-every-request-separately-from-parsing): a well-formed request from a us… | `SecurityThreatModeling.ParsedIsNotAuthorized` | ✅ |
+| **Authorize every request**: deny by default (a default-constructed user has no permi… | `SecurityThreatModeling.DenyByDefault` | ✅ |
+
+| Examples in section | Blocks | Result |
+|---|---:|---|
+| [keep-the-trusted-core-small](../security/threat-modeling.md#keep-the-trusted-core-small) | 2 | ✅ |
+| [authorize-every-request-separately-from-parsing](../security/threat-modeling.md#authorize-every-request-separately-from-parsing) | 1 | ✅ |
+
+**[security/verification.md](../security/verification.md)**
+
+| Feature | Test | Result |
+|---|---|---|
+| [Fuzz the security boundaries](../security/verification.md#fuzz-the-security-boundaries): the parse_port corpus replays cleanly. | `SecurityFuzzCorpus.ParsePort` | ✅ |
+| [Fuzz the security boundaries](../security/verification.md#fuzz-the-security-boundaries): the payload corpus replays cleanly. | `SecurityFuzzCorpus.Payload` | ✅ |
+| [Fuzz the security boundaries](../security/verification.md#fuzz-the-security-boundaries): the nesting corpus replays cleanly. | `SecurityFuzzCorpus.Nesting` | ✅ |
+| [Fuzz the security boundaries](../security/verification.md#fuzz-the-security-boundaries): the targets' parsers give the answers the pages sta… | `SecurityFuzzCorpus.ParsersMatchThePages` | ✅ |
+| [Measure what the fuzzing reached](../security/verification.md#measure-what-the-fuzzing-reached): every rejection in parse_port has a saved input… | `SecurityVerification.ParsePortCorpusReachesEveryRejection` | ✅ |
+| [Measure what the fuzzing reached](../security/verification.md#measure-what-the-fuzzing-reached): coverage showed no saved input took the "claime… | `SecurityVerification.PayloadCorpusReachesEveryRejection` | ✅ |
+| [Choose the sanitizer for the property](../security/verification.md#choose-the-sanitizer-for-the-property): unsigned arithmetic wraps by definition, s… | `SecurityVerification.UnsignedWrapIsDefined` | ✅ |
+| **Run the instrumented build**: when the suite is configured with a sanitizer, the co… | `SecurityVerification.SanitizedBuildIsInstrumented` | ⏭ not a sanitized build (CPPDOCS_SANITIZE is empty) |
 
 </details>
 
