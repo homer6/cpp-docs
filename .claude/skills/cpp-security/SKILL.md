@@ -83,7 +83,7 @@ it's trusted.
 | Testing for security: sanitizers, fuzzing, static analysis | `verification.md` | `docs/guidelines/tooling.md`, `docs/guidelines/testing.md` |
 | Dependencies, release artifacts, CI | `supply-chain.md` | |
 | Deployment: dropping privileges, sandboxing parsers, crash dumps and logs without secrets, vulnerability intake | `deployment.md` | `filesystem-and-processes.md`, `cryptography-and-secrets.md` |
-| A team policy, release gate or review checklist | `policy.md` | |
+| A team policy (each rule mapped to the check that enforces it), release gate, review checklist, adoption order | `policy.md` | `.clang-tidy`, `docs/testing.md` |
 
 Find a Core Guidelines rule's text and our BAD/GOOD example through
 `docs/guidelines/core-guidelines/README.md` (or let `cpp-guidelines` do it).
