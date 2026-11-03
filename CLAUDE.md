@@ -579,7 +579,10 @@ the folder README. Every claim comes from the results (counts, skip reasons,
 `<!-- notes-run: <id> -->` marker names the run they describe. **Update them
 with every report refresh from a new full run**: re-read the results, revise
 each claim, and move the marker; `collect_results.py --check` fails while the
-marker names a different run than the newest one in the report.
+marker names a different run than the newest one in the report. The check
+covers only the marker, so moving it proves nothing about the text: every
+claim is re-checked against the results, with a "Notes claims" table in the
+PR (see "Release checklist", step 3).
 
 A toolchain page has a header (OS or image, compiler and version, standard
 library, architecture and byte order, the run link, date and commit, the
@@ -822,7 +825,22 @@ A release (the owner names the version) needs all of these, in order:
    `docs/platform-support.md` with them, and **regenerate the platform
    support notes** (`docs/platform-support/notes.md`) from the release run:
    every claim re-read against its results, the marker on that run (#226).
-   The release notes link them.
+   The release notes link them. **Re-derive the notes, never patch them**
+   (#350: v0.4.0 shipped with stale claims because only the numbers known
+   to have changed were updated):
+   - Go through the notes sentence by sentence. Every count, range, version,
+     "only X has Y", "nothing has Y", "X lacks Y" and per-platform statement
+     is checked against the release run's results JSON and the local results
+     (per-test status, skip reasons, `known-bugs.json`), including the claims
+     whose numbers didn't change. Ranges include the local results.
+   - What the results can't show (a skip caused by the runner's CMake, not
+     the compiler) is said that way, not claimed for the compiler.
+   - The release PR carries a **"Notes claims" table**: each claim, the
+     evidence (job, test or skip reason, count) and kept / fixed / removed.
+   - `collect_results.py --check` only checks the notes' run marker. A green
+     check says nothing about whether the sentences are true.
+   - Never describe the notes as re-derived, regenerated or verified unless
+     every claim was checked. Say exactly what was checked.
 4. **The default branch is `main`** before opening the release PR, so the
    front page points at releases. If it was moved to `dev` for a new
    workflow, ask the owner's explicit permission to switch it back (see
