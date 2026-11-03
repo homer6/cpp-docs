@@ -1,0 +1,126 @@
+{
+ "schema": "cpp-docs/results/1",
+ "kind": "archived-run",
+ "id": 41707574171,
+ "url": "https://github.com/homer6/cpp-docs/actions/runs/41707574171",
+ "date": "2026-11-03",
+ "started": "2026-11-03T19:54:08Z",
+ "workflow": "all.yml",
+ "branch": "dev",
+ "sha": "86f6c76e8628bcafb42a1720f49275fdf4f3606f",
+ "event": "workflow_dispatch",
+ "conclusion": "success",
+ "inputs": [
+  {
+   "areas": "",
+   "tests": true,
+   "snippets": true
+  },
+  {
+   "areas": "",
+   "tests": true,
+   "snippets": false
+  }
+ ],
+ "jobs": [
+  {
+   "name": "plan",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / plan",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-msvc.yml / plan",
+   "conclusion": "success"
+  },
+  {
+   "name": "windows-gnu.yml",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "freebsd.yml",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "macos.yml",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "windows-msvc.yml / windows-2025-vs2026 · MSVC amd64 hardened",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 18 libcxx · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / Clang 22 libcxx hardened · ubuntu-24.04 (apt.llvm.org)",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / clang-tidy (Clang 22) · ubuntu-24.04",
+   "conclusion": "success"
+  },
+  {
+   "name": "linux.yml / matrix.name",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "linux.yml / matrix.name",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "linux.yml / Fuzz (Clang 22 libFuzzer + ASan + UBSan) · ubuntu-24.04",
+   "conclusion": "skipped"
+  },
+  {
+   "name": "summary",
+   "conclusion": "success"
+  }
+ ],
+ "digest": {
+  "linux-x86_64-ubuntu-24.04-clang-18-libcxx": {
+   "tests": {
+    "total": 1544,
+    "passed": 1325,
+    "failed": 0,
+    "skipped": 219
+   },
+   "snippets": {
+    "total": 1852,
+    "checked": 1698,
+    "module_units": 19,
+    "module_groups": 9,
+    "failed": 40,
+    "skipped": 154,
+    "nocompile": 59,
+    "gated": 95,
+    "unsupported": 0,
+    "bad": 376,
+    "run": 86,
+    "run_skipped": 0
+   },
+   "ok": true
+  },
+  "linux-x86_64-ubuntu-24.04-clang-22-libcxx-hardened": {
+   "tests": {
+    "total": 1544,
+    "passed": 1405,
+    "failed": 0,
+    "skipped": 139
+   },
+   "ok": true
+  },
+  "windows-2025-x64-msvc-14.51.36231-hardened": {
+   "tests": {
+    "total": 1544,
+    "passed": 1380,
+    "failed": 0,
+    "skipped": 164
+   },
+   "ok": true
+  }
+ }
+}
