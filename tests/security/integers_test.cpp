@@ -5,7 +5,9 @@
 #include <optional>
 #include <utility>
 #include <version>
-#if __has_include(<stdckdint.h>)
+// Gate on the feature-test macro, as the page says: GCC 14.2's __has_include finds the
+// C-only header (#369).
+#if defined(__cpp_lib_stdckdint_h)
 #  include <stdckdint.h>
 #  define CPPDOCS_HAVE_STDCKDINT 1  // NOLINT(cppcoreguidelines-macro-usage): tested by #if
 #endif
@@ -68,23 +70,20 @@ TEST(SecurityIntegers, CheckedAddReportsOverflow) {
     EXPECT_FALSE(total_length(kMax, 1, out));
 }
 
-// "Check before the arithmetic": <stdckdint.h> is usable from C++, and libstdc++ 16+
-// defines __cpp_lib_stdckdint_h (202603L).
+// "Check before the arithmetic": where __cpp_lib_stdckdint_h is defined (libstdc++ 14.4,
+// 15.3, 16), <stdckdint.h> is usable from C++ and the macro is at least 202603L.
 TEST(SecurityIntegers, StdckdintAvailability) {
+#if defined(_GLIBCXX_RELEASE) && _GLIBCXX_RELEASE >= 16 && !defined(__cpp_lib_stdckdint_h)
+    ADD_FAILURE() << "libstdc++ 16 should define __cpp_lib_stdckdint_h";
+#endif
 #if !defined(CPPDOCS_HAVE_STDCKDINT)
-    GTEST_SKIP() << "<stdckdint.h> not available to C++ with this toolchain (P3370R1, C++26)";
+    GTEST_SKIP() << "__cpp_lib_stdckdint_h not defined by this standard library (P3370R1, C++26)";
 #else
     int r = 0;
     EXPECT_TRUE(ckd_add(&r, std::numeric_limits<int>::max(), 1));
     EXPECT_FALSE(ckd_mul(&r, 1000, 1000));
     EXPECT_EQ(r, 1000000);
-#  if defined(__GLIBCXX__) && defined(_GLIBCXX_RELEASE) && _GLIBCXX_RELEASE >= 16
-#    if defined(__cpp_lib_stdckdint_h)
     EXPECT_GE(__cpp_lib_stdckdint_h, 202603L);
-#    else
-    ADD_FAILURE() << "libstdc++ 16 should define __cpp_lib_stdckdint_h";
-#    endif
-#  endif
 #endif
 }
 
