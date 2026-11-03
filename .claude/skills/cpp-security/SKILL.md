@@ -166,15 +166,22 @@ Don't over-flag:
 Use `docs/security/verification.md`, `docs/guidelines/tooling.md` and
 `docs/guidelines/testing.md`:
 
-- ASan + UBSan, TSan (separately) and MSan where the toolchain supports them,
-  over tests that reach the input paths.
-- A fuzz target for every parser or decoder of untrusted input, with a corpus,
-  limits on input size and time, and minimized crashes kept as regression
-  tests.
+- Map each property in the threat model to the method that can see it (the
+  table at the top of `verification.md`); a property nothing checks is an
+  assumption.
+- ASan + UBSan with `-fno-sanitize-recover`, then TSan and MSan as separate
+  builds where the toolchain has them, over tests that reach the input paths.
+  `undefined` misses unsigned wrap and lossy conversions; Clang's
+  `-fsanitize=integer` catches them.
+- A fuzz target for every parser or decoder of untrusted input. It checks
+  properties, not only "no crash". It has a corpus and limits on input size
+  and time, and minimized crashes are kept as regression tests. Check with
+  coverage that the corpus reaches every rejection branch.
 - Static analysis (clang-tidy `cert-*`, `cppcoreguidelines-*`, `bugprone-*`)
   configured for the real build; findings fixed or justified.
 - Tests for the failure paths: malformed input, boundary sizes, failed
-  allocation, failed authorization, timeouts, cancellation.
+  allocation, failed authorization, timeouts, cancellation; and a test that
+  each protection relied on (hardening, a limit) actually fires.
 
 ## 6. Write and validate
 
