@@ -27,6 +27,10 @@ on:
         description: "Run the snippet checker"
         type: boolean
         default: true
+      jobs:
+        description: "Jobs to start: a regex searched for in each job name (empty = all). Preview: tools/ci/plan.py --jobs '<regex>'"
+        type: string
+        default: ""
   workflow_call:
     inputs:
       areas:
@@ -38,25 +42,56 @@ on:
       snippets:
         type: boolean
         default: true
+      jobs:
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
+  plan:
+    # Which jobs this run starts (#376): the entries of .github/ci/macos.json
+    # whose name matches the `jobs` input (empty: all). A job with no selected
+    # entry doesn't start. Preview a pattern with tools/ci/plan.py.
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      macos: ${{ steps.plan.outputs.macos }}
+      macos_on: ${{ steps.plan.outputs.macos_on }}
+      homebrew_llvm_asan: ${{ steps.plan.outputs.homebrew_llvm_asan }}
+      homebrew_llvm_asan_on: ${{ steps.plan.outputs.homebrew_llvm_asan_on }}
+      homebrew_llvm_hardened: ${{ steps.plan.outputs.homebrew_llvm_hardened }}
+      homebrew_llvm_hardened_on: ${{ steps.plan.outputs.homebrew_llvm_hardened_on }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/ci
+            tools/ci
+
+      - name: Select the jobs
+        id: plan
+        env:
+          JOBS: ${{ inputs.jobs }}
+        run: python3 tools/ci/plan.py macos.yml --jobs "$JOBS" --github-output
+
   macos:
-    name: ${{ matrix.runner }} · ${{ matrix.toolchain }}
+    name: ${{ matrix.name }}
+    needs: plan
+    if: ${{ needs.plan.outputs.macos_on == 'true' }}
     runs-on: ${{ matrix.runner }}
     continue-on-error: false
     timeout-minutes: 180
+    # apple-clang: Xcode's clang++ and the SDK's libc++ (no baseline yet:
+    # Apple's libc++ lags upstream, so its first run makes one).
+    # homebrew-gcc: `brew install gcc` (newest g++-N), libstdc++.
+    # homebrew-llvm: `brew install llvm`, with LLVM's own libc++.
     strategy:
       fail-fast: false
-      matrix:
-        runner: [macos-15, macos-26, macos-15-intel, macos-26-intel]
-        # apple-clang: Xcode's clang++ and the SDK's libc++ (no baseline yet:
-        # Apple's libc++ lags upstream, so its first run makes one).
-        # homebrew-gcc: `brew install gcc` (newest g++-N), libstdc++.
-        # homebrew-llvm: `brew install llvm`, with LLVM's own libc++.
-        toolchain: [apple-clang, homebrew-gcc, homebrew-llvm]
+      matrix: ${{ fromJSON(needs.plan.outputs.macos) }}  # .github/ci/macos.json
     env:
       CPPDOCS_AREAS: ${{ inputs.areas }}
       CPPDOCS_TESTS: ${{ inputs.tests }}
@@ -89,6 +124,8 @@ jobs:
     # (an include would change the plain homebrew-llvm job). LeakSanitizer
     # isn't supported on macOS, so leaks are checked by the Linux jobs.
     name: macos-26 · homebrew-llvm (ASan + UBSan)
+    needs: plan
+    if: ${{ needs.plan.outputs.homebrew_llvm_asan_on == 'true' }}
     runs-on: macos-26
     continue-on-error: false
     timeout-minutes: 240
@@ -124,6 +161,8 @@ jobs:
     # Homebrew LLVM hardened (#305): libc++ fast hardening, stack protection,
     # PIE, RelWithDebInfo. A job of its own, like the ASan job above.
     name: macos-26 · homebrew-llvm (hardened)
+    needs: plan
+    if: ${{ needs.plan.outputs.homebrew_llvm_hardened_on == 'true' }}
     runs-on: macos-26
     continue-on-error: false
     timeout-minutes: 240

@@ -1,0 +1,77 @@
+{
+  "_comment": "The jobs .github/workflows/macos.yml can start, one entry per job with its display name (#376). The plan job selects entries with the run's `jobs` input (tools/ci/plan.py) and each job's matrix is the selected entries. Keep the names unique: they're what a `jobs` pattern matches, and the report keys on them.",
+  "jobs": {
+    "macos": [
+      {
+        "name": "macos-15 · apple-clang",
+        "runner": "macos-15",
+        "toolchain": "apple-clang"
+      },
+      {
+        "name": "macos-15 · homebrew-gcc",
+        "runner": "macos-15",
+        "toolchain": "homebrew-gcc"
+      },
+      {
+        "name": "macos-15 · homebrew-llvm",
+        "runner": "macos-15",
+        "toolchain": "homebrew-llvm"
+      },
+      {
+        "name": "macos-26 · apple-clang",
+        "runner": "macos-26",
+        "toolchain": "apple-clang"
+      },
+      {
+        "name": "macos-26 · homebrew-gcc",
+        "runner": "macos-26",
+        "toolchain": "homebrew-gcc"
+      },
+      {
+        "name": "macos-26 · homebrew-llvm",
+        "runner": "macos-26",
+        "toolchain": "homebrew-llvm"
+      },
+      {
+        "name": "macos-15-intel · apple-clang",
+        "runner": "macos-15-intel",
+        "toolchain": "apple-clang"
+      },
+      {
+        "name": "macos-15-intel · homebrew-gcc",
+        "runner": "macos-15-intel",
+        "toolchain": "homebrew-gcc"
+      },
+      {
+        "name": "macos-15-intel · homebrew-llvm",
+        "runner": "macos-15-intel",
+        "toolchain": "homebrew-llvm"
+      },
+      {
+        "name": "macos-26-intel · apple-clang",
+        "runner": "macos-26-intel",
+        "toolchain": "apple-clang"
+      },
+      {
+        "name": "macos-26-intel · homebrew-gcc",
+        "runner": "macos-26-intel",
+        "toolchain": "homebrew-gcc"
+      },
+      {
+        "name": "macos-26-intel · homebrew-llvm",
+        "runner": "macos-26-intel",
+        "toolchain": "homebrew-llvm"
+      }
+    ],
+    "homebrew-llvm-asan": [
+      {
+        "name": "macos-26 · homebrew-llvm (ASan + UBSan)"
+      }
+    ],
+    "homebrew-llvm-hardened": [
+      {
+        "name": "macos-26 · homebrew-llvm (hardened)"
+      }
+    ]
+  }
+}
