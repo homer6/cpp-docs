@@ -150,11 +150,12 @@ each page's status.
   crash-reporting policy decides which memory may hold secrets. Don't drop
   useful guidance for not being C++. Keep it short, and link out for
   procedures that don't touch the code.
-- **Teach; don't harden this repo.** The section is about what readers should
-  do in their code, not about securing this docs repo. A change to the repo's
-  own build or CI made in the name of security needs the owner's go-ahead,
-  and must not make the build, clone or CI noticeably more expensive (#334:
-  pinning GoogleTest by commit forced a full clone, and was rejected).
+- **Don't harden this repo unnecessarily.** Hardening isn't bad, but the repo
+  is here to cover C++: the section teaches what readers should do in their
+  code. Change the repo's own build or CI for security only when it's needed,
+  and never in a way that makes the build, clone or CI noticeably more
+  expensive (#334: pinning GoogleTest by commit forced a full clone, and was
+  rejected).
 - **Page shape:** the one-line summary quote, `## Mental model`, then sections
   of rules labelled **MUST**, **SHOULD** or **MAY**, each with the reason, our
   own compile-checked example where code helps, and its sources; then
