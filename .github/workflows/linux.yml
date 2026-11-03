@@ -59,7 +59,7 @@ env:
 
 jobs:
   gcc:
-    name: GCC ${{ matrix.gcc }} · ${{ matrix.runner }} (gcc:${{ matrix.gcc }} image)
+    name: GCC ${{ matrix.gcc }} · ${{ matrix.runner }} (gcc:${{ matrix.gcc }} image)${{ matrix.harden && ' hardened' || '' }}
     runs-on: ${{ matrix.runner }}
     container:
       image: ${{ matrix.image }}
@@ -78,8 +78,11 @@ jobs:
           - {gcc: "16", runner: ubuntu-24.04-arm, image: "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb"}
           # GCC 16 with ASan + UBSan (#263): its own results and page (gcc-16-asan).
           - {gcc: "16", runner: ubuntu-24.04, image: "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb", sanitize: "address,undefined"}
+          # GCC 16 hardened (#305): its own results and page (gcc-16-hardened).
+          - {gcc: "16", runner: ubuntu-24.04, image: "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb", harden: "1"}
     env:
       CPPDOCS_SANITIZE: ${{ matrix.sanitize || '' }}
+      CPPDOCS_HARDEN: ${{ matrix.harden || '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
@@ -146,8 +149,9 @@ jobs:
     # crashes (seen with Homebrew LLVM on macOS), while libstdc++'s call_once
     # goes through pthread_once, which TSan intercepts. A job of its own: a
     # matrix include that matched the clang job's combinations would change
-    # those jobs instead of adding these.
-    name: Clang 22 ${{ matrix.stdlib }} ${{ matrix.sanitize }} · ubuntu-24.04 (apt.llvm.org)
+    # those jobs instead of adding these. Clang 22 with libc++ hardened (#305)
+    # runs here for the same reason.
+    name: Clang 22 ${{ matrix.stdlib }} ${{ matrix.sanitize || 'hardened' }} · ubuntu-24.04 (apt.llvm.org)
     runs-on: ubuntu-24.04
     continue-on-error: false
     timeout-minutes: 240
@@ -157,8 +161,10 @@ jobs:
         include:
           - {sanitize: "address,undefined", stdlib: libcxx}
           - {sanitize: "thread", stdlib: libstdcxx}
+          - {sanitize: "", stdlib: libcxx, harden: "1"}
     env:
       CPPDOCS_SANITIZE: ${{ matrix.sanitize }}
+      CPPDOCS_HARDEN: ${{ matrix.harden || '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
@@ -167,14 +173,14 @@ jobs:
       - name: Toolchain (clang-22 from apt.llvm.org)
         run: tools/ci/linux-toolchain.sh clang-apt-llvm 22 "${{ matrix.stdlib }}"
 
-      - name: Configure, build, test (sanitized)
+      - name: Configure, build, test (sanitized or hardened)
         run: tools/ci/run.sh
 
       - name: Upload results and logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
-          name: results-${{ env.CPPDOCS_PLATFORM || 'ubuntu-24.04' }}-${{ env.CPPDOCS_COMPILER || format('clang-22-{0}-{1}', matrix.stdlib, matrix.sanitize == 'thread' && 'tsan' || 'asan') }}
+          name: results-${{ env.CPPDOCS_PLATFORM || 'ubuntu-24.04' }}-${{ env.CPPDOCS_COMPILER || format('clang-22-{0}-{1}', matrix.stdlib, matrix.harden && 'hardened' || (matrix.sanitize == 'thread' && 'tsan' || 'asan')) }}
           path: |
             results-*.json
             ci-out/

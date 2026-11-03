@@ -756,6 +756,8 @@ def compiler_label(row: dict[str, dict]) -> str:
         out += f", {stdlib}"
     if san := sanitize_tag(main):
         out += f", {san}"
+    if (main.get("compiler") or {}).get("harden"):
+        out += ", hardened"
     return out
 
 
@@ -989,6 +991,8 @@ def toolchain_slug(row: dict[str, dict], local: bool) -> str:
     san = (main["compiler"].get("sanitize") or "")
     if san:  # a sanitized job gets its own page next to the plain one (#263)
         comp += "-" + ("tsan" if "thread" in san else "asan")
+    if main["compiler"].get("harden"):  # and so does a hardened one (#305)
+        comp += "-hardened"
     return re.sub(r"[^a-z0-9._]+", "-", f"{os_part}-{arch_of(main).lower()}-{comp}").strip("-")
 
 
@@ -1027,6 +1031,8 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
                                                                   if "tests" in row else "")),
              ("Standard library", esc_cell(stdlib or "unknown")),
              *([("Sanitizers", sanitize_tag(main))] if sanitize_tag(main) else []),
+             *([("Hardening", f"`{main['compiler'].get('harden_flags') or 'on'}`")]
+               if main["compiler"].get("harden") else []),
              ("Architecture", arch_of(main) + (f", {run['byte_order']}-endian" if run.get("byte_order") else "")),
              ("Run", run_cell),
              ("Areas", ("all" if not areas else f"`{areas}`") if run else "all (local run)"),
@@ -1036,6 +1042,7 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
               if snip else "not run")]
     return {"family": fam, "version": major, "stdlib": "" if stdlib == "unknown" else stdlib,
             "sanitize": main["compiler"].get("sanitize") or "",
+            "harden": bool(main["compiler"].get("harden")),
             "report_only": bool(snip and snip.get("mode") == "report-only"),
             "compiler": compiler_label(row), "local": local, "title": title, "facts": facts,
             "file": row["page"], "where": f"{os_label(row)} · {arch_of(main)}",
