@@ -464,12 +464,13 @@ run automatically... manual invocation only"*.
   third-party packages and exits 0 when there are no workflows.
 - **The default-branch rule.** GitHub dispatches a workflow only if its file
   exists on the repo's default branch; then it can run on any ref that has
-  the file. The owner has **temporarily made `dev` the default branch**
-  (#140), because no workflow file is on `main` yet and the release is on
-  hold until every platform is green. Runs happen on `dev` meanwhile. The
-  default switches back to `main` before the release PR is opened (see
-  "Release checklist"); after that release, the files are on `main` and
-  any ref can be dispatched again.
+  the file. `main` is the default branch and has every workflow file
+  (since v0.3.0), so runs on `dev` start normally. Make `dev` the default
+  only when a new workflow file is on `dev` but not yet on `main` and must
+  be started directly (`all.yml` calls the others, so they don't need it),
+  and switch back to `main` before the release PR (#140, #282). **Never
+  change the default branch, in either direction, without the owner's
+  explicit permission for that change in the moment.**
 - Running and reading (details in
   [`.github/workflows/README.md`](.github/workflows/README.md)):
   `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
@@ -746,8 +747,7 @@ unless they directly modify the work queue"*.
   Work each issue on its own feature branch from `origin/dev` (e.g.
   `docs/<issue>-<slug>`) and open a PR into `dev` that references the issue:
   `gh pr create -R homer6/cpp-docs --base dev ...`. Always write `--base dev`
-  out: GitHub's default branch is normally `main` (temporarily `dev`, see
-  "GitHub Actions"), and a PR without it would target `main` once it's back.
+  out: GitHub's default branch is `main`, so a PR without it targets `main`.
 - **The only PR into `main` is the release PR** (`dev` → `main`), opened when
   the owner names a version. Its merge commit is tagged `vX.Y.Z` and gets a
   GitHub release; the notes live in `docs/releases/vX.Y.Z.md`. Follow the
@@ -823,9 +823,10 @@ A release (the owner names the version) needs all of these, in order:
    support notes** (`docs/platform-support/notes.md`) from the release run:
    every claim re-read against its results, the marker on that run (#226).
    The release notes link them.
-4. **Switch the default branch back to `main`** (the owner does it, or
-   consents to it) before opening the release PR, so the front page points
-   at releases again.
+4. **The default branch is `main`** before opening the release PR, so the
+   front page points at releases. If it was moved to `dev` for a new
+   workflow, ask the owner's explicit permission to switch it back (see
+   "GitHub Actions").
 5. **The owner's explicit approval** of the release. Then open the release
    PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
    merge commit `vX.Y.Z` and publish the GitHub release.
