@@ -39,3 +39,14 @@ When a run finds a crash: fix the code, minimize the input
 The first run of `fuzz_parse_port` found that `parse_port` accepted `"05"`
 as 5, a second spelling of the same port; the parser now rejects leading
 zeros, and `corpus/parse_port/leading-zero` keeps the input.
+
+## Coverage
+
+Fuzzing time says nothing about what was reached; coverage does. Replay a
+corpus through a coverage build and read the branch counts (the commands are
+in [verification](../docs/security/verification.md#measure-what-the-fuzzing-reached)).
+The first check, #301, found that no saved input reached `payload`'s
+"claimed length too long" rejection (`too-long` claimed exactly the bytes
+available) or `parse_port`'s check for values above 65535. `too-long` was
+corrected and `above-max` added; `tests/security/verification_test.cpp`
+keeps each rejection reached.
