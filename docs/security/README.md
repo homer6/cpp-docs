@@ -48,12 +48,11 @@ each practice belongs to and what evidence shows it's in place.
 - **Examples are ours and compile-checked** like every snippet in the repo;
   claims that can be checked at run time have tests in `tests/security/`, one
   file per page.
-- **Status:** a *verified* page has been checked against primary sources and
-  our compilers: the imported research report's claims that didn't hold were
-  fixed or removed, and its checkable claims have tests (epic
-  [#286](https://github.com/homer6/cpp-docs/issues/286)). Every page is
-  verified except [supply chain](supply-chain.md), which is still *imported*:
-  the research report's text, whose claims are leads until it's verified.
+- **Status:** every page is *verified*: each claim was checked against primary
+  sources and our compilers, the imported research report's claims that
+  didn't hold were fixed or removed, and the page's checkable claims have
+  tests (epic [#286](https://github.com/homer6/cpp-docs/issues/286)). A page
+  marked *imported* would still be unchecked text.
 - **Checked by the repo's own tooling:** the security tests run on every
   platform in CI, the parsers are fuzzed (`fuzz/`), and `tests/security/` and
   `fuzz/` pass the clang-tidy profile in `.clang-tidy`
@@ -77,7 +76,7 @@ each practice belongs to and what evidence shows it's in place.
 | [Resource limits and availability](resource-limits.md) | Make resource consumption part of validation, so valid-looking requests can't exhaust the service. | ✅ verified |
 | [Compiler and library hardening](hardening.md) | Production hardening profiles per platform and standard library, checked in the final artifact. | ✅ verified |
 | [Security verification](verification.md) | Choose the method that can see each property, measure what fuzzing reached, and keep every finding as a test. | ✅ verified |
-| [Supply chain and release security](supply-chain.md) | Control build inputs, verify provenance, and keep the evidence for every release. | imported |
+| [Supply chain and release security](supply-chain.md) | Pin every build input by content, keep signing away from untrusted builds, sign and verify releases. | ✅ verified |
 | [Deployment and incident readiness](deployment.md) | Drop privileges correctly, sandbox parsers, keep secrets out of crash dumps and logs, be ready to ship fixes. | ✅ verified |
 | [Security policy, review and adoption](policy.md) | Each rule mapped to the check that enforces it, release gates, a review checklist and an adoption order. | ✅ verified |
 
