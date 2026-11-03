@@ -468,8 +468,9 @@ run automatically... manual invocation only"*.
   (since v0.3.0), so runs on `dev` start normally. Make `dev` the default
   only when a new workflow file is on `dev` but not yet on `main` and must
   be started directly (`all.yml` calls the others, so they don't need it),
-  with the owner's consent, and switch back to `main` before the release PR
-  (#140, #282).
+  and switch back to `main` before the release PR (#140, #282). **Never
+  change the default branch, in either direction, without the owner's
+  explicit permission for that change in the moment.**
 - Running and reading (details in
   [`.github/workflows/README.md`](.github/workflows/README.md)):
   `gh workflow run <file>.yml --ref <branch> -f key=value`, `gh run watch
@@ -823,8 +824,9 @@ A release (the owner names the version) needs all of these, in order:
    every claim re-read against its results, the marker on that run (#226).
    The release notes link them.
 4. **The default branch is `main`** before opening the release PR, so the
-   front page points at releases (switch it back if it was moved to `dev`
-   for a new workflow; see "GitHub Actions").
+   front page points at releases. If it was moved to `dev` for a new
+   workflow, ask the owner's explicit permission to switch it back (see
+   "GitHub Actions").
 5. **The owner's explicit approval** of the release. Then open the release
    PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
    merge commit `vX.Y.Z` and publish the GitHub release.
