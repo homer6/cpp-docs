@@ -328,6 +328,12 @@ parsers (`CPPDOCS_FUZZ=ON`, Clang; `tools/ci/fuzz.sh`; the `fuzz` job in
 saved in `fuzz/corpus/<target>/`, which `tests/security/fuzz_corpus_test.cpp`
 replays on every toolchain. See `fuzz/README.md`.
 
+**clang-tidy** (#308): `.clang-tidy` (`cppcoreguidelines-*`, `cert-*`,
+`bugprone-*`, every finding an error) covers `tests/security/` and `fuzz/`.
+Run `tools/run_clang_tidy.sh build/<preset>`; the `clang-tidy` job in
+`linux.yml` runs it too. Fix a finding, or keep it with
+`// NOLINT(<check>): <why>`; never a bare NOLINT.
+
 **Sanitizers** (#263): `CPPDOCS_SANITIZE` (`address,undefined`, `thread`, or
 `address` on MSVC/clang-cl) builds the whole suite with the sanitizer; the
 `*-asan` presets set it, and in CI `CPPDOCS_SANITIZE` in a job's environment

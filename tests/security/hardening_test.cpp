@@ -21,8 +21,10 @@
 namespace {
 
 // Indexes the optimizer can't see through, so the access really happens.
+// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables): volatile is the point
 volatile std::size_t three = 3;
 volatile std::size_t ten = 10;
+// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 }  // namespace
 
@@ -44,6 +46,8 @@ volatile std::size_t ten = 10;
 #if defined(CPPDOCS_LIBRARY_HARDENED)
 #  define CPPDOCS_REQUIRE_HARDENED() (void)0
 #else
+// A macro because GTEST_SKIP() must return from the test body itself.
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #  define CPPDOCS_REQUIRE_HARDENED() \
       GTEST_SKIP() << "library hardening is off in this build (no _GLIBCXX_ASSERTIONS, " \
                       "_LIBCPP_HARDENING_MODE or _MSVC_STL_HARDENING; the *-hardened presets turn it on)"
@@ -67,13 +71,14 @@ TEST(SecurityHardeningDeathTest, VectorFrontOnEmpty) {
 TEST(SecurityHardeningDeathTest, ArrayIndexOutOfRange) {
     CPPDOCS_REQUIRE_HARDENED();
     std::array<int, 3> a{};
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index): out of range on purpose
     EXPECT_DEATH({ volatile int x = a[three]; (void)x; }, "");
 }
 
 // "Standard-library hardening": std::span::operator[] past the end stops the program.
 TEST(SecurityHardeningDeathTest, SpanIndexOutOfRange) {
     CPPDOCS_REQUIRE_HARDENED();
-    int raw[3] = {};
+    std::array<int, 3> raw{};
     std::span<int> s{raw};
     EXPECT_DEATH({ volatile int x = s[three]; (void)x; }, "");
 }

@@ -68,7 +68,7 @@ replace the local checks in `CLAUDE.md` ("Running the tests").
 
 | File | Runners | Compilers |
 |---|---|---|
-| `linux.yml` | ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04 (preview), ubuntu-26.04-arm (preview) | GCC 13–16 (official `gcc:N` images, by digest), Clang 18–23 (apt.llvm.org) with libstdc++ and libc++; GCC 15 and Clang 22 from Ubuntu 26.04; GCC 16 and Clang 22 (libc++) also sanitized and hardened (#263, #305); a time-boxed libFuzzer job for `fuzz/` (#307) |
+| `linux.yml` | ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04 (preview), ubuntu-26.04-arm (preview) | GCC 13–16 (official `gcc:N` images, by digest), Clang 18–23 (apt.llvm.org) with libstdc++ and libc++; GCC 15 and Clang 22 from Ubuntu 26.04; GCC 16 and Clang 22 (libc++) also sanitized and hardened (#263, #305); a time-boxed libFuzzer job for `fuzz/` (#307); a clang-tidy job over `tests/security/` and `fuzz/` (#308) |
 | `macos.yml` | macos-15, macos-26 (arm64), macos-15-intel, macos-26-intel | Apple Clang (the runner's Xcode), Homebrew `gcc`, Homebrew `llvm` (its own libc++), also with ASan+UBSan and hardened (#305) |
 | `windows-msvc.yml` | windows-2022 (VS 2022), windows-2025-vs2026, windows-11-arm (VS 2026) | MSVC `cl`, `msvc` preset, `run_tests.ps1`, `check_snippets.py --toolchain msvc`; a hardened MSVC job on windows-2025-vs2026 (#305) |
 | `windows-gnu.yml` | windows-2025-vs2026 | clang-cl (VS's LLVM, `clang-cl` preset); MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++) |

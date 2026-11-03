@@ -33,7 +33,14 @@ std::array<std::uint8_t, 5> encode(const Header& h) {
             static_cast<std::uint8_t>(h.length >> 24)};
 }
 
-struct Message { virtual ~Message() = default; };
+struct Message {                       // C.67: a polymorphic base suppresses copying
+    Message() = default;
+    Message(const Message&) = delete;
+    Message& operator=(const Message&) = delete;
+    Message(Message&&) = delete;
+    Message& operator=(Message&&) = delete;
+    virtual ~Message() = default;
+};
 struct Login : Message { std::string user = "alice"; };
 struct Ping : Message { int seq = 0; };
 

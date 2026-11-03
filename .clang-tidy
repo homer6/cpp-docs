@@ -1,0 +1,31 @@
+# clang-tidy profile for code that faces untrusted input (#308).
+# Run it with tools/run_clang_tidy.sh; see docs/testing.md#static-analysis-308.
+#
+# The three families map onto the guidance in docs/security:
+#   cppcoreguidelines-*  the C++ Core Guidelines profiles (bounds, type, lifetime)
+#   cert-*               SEI CERT C++ rules the pages cite
+#   bugprone-*           patterns that are usually bugs (unchecked optional, ignored results)
+#
+# Disabled, with the reason:
+#   cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
+#       operator[] is allowed; library hardening checks it (docs/security/hardening.md),
+#       and an explicit check is required where a bad index is an expected input
+#       (docs/security/bounds.md).
+#   cppcoreguidelines-avoid-magic-numbers
+#       duplicated by readability-magic-numbers; in tests the literal is the expectation.
+#
+# A finding that is intentional stays in the source with
+#   // NOLINT(<check>): <why>
+# naming the check and the reason. A bare NOLINT isn't accepted in review.
+Checks: >
+  -*,
+  cppcoreguidelines-*,
+  cert-*,
+  bugprone-*,
+  -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access,
+  -cppcoreguidelines-avoid-magic-numbers
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(tests/security|fuzz)/'
+CheckOptions:
+  - key: bugprone-unused-return-value.AllowCastToVoid
+    value: true

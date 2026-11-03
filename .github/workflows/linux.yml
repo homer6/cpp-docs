@@ -223,6 +223,33 @@ jobs:
           path: fuzz-out/
           if-no-files-found: ignore
 
+  clang-tidy:
+    # clang-tidy with the repo's profile (.clang-tidy: cppcoreguidelines-*, cert-*,
+    # bugprone-*) over the security tests and the fuzz headers they include (#308).
+    # Every finding fails the job; an intentional one stays with NOLINT(check): why.
+    name: clang-tidy (Clang 22) · ubuntu-24.04
+    if: ${{ inputs.tests }}
+    runs-on: ubuntu-24.04
+    continue-on-error: false
+    timeout-minutes: 30
+    env:
+      CPPDOCS_TIDY: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Toolchain (clang-22 and clang-tidy-22 from apt.llvm.org)
+        run: tools/ci/linux-toolchain.sh clang-apt-llvm 22 libstdcxx
+
+      - name: Configure (compile_commands.json) and build GoogleTest
+        run: |
+          cmake -S . -B build/tidy -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake --build build/tidy --target gtest gtest_main
+
+      - name: clang-tidy
+        run: CLANG_TIDY=clang-tidy-22 tools/run_clang_tidy.sh build/tidy
+
   ubuntu-26-04:
     name: ${{ matrix.runner }} · ${{ matrix.tc.label }} (Ubuntu archive)
     runs-on: ${{ matrix.runner }}

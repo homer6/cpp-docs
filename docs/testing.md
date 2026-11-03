@@ -194,6 +194,27 @@ the `fuzz` job in `linux.yml`). Their saved corpus is replayed as ordinary
 tests (`tests/security/fuzz_corpus_test.cpp`) on every toolchain. See
 [`fuzz/README.md`](../fuzz/README.md).
 
+### Static analysis (#308)
+
+`tools/run_clang_tidy.sh [build-dir]` runs clang-tidy with the repo's profile
+over `tests/security/` and the `fuzz/` headers they include. The profile
+(`.clang-tidy`) enables `cppcoreguidelines-*`, `cert-*` and `bugprone-*`, and
+turns every finding into an error. It disables two checks, each with its
+reason in the file: unchecked `operator[]`, because library hardening checks
+it ([hardening](security/hardening.md)), and magic numbers.
+`tests/.clang-tidy` also turns off two checks that misread GoogleTest's
+macros.
+
+```bash
+cmake --preset clang-22                         # writes compile_commands.json
+cmake --build build/clang-22 --target gtest gtest_main
+tools/run_clang_tidy.sh build/clang-22          # "no findings", or each finding
+```
+
+A finding is fixed, or kept with `// NOLINT(<check>): <why>` that names the
+check and the reason. The `clang-tidy` job in `linux.yml` runs the script
+with `clang-tidy-22`.
+
 ### Portable presets (any machine, CI)
 
 The presets above are the owner's Mac. These take no paths: the compiler comes
