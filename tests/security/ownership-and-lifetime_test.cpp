@@ -9,10 +9,13 @@
 
 namespace {
 
-int closes = 0;
 struct FakeHandle { int id; };
 struct HandleCloser {
-    void operator()(FakeHandle* h) const noexcept { ++closes; delete h; }
+    int* closes;                        // counts releases, so the test can see each one
+    void operator()(FakeHandle* h) const noexcept {
+        ++*closes;
+        delete h;   // NOLINT(cppcoreguidelines-owning-memory): the deleter is where unique_ptr's ownership ends
+    }
 };
 using Handle = std::unique_ptr<FakeHandle, HandleCloser>;
 
@@ -27,15 +30,18 @@ struct Session {
 // "Make ownership explicit": an RAII handle releases exactly once, on every path,
 // including when an exception unwinds past it.
 TEST(SecurityOwnership, RaiiHandleReleasesOnceOnEveryPath) {
-    closes = 0;
-    { Handle h{new FakeHandle{1}}; }
+    int closes = 0;
+    const HandleCloser closer{&closes};
+    { Handle h{new FakeHandle{1}, closer}; }
     EXPECT_EQ(closes, 1);
     try {
-        Handle h{new FakeHandle{2}};
+        Handle h{new FakeHandle{2}, closer};
         throw 1;
-    } catch (int) {}
+    } catch (int) {
+        SUCCEED() << "the handle was released during unwinding";
+    }
     EXPECT_EQ(closes, 2);
-    Handle a{new FakeHandle{3}};
+    Handle a{new FakeHandle{3}, closer};
     Handle b = std::move(a);   // ownership moves, nothing is released yet
     EXPECT_EQ(closes, 2);
     b.reset();

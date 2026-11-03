@@ -1,4 +1,5 @@
 // Checks claims made by docs/security/threat-modeling.md.
+#include <array>
 #include <cstddef>
 #include <optional>
 #include <span>
@@ -70,7 +71,7 @@ TEST(SecurityThreatModeling, ParsedIsNotAuthorized) {
     Store s;
     auto id = RecordId::parse("report7");
     ASSERT_TRUE(id);
-    std::byte data[1]{};
+    std::array<std::byte, 1> data{};
     EXPECT_FALSE(s.store_record(User{"mallory", false}, *id, data));
     EXPECT_TRUE(s.written.empty());
     EXPECT_TRUE(s.store_record(User{"alice", true}, *id, data));

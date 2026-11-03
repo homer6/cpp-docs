@@ -27,6 +27,7 @@ std::size_t replay(const std::string& name, Target target) {
         std::vector<char> bytes{std::istreambuf_iterator<char>{in}, std::istreambuf_iterator<char>{}};
         SCOPED_TRACE(entry.path().string());
         // A broken property aborts the test binary (as it would crash the fuzzer).
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): the fuzz entry point takes bytes
         target(reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size());
         ++count;
     }

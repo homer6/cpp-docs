@@ -7,7 +7,7 @@
 #include <version>
 #if __has_include(<stdckdint.h>)
 #  include <stdckdint.h>
-#  define CPPDOCS_HAVE_STDCKDINT 1
+#  define CPPDOCS_HAVE_STDCKDINT 1  // NOLINT(cppcoreguidelines-macro-usage): tested by #if
 #endif
 
 #include <gtest/gtest.h>

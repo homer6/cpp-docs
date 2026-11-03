@@ -33,7 +33,7 @@ TEST(SecurityBounds, PayloadLengthCheckedAgainstPacket) {
     auto p = payload(packet, 4, 6);
     ASSERT_TRUE(p);
     EXPECT_EQ(p->size(), 6u);
-    EXPECT_EQ(p->data(), packet.data() + 4);
+    EXPECT_EQ(p->data(), &packet[4]);
     EXPECT_FALSE(payload(packet, 4, 7));    // the header claims one byte too many
     EXPECT_FALSE(payload(packet, 11, 0));   // header larger than the packet
     constexpr auto big = std::numeric_limits<std::size_t>::max();
@@ -52,7 +52,7 @@ TEST(SecurityBounds, ExplicitCheckRejectsBadIndex) {
 // "Check before the access": at() checks too, but reports a bad index by throwing.
 TEST(SecurityBounds, AtThrowsOutOfRange) {
     std::vector<int> table(4);
-    EXPECT_THROW((void)table.at(4), std::out_of_range);
+    EXPECT_THROW({ [[maybe_unused]] const int x = table.at(4); }, std::out_of_range);
 }
 
 // "Respect invalidation": push_back past capacity reallocates, so pointers and references
@@ -61,12 +61,12 @@ TEST(SecurityBounds, PushBackPastCapacityReallocates) {
     std::vector<int> v;
     v.reserve(1);
     v.push_back(1);
-    const auto before = reinterpret_cast<std::uintptr_t>(v.data());
+    const int* const before = v.data();
     const auto cap = v.capacity();
     while (v.size() < cap) v.push_back(0);
     v.push_back(2);                         // one past capacity
     EXPECT_GT(v.capacity(), cap);
-    EXPECT_NE(reinterpret_cast<std::uintptr_t>(v.data()), before);
+    EXPECT_NE(v.data(), before);   // compared, never dereferenced
 }
 
 // "Respect invalidation": reserve allocates capacity but creates no elements.

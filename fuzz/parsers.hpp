@@ -6,6 +6,7 @@
 #include <charconv>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <span>
 #include <string_view>
@@ -17,9 +18,10 @@ namespace cppdocs::fuzz {
 inline std::optional<std::uint16_t> parse_port(std::string_view text) {
     if (text.size() > 1 && text.front() == '0') return std::nullopt;   // "080" and "80" mustn't both mean 80
     unsigned value = 0;
-    auto [end, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
+    const char* const last = std::to_address(text.end());
+    auto [end, ec] = std::from_chars(std::to_address(text.begin()), last, value);
     if (ec != std::errc{}) return std::nullopt;
-    if (end != text.data() + text.size()) return std::nullopt;
+    if (end != last) return std::nullopt;
     if (value == 0 || value > 65535) return std::nullopt;
     return static_cast<std::uint16_t>(value);
 }

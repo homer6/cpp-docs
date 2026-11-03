@@ -39,6 +39,7 @@ bool equal_secret(std::span<const unsigned char> a, std::span<const unsigned cha
 }
 
 std::span<const unsigned char> bytes(std::string_view s) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): unsigned char may view any bytes
     return {reinterpret_cast<const unsigned char*>(s.data()), s.size()};
 }
 
@@ -46,12 +47,14 @@ std::span<const unsigned char> bytes(std::string_view s) {
 
 // "Get randomness from the operating system": a <random> engine seeded the same way
 // produces the same sequence, so its output is predictable.
+// NOLINTBEGIN(bugprone-random-generator-seed,cert-msc32-c,cert-msc51-cpp): predictability is what's shown
 TEST(SecurityCrypto, SeededEngineRepeats) {
     std::mt19937 a{12345}, b{12345};
     for (int i = 0; i < 1000; ++i) ASSERT_EQ(a(), b());
     std::mt19937_64 c{1}, d{1};
     EXPECT_EQ(c(), d());
 }
+// NOLINTEND(bugprone-random-generator-seed,cert-msc32-c,cert-msc51-cpp)
 
 // "Keep secrets out of ... long-lived memory": the platform erase zeroes the buffer.
 TEST(SecurityCrypto, SecureZeroErases) {

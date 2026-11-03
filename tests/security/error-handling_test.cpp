@@ -36,6 +36,9 @@ struct Flaky {
     explicit Flaky(std::string s) : v(std::move(s)) {}
     Flaky(const Flaky& o) : v(o.v) { if (fail) throw std::runtime_error("copy failed"); }
     Flaky& operator=(const Flaky&) = default;
+    Flaky(Flaky&&) = delete;               // copies only, so every element goes through the throwing copy
+    Flaky& operator=(Flaky&&) = delete;
+    ~Flaky() = default;
 };
 
 }  // namespace

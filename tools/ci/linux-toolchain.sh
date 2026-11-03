@@ -61,6 +61,7 @@ clang-apt-llvm|clang-ubuntu)
     # The sanitizer runtimes (libclang_rt.asan.a and friends) are a separate
     # package; a sanitized build can't link without them (#274).
     [[ -n "${CPPDOCS_SANITIZE:-}${CPPDOCS_FUZZ:-}" ]] && pkgs+=("libclang-rt-$ver-dev")
+    [[ -n "${CPPDOCS_TIDY:-}" ]] && pkgs+=("clang-tidy-$ver")   # #308
     if [[ "$stdlib" == libcxx ]]; then
         pkgs+=("libc++-$ver-dev" "libc++abi-$ver-dev")
         env+=("CPPDOCS_PRESET=clang-libcxx" "CPPDOCS_BASELINE=tools/snippet_baseline/clang-linux.txt"
