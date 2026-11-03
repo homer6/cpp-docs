@@ -835,7 +835,7 @@ template <std::regular_invocable<int> F>
 void transform_all(std::vector<int>& v, F f) {
     for (int& x : v) x = std::invoke(f, x);
 }
-std::vector<std::function<void()>> on_exit;   // fine: different callables in one container
+std::vector<std::function<void()>> exit_handlers;   // fine: different callables in one container
 ```
 
 Tested by [`tests/guidelines/templates_test.cpp`](../../../../tests/guidelines/templates_test.cpp).
