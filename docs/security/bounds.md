@@ -61,15 +61,24 @@ Check offsets with subtraction, as above, so the check itself can't overflow
 #include <cstddef>
 #include <vector>
 
-int lookup(const std::vector<int>& table, std::size_t index_from_message) {
-    return table[index_from_message];          // BAD: no check
+// The table arrives as a pointer, the way a C interface hands it over.
+int lookup(const int* table, std::size_t index_from_message) {
+    return table[index_from_message];          // BAD: no check against the table's size
 }
 
 int main() {
     std::vector<int> table(4);
-    return lookup(table, 4);                   // ASan: heap-buffer-overflow
+    return lookup(table.data(), 4);            // ASan: heap-buffer-overflow
 }
 ```
+
+Indexing the `vector` itself (`table[4]`) is stopped earlier in some
+builds: libstdc++ 15 and later check `operator[]` by default when compiling
+without optimization, and abort with "Assertion '__n < this->size()'
+failed" before ASan sees the read (checked with GCC 16.2). That's library
+hardening doing its job. The check you write is still required, because
+optimized builds don't have it unless you turn hardening on
+([hardening](hardening.md)).
 
 **SHOULD:** Check explicitly at the boundary and handle the failure as an
 ordinary outcome; then the unchecked `[]` is fine inside, where the index is
