@@ -37,6 +37,10 @@ To run, read and report the platform runs (consent, every log processed,
 findings captured as tests, vendor bugs, re-running what failed, the
 archive, regenerating `docs/platform-support.md`), use the
 `platform-support` skill (`.claude/skills/platform-support/`).
+To draft the X post announcing a release (the owner's shape, every number
+from the release and platform notes; drafts only, the owner posts), use the
+`release-tweet` skill (`.claude/skills/release-tweet/`, #395); save each
+posted text in its `examples/`.
 Add a skill to the Makefile's `SKILLS` only if it works outside the repo.
 Never run `make install` from a worktree: the link would point at a
 directory that's deleted after the merge.
