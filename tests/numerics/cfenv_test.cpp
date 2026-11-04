@@ -1,8 +1,9 @@
 // Checks claims made by docs/examples/numerics/cfenv.md.
 //
 // Operands are volatile (as on the page) so nothing folds at compile time;
-// the harness builds at -O0 and doesn't use #pragma STDC FENV_ACCESS at file
-// scope (GCC warns that it ignores it). Tests that call a <cmath> function
+// GCC builds this file with -frounding-math (tests/CMakeLists.txt), which the
+// hardened presets' -O2 needs for std::rint on x86-64 (#371). It doesn't use
+// #pragma STDC FENV_ACCESS at file scope (GCC warns that it ignores it). Tests that call a <cmath> function
 // Clang may expand inline under a non-default mode use it at block scope,
 // for Clang only, as the page's examples do.
 #include <cfenv>
@@ -23,6 +24,9 @@ std::string third() {
 }
 
 double quiet_reciprocal(double x) {
+#if defined(__clang__)
+#pragma STDC FENV_ACCESS ON  // as on the page: without it an optimized Clang build moves 1.0 / x past fetestexcept (#379)
+#endif
     std::fenv_t env;
     std::feholdexcept(&env);
     volatile double r = 1.0 / x;

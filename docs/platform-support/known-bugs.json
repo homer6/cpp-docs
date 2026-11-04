@@ -89,5 +89,12 @@
   "upstream": [],
   "issues": [209, 218],
   "match": "ranges::contains\\(grid \\| views::join, 10\\)"
+ },
+ {
+  "toolchain": "GCC 15 (Homebrew, macOS arm64)",
+  "summary": "-mbranch-protection=pac-ret (and =standard) breaks C++ exception unwinding, so every throw aborts; the hardened build skips the flag for GCC on Apple targets",
+  "upstream": [],
+  "issues": [327],
+  "match": "vendor bug, #327"
  }
 ]

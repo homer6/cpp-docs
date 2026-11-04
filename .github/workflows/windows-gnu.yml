@@ -26,6 +26,10 @@ on:
         description: "Run the snippet checker"
         type: boolean
         default: true
+      jobs:
+        description: "Jobs to start: a regex searched for in each job name (empty = all). Preview: tools/ci/plan.py --jobs '<regex>'"
+        type: string
+        default: ""
   workflow_call:
     inputs:
       areas:
@@ -37,13 +41,44 @@ on:
       snippets:
         type: boolean
         default: true
+      jobs:
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
+  plan:
+    # Which jobs this run starts (#376): the entries of .github/ci/windows-gnu.json
+    # whose name matches the `jobs` input (empty: all). A job with no selected
+    # entry doesn't start. Preview a pattern with tools/ci/plan.py.
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      clang_cl: ${{ steps.plan.outputs.clang_cl }}
+      clang_cl_on: ${{ steps.plan.outputs.clang_cl_on }}
+      msys2: ${{ steps.plan.outputs.msys2 }}
+      msys2_on: ${{ steps.plan.outputs.msys2_on }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/ci
+            tools/ci
+
+      - name: Select the jobs
+        id: plan
+        env:
+          JOBS: ${{ inputs.jobs }}
+        run: python3 tools/ci/plan.py windows-gnu.yml --jobs "$JOBS" --github-output
+
   clang-cl:
     name: windows-2025-vs2026 · clang-cl
+    needs: plan
+    if: ${{ needs.plan.outputs.clang_cl_on == 'true' }}
     # windows-2025 is the same image (VS 2026 with the "C++ Clang tools" component).
     runs-on: windows-2025-vs2026
     continue-on-error: false
@@ -95,39 +130,19 @@ jobs:
           if-no-files-found: warn
 
   msys2:
-    name: windows-2025-vs2026 · MSYS2 ${{ matrix.msystem }} ${{ matrix.compiler }}
+    name: ${{ matrix.name }}
+    needs: plan
+    if: ${{ needs.plan.outputs.msys2_on == 'true' }}
     runs-on: windows-2025-vs2026
     continue-on-error: false
     timeout-minutes: 180
+    # UCRT64 gcc: GCC + libstdc++, UCRT. UCRT64 clang: Clang + libstdc++
+    # (UCRT64's clang uses GCC's library). CLANG64 clang: Clang + libc++, UCRT.
+    # The UCRT64 entries add libatomic-1.dll: an optional dependency of UCRT64
+    # gcc, needed at run time once the tests link -latomic (#201, #209).
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - msystem: UCRT64       # GCC + libstdc++, UCRT
-            compiler: gcc
-            package: gcc
-            preset: mingw
-            baseline: tools/snippet_baseline/gcc.txt
-            snippet_args: ""
-            # libatomic-1.dll: an optional dependency of UCRT64 gcc, needed at run
-            # time once the tests link -latomic (#201, #209).
-            extra: libatomic:p
-          - msystem: UCRT64       # Clang + libstdc++ (UCRT64's clang uses GCC's library)
-            compiler: clang
-            package: clang
-            preset: clang
-            baseline: ""
-            snippet_args: ""
-            # libatomic-1.dll: an optional dependency of UCRT64 gcc, needed at run
-            # time once the tests link -latomic (#201, #209).
-            extra: libatomic:p
-          - msystem: CLANG64      # Clang + libc++, UCRT
-            compiler: clang
-            package: clang
-            preset: clang
-            baseline: tools/snippet_baseline/clang.txt
-            snippet_args: --flag=-fexperimental-library
-            extra: ""
+      matrix: ${{ fromJSON(needs.plan.outputs.msys2) }}  # .github/ci/windows-gnu.json
     defaults:
       run:
         shell: msys2 {0}

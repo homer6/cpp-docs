@@ -50,8 +50,16 @@ gcc-ubuntu)
 clang-apt-llvm|clang-ubuntu)
     if [[ "$kind" == clang-apt-llvm ]]; then
         apt_install curl gnupg ca-certificates
-        curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
-            | gpg --dearmor | $sudo tee /usr/share/keyrings/apt-llvm.gpg >/dev/null
+        # Check the key is the one apt.llvm.org publishes before trusting it (#302).
+        key="$(mktemp)"
+        curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key -o "$key"
+        fpr="$(gpg --show-keys --with-colons "$key" | awk -F: '/^fpr:/ {print $10; exit}')"
+        if [[ "$fpr" != 6084F3CF814B57C1CF12EFD515CF4D18AF4F7421 ]]; then
+            echo "linux-toolchain.sh: apt.llvm.org key fingerprint '$fpr' isn't the expected one" >&2
+            exit 1
+        fi
+        gpg --dearmor < "$key" | $sudo tee /usr/share/keyrings/apt-llvm.gpg >/dev/null
+        rm -f "$key"
         echo "deb [signed-by=/usr/share/keyrings/apt-llvm.gpg] https://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${ver} main" \
             | $sudo tee /etc/apt/sources.list.d/apt-llvm.list >/dev/null
     fi
@@ -60,7 +68,8 @@ clang-apt-llvm|clang-ubuntu)
     pkgs=("${base[@]}" "clang-$ver" "clang-tools-$ver")
     # The sanitizer runtimes (libclang_rt.asan.a and friends) are a separate
     # package; a sanitized build can't link without them (#274).
-    [[ -n "${CPPDOCS_SANITIZE:-}" ]] && pkgs+=("libclang-rt-$ver-dev")
+    [[ -n "${CPPDOCS_SANITIZE:-}${CPPDOCS_FUZZ:-}" ]] && pkgs+=("libclang-rt-$ver-dev")
+    [[ -n "${CPPDOCS_TIDY:-}" ]] && pkgs+=("clang-tidy-$ver")   # #308
     if [[ "$stdlib" == libcxx ]]; then
         pkgs+=("libc++-$ver-dev" "libc++abi-$ver-dev")
         env+=("CPPDOCS_PRESET=clang-libcxx" "CPPDOCS_BASELINE=tools/snippet_baseline/clang-linux.txt"

@@ -149,6 +149,72 @@ out. There's no local TSan preset for that reason.
 GCC from Homebrew on macOS has no sanitizer runtimes, so the local GCC
 sanitizer run uses the `gcc:16` image.
 
+### Hardened builds (#305)
+
+The whole suite also runs the way a hardened release ships:
+
+```bash
+tools/run_tests.sh gcc-15-hardened     # libstdc++ assertions, stack protection, PIE
+tools/run_tests.sh clang-22-hardened   # libc++ fast hardening mode, stack protection, PIE
+tools/run_tests.sh gcc-16-hardened     # in the gcc:16 image: also _FORTIFY_SOURCE=3 and full RELRO
+```
+
+`CPPDOCS_HARDEN=ON` (the `*-hardened` presets, which also build
+`RelWithDebInfo`) turns on, in `tests/CMakeLists.txt`:
+
+| What | GCC / Clang | MSVC / clang-cl |
+|---|---|---|
+| Library hardening, by the library in use | `-D_GLIBCXX_ASSERTIONS` (libstdc++), `-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST` (libc++) | `/D_MSVC_STL_HARDENING=1` |
+| Stack and initialization | `-fstack-protector-strong`, `-ftrivial-auto-var-init=zero`, `-fstack-clash-protection` (Linux) | `/sdl` (cl) |
+| Control flow | `-fcf-protection=full` (x86), `-mbranch-protection=standard` (arm64) | `/guard:cf`, `/CETCOMPAT` (x64) |
+| Fortification | `-D_FORTIFY_SOURCE=3` (glibc, optimized builds only) | — |
+| Linking | PIE, `-Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack` (ELF) | — |
+
+Each flag is probed with `check_cxx_compiler_flag` / `check_linker_flag`
+first, so a toolchain that lacks one builds without it. The flags actually
+used are cached as `CPPDOCS_HARDEN_FLAGS`, written to the results JSON
+(`compiler.harden`, `compiler.harden_flags`) and shown on the toolchain page;
+a hardened job gets its own results and page (`…-hardened`), like a sanitized
+one. In CI, `CPPDOCS_HARDEN=1` in a job's environment does the same (the
+CMake option takes its default from it), and the job leaves snippets to the
+plain job. The hardened jobs are GCC 16 and Clang 22 with libc++ on Linux,
+Homebrew LLVM on macOS, and MSVC on Windows Server 2025. `tests/security/hardening_test.cpp` has death tests (#306) that
+prove the library checks fire: an out-of-range `operator[]` on `vector`,
+`array`, `span`, `string` and `string_view`, `front()` on an empty vector, and
+`*` on an empty `optional` or an `expected` holding an error each stop the
+program. They run whenever library hardening is active (including libstdc++
+15+'s default in unoptimized builds) and skip with the reason otherwise. What each flag does,
+and how to check a binary, is on [`docs/security/hardening.md`](security/hardening.md).
+
+### Fuzzing (#307)
+
+`fuzz/` has libFuzzer targets for the security pages' parsers, built with
+`CPPDOCS_FUZZ=ON` and Clang, and run time-boxed by `tools/ci/fuzz.sh` (and
+the `fuzz` job in `linux.yml`). Their saved corpus is replayed as ordinary
+tests (`tests/security/fuzz_corpus_test.cpp`) on every toolchain. See
+[`fuzz/README.md`](../fuzz/README.md).
+
+### Static analysis (#308)
+
+`tools/run_clang_tidy.sh [build-dir]` runs clang-tidy with the repo's profile
+over `tests/security/` and the `fuzz/` headers they include. The profile
+(`.clang-tidy`) enables `cppcoreguidelines-*`, `cert-*` and `bugprone-*`, and
+turns every finding into an error. It disables two checks, each with its
+reason in the file: unchecked `operator[]`, because library hardening checks
+it ([hardening](security/hardening.md)), and magic numbers.
+`tests/.clang-tidy` also turns off two checks that misread GoogleTest's
+macros.
+
+```bash
+cmake --preset clang-22                         # writes compile_commands.json
+cmake --build build/clang-22 --target gtest gtest_main
+tools/run_clang_tidy.sh build/clang-22          # "no findings", or each finding
+```
+
+A finding is fixed, or kept with `// NOLINT(<check>): <why>` that names the
+check and the reason. The `clang-tidy` job in `linux.yml` runs the script
+with `clang-tidy-22`.
+
 ### Portable presets (any machine, CI)
 
 The presets above are the owner's Mac. These take no paths: the compiler comes
@@ -315,3 +381,8 @@ scripts in [`tools/ci/`](../tools/ci/), and upload one
 consented run of each on `dev` first, with every failure fixed (the release
 checklist is in [`CLAUDE.md`](../CLAUDE.md)). The local checks above remain the
 source of truth.
+Each platform workflow and `all.yml` take a `jobs` input, a regex for the job
+names to start (#376), so a fix-up run starts only the jobs that failed;
+[`tools/ci/plan.py`](../tools/ci/plan.py) previews a pattern, and the jobs
+are listed in [`.github/ci/`](../.github/ci/). Details:
+[Starting only some jobs](../.github/workflows/README.md#starting-only-some-jobs).

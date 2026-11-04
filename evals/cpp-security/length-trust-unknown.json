@@ -1,0 +1,12 @@
+{
+  "id": "length-trust-unknown",
+  "outcome": "needs-context",
+  "context": {"std": "c++20", "exceptions": true},
+  "expect": {
+    "expected_behaviour": "asks where the stream comes from (a file the program wrote, or a peer or user) and what the largest legitimate record is, or states that assumption; if untrusted, a 4 GiB length allocates before anything is checked, so the length needs a limit and the read result must be checked",
+    "must_cite_any": ["docs/security/resource-limits.md#give-each-request-a-budget", "docs/security/threat-modeling.md"],
+    "cert_any": [],
+    "guidelines_any": []
+  },
+  "notes": "The right severity depends on the trust boundary, which the code doesn't show. Also: byte order, and unchecked read() results, which are worth a note either way."
+}

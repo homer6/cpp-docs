@@ -1,0 +1,245 @@
+{
+  "_comment": "The jobs .github/workflows/linux.yml can start, one entry per job with its display name (#376). The plan job selects entries with the run's `jobs` input (tools/ci/plan.py) and each job's matrix is the selected entries. Keep the names unique: they're what a `jobs` pattern matches, and the report keys on them.",
+  "jobs": {
+    "gcc": [
+      {
+        "name": "GCC 13 · ubuntu-24.04 (gcc:13 image)",
+        "gcc": "13",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:13@sha256:20eec427045c47d0aad1bd28c81d435916c327cd992240aa78350f755d04d04a"
+      },
+      {
+        "name": "GCC 14 · ubuntu-24.04 (gcc:14 image)",
+        "gcc": "14",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:14@sha256:435c3cbc2ad1c25fbc1684c367808ff0ca2035a1bed56734a40165ab5cd7e3bd"
+      },
+      {
+        "name": "GCC 15 · ubuntu-24.04 (gcc:15 image)",
+        "gcc": "15",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:15@sha256:dc99c5016a0fb74d4e9a392e7892966ec7f358af744799bd3479239598f79d45"
+      },
+      {
+        "name": "GCC 16 · ubuntu-24.04 (gcc:16 image)",
+        "gcc": "16",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb"
+      },
+      {
+        "name": "GCC 15 · ubuntu-24.04-arm (gcc:15 image)",
+        "gcc": "15",
+        "runner": "ubuntu-24.04-arm",
+        "image": "gcc:15@sha256:dc99c5016a0fb74d4e9a392e7892966ec7f358af744799bd3479239598f79d45"
+      },
+      {
+        "name": "GCC 16 · ubuntu-24.04-arm (gcc:16 image)",
+        "gcc": "16",
+        "runner": "ubuntu-24.04-arm",
+        "image": "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb"
+      },
+      {
+        "name": "GCC 16 · ubuntu-24.04 (gcc:16 image) ASan + UBSan",
+        "gcc": "16",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb",
+        "sanitize": "address,undefined"
+      },
+      {
+        "name": "GCC 16 · ubuntu-24.04 (gcc:16 image) hardened",
+        "gcc": "16",
+        "runner": "ubuntu-24.04",
+        "image": "gcc:16@sha256:07280eb2e744f1b7a2d8d4a3894c089ea07266c109758afc388a634bd098e4eb",
+        "harden": "1"
+      }
+    ],
+    "clang": [
+      {
+        "name": "Clang 18 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "18",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 18 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "18",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 19 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "19",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 19 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "19",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 20 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "20",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 20 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "20",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 21 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "21",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 21 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "21",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 22 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "22",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 22 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "22",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 23 libstdcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "23",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 23 libcxx · ubuntu-24.04 (apt.llvm.org)",
+        "runner": "ubuntu-24.04",
+        "clang": "23",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 22 libstdcxx · ubuntu-24.04-arm (apt.llvm.org)",
+        "runner": "ubuntu-24.04-arm",
+        "clang": "22",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 22 libcxx · ubuntu-24.04-arm (apt.llvm.org)",
+        "runner": "ubuntu-24.04-arm",
+        "clang": "22",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 23 libstdcxx · ubuntu-24.04-arm (apt.llvm.org)",
+        "runner": "ubuntu-24.04-arm",
+        "clang": "23",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 23 libcxx · ubuntu-24.04-arm (apt.llvm.org)",
+        "runner": "ubuntu-24.04-arm",
+        "clang": "23",
+        "stdlib": "libcxx"
+      }
+    ],
+    "clang-sanitizers": [
+      {
+        "name": "Clang 22 libcxx address,undefined · ubuntu-24.04 (apt.llvm.org)",
+        "sanitize": "address,undefined",
+        "stdlib": "libcxx"
+      },
+      {
+        "name": "Clang 22 libstdcxx thread · ubuntu-24.04 (apt.llvm.org)",
+        "sanitize": "thread",
+        "stdlib": "libstdcxx"
+      },
+      {
+        "name": "Clang 22 libcxx hardened · ubuntu-24.04 (apt.llvm.org)",
+        "sanitize": "",
+        "stdlib": "libcxx",
+        "harden": "1"
+      }
+    ],
+    "fuzz": [
+      {
+        "name": "Fuzz (Clang 22 libFuzzer + ASan + UBSan) · ubuntu-24.04"
+      }
+    ],
+    "clang-tidy": [
+      {
+        "name": "clang-tidy (Clang 22) · ubuntu-24.04"
+      }
+    ],
+    "ubuntu-26-04": [
+      {
+        "name": "ubuntu-26.04 · gcc-15 (Ubuntu archive)",
+        "runner": "ubuntu-26.04",
+        "tc": {
+          "label": "gcc-15",
+          "kind": "gcc-ubuntu",
+          "ver": "15",
+          "stdlib": ""
+        }
+      },
+      {
+        "name": "ubuntu-26.04 · clang-22-libstdcxx (Ubuntu archive)",
+        "runner": "ubuntu-26.04",
+        "tc": {
+          "label": "clang-22-libstdcxx",
+          "kind": "clang-ubuntu",
+          "ver": "22",
+          "stdlib": "libstdcxx"
+        }
+      },
+      {
+        "name": "ubuntu-26.04 · clang-22-libcxx (Ubuntu archive)",
+        "runner": "ubuntu-26.04",
+        "tc": {
+          "label": "clang-22-libcxx",
+          "kind": "clang-ubuntu",
+          "ver": "22",
+          "stdlib": "libcxx"
+        }
+      },
+      {
+        "name": "ubuntu-26.04-arm · gcc-15 (Ubuntu archive)",
+        "runner": "ubuntu-26.04-arm",
+        "tc": {
+          "label": "gcc-15",
+          "kind": "gcc-ubuntu",
+          "ver": "15",
+          "stdlib": ""
+        }
+      },
+      {
+        "name": "ubuntu-26.04-arm · clang-22-libstdcxx (Ubuntu archive)",
+        "runner": "ubuntu-26.04-arm",
+        "tc": {
+          "label": "clang-22-libstdcxx",
+          "kind": "clang-ubuntu",
+          "ver": "22",
+          "stdlib": "libstdcxx"
+        }
+      },
+      {
+        "name": "ubuntu-26.04-arm · clang-22-libcxx (Ubuntu archive)",
+        "runner": "ubuntu-26.04-arm",
+        "tc": {
+          "label": "clang-22-libcxx",
+          "kind": "clang-ubuntu",
+          "ver": "22",
+          "stdlib": "libcxx"
+        }
+      }
+    ]
+  }
+}

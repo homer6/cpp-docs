@@ -3,7 +3,7 @@
 # Same environment settings as run.sh:
 #
 #   CPPDOCS_PLATFORM, CPPDOCS_COMPILER, CPPDOCS_PRESET (required), CXX,
-#   CPPDOCS_AREAS, CPPDOCS_TESTS, CPPDOCS_SNIPPETS, CPPDOCS_CMAKE_ARGS,
+#   CPPDOCS_AREAS, CPPDOCS_TESTS, CPPDOCS_SNIPPETS, CPPDOCS_CMAKE_ARGS, CPPDOCS_HARDEN,
 #   CPPDOCS_SNIPPET_TOOLCHAIN, CPPDOCS_SNIPPET_ARGS, CPPDOCS_BASELINE,
 #   CPPDOCS_OS_VERSION, CPPDOCS_OUT
 #
@@ -33,6 +33,14 @@ $out = Env-Or 'CPPDOCS_OUT' 'ci-out'
 $py = (Get-Command python -ErrorAction SilentlyContinue)
 if (-not $py) { $py = Get-Command python3 }
 $py = $py.Source
+# Hardened build (#305): tests/CMakeLists.txt reads CPPDOCS_HARDEN from the
+# environment when it configures; the job gets its own results and toolchain
+# page (-hardened) and leaves snippets to the plain job.
+if ($env:CPPDOCS_HARDEN -and $env:CPPDOCS_HARDEN -ne '0') {
+    if (-not $env:CPPDOCS_COMPILER.EndsWith('-hardened')) { $env:CPPDOCS_COMPILER = "$($env:CPPDOCS_COMPILER)-hardened" }
+    $runSnippets = 'false'
+    if ($env:GITHUB_ENV) { "CPPDOCS_COMPILER=$($env:CPPDOCS_COMPILER)" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV }
+}
 $results = "results-$($env:CPPDOCS_PLATFORM)-$($env:CPPDOCS_COMPILER).json"
 New-Item -ItemType Directory -Force $out | Out-Null
 Remove-Item -ErrorAction SilentlyContinue "$out/tests.json", "$out/snippets.json"

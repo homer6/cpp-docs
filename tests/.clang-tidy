@@ -1,0 +1,8 @@
+# Tests inherit the root profile, minus checks that misread GoogleTest (#308).
+#   cppcoreguidelines-avoid-do-while    gtest's assertion macros expand to do/while
+#   bugprone-unchecked-optional-access  the check can't see that ASSERT_TRUE(opt)
+#                                       returns from the test on failure
+InheritParentConfig: true
+Checks: >
+  -cppcoreguidelines-avoid-do-while,
+  -bugprone-unchecked-optional-access

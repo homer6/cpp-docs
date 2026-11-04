@@ -15,6 +15,13 @@ Every file in .github/workflows/*.yml (and *.yaml) must:
     40-character commit SHA, with the version in a trailing comment
     (`uses: actions/checkout@<sha>  # v4.2.2`). Local `./` paths are allowed.
 
+A workflow with a job list, .github/ci/<name>.json (#376), must also start its
+jobs from it: a `plan` job (tools/ci/plan.py) with each job's matrix and on/off
+outputs; every other job needs `plan` and checks its `<id>_on` output in `if:`;
+a matrix job's matrix is `${{ fromJSON(needs.plan.outputs.<id>) }}` and its
+name `${{ matrix.name }}`; a single job's name is its one entry's name. So the
+`jobs` input can select every job, and none is left out of the list.
+
 Exit status: 0 when every workflow passes (or there are none), 1 when any
 problem is found, 2 on a usage error. Each problem is printed as
 `<file>: <message>`.
@@ -433,6 +440,60 @@ def check_source(source: str) -> list[str]:
     return check_triggers(doc) + check_permissions(doc) + check_pins(doc, source)
 
 
+def check_job_list(doc: dict, entries: dict) -> list[str]:
+    """A workflow with a job list (.github/ci/<name>.json, #376) must start its
+    jobs from it: every job but `plan` needs the plan job and runs only when it
+    has a selected entry, a matrix job takes its matrix and name from the list,
+    and a single job's name is its one entry's name."""
+    problems = []
+    jobs = doc.get("jobs") if isinstance(doc.get("jobs"), dict) else {}
+    plan = jobs.get("plan") if isinstance(jobs.get("plan"), dict) else None
+    if plan is None:
+        return ["has a job list but no `plan` job"]
+    outputs = plan.get("outputs") if isinstance(plan.get("outputs"), dict) else {}
+    for jid in entries:
+        if jid not in jobs:
+            problems.append(f"job list names `{jid}`, which isn't a job here")
+    for jid, job in jobs.items():
+        if jid == "plan" or not isinstance(job, dict):
+            continue
+        if jid not in entries:
+            problems.append(f"job `{jid}` isn't in the job list, so the `jobs` input can't select it")
+            continue
+        key = jid.replace("-", "_")
+        for out in (key, f"{key}_on"):
+            if out not in outputs:
+                problems.append(f"plan job doesn't output `{out}`")
+        needs = job.get("needs")
+        if needs != "plan" and not (isinstance(needs, list) and "plan" in needs):
+            problems.append(f"job `{jid}` doesn't need `plan`")
+        if f"needs.plan.outputs.{key}_on == 'true'" not in str(job.get("if", "")):
+            problems.append(f"job `{jid}` doesn't check `needs.plan.outputs.{key}_on == 'true'` in its `if:`")
+        strategy = job.get("strategy") if isinstance(job.get("strategy"), dict) else {}
+        if "matrix" in strategy:
+            if strategy["matrix"] != f"${{{{ fromJSON(needs.plan.outputs.{key}) }}}}":
+                problems.append(f"job `{jid}`: matrix must be `${{{{ fromJSON(needs.plan.outputs.{key}) }}}}`")
+            if job.get("name") != "${{ matrix.name }}":
+                problems.append(f"job `{jid}`: a matrix job's name must be `${{{{ matrix.name }}}}`")
+        else:
+            names = [e.get("name") for e in entries[jid] if isinstance(e, dict)]
+            if names != [job.get("name")]:
+                problems.append(f"job `{jid}`: its name must be its one job-list entry's name ({names})")
+    return problems
+
+
+def job_list(path: Path) -> dict | None:
+    """The job list next to a workflow, .github/ci/<stem>.json, if there is one."""
+    p = path.parent.parent / "ci" / (path.stem + ".json")
+    if not p.is_file():
+        return None
+    try:
+        jobs = json.loads(p.read_text(encoding="utf-8")).get("jobs")
+    except (json.JSONDecodeError, AttributeError):
+        return {}
+    return jobs if isinstance(jobs, dict) else {}
+
+
 def workflow_files(root: Path) -> list[Path]:
     wf = root / ".github" / "workflows"
     if not wf.is_dir():
@@ -447,7 +508,12 @@ def run(paths: list[Path], display_root: Path) -> int:
             shown = path.resolve().relative_to(display_root.resolve())
         except ValueError:
             shown = path
-        problems = check_source(path.read_text(encoding="utf-8"))
+        source = path.read_text(encoding="utf-8")
+        problems = check_source(source)
+        entries = job_list(path)
+        if entries is not None and not problems:
+            problems = check_job_list(parse_yaml(source), entries) if entries else \
+                [f"{path.stem}.json: not a readable job list (tools/ci/plan.py --check)"]
         for p in problems:
             print(f"{shown}: {p}")
         failed += bool(problems)
@@ -682,6 +748,40 @@ def self_test() -> int:
                 expect(any(w in p for p in problems), f"bad sample {name}: no problem mentioning {w!r} in {problems}")
             expect(len(problems) == len(wanted), f"bad sample {name}: expected {len(wanted)} problem(s), got {problems}")
         expect(run(workflow_files(root), root) == 1, "a folder with bad samples should fail")
+
+    # Job lists (#376).
+    planned = parse_yaml("""
+jobs:
+  plan:
+    outputs:
+      gcc: x
+      gcc_on: x
+      tidy: x
+      tidy_on: x
+  gcc:
+    name: ${{ matrix.name }}
+    needs: plan
+    if: ${{ needs.plan.outputs.gcc_on == 'true' }}
+    strategy:
+      matrix: ${{ fromJSON(needs.plan.outputs.gcc) }}  # .github/ci/x.json
+  tidy:
+    name: clang-tidy
+    needs: plan
+    if: ${{ inputs.tests && needs.plan.outputs.tidy_on == 'true' }}
+""")
+    good_list = {"gcc": [{"name": "GCC 15"}, {"name": "GCC 16"}], "tidy": [{"name": "clang-tidy"}]}
+    expect(check_job_list(planned, good_list) == [], f"good job list: {check_job_list(planned, good_list)}")
+    bad = check_job_list(planned, {"gcc": [{"name": "GCC 15"}], "tidy": [{"name": "tidy"}], "gone": []})
+    expect(any("`gone`" in p for p in bad), "a list entry for a missing job is reported")
+    expect(any("one job-list entry" in p for p in bad), "a single job's name must match its entry")
+    loose = parse_yaml("jobs:\n  plan:\n    outputs:\n      gcc: x\n  gcc:\n    name: GCC\n"
+                       "    strategy:\n      matrix:\n        gcc: [15]\n  other:\n    name: o\n")
+    msgs = check_job_list(loose, {"gcc": [{"name": "GCC 15"}]})
+    for want in ("doesn't need `plan`", "gcc_on", "matrix must be", "name must be `${{ matrix.name }}`",
+                 "`other` isn't in the job list"):
+        expect(any(want in p for p in msgs), f"job list: no problem mentioning {want!r} in {msgs}")
+    expect(check_job_list(parse_yaml("jobs:\n  a:\n    name: a\n"), {"a": [{"name": "a"}]})
+           == ["has a job list but no `plan` job"], "a job list needs a plan job")
 
     for f in failures:
         print(f"SELF-TEST FAIL: {f}", file=sys.stderr)

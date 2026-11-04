@@ -1,6 +1,6 @@
 # Guideline evals
 
-A small, vendor-neutral suite for measuring whether a coding agent applies the
+A small, vendor-neutral suite (plus the [modern-cpp](#the-modern-cpp-suite) and [cpp-security](#the-cpp-security-suite) suites) for measuring whether a coding agent applies the
 C++ Core Guidelines **correctly**: it finds real violations, cites the right
 rule, leaves correct code alone, respects project constraints, and asks when the
 code doesn't say enough.
@@ -193,6 +193,44 @@ The rewrite matches the old skill's accuracy with about 16% fewer tokens and
 27% less time, because the support notes answer most questions in one read.
 One run of 8 cases is not significant; harder cases (a newer gap the model
 can't know, a wrong vendor status page) would separate the arms better.
+
+## The cpp-security suite
+
+`evals/cpp-security/` measures the [`cpp-security`](../.claude/skills/cpp-security/SKILL.md)
+skill and the security parts of `modern-cpp` and `cpp-guidelines` (#309): does
+an agent find what an attacker could exploit, explain the attack, and cite the
+page that settles it? Each case is a pair:
+
+- `<id>.cpp`: the code under review. It compiles, and nothing in it is a
+  compiler warning; the bug is in what the input can do.
+- `<id>.json`: `outcome` (`violation`, `compliant` or `needs-context`), the
+  `context` (`std`, `exceptions`, and `untrusted`: which inputs an attacker
+  controls), and `expect`:
+  - **for a violation:** `must_find`, the attack in one sentence, and `fix.properties`;
+  - **for a compliant case:** `must_not_flag` and `must_not_change`;
+  - **for needs-context:** `expected_behaviour`;
+  - **for every case:** `must_cite_any` (a `docs/security/` page and anchor),
+    plus the `cert_any` and `guidelines_any` IDs a good answer may cite.
+
+| Case | Outcome | What it tests |
+|---|---|---|
+| `size-check-wraps` | violation | `offset + length > size` wraps (INT30-C) |
+| `size-check-correct` | compliant | the control: the two-step check, left alone |
+| `toctou-access-open` | violation | `access()` then open in a setuid helper (FIO45-C) |
+| `secret-compare-early-exit` | violation | `==` on a secret token leaks timing |
+| `rand-session-token` | violation | time-seeded `rand()` tokens (MSC50-CPP, MSC51-CPP) |
+| `async-this-capture` | violation | a queued lambda captures `this`; the client disconnects first (EXP54-CPP) |
+| `auth-fail-open` | violation | `catch (...) { return true; }` around an authorization decision |
+| `shell-command-injection` | violation | a filename spliced into `std::system` (ENV33-C) |
+| `length-trust-unknown` | needs-context | a length prefix whose source the code doesn't show |
+
+`check.py` checks each case's fields, that every cited page **and anchor**
+exists, that CERT IDs are well formed, that Core Guidelines IDs exist, and that
+the code compiles. Run and score it like the other suites: give each arm the
+code, the context and the prompt *"Review this code for security problems an
+attacker could exploit. Explain each attack and propose a minimal fix."*, never
+the `expect`. A miss on `must_find` or a change to a compliant case is a hard
+fail. No results have been recorded yet.
 
 ## Results: the 10 new cases (2026-11-02, #252)
 

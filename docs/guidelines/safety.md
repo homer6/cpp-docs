@@ -319,6 +319,7 @@ Several of its types now have standard equivalents:
 
 ## See also
 
+- [Security](../security/README.md): safety keeps code from misbehaving; security keeps it holding up against an attacker (trust boundaries, untrusted input, secrets, hardening, supply chain)
 - [C++ Core Guidelines — Profiles](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#s-profile)
 - [Core Guidelines digest](core-guidelines.md) ·
   [contracts](../examples/language/basic-concepts/contracts.md) ·

@@ -14,7 +14,7 @@ SKILLS_DIR ?= $(HOME)/.claude/skills
 # Older copies go here, outside SKILLS_DIR, so Claude Code doesn't load them twice.
 SKILLS_BACKUP ?= $(SKILLS_DIR)-backup
 REPO       := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-SKILLS     := modern-cpp cpp-guidelines
+SKILLS     := modern-cpp cpp-guidelines cpp-security
 
 .PHONY: install update uninstall
 

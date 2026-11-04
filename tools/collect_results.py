@@ -279,27 +279,30 @@ def run_number(r: dict) -> int:
 
 
 def supersede(runs: list[dict]) -> None:
-    """Keep each job only from the newest run that has it (#190).
+    """Keep each job only from the newest run that has it (#190, #376).
 
-    The latest run of every platform workflow is what the report shows, but an
-    all.yml run covers several workflows, and a later fix-up run may re-run only
-    some of them. So a row (results label) seen in a newer run is dropped from
-    older ones, and so are an older run's caller jobs ("linux.yml / <job>") for a
-    workflow a newer run covered."""
+    The latest run of every job is what the report shows. An all.yml run covers
+    several workflows, and a later fix-up run may start only the jobs that
+    failed (the `jobs` input). So a row (results label) seen in a newer run is
+    dropped from older ones, and so is an older run's job with the same
+    workflow and name as one the newer run ran (not skipped). The older run's
+    other jobs stay."""
     order = sorted(runs, key=run_number, reverse=True)
     seen_rows: set[str] = set()
-    seen_wf: set[str] = set()
+    seen_jobs: set[tuple[str, str]] = set()
     for r in order:
         if not run_number(r):
             continue
-        covered = {j.split(" / ")[0].strip() for j, c in r["jobs"] if c != "skipped" and " / " in j}
-        if r.get("workflow") and r["workflow"] != "all.yml":
-            covered.add(r["workflow"])
+
+        def key(job: str) -> tuple[str, str]:
+            if " / " in job:
+                wf, name = job.split(" / ", 1)
+                return wf.strip(), name.strip()
+            return r.get("workflow") or "", job.strip()
         r["rows"] = {k: v for k, v in r["rows"].items() if k not in seen_rows}
-        r["jobs"] = [(j, c) for j, c in r["jobs"]
-                     if not (" / " in j and j.split(" / ")[0].strip() in seen_wf)]
+        r["jobs"] = [(j, c) for j, c in r["jobs"] if key(j) not in seen_jobs]
         seen_rows |= set(r["rows"])
-        seen_wf |= covered
+        seen_jobs |= {key(j) for j, c in r["jobs"] if c != "skipped"}
 
 
 def load_run(run_id: str, keep: pathlib.Path | None, archive: pathlib.Path | None = ARCHIVE,
@@ -610,8 +613,11 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
     # Which platform workflows each run covered: the run's own workflow file, or for all.yml
     # the caller jobs named after the files ("linux.yml / <job>"), skipped ones left out.
     known = {w for w, _, _ in WORKFLOWS}
-    ran: dict[str, tuple[str, str, str]] = {}
-    for r in consented:
+    # A workflow's jobs can come from several runs (a fix-up run of the failed
+    # jobs, #376): link each run that still has jobs, and fail if any job failed.
+    runs_of: dict[str, list[tuple[str, str]]] = {}
+    concls: dict[str, list[str]] = {}
+    for r in sorted(consented, key=run_number):
         names = {r["workflow"]} & known
         for job, concl in r["jobs"]:
             head = job.split(" / ")[0].strip()
@@ -621,8 +627,13 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
             # An all.yml run's conclusion covers every workflow it ran; use this
             # workflow's own jobs where the run has them (#190).
             mine = [c for job, c in r["jobs"] if job.split(" / ")[0].strip() == w and c != "skipped"]
-            concl = ("failure" if any(c != "success" for c in mine) else "success") if mine else r["conclusion"]
-            ran[w] = (r["date"], r["url"], concl)
+            concls.setdefault(w, []).extend(mine or [r["conclusion"]])
+            runs_of.setdefault(w, []).append((r["date"], r["url"]))
+    ran: dict[str, tuple[str, list[tuple[str, str]], str]] = {}
+    for w, links in runs_of.items():
+        cs = [c for c in concls[w] if c]
+        concl = ("failure" if any(c != "success" for c in cs) else "success") if cs else ""
+        ran[w] = (max(d for d, _ in links), links, concl)
     last = max([r["date"] for r in consented if r["rows"] and r["date"]] + [d for d, _, _ in ran.values() if d],
                default="")
     out = ["# Platform support", "",
@@ -669,8 +680,8 @@ def render(runs: list[dict], local: dict | None, today: str, matrix_rows: bool =
     for wf, title, what in WORKFLOWS:
         badge = (f"[{title}](https://github.com/{REPO}/actions/workflows/{wf}) (`{wf}`)")
         if wf in ran:
-            date, url, concl = ran[wf]
-            cell = f"[{date}]({url})" + (f" ({concl})" if concl else "")
+            _, links, concl = ran[wf]
+            cell = ", ".join(f"[{d}]({u})" for d, u in links) + (f" ({concl})" if concl else "")
         else:
             cell = NOT_RUN
         out.append(f"| {badge} | {what} | {cell} |")
@@ -756,6 +767,8 @@ def compiler_label(row: dict[str, dict]) -> str:
         out += f", {stdlib}"
     if san := sanitize_tag(main):
         out += f", {san}"
+    if (main.get("compiler") or {}).get("harden"):
+        out += ", hardened"
     return out
 
 
@@ -989,6 +1002,8 @@ def toolchain_slug(row: dict[str, dict], local: bool) -> str:
     san = (main["compiler"].get("sanitize") or "")
     if san:  # a sanitized job gets its own page next to the plain one (#263)
         comp += "-" + ("tsan" if "thread" in san else "asan")
+    if main["compiler"].get("harden"):  # and so does a hardened one (#305)
+        comp += "-hardened"
     return re.sub(r"[^a-z0-9._]+", "-", f"{os_part}-{arch_of(main).lower()}-{comp}").strip("-")
 
 
@@ -1027,6 +1042,8 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
                                                                   if "tests" in row else "")),
              ("Standard library", esc_cell(stdlib or "unknown")),
              *([("Sanitizers", sanitize_tag(main))] if sanitize_tag(main) else []),
+             *([("Hardening", f"`{main['compiler'].get('harden_flags') or 'on'}`")]
+               if main["compiler"].get("harden") else []),
              ("Architecture", arch_of(main) + (f", {run['byte_order']}-endian" if run.get("byte_order") else "")),
              ("Run", run_cell),
              ("Areas", ("all" if not areas else f"`{areas}`") if run else "all (local run)"),
@@ -1036,6 +1053,7 @@ def job_of(row: dict[str, dict], r: dict, local: bool) -> dict:
               if snip else "not run")]
     return {"family": fam, "version": major, "stdlib": "" if stdlib == "unknown" else stdlib,
             "sanitize": main["compiler"].get("sanitize") or "",
+            "harden": bool(main["compiler"].get("harden")),
             "report_only": bool(snip and snip.get("mode") == "report-only"),
             "compiler": compiler_label(row), "local": local, "title": title, "facts": facts,
             "file": row["page"], "where": f"{os_label(row)} · {arch_of(main)}",
@@ -1500,6 +1518,16 @@ def self_test() -> int:
         expect("supersede: newer row wins", set(old["rows"]) == {"msvc"} and set(new["rows"]) == {"lin"})
         expect("supersede: older job of a re-run workflow dropped",
                old["jobs"] == [("windows-msvc.yml / msvc", "success")])
+        # A fix-up run that started only the failed job (#376): the older run's
+        # other jobs and rows in that workflow stay.
+        full = {"url": "https://x/runs/20", "workflow": "all.yml", "rows": {"gcc15": {}, "gcc16": {}},
+                "jobs": [("linux.yml / GCC 15", "failure"), ("linux.yml / GCC 16", "success"),
+                         ("linux.yml / plan", "success")]}
+        fix = {"url": "https://x/runs/21", "workflow": "linux.yml", "rows": {"gcc15": {}},
+               "jobs": [("GCC 15", "success"), ("clang-tidy", "skipped"), ("plan", "success")]}
+        supersede([full, fix])
+        expect("supersede: fix-up run replaces only its job",
+               full["jobs"] == [("linux.yml / GCC 16", "success")] and set(full["rows"]) == {"gcc16"})
         expect("bugs table", "### Compiler and platform bugs found" in page)
         bad = pathlib.Path(tmp, "bugs.json")
         bad.write_text('[{"toolchain": "x", "summary": "y", "upstream": [{"label": "z", "url": "http://no"}], '

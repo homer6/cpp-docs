@@ -51,6 +51,52 @@ gh workflow run <file>.yml -R homer6/cpp-docs --ref <branch> -f key=value
 
 `-f key=value` sets one `workflow_dispatch` input; repeat it for more.
 
+## Starting only some jobs
+
+Every platform workflow and `all.yml` take a `jobs` input: a regular
+expression searched for in each job's name (Python `re.search`, empty = every
+job; #376). Only the jobs whose names match start. A matrix entry that
+doesn't match isn't in the run at all, and a single job that doesn't match
+shows as skipped, never as passed. Use it after a fix: start **only the jobs
+that failed**, on the fixed commit, not every job of their workflows.
+`gh run rerun` can't do this, because a re-run reuses the run's old commit.
+
+The jobs are listed in `.github/ci/<workflow>.json`, one entry per job with
+its display name and its matrix values. Each workflow's `plan` job runs
+`tools/ci/plan.py`, which keeps the matching entries, and each job's matrix
+is what it kept. Preview a pattern locally before asking to start the run:
+
+```bash
+tools/ci/plan.py                                    # every job of every workflow
+tools/ci/plan.py --jobs 'FreeBSD .* gcc$'           # which jobs a pattern selects
+tools/ci/plan.py linux.yml --jobs 'GCC 1[56] '      # one workflow
+tools/ci/plan.py --check                            # the lists are readable, names unique
+```
+
+Then start the run with the same pattern:
+
+```bash
+gh workflow run linux.yml -R homer6/cpp-docs --ref dev -f jobs='^GCC 1[56] '
+gh workflow run all.yml -R homer6/cpp-docs --ref dev -f platforms=windows-msvc,windows-gnu,freebsd -f jobs='MSVC|MSYS2|clang-cl|FreeBSD .* gcc$'
+```
+
+With `all.yml`, the pattern is matched in every selected platform: narrow it
+with `platforms` too. Anchor the pattern when a name is a prefix of another:
+`GCC 16 · ubuntu-24.04 \(gcc:16 image\)$` is only the plain job, not its
+`ASan + UBSan` and `hardened` variants. A pattern that isn't a valid regular
+expression fails the `plan` job, so a typo doesn't silently start nothing.
+The plan job's summary lists the jobs it selected.
+
+To add, rename or remove a job, edit the workflow and its job list together.
+`tools/check_workflows.py` fails when they disagree: every job except `plan`
+must be in the list, need `plan` and check its `<id>_on` output; a matrix
+job's matrix is `${{ fromJSON(needs.plan.outputs.<id>) }}` and its name
+`${{ matrix.name }}`; a single job's name is its one entry's name.
+
+The report keeps each job from the newest run that ran it, so give
+`tools/collect_results.py` both runs: `<full-run-id> <fix-up-run-id>`. The
+fix-up run replaces only the jobs it ran.
+
 ## Watching and reading a run
 
 ```bash
@@ -68,9 +114,9 @@ replace the local checks in `CLAUDE.md` ("Running the tests").
 
 | File | Runners | Compilers |
 |---|---|---|
-| `linux.yml` | ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04 (preview), ubuntu-26.04-arm (preview) | GCC 13–16 (official `gcc:N` images, by digest), Clang 18–23 (apt.llvm.org) with libstdc++ and libc++; GCC 15 and Clang 22 from Ubuntu 26.04 |
-| `macos.yml` | macos-15, macos-26 (arm64), macos-15-intel, macos-26-intel | Apple Clang (the runner's Xcode), Homebrew `gcc`, Homebrew `llvm` (its own libc++) |
-| `windows-msvc.yml` | windows-2022 (VS 2022), windows-2025-vs2026, windows-11-arm (VS 2026) | MSVC `cl`, `msvc` preset, `run_tests.ps1`, `check_snippets.py --toolchain msvc` |
+| `linux.yml` | ubuntu-24.04, ubuntu-24.04-arm, ubuntu-26.04 (preview), ubuntu-26.04-arm (preview) | GCC 13–16 (official `gcc:N` images, by digest), Clang 18–23 (apt.llvm.org) with libstdc++ and libc++; GCC 15 and Clang 22 from Ubuntu 26.04; GCC 16 and Clang 22 (libc++) also sanitized and hardened (#263, #305); a time-boxed libFuzzer job for `fuzz/` (#307); a clang-tidy job over `tests/security/` and `fuzz/` (#308) |
+| `macos.yml` | macos-15, macos-26 (arm64), macos-15-intel, macos-26-intel | Apple Clang (the runner's Xcode), Homebrew `gcc`, Homebrew `llvm` (its own libc++), also with ASan+UBSan and hardened (#305) |
+| `windows-msvc.yml` | windows-2022 (VS 2022), windows-2025-vs2026, windows-11-arm (VS 2026) | MSVC `cl`, `msvc` preset, `run_tests.ps1`, `check_snippets.py --toolchain msvc`; a hardened MSVC job on windows-2025-vs2026 (#305) |
 | `windows-gnu.yml` | windows-2025-vs2026 | clang-cl (VS's LLVM, `clang-cl` preset); MSYS2 UCRT64 GCC and Clang (libstdc++), CLANG64 Clang (libc++) |
 | `freebsd.yml` | ubuntu-24.04 + a FreeBSD VM (`vmactions/freebsd-vm`) | 14.5 and 15.1 x86_64: base Clang (libc++) and pkg GCC |
 
@@ -78,7 +124,7 @@ replace the local checks in `CLAUDE.md` ("Running the tests").
 (riscv64, s390x, ppc64le) and FreeBSD aarch64 under QEMU were removed. Every
 job runs natively or in a KVM-accelerated VM.
 
-Each takes three inputs, from `workflow_dispatch` or from `all.yml` through
+Each takes four inputs, from `workflow_dispatch` or from `all.yml` through
 `workflow_call`:
 
 - `areas`: a ctest label regex (empty = all areas). Only the matching
@@ -87,6 +133,8 @@ Each takes three inputs, from `workflow_dispatch` or from `all.yml` through
   `docs/examples/<area>` folders are snippet-checked. Use it to prove
   plumbing or a fix cheaply; published runs use every area.
 - `tests` and `snippets`: booleans, default true.
+- `jobs`: a regex for the job names to start (empty = every job; #376). See
+  [Starting only some jobs](#starting-only-some-jobs).
 
 Every job runs `tools/ci/run.sh` (or `tools/ci/run.ps1` with a VS Developer
 environment from `tools/ci/vsdevenv.ps1`), after a toolchain script

@@ -32,6 +32,10 @@ on:
         description: "Run the snippet checker"
         type: boolean
         default: true
+      jobs:
+        description: "Jobs to start: a regex searched for in each job name (empty = all). Preview: tools/ci/plan.py --jobs '<regex>'"
+        type: string
+        default: ""
   workflow_call:
     inputs:
       areas:
@@ -43,29 +47,50 @@ on:
       snippets:
         type: boolean
         default: true
+      jobs:
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
+  plan:
+    # Which jobs this run starts (#376): the entries of .github/ci/windows-msvc.json
+    # whose name matches the `jobs` input (empty: all). A job with no selected
+    # entry doesn't start. Preview a pattern with tools/ci/plan.py.
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      msvc: ${{ steps.plan.outputs.msvc }}
+      msvc_on: ${{ steps.plan.outputs.msvc_on }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            .github/ci
+            tools/ci
+
+      - name: Select the jobs
+        id: plan
+        env:
+          JOBS: ${{ inputs.jobs }}
+        run: python3 tools/ci/plan.py windows-msvc.yml --jobs "$JOBS" --github-output
+
   msvc:
-    name: ${{ matrix.runner }} · MSVC ${{ matrix.arch }}
+    name: ${{ matrix.name }}
+    needs: plan
+    if: ${{ needs.plan.outputs.msvc_on == 'true' }}
     runs-on: ${{ matrix.runner }}
     continue-on-error: false
     timeout-minutes: 180
+    # MSVC hardened (#305): /sdl /guard:cf /CETCOMPAT and the MS STL's
+    # hardening; its own results and page (msvc-*-hardened).
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - runner: windows-2022
-            arch: amd64
-            platform: windows-2022-x64
-          - runner: windows-2025-vs2026
-            arch: amd64
-            platform: windows-2025-x64
-          - runner: windows-11-arm
-            arch: arm64
-            platform: windows-11-arm64
+      matrix: ${{ fromJSON(needs.plan.outputs.msvc) }}  # .github/ci/windows-msvc.json
     defaults:
       run:
         shell: pwsh
@@ -78,6 +103,7 @@ jobs:
       CPPDOCS_SNIPPET_TOOLCHAIN: msvc
       CPPDOCS_BASELINE: tools/snippet_baseline/msvc.txt
       CXX: cl
+      CPPDOCS_HARDEN: ${{ matrix.harden || '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:

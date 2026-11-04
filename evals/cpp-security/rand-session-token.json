@@ -1,0 +1,13 @@
+{
+  "id": "rand-session-token",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "none: the token is a secret the server issues"},
+  "expect": {
+    "must_find": ["rand() seeded with the time is predictable: an attacker who knows roughly when the token was made can reproduce it"],
+    "must_cite_any": ["docs/security/cryptography-and-secrets.md#get-randomness-from-the-operating-system"],
+    "cert_any": ["MSC50-CPP", "MSC51-CPP"],
+    "guidelines_any": [],
+    "fix": {"properties": ["uses the OS's cryptographic source (getrandom/arc4random_buf/BCryptGenRandom) or a crypto library", "doesn't use any <random> engine for the token"]}
+  },
+  "notes": "A good answer also rejects std::mt19937 and std::random_device-as-seed as replacements."
+}

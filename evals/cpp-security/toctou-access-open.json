@@ -1,0 +1,13 @@
+{
+  "id": "toctou-access-open",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "path (from an unprivileged user of a setuid program)"},
+  "expect": {
+    "must_find": ["check-then-use race: the file can be swapped (e.g. for a symlink to a protected file) between access() and the open"],
+    "must_cite_any": ["docs/security/filesystem-and-processes.md#dont-check-a-path-then-use-it"],
+    "cert_any": ["FIO45-C"],
+    "guidelines_any": [],
+    "fix": {"properties": ["opens once and checks the opened object, or drops to the real user's privileges before opening"]}
+  },
+  "notes": "The classic access/open TOCTOU; the fix is to make the decision on the descriptor, or let the kernel decide with the user's credentials."
+}

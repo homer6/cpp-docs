@@ -124,6 +124,33 @@
       "cacheVariables": {
         "CPPDOCS_SANITIZE": "address,undefined"
       }
+    },
+    {
+      "name": "gcc-15-hardened",
+      "displayName": "GCC 15 (Homebrew g++-15) hardened (library hardening, stack protection, PIE; RelWithDebInfo)",
+      "inherits": "gcc-15",
+      "cacheVariables": {
+        "CPPDOCS_HARDEN": "ON",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "clang-22-hardened",
+      "displayName": "Clang 22 + libc++ hardened (libc++ fast mode, stack protection, PIE; RelWithDebInfo)",
+      "inherits": "clang-22",
+      "cacheVariables": {
+        "CPPDOCS_HARDEN": "ON",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "gcc-16-hardened",
+      "displayName": "GCC 16 (gcc:16 Docker image) hardened (assertions, _FORTIFY_SOURCE=3, RELRO, PIE; RelWithDebInfo)",
+      "inherits": "gcc-16",
+      "cacheVariables": {
+        "CPPDOCS_HARDEN": "ON",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
     }
   ],
   "buildPresets": [
@@ -180,6 +207,18 @@
     {
       "name": "gcc-16-asan",
       "configurePreset": "gcc-16-asan"
+    },
+    {
+      "name": "gcc-15-hardened",
+      "configurePreset": "gcc-15-hardened"
+    },
+    {
+      "name": "clang-22-hardened",
+      "configurePreset": "clang-22-hardened"
+    },
+    {
+      "name": "gcc-16-hardened",
+      "configurePreset": "gcc-16-hardened"
     }
   ],
   "testPresets": [
@@ -268,6 +307,21 @@
         "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
         "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1"
       }
+    },
+    {
+      "name": "gcc-15-hardened",
+      "configurePreset": "gcc-15-hardened",
+      "inherits": "base"
+    },
+    {
+      "name": "clang-22-hardened",
+      "configurePreset": "clang-22-hardened",
+      "inherits": "base"
+    },
+    {
+      "name": "gcc-16-hardened",
+      "configurePreset": "gcc-16-hardened",
+      "inherits": "base"
     }
   ],
   "workflowPresets": [
@@ -455,6 +509,57 @@
         {
           "type": "test",
           "name": "gcc-16-asan"
+        }
+      ]
+    },
+    {
+      "name": "gcc-15-hardened",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-15-hardened"
+        },
+        {
+          "type": "build",
+          "name": "gcc-15-hardened"
+        },
+        {
+          "type": "test",
+          "name": "gcc-15-hardened"
+        }
+      ]
+    },
+    {
+      "name": "clang-22-hardened",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "clang-22-hardened"
+        },
+        {
+          "type": "build",
+          "name": "clang-22-hardened"
+        },
+        {
+          "type": "test",
+          "name": "clang-22-hardened"
+        }
+      ]
+    },
+    {
+      "name": "gcc-16-hardened",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "gcc-16-hardened"
+        },
+        {
+          "type": "build",
+          "name": "gcc-16-hardened"
+        },
+        {
+          "type": "test",
+          "name": "gcc-16-hardened"
         }
       ]
     }

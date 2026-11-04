@@ -47,6 +47,97 @@ if(CPPDOCS_SANITIZE)
   message(STATUS "tests: sanitizers on: ${CPPDOCS_SANITIZE}")
 endif()
 
+# Hardening (#305): CPPDOCS_HARDEN=ON builds the suite the way a hardened
+# release ships: standard-library hardening (picked below by the library
+# actually in use), stack protection, zero-initialized automatic variables,
+# _FORTIFY_SOURCE on glibc in optimized builds, PIE, full RELRO and a
+# non-executable stack on ELF, control-flow protection where the target has
+# it, and /sdl /guard:cf on cl-style compilers. Each flag is probed first, so
+# a toolchain without one skips it. The flags actually used are cached as
+# CPPDOCS_HARDEN_FLAGS for tools/ctest_to_json.py. The default comes from the
+# CPPDOCS_HARDEN environment variable, so CI jobs set it without extra
+# plumbing; the *-hardened presets set it directly.
+if(DEFINED ENV{CPPDOCS_HARDEN} AND NOT "$ENV{CPPDOCS_HARDEN}" MATCHES "^(|0|OFF|off|false)$")
+  set(cppdocs_harden_default ON)
+else()
+  set(cppdocs_harden_default OFF)
+endif()
+option(CPPDOCS_HARDEN "Build the suite with library hardening and hardening compiler/linker flags" ${cppdocs_harden_default})
+set(cppdocs_harden_flags "")
+if(CPPDOCS_HARDEN)
+  include(CheckCXXCompilerFlag)
+  include(CheckLinkerFlag)
+  include(CheckPIESupported)
+  set(CMAKE_REQUIRED_QUIET ON)
+  function(cppdocs_try_compile_flag flag)
+    string(MAKE_C_IDENTIFIER "CPPDOCS_HAS_FLAG_${flag}" var)
+    check_cxx_compiler_flag("${flag}" ${var})
+    if(${var})
+      add_compile_options("${flag}")
+      set(cppdocs_harden_flags ${cppdocs_harden_flags} "${flag}" PARENT_SCOPE)
+    endif()
+  endfunction()
+  function(cppdocs_try_link_flag flag)
+    string(MAKE_C_IDENTIFIER "CPPDOCS_HAS_LINK_${flag}" var)
+    check_linker_flag(CXX "${flag}" ${var})
+    if(${var})
+      add_link_options("${flag}")
+      set(cppdocs_harden_flags ${cppdocs_harden_flags} "${flag}" PARENT_SCOPE)
+    endif()
+  endfunction()
+  if(MSVC)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      cppdocs_try_compile_flag(/sdl)
+      # /sdl makes C4996 an error, and C4996 deprecates standard C functions
+      # (fopen, gmtime, strncpy, sscanf...) in favour of Annex K's _s versions,
+      # which no other library here ships. The tests check the standard
+      # functions, so silence that one warning; /sdl's runtime checks and its
+      # other warnings-as-errors stay (#380).
+      if(CPPDOCS_HAS_FLAG__sdl)
+        add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+        list(APPEND cppdocs_harden_flags -D_CRT_SECURE_NO_WARNINGS)
+      endif()
+    endif()
+    cppdocs_try_compile_flag(/guard:cf)
+    cppdocs_try_link_flag(/guard:cf)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64|x64")
+      cppdocs_try_link_flag(/CETCOMPAT)
+    endif()
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    cppdocs_try_compile_flag(-fstack-protector-strong)
+    cppdocs_try_compile_flag(-ftrivial-auto-var-init=zero)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+      cppdocs_try_compile_flag(-fstack-clash-protection)
+    endif()
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|i.86")
+      cppdocs_try_compile_flag(-fcf-protection=full)
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
+      # GCC on macOS: -mbranch-protection=pac-ret (part of "standard") breaks
+      # C++ exception unwinding, so every throw aborts (vendor bug, #327).
+      if(NOT (APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
+        cppdocs_try_compile_flag(-mbranch-protection=standard)
+      endif()
+    endif()
+    # _FORTIFY_SOURCE needs optimization and is a glibc feature (Apple's SDK
+    # turns its own on by default).
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+      add_compile_options(-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3)
+      list(APPEND cppdocs_harden_flags -D_FORTIFY_SOURCE=3)
+    endif()
+    if(NOT APPLE AND NOT WIN32)
+      cppdocs_try_link_flag(-Wl,-z,relro)
+      cppdocs_try_link_flag(-Wl,-z,now)
+      cppdocs_try_link_flag(-Wl,-z,noexecstack)
+    endif()
+  endif()
+  check_pie_supported(OUTPUT_VARIABLE cppdocs_pie_msg LANGUAGES CXX)
+  if(CMAKE_CXX_LINK_PIE_SUPPORTED)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)   # targets below, gtest included, are PIE
+    list(APPEND cppdocs_harden_flags PIE)
+  endif()
+  add_compile_definitions(CPPDOCS_HARDEN=1)
+endif()
+
 # The standard the suite is built as (26, or 23 where CMake knows no C++26 flag:
 # MSVC, GCC 13), so tests about __cplusplus can tell what was requested (#209).
 add_compile_definitions(CPPDOCS_CXX_STANDARD=${CMAKE_CXX_STANDARD})
@@ -133,6 +224,27 @@ foreach(pair "libc++;_LIBCPP_VERSION" "libstdc++;__GLIBCXX__" "MS STL;_MSVC_STL_
   endif()
 endforeach()
 set(CPPDOCS_STDLIB "${cppdocs_stdlib}" CACHE INTERNAL "Standard library detected from its macros")
+
+# Standard-library hardening for CPPDOCS_HARDEN (#305), by the library in use:
+# libstdc++'s assertions, libc++'s fast mode (its documented production mode),
+# the MS STL's hardening. None changes the ABI.
+if(CPPDOCS_HARDEN)
+  if(cppdocs_stdlib STREQUAL "libstdc++")
+    add_compile_definitions(_GLIBCXX_ASSERTIONS)
+    list(APPEND cppdocs_harden_flags -D_GLIBCXX_ASSERTIONS)
+  elseif(cppdocs_stdlib STREQUAL "libc++")
+    add_compile_definitions(_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST)
+    list(APPEND cppdocs_harden_flags -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST)
+  elseif(cppdocs_stdlib STREQUAL "MS STL")
+    add_compile_definitions(_MSVC_STL_HARDENING=1)
+    list(APPEND cppdocs_harden_flags /D_MSVC_STL_HARDENING=1)
+  endif()
+  list(JOIN cppdocs_harden_flags " " cppdocs_harden_joined)
+  set(CPPDOCS_HARDEN_FLAGS "${cppdocs_harden_joined}" CACHE INTERNAL "Hardening flags the suite was built with")
+  message(STATUS "tests: hardening on: ${cppdocs_harden_joined}")
+else()
+  set(CPPDOCS_HARDEN_FLAGS "" CACHE INTERNAL "Hardening flags the suite was built with")
+endif()
 message(STATUS "cpp-docs: standard library ${CPPDOCS_STDLIB}")
 
 cppdocs_find_link_library(cppdocs_atomic_lib [[
@@ -191,6 +303,13 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_G
                               PROPERTIES COMPILE_OPTIONS -freflection)
 endif()
 
+# Code that changes the rounding mode needs -frounding-math on GCC; without it an
+# optimized x86-64 build expands std::rint as if rounding to nearest (#371).
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set_source_files_properties(numerics/cfenv_test.cpp
+                              PROPERTIES COMPILE_OPTIONS -frounding-math)
+endif()
+
 add_custom_target(examples_tests)
 add_dependencies(examples_tests cppdocs_support_tests)
 
@@ -212,6 +331,11 @@ foreach(area IN LISTS area_dirs)
   target_link_libraries(${target} PRIVATE cppdocs_support)
   target_compile_options(${target} PRIVATE ${cppdocs_warnings})
   add_dependencies(examples_tests ${target})
+  if(area STREQUAL "security")
+    # The fuzz targets' parsers and saved corpus, replayed as tests (#307).
+    target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/fuzz)
+    target_compile_definitions(${target} PRIVATE CPPDOCS_FUZZ_DIR="${PROJECT_SOURCE_DIR}/fuzz")
+  endif()
   # Test names come out as <Suite>.<Test>; the area is added as a label so
   # `ctest -L containers` runs one area.
   gtest_discover_tests(${target}

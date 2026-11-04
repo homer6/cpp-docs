@@ -1,0 +1,13 @@
+{
+  "id": "shell-command-injection",
+  "outcome": "violation",
+  "context": {"std": "c++20", "exceptions": true, "untrusted": "filename (upload form)"},
+  "expect": {
+    "must_find": ["the filename is spliced into a shell command; a name containing a quote runs arbitrary commands (quoting doesn't fix it)"],
+    "must_cite_any": ["docs/security/filesystem-and-processes.md#launch-programs-with-an-argument-vector-not-a-shell", "docs/security/parsing-and-validation.md#never-let-input-become-code"],
+    "cert_any": ["ENV33-C"],
+    "guidelines_any": [],
+    "fix": {"properties": ["runs the program with an argument vector (posix_spawn/execve, CreateProcessW), no shell", "passes the file by a name the server chose, or validates it"]}
+  },
+  "notes": "Escaping the quote is the wrong fix; the shell is the problem."
+}

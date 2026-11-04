@@ -32,7 +32,7 @@ if(CPPDOCS_TOOLCHAIN AND NOT CMAKE_CXX_COMPILER AND "$ENV{CXX}" STREQUAL "")
   endif()
 endif()
 
-project(cpp_docs_tests VERSION 0.4.0 LANGUAGES CXX)
+project(cpp_docs_tests VERSION 0.5.0 LANGUAGES CXX)
 
 if(CPPDOCS_TOOLCHAIN)
   set(_id "${CMAKE_CXX_COMPILER_ID}")
@@ -104,3 +104,10 @@ add_test(NAME release_notes_exist
                  ${CMAKE_SOURCE_DIR}/docs/releases/v${PROJECT_VERSION}.md)
 set_tests_properties(release_notes_exist PROPERTIES LABELS release)
 add_subdirectory(tests)
+
+# Fuzz targets for the security pages' parsers (#307): Clang only, off by
+# default; see fuzz/README.md.
+option(CPPDOCS_FUZZ "Build the libFuzzer targets in fuzz/ (Clang)" OFF)
+if(CPPDOCS_FUZZ)
+  add_subdirectory(fuzz)
+endif()

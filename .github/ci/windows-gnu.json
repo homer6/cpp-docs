@@ -1,0 +1,42 @@
+{
+  "_comment": "The jobs .github/workflows/windows-gnu.yml can start, one entry per job with its display name (#376). The plan job selects entries with the run's `jobs` input (tools/ci/plan.py) and each job's matrix is the selected entries. Keep the names unique: they're what a `jobs` pattern matches, and the report keys on them.",
+  "jobs": {
+    "clang-cl": [
+      {
+        "name": "windows-2025-vs2026 · clang-cl"
+      }
+    ],
+    "msys2": [
+      {
+        "name": "windows-2025-vs2026 · MSYS2 UCRT64 gcc",
+        "msystem": "UCRT64",
+        "compiler": "gcc",
+        "package": "gcc",
+        "preset": "mingw",
+        "baseline": "tools/snippet_baseline/gcc.txt",
+        "snippet_args": "",
+        "extra": "libatomic:p"
+      },
+      {
+        "name": "windows-2025-vs2026 · MSYS2 UCRT64 clang",
+        "msystem": "UCRT64",
+        "compiler": "clang",
+        "package": "clang",
+        "preset": "clang",
+        "baseline": "",
+        "snippet_args": "",
+        "extra": "libatomic:p"
+      },
+      {
+        "name": "windows-2025-vs2026 · MSYS2 CLANG64 clang",
+        "msystem": "CLANG64",
+        "compiler": "clang",
+        "package": "clang",
+        "preset": "clang",
+        "baseline": "tools/snippet_baseline/clang.txt",
+        "snippet_args": "--flag=-fexperimental-library",
+        "extra": ""
+      }
+    ]
+  }
+}
