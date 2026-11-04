@@ -977,7 +977,14 @@ A release (the owner names the version) needs all of these, in order:
    "GitHub Actions").
 5. **The owner's explicit approval** of the release. Then open the release
    PR (`dev` → `main`); once it's merged with the owner's verdict, tag the
-   merge commit `vX.Y.Z` and publish the GitHub release.
+   merge commit `vX.Y.Z` and publish the GitHub release from
+   `python3 tools/release_notes.py vX.Y.Z > notes.md` (`gh release create
+   vX.Y.Z --title "Release vX.Y.Z" --notes-file notes.md --verify-tag`).
+   Never paste the notes file as it is: GitHub shows every newline in a
+   release as a line break, so the wrapped lines break mid-sentence, and
+   relative links are dead there. The script joins the wrapped lines and
+   makes the links absolute at the tag (#390); `--self-test` runs its
+   samples. Use it for `gh release edit` too.
 
 ## Syncing and merging
 
