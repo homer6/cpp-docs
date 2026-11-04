@@ -9,7 +9,10 @@ Before a release (the full list is "Release checklist" in
 workflow has a green run on `dev`, started with the owner's consent, the
 default branch is back on `main`, and the owner has approved the release.
 The notes give the local counts and a per-platform table of the runs (run
-links and counts, from `tools/collect_results.py --summary`).
+links and counts, from `tools/collect_results.py --summary`). The GitHub
+release's text comes from `tools/release_notes.py vX.Y.Z`, which joins the
+page's wrapped lines (a release shows every newline as a line break) and
+makes its links absolute at the tag.
 
 | Version | Date | Notes |
 |---|---|---|
